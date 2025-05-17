@@ -213,4 +213,164 @@
   .save-button {
     width: 100%;
   }
+}
+
+.date-input-container {
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+}
+
+.date-input-container input[type="date"] {
+  width: 100%;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.date-input-container input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* Remove the default date picker icon on Edge */
+.date-input-container input[type="date"]::-webkit-clear-button,
+.date-input-container input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* Style for Firefox */
+.date-input-container input[type="date"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* Hover effect */
+.date-input-container:hover input[type="date"] {
+  border-color: #666;
+}
+
+/* Focus effect */
+.date-input-container input[type="date"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+/* Style number inputs */
+.form-group input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Remove spinner buttons for number inputs */
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Style date inputs */
+.form-group input[type="date"] {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  width: 100%;
+}
+
+/* Show calendar icon for Webkit browsers (Chrome, Safari, Edge) */
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+/* Show calendar icon for Firefox */
+.form-group input[type="date"]::-moz-calendar-picker-indicator {
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+/* Remove the default clear button in Edge */
+.form-group input[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+/* Hover and focus effects */
+.form-group input[type="date"]:hover {
+  border-color: #666;
+}
+
+.form-group input[type="date"]:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Style for Firefox */
+.form-group input[type="date"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* Date field container styles */
+.date-field-container {
+  position: relative;
+  width: 100%;
+}
+
+.date-field-container input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  padding-right: 40px; /* Space for the calendar icon */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: white;
+  color: #2c3e50;
+}
+
+.date-field-container input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+.calendar-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  color: #000;
+  stroke: currentColor;
+}
+
+/* Hover and focus effects */
+.date-field-container:hover input[type="date"] {
+  border-color: #666;
+}
+
+.date-field-container input[type="date"]:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 } 
