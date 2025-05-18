@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile } from 'react-icons/fi';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -26,6 +26,11 @@ const Sidebar = () => {
       path: '/employments',
       name: 'Employments',
       icon: <FiBriefcase className="w-5 h-5" />
+    },
+    {
+      path: '/documents',
+      name: 'Documents',
+      icon: <FiFile className="w-5 h-5" />
     },
     {
       path: '/letters',
@@ -69,7 +74,7 @@ const Sidebar = () => {
                   <Link
                     href={item.path}
                     className={`flex items-center gap-3 p-3 rounded-md transition-colors ${
-                      pathname === item.path
+                      pathname === item.path || pathname.startsWith(item.path + '/')
                         ? 'bg-blue-600 text-white'
                         : 'hover:bg-gray-700'
                     }`}

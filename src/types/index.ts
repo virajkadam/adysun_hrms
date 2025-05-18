@@ -144,4 +144,43 @@ export interface SalarySlip {
   paidDate?: string;
   status: 'draft' | 'issued' | 'paid';
   documentUrl?: string;
+}
+
+// Document types for document generation
+export interface Document {
+  id: string;
+  employeeId: string;
+  employmentId?: string;
+  documentType: 'offer' | 'appointment' | 'relieving' | 'appraisal' | 'increment' | 'payslip';
+  createdAt: string;
+  updatedAt: string;
+  status: 'draft' | 'issued' | 'signed';
+  documentUrl?: string;
+  data: any; // Document specific data
+}
+
+// Company information for documents
+export interface Company {
+  id: string;
+  name: string;
+  logo?: string;
+  address: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  gstin?: string;
+  pan?: string;
+  cin?: string;
+  bankDetails?: {
+    accountName?: string;
+    accountNumber?: string;
+    bankName?: string;
+    ifscCode?: string;
+    branch?: string;
+  };
+  signatory?: {
+    name: string;
+    designation: string;
+    signature?: string;
+  };
 } 
