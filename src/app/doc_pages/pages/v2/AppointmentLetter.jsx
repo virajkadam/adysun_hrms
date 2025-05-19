@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { PDFViewer, PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import Link from 'next/link';
 import { FiArrowLeft } from 'react-icons/fi';
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer, Watermark } from '@/components/pdf/PDFComponents';
@@ -839,18 +839,19 @@ const AppointmentLetterPDF = ({ formData }) => {
 function AppointmentLetterV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
-  const [showPF, setShowPF] = useState(false);
+  const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [showPF, setShowPF] = useState(true);
   const [formData, setFormData] = useState({
     employeeName: "",
-    address: "",
-    joiningDate: "",
     designation: "",
     department: "",
-    reportingAuthority: "HR",
+    location: "",
+    joiningDate: "",
+    reportingAuthority: "",
     ctc: "",
     ctcInWords: "",
-    location: "",
+    salaryComponents: null,
     companyName: "",
     companyAddressLine1: "",
     companyColor: "",
@@ -888,9 +889,48 @@ function AppointmentLetterV2() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -912,18 +952,53 @@ function AppointmentLetterV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        const salaryComponents = calculateSalaryComponents(selectedCandidate.packageLPA);
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let employeeSalary;
+        let joiningDate;
+        let employeeDesignation;
+        let employeeDepartment;
+        let employeeLocation;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those for salary, joining date, etc.
+          employeeSalary = employmentDetails.salary || employmentDetails.ctc;
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          employeeDepartment = employmentDetails.department;
+          employeeLocation = employmentDetails.location;
+        } else {
+          // Fallback to employee record if no employment details
+          employeeSalary = selectedEmployee.salary;
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          employeeDepartment = selectedEmployee.department;
+          employeeLocation = selectedEmployee.location || "";
+        }
+        
+        // Calculate CTC in LPA
+        const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
+        const ctcInWords = ctcValue > 0 ? 
+          `Rupees ${numberToWords(employeeSalary)} Only` : '';
+        
+        // Calculate salary components
+        const salaryComponents = calculateSalaryComponents(ctcValue);
+        
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          designation: selectedCandidate.designation,
-          department: selectedCandidate.department,
-          location: selectedCandidate.location,
-          joiningDate: selectedCandidate.DateOfJoining,
-          ctc: selectedCandidate.packageLPA,
-          ctcInWords: `Rupees ${numberToWords(selectedCandidate.packageLPA * 100000)} Only`,
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          department: employeeDepartment || "",
+          location: employeeLocation || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          ctc: ctcValue,
+          ctcInWords: ctcInWords,
           salaryComponents: salaryComponents
         }));
       }
@@ -971,8 +1046,8 @@ function AppointmentLetterV2() {
             >
               <option value="">Select Employee</option>
               {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.candidateName}>
-                  {candidate.candidateName}
+                <option key={candidate.id} value={candidate.name}>
+                  {candidate.name}
                 </option>
               ))}
             </select>

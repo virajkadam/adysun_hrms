@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from 'next/link';
 import { PDFViewer, PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import { commonStyles } from '@/components/pdf/PDFStyles';
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer } from '@/components/pdf/PDFComponents';
@@ -309,25 +309,27 @@ const AppraisalLetterPDF = ({ formData }) => {
 function AppraisalLetterV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [showPDF, setShowPDF] = useState(false);
   const [formData, setFormData] = useState({
     employeeName: "",
-    date: "",
-    lpa: "",
-    basic: "",
-    da: "",
-    conveyance: "",
-    other: "",
-    total: "",
-    salaryInWords: "",
+    designation: "",
+    department: "",
+    effectiveDate: "",
+    incrementDate: "",
+    joiningDate: "",
+    previousSalary: "",
+    newSalary: "",
+    incrementAmount: "",
+    percentageIncrease: "",
     companyName: "",
     companyAddressLine1: "",
     companyColor: "",
     companyEmail: "",
     companyPhone: "",
     companyWebsite: "",
-    companyLogo: "",
+    companyLogo: ""
   });
 
   // Use React.useMemo to memoize the PDF document to prevent unnecessary re-renders
@@ -357,40 +359,48 @@ function AppraisalLetterV2() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCandidates(candidateList);
-  };
-
-  // Calculate salary components based on LPA
-  const calculateSalaryComponents = (lpa) => {
-    const annualSalary = parseFloat(lpa) * 100000;
-
-    // Standard Indian salary structure
-    const basic = Math.round(annualSalary * 0.40); // 40% of CTC
-    const hra = Math.round(basic * 0.50); // 50% of Basic
-    const da = Math.round(annualSalary * 0.10); // 10% of CTC
-    const conveyance = 19200; // Standard yearly conveyance
-    const medical = 15000; // Standard medical allowance
-    const special = annualSalary - (basic + hra + da + conveyance + medical);
-
-    // Monthly calculations
-    const monthlyBasic = Math.round(basic / 12);
-    const monthlyHRA = Math.round(hra / 12);
-    const monthlyDA = Math.round(da / 12);
-    const monthlyConveyance = Math.round(conveyance / 12);
-    const monthlyMedical = Math.round(medical / 12);
-    const monthlySpecial = Math.round(special / 12);
-    const monthlyTotal = monthlyBasic + monthlyHRA + monthlyDA + monthlyConveyance + monthlyMedical + monthlySpecial;
-
-    return {
-      basic: monthlyBasic.toFixed(2),
-      da: monthlyDA.toFixed(2),
-      conveyance: monthlyConveyance.toFixed(2),
-      other: monthlySpecial.toFixed(2),
-      total: monthlyTotal.toFixed(2),
-      salaryInWords: `Rupees ${numberToWords(annualSalary)} Only Per Annum`
-    };
+    try {
+      // Try fetching from 'employees' collection
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -411,41 +421,86 @@ function AppraisalLetterV2() {
         }));
       }
     } else if (name === "employeeName") {
-      // Find selected candidate and calculate salary components
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        const lpa = parseFloat(selectedCandidate.packageLPA);
-        const components = calculateSalaryComponents(formData.newLPA || lpa); // Use new LPA if available
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let joiningDate;
+        let employeeDesignation;
+        let employeeDepartment;
+        let employeeSalary;
+        let incrementDate;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          employeeDepartment = employmentDetails.department;
+          employeeSalary = employmentDetails.salary;
+          incrementDate = employmentDetails.incrementDate || new Date().toISOString().split('T')[0];
+        } else {
+          // Fallback to employee record if no employment details
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          employeeDepartment = selectedEmployee.department;
+          employeeSalary = selectedEmployee.salary;
+          incrementDate = new Date().toISOString().split('T')[0];
+        }
+        
+        // Default values for new salary calculations
+        const previousSalary = employeeSalary || 0;
+        const percentageIncrease = 10; // Default 10% increase
+        const incrementAmount = Math.round(previousSalary * (percentageIncrease / 100));
+        const newSalary = previousSalary + incrementAmount;
         
         setFormData(prev => ({
           ...prev,
-          employeeName: value,
-          currentLPA: lpa, // Store current LPA
-          lpa: formData.newLPA || lpa, // Use new LPA if available
-          basic: components.basic,
-          da: components.da,
-          packageLPA: formData.newLPA || selectedCandidate.packageLPA,
-          conveyance: components.conveyance,
-          other: components.other,
-          total: components.total,
-          salaryInWords: components.salaryInWords
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          department: employeeDepartment || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          incrementDate: incrementDate,
+          effectiveDate: incrementDate,
+          previousSalary: previousSalary.toString(),
+          newSalary: newSalary.toString(),
+          incrementAmount: incrementAmount.toString(),
+          percentageIncrease: percentageIncrease.toString()
         }));
       }
-    } else if (name === "newLPA") {
-      const newLPA = parseFloat(value) || 0;
-      const components = calculateSalaryComponents(newLPA);
+    } else if (name === "newSalary" || name === "previousSalary") {
+      // Recalculate percentage and increment when salary values change
+      let updatedFormData = { ...formData, [name]: value };
+      const prevSalary = parseFloat(updatedFormData.previousSalary) || 0;
+      const newSalary = parseFloat(updatedFormData.newSalary) || 0;
+      
+      if (prevSalary > 0 && newSalary > 0) {
+        const incrementAmount = newSalary - prevSalary;
+        const percentageIncrease = prevSalary > 0 ? ((incrementAmount / prevSalary) * 100).toFixed(2) : 0;
+        
+        updatedFormData = {
+          ...updatedFormData,
+          incrementAmount: incrementAmount.toString(),
+          percentageIncrease: percentageIncrease.toString()
+        };
+      }
+      
+      setFormData(updatedFormData);
+    } else if (name === "percentageIncrease") {
+      // Recalculate new salary when percentage changes
+      const percentage = parseFloat(value) || 0;
+      const prevSalary = parseFloat(formData.previousSalary) || 0;
+      const incrementAmount = Math.round(prevSalary * (percentage / 100));
+      const newSalary = prevSalary + incrementAmount;
       
       setFormData(prev => ({
         ...prev,
-        newLPA: value,
-        lpa: newLPA,
-        basic: components.basic,
-        da: components.da,
-        packageLPA: value,
-        conveyance: components.conveyance,
-        other: components.other,
-        total: components.total,
-        salaryInWords: components.salaryInWords
+        [name]: value,
+        incrementAmount: incrementAmount.toString(),
+        newSalary: newSalary.toString()
       }));
     } else {
       setFormData(prev => ({
@@ -472,7 +527,6 @@ function AppraisalLetterV2() {
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Appraisal Letter Details</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Employee Selection */}
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
             <select
@@ -483,26 +537,12 @@ function AppraisalLetterV2() {
             >
               <option value="">Select Employee</option>
               {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.candidateName}>
-                  {candidate.candidateName}
+                <option key={candidate.id} value={candidate.name}>
+                  {candidate.name}
                 </option>
               ))}
             </select>
           </div>
-
-          {/* Appraisal Date */}
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Appraisal Date</label>
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          {/* Company Selection */}
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
             <select
@@ -519,30 +559,48 @@ function AppraisalLetterV2() {
             </select>
           </div>
           
-          {/* New Package (LPA) */}
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">New Package (LPA)</label>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Effective Date</label>
             <input
-              type="number"
-              name="newLPA"
-              value={formData.newLPA || ''}
+              type="date"
+              name="effectiveDate"
+              value={formData.effectiveDate}
               onChange={handleInputChange}
-              placeholder="Enter new LPA"
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              step="0.1"
-              min="0"
             />
           </div>
           
-          {/* Generate Button */}
-          <div className="md:col-span-2 flex justify-end mt-6">
-            <button
-              onClick={handleGenerateDocument}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
-            >
-              <FiDownload size={18} className="mr-2" />
-              <span>Generate Appraisal Letter</span>
-            </button>
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Previous Salary (Annual)</label>
+            <input
+              type="number"
+              name="previousSalary"
+              value={formData.previousSalary}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-gray-700">New Salary (Annual)</label>
+            <input
+              type="number"
+              name="newSalary"
+              value={formData.newSalary}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Percentage Increase (%)</label>
+            <input
+              type="number"
+              name="percentageIncrease"
+              value={formData.percentageIncrease}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
           </div>
         </div>
       </div>

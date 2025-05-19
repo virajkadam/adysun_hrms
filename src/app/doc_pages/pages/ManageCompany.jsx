@@ -1,10 +1,13 @@
+'use client';
+
 import { useState, useEffect } from "react";
-import { db } from "./firebase";
+import { db } from "@/firebase/config";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react"; // Icons from Lucide
 
 const ManageCompany = () => {
+  const router = useRouter();
   const [companies, setCompanies] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -26,10 +29,13 @@ const ManageCompany = () => {
   }, []);
 
   const fetchCompanies = async () => {
-    const querySnapshot = await getDocs(collection(db, "companies"));
-    const companyList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCompanies(companyList);
-    console.log(companyList);
+    try {
+      const querySnapshot = await getDocs(collection(db, "companies"));
+      const companyList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setCompanies(companyList);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -50,28 +56,32 @@ const ManageCompany = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editId) {
-      const companyDoc = doc(db, "companies", editId);
-      await updateDoc(companyDoc, formData);
-    } else {
-      await addDoc(collection(db, "companies"), formData);
-    }
+    try {
+      if (editId) {
+        const companyDoc = doc(db, "companies", editId);
+        await updateDoc(companyDoc, formData);
+      } else {
+        await addDoc(collection(db, "companies"), formData);
+      }
 
-    setFormData({
-      name: "",
-      address: "",
-      mobile: "",
-      email: "",
-      website: "",
-      cin: "",
-      logo: "",
-      hrName: "",
-      hrMobile: "",
-      color:"",
-    });
-    setEditId(null);
-    setIsListView(true);
-    fetchCompanies();
+      setFormData({
+        name: "",
+        address: "",
+        mobile: "",
+        email: "",
+        website: "",
+        cin: "",
+        logo: "",
+        hrName: "",
+        hrMobile: "",
+        color:"",
+      });
+      setEditId(null);
+      setIsListView(true);
+      fetchCompanies();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const handleEdit = (company) => {
@@ -81,8 +91,12 @@ const ManageCompany = () => {
   };
 
   const handleDelete = async (id) => {
-    await deleteDoc(doc(db, "companies", id));
-    fetchCompanies();
+    try {
+      await deleteDoc(doc(db, "companies", id));
+      fetchCompanies();
+    } catch (error) {
+      console.error("Error deleting company:", error);
+    }
   };
 
   const handleAddNew = () => {
@@ -101,10 +115,9 @@ const ManageCompany = () => {
     setEditId(null);
     setIsListView(false);
   };
-  const navigate = useNavigate();  // Get the navigate function
 
   const handleGoBack = () => {
-    navigate(-1);  // Goes back to the previous page in history
+    router.back();  // Use Next.js router to go back
   };
 
   return (
@@ -112,7 +125,7 @@ const ManageCompany = () => {
       <div className="max-w-[210mm] mx-auto">
         <div className="flex justify-between items-center mb-6 md:mb-12 mt-4 md:mt-6">
           <div className="ml-2 md:ml-4">
-            <div onClick={handleGoBack} className="flex items-center text-gray-600 hover:text-gray-900">
+            <div onClick={handleGoBack} className="flex items-center text-gray-600 hover:text-gray-900 cursor-pointer">
               <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />
               <span className="text-sm md:text-base">Back to Home</span>
             </div>
@@ -263,23 +276,23 @@ const ManageCompany = () => {
               required
             />
         
-  <label htmlFor="serverColor" className="text-gray-700">Server Color</label>
-  <select
-    name="serverColor"
-    id="serverColor"
-    value={formData.serverColor}
-    onChange={handleChange}
-    className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    required
-  >
-    <option value="">Select a color</option>
-    <option value="red">Red</option>
-    <option value="blue">Blue</option>
-    <option value="green">Green</option>
-    <option value="yellow">Yellow</option>
-    <option value="purple">Purple</option>
-    <option value="pink">Pink</option>
-  </select>
+            <label htmlFor="color" className="text-gray-700">Color</label>
+            <select
+              name="color"
+              id="color"
+              value={formData.color}
+              onChange={handleChange}
+              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="">Select a color</option>
+              <option value="red">Red</option>
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="purple">Purple</option>
+              <option value="pink">Pink</option>
+            </select>
 
             <button
               type="submit"

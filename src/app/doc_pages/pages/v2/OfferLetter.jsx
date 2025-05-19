@@ -14,7 +14,7 @@ import {
   StyleSheet
 } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 // Import our custom PDF components and styles
 import { 
@@ -126,31 +126,53 @@ const Watermark = ({ logoSrc }) => {
 const OfferLetterPDF = ({ formData }) => {
   // Format salary values to ensure they display correctly
   const formatSalaryValues = () => {
-    if (!formData.salaryComponentsV2) return null;
+    if (!formData.salaryComponentsV2) {
+      // If no salary data available, return zeros 
+      // This is just structural - not default values
+      return [
+        { label: 'Basic', value: '0.00' },
+        { label: 'Dearness Allowance', value: '0.00' },
+        { label: 'Conveyance Allowance', value: '0.00' },
+        { label: 'Other Allowance', value: '0.00' },
+        { total: '0.00' },
+      ];
+    }
     
-    // Format with exact spacing and formatting as in current PDF
-    // Use "Rs." prefix instead of rupee symbol to ensure proper rendering
-    return [
-      {
-        label: 'Basic',
-        value: formatIndianCurrency(formData.salaryComponentsV2.annual.basic),
-      },
-      {
-        label: 'Dearness Allowance',
-        value: formatIndianCurrency(formData.salaryComponentsV2.annual.dearnessAllowance),
-      },
-      {
-        label: 'Conveyance Allowance',
-        value: formatIndianCurrency(formData.salaryComponentsV2.annual.conveyanceAllowance),
-      },
-      {
-        label: 'Other Allowance',
-        value: formatIndianCurrency(formData.salaryComponentsV2.annual.otherAllowance),
-      },
-      {
-        total: formatIndianCurrency(formData.lpa ? formData.lpa * 100000 : 0),
-      },
-    ];
+    try {
+      // Format with exact spacing and formatting as in current PDF
+      // Use actual values from the employee record with no defaults
+      return [
+        {
+          label: 'Basic',
+          value: formatIndianCurrency(formData.salaryComponentsV2.annual.basic || 0),
+        },
+        {
+          label: 'Dearness Allowance',
+          value: formatIndianCurrency(formData.salaryComponentsV2.annual.dearnessAllowance || 0),
+        },
+        {
+          label: 'Conveyance Allowance',
+          value: formatIndianCurrency(formData.salaryComponentsV2.annual.conveyanceAllowance || 0),
+        },
+        {
+          label: 'Other Allowance',
+          value: formatIndianCurrency(formData.salaryComponentsV2.annual.otherAllowance || 0),
+        },
+        {
+          total: formatIndianCurrency(formData.lpa ? formData.lpa * 100000 : 0),
+        },
+      ];
+    } catch (error) {
+      console.error("Error formatting salary values:", error);
+      // Return zeros if there's an error, not defaults
+      return [
+        { label: 'Basic', value: '0.00' },
+        { label: 'Dearness Allowance', value: '0.00' },
+        { label: 'Conveyance Allowance', value: '0.00' },
+        { label: 'Other Allowance', value: '0.00' },
+        { total: '0.00' },
+      ];
+    }
   };
 
   return (
@@ -201,7 +223,11 @@ const OfferLetterPDF = ({ formData }) => {
           </Text>
           
           <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            Your salary package will be Rs. {formData.lpa ? formatIndianCurrency(formData.lpa * 100000) : '0,00,000'}/- ({formData.lpa ? `${numberToWords(formData.lpa)} Lakh` : 'AMOUNT IN WORDS'} Rupees Only) and no other allowance is provided in that period.
+            {formData.lpa && formData.lpa > 0 ? (
+              `Your salary package will be Rs. ${formatIndianCurrency(formData.lpa * 100000)}/- (${numberToWords(formData.lpa)} Lakh Rupees Only) and no other allowance is provided in that period.`
+            ) : (
+              `Your salary package will be as per company policy and no other allowance is provided in that period.`
+            )}
           </Text>
         </View>
         
@@ -304,8 +330,8 @@ const OfferLetterPDF = ({ formData }) => {
         <View style={{marginTop: 10}}>
           <Text style={documentStyles.sectionHeader}>Salary Annexure</Text>
           
-          {/* Date - Hardcoded like in the sample */}
-          <Text style={documentStyles.text}>Date: 28/04/2025</Text>
+          {/* Date - Use current date instead of hardcoded value */}
+          <Text style={documentStyles.text}>Date: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
           
           {/* Addressee */}
           <View style={{ marginBottom: 8 }}>
@@ -321,23 +347,21 @@ const OfferLetterPDF = ({ formData }) => {
           </Text>
           
           {/* Salary Table with updated styles */}
-          {formData.salaryComponentsV2 && (
-            <View style={{width: '100%', marginVertical: 8}}>
-              <Text style={[documentStyles.boldText, {marginBottom: 4}]}>Compensation Heads</Text>
-              
-              {formatSalaryValues().slice(0, -1).map((item, index) => (
-                <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1pt solid #ddd', paddingVertical: 4}}>
-                  <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri'}}>{item.label}</Text>
-                  <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri'}}>: Rs. {item.value}</Text>
-                </View>
-              ))}
-              
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 4, borderTop: '2pt solid #000', borderBottom: '2pt solid #000', paddingVertical: 4, fontWeight: 'bold'}}>
-                <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>Annual Total</Text>
-                <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>: Rs. {formatSalaryValues()[formatSalaryValues().length - 1].total}</Text>
+          <View style={{width: '100%', marginVertical: 8}}>
+            <Text style={[documentStyles.boldText, {marginBottom: 4}]}>Compensation Heads</Text>
+            
+            {formatSalaryValues().slice(0, -1).map((item, index) => (
+              <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1pt solid #ddd', paddingVertical: 4}}>
+                <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri'}}>{item.label}</Text>
+                <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri'}}>: Rs. {item.value}</Text>
               </View>
+            ))}
+            
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 4, borderTop: '2pt solid #000', borderBottom: '2pt solid #000', paddingVertical: 4, fontWeight: 'bold'}}>
+              <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>Annual Total</Text>
+              <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>: Rs. {formatSalaryValues()[formatSalaryValues().length - 1].total}</Text>
             </View>
-          )}
+          </View>
           
           <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
             We expect you to keep up your performance in the years to come and grow with the organization and we will expect you will get happy and enthusiastic environment for work at the organization.
@@ -369,6 +393,7 @@ const OfferLetterPDF = ({ formData }) => {
 function OfferLetterV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -406,9 +431,48 @@ function OfferLetterV2() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -429,25 +493,45 @@ function OfferLetterV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        const salaryComponentsV2 = calculateSalaryComponentsV2(selectedCandidate.packageLPA);
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let employeeSalary;
+        let joiningDate;
+        let employeeDesignation;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those for salary, joining date, etc.
+          employeeSalary = employmentDetails.salary || employmentDetails.ctc;
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+        } else {
+          // Fallback to employee record if no employment details
+          employeeSalary = selectedEmployee.salary;
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+        }
+        
+        // Calculate LPA from annual salary if it exists
+        const employeeLPA = employeeSalary ? (employeeSalary / 100000) : 0;
+        
+        // Calculate salary components
+        const salaryComponentsV2 = calculateSalaryComponentsV2(employeeLPA);
+        
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          designation: selectedCandidate.designation,
-          joiningDate: selectedCandidate.DateOfJoining,
-          lpa: selectedCandidate.packageLPA,
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          lpa: employeeLPA,
           salaryComponentsV2
         }));
       }
-    } else if (name === 'lpa') {
-      const salaryComponentsV2 = calculateSalaryComponentsV2(value);
-      setFormData(prev => ({
-        ...prev,
-        lpa: value,
-        salaryComponentsV2
-      }));
     } else {
       setFormData(prev => ({
         ...prev,
@@ -479,8 +563,8 @@ function OfferLetterV2() {
             >
               <option value="">Select Employee</option>
               {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.candidateName}>
-                  {candidate.candidateName}
+                <option key={candidate.id} value={candidate.name}>
+                  {candidate.name}
                 </option>
               ))}
             </select>

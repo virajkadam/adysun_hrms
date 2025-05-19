@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { PDFViewer, PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer, Watermark } from '@/components/pdf/PDFComponents';
 import { commonStyles } from '@/components/pdf/PDFStyles';
@@ -404,14 +404,14 @@ const RelievingLetterPDF = ({ formData }) => {
 function RelievingLetterV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [showPDF, setShowPDF] = useState(false);
   const [formData, setFormData] = useState({
     employeeName: "",
     designation: "",
-    lastWorkingDate: "",
-    employeeSignDate: "",
-    employeeSignPlace: "Pune",
+    lastWorkingDate: new Date().toISOString().split('T')[0],
+    joiningDate: "",
     companyName: "",
     companyAddressLine1: "",
     companyColor: "",
@@ -449,9 +449,48 @@ function RelievingLetterV2() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -473,18 +512,36 @@ function RelievingLetterV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let joiningDate;
+        let employeeDesignation;
+        let lastWorkingDate;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those for dates, etc.
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          lastWorkingDate = employmentDetails.lastWorkingDate || employmentDetails.endDate;
+        } else {
+          // Fallback to employee record if no employment details
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          lastWorkingDate = new Date().toISOString().split('T')[0]; // Default to today
+        }
+        
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          employeeCode: selectedCandidate.employeeCode || '',
-          designation: selectedCandidate.designation || '',
-          department: selectedCandidate.department || '',
-          dateOfJoining: selectedCandidate.dateOfJoining || '',
-          lastWorkingDate: selectedCandidate.lastWorkingDate || '',
-          location: selectedCandidate.location || '',
-          pan: selectedCandidate.panNo || ''
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          lastWorkingDate: lastWorkingDate || new Date().toISOString().split('T')[0]
         }));
       }
     } else {
@@ -519,8 +576,8 @@ function RelievingLetterV2() {
             >
               <option value="">Select Employee</option>
               {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.candidateName}>
-                  {candidate.candidateName}
+                <option key={candidate.id} value={candidate.name}>
+                  {candidate.name}
                 </option>
               ))}
             </select>

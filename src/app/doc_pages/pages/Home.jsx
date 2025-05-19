@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { FileText, Briefcase, File, User, Clipboard, ToggleLeft, ToggleRight } from "lucide-react"; // Import icons
+import { FileText, Briefcase, File, User, Clipboard, ToggleLeft, ToggleRight, Building } from "lucide-react"; // Import icons
 
 function Home() {
   // Load initial state from localStorage, default to false if not present
@@ -27,7 +27,8 @@ function Home() {
     { title: "Relieving Letter", path: "/dashboard/documents/relieving-letter", v2Path: "/dashboard/documents/v2/relieving-letter", icon: <FileText size={32} /> },
     { title: "Appraisal Letter", path: "/dashboard/documents/appraisal-letter", v2Path: "/dashboard/documents/v2/appraisal-letter", icon: <Clipboard size={32} /> },
     // { title: "Increment Letter", path: "/dashboard/documents/increment-letter", v2Path: "/dashboard/documents/v2/increment-letter", icon: <Briefcase size={32} /> },
-    { title: "Manage Company", path: "/dashboard/documents/manage-company", icon: <Briefcase size={32} /> },
+    { title: "Manage Company", path: "/dashboard/documents/company-card", icon: <Building size={32} /> },
+   
     { title: "Manage Candidates", path: "/dashboard/documents/manage-student", icon: <User size={32} /> },
     { title: "Manage Bank", v2Path: "/dashboard/documents/v2/manage-bank", icon: <File size={32} /> },
     { title: "Bank Statement", v2Path: "/dashboard/documents/v2/bank-statement", icon: <FileText size={32} /> },

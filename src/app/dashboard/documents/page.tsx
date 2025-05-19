@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FiFileText, FiBriefcase, FiFile, FiUser, FiClipboard } from 'react-icons/fi';
+import { FiFileText, FiBriefcase, FiFile, FiUser, FiClipboard, FiHome } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 
 // Define document types for the dashboard
@@ -42,6 +42,12 @@ const documents = [
     description: 'Generate increment letters for salary revisions',
     path: '/dashboard/documents/increment-letter', 
     icon: <FiFileText size={24} /> 
+  },
+  { 
+    title: 'Company Card', 
+    description: 'View company information details',
+    path: '/dashboard/documents/company-card', 
+    icon: <FiBriefcase size={24} /> 
   },
 ];
 

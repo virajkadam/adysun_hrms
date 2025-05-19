@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FiArrowLeft, FiDownload } from 'react-icons/fi';
 import { PDFViewer, PDFDownloadLink, Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer, Watermark } from '@/components/pdf/PDFComponents';
 import { commonStyles } from '@/components/pdf/PDFStyles';
 import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtils';
@@ -436,6 +436,7 @@ const PaySlipPDF = ({ formData }) => {
 function PaySlipGeneratorV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [showPDF, setShowPDF] = useState(false);
   const [formData, setFormData] = useState({
@@ -494,9 +495,48 @@ function PaySlipGeneratorV2() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   // Add this function to calculate days in month
@@ -527,37 +567,32 @@ function PaySlipGeneratorV2() {
     // Calculate components with null checks and Math.max to prevent negative values
     const monthlyBasic = Math.max(0, Math.round(effectiveSalary * 0.5));
     const da = Math.max(0, Math.round(monthlyBasic * 0.2));
-    const conveyanceAllowance = Math.max(0, Math.round(1600 * ((daysInMonth - leavesNum) / daysInMonth)));
-    const medicalAllowance = Math.max(0, Math.round(1250 * ((daysInMonth - leavesNum) / daysInMonth)));
-    const cca = Math.max(0, Math.round(monthlyBasic * 0.1));
+    const conveyanceAllowance = Math.max(0, Math.round(1600));
+    const medicalAllowance = Math.max(0, Math.round(1250));
+    const cca = Math.max(0, Math.round(500));
+    const otherAllowance = Math.max(0, Math.round(effectiveSalary - monthlyBasic - da - conveyanceAllowance - medicalAllowance - cca));
     
-    // Calculate allowances total
-    const totalFixedAllowances = monthlyBasic + da + conveyanceAllowance + medicalAllowance + cca;
-    const monthlyCTC = Math.max(0, Math.round(effectiveSalary));
-    const otherAllowance = Math.max(0, Math.round(monthlyCTC - totalFixedAllowances));
+    // Professional tax varies by state, using standard 200 for example
+    const professionalTax = 200;
     
-    // Calculate deductions
-    const professionalTax = Math.max(0, Math.round(200 * ((daysInMonth - leavesNum) / daysInMonth)));
-    
-    // Calculate final amounts
-    const grossSalary = monthlyBasic + da + conveyanceAllowance + 
-                       medicalAllowance + cca + otherAllowance;
+    // Calculate net amount
+    const totalEarnings = monthlyBasic + da + conveyanceAllowance + otherAllowance + medicalAllowance + cca;
     const totalDeductions = professionalTax;
-    const netPay = Math.max(0, grossSalary - totalDeductions);
-  
+    const netAmount = totalEarnings - totalDeductions;
+    
+    // Convert to Indian words
+    const amountInWords = `Rupees ${numberToWords(netAmount)} Only`;
+    
     return {
       basicSalary: monthlyBasic,
-      da: da,
-      conveyanceAllowance: conveyanceAllowance,
-      medicalAllowance: medicalAllowance,
-      cca: cca,
-      otherAllowance: otherAllowance,
-      gross: grossSalary,
-      professionalTax: professionalTax,
-      totalDeductions: totalDeductions,
-      netPay: netPay,
-      daysInMonth: daysInMonth,
-      payableDays: (daysInMonth - leavesNum).toString()
+      da,
+      conveyanceAllowance,
+      otherAllowance,
+      medicalAllowance,
+      cca,
+      professionalTax,
+      otherDeductions: 0,
+      amountInWords
     };
   };
 
@@ -580,49 +615,90 @@ function PaySlipGeneratorV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        // Calculate salary based on LPA, leaves and selected month
-        const salaryComponents = calculateSalary(
-          selectedCandidate.packageLPA,
-          formData.leaves,
-          formData.month
-        );
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let employeeSalary;
+        let employeeDesignation;
+        let employeeDepartment;
+        let employeeLocation;
+        let employeePAN;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those
+          employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          employeeDepartment = employmentDetails.department;
+          employeeLocation = employmentDetails.location;
+          employeePAN = selectedEmployee.pan; // Usually PAN is in employee record
+        } else {
+          // Fallback to employee record if no employment details
+          employeeSalary = selectedEmployee.salary || 0;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          employeeDepartment = selectedEmployee.department;
+          employeeLocation = selectedEmployee.location;
+          employeePAN = selectedEmployee.pan;
+        }
+        
+        // Calculate CTC in LPA
+        const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
+        
+        // Get current month and leaves
+        const currentMonth = formData.month;
+        const leaves = formData.leaves;
+        
+        // Calculate salary components
+        const salaryComponents = calculateSalary(ctcValue, leaves, currentMonth);
         
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          employeeId: selectedCandidate.employeeCode || '',
-          designation: selectedCandidate.designation || '',
-          department: selectedCandidate.department || '',
-          location: selectedCandidate.location || '',
-          pan: selectedCandidate.panNo || '',
+          employeeName: selectedEmployee.name,
+          employeeId: selectedEmployee.employeeId || selectedEmployee.id,
+          designation: employeeDesignation || "",
+          department: employeeDepartment || "",
+          location: employeeLocation || "",
+          pan: employeePAN || "",
           ...salaryComponents
         }));
       }
     } else if (name === "leaves" || name === "month") {
       // Recalculate salary when leaves or month changes
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === formData.employeeName);
-      if (selectedCandidate) {
-        const newLeaves = name === "leaves" ? value : formData.leaves;
-        const newMonth = name === "month" ? value : formData.month;
+      const updatedFormData = { ...formData, [name]: value };
+      
+      // Find the selected employee to get LPA
+      const selectedEmployee = candidates.find(employee => employee.name === formData.employeeName);
+      if (selectedEmployee) {
+        // Get the employment details
+        const employmentDetails = employments[selectedEmployee.id];
+        let employeeSalary;
         
+        if (employmentDetails) {
+          employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
+        } else {
+          employeeSalary = selectedEmployee.salary || 0;
+        }
+        
+        // Calculate CTC in LPA
+        const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
+        
+        // Calculate updated salary
         const salaryComponents = calculateSalary(
-          selectedCandidate.packageLPA,
-          newLeaves,
-          newMonth
+          ctcValue, 
+          updatedFormData.leaves, 
+          updatedFormData.month
         );
         
-        setFormData(prev => ({
-          ...prev,
-          [name]: value,
+        setFormData({
+          ...updatedFormData,
           ...salaryComponents
-        }));
+        });
       } else {
-        setFormData(prev => ({
-          ...prev,
-          [name]: value
-        }));
+        setFormData(updatedFormData);
       }
     } else {
       setFormData(prev => ({
@@ -636,25 +712,35 @@ function PaySlipGeneratorV2() {
     setShowPDF(true);
   };
 
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
         <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
-          <FiArrowLeft size={20} /> Back to Documents
+          <FiArrowLeft size={16} /> Back to Documents
         </Link>
       </div>
 
       {/* Form Section */}
       <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Payslip Detail</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Pay Slip Details</h2>
         
-        <div className="space-y-4">
-          {/* Company Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
+            <select
+              name="employeeName"
+              value={formData.employeeName}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select Employee</option>
+              {candidates.map((candidate) => (
+                <option key={candidate.id} value={candidate.name}>
+                  {candidate.name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
             <select
@@ -670,26 +756,7 @@ function PaySlipGeneratorV2() {
               ))}
             </select>
           </div>
-
-          {/* Employee Selection */}
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
-            <select
-              name="employeeName"
-              value={formData.employeeName}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Employee</option>
-              {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.candidateName}>
-                  {candidate.candidateName}
-                </option>
-              ))}
-            </select>
-          </div>
           
-          {/* Month */}
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
             <select
@@ -698,17 +765,23 @@ function PaySlipGeneratorV2() {
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              {months.map((month, index) => (
-                <option key={index} value={index}>
-                  {month}
-                </option>
-              ))}
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
             </select>
           </div>
           
-          {/* Leaves */}
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Leaves (Max: 30 days)</label>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Leaves</label>
             <input
               type="number"
               name="leaves"
@@ -716,33 +789,30 @@ function PaySlipGeneratorV2() {
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               min="0"
-              max="30"
+              max={getDaysInMonth(Number(formData.month))}
             />
           </div>
           
-          {/* Payable Days */}
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days:</label>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Pay Date</label>
             <input
-              type="text"
-              name="payableDays"
-              value={formData.payableDays}
-              readOnly
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
-              placeholder="Enter payable days"
+              type="date"
+              name="payDate"
+              value={formData.payDate}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-          
-          {/* Generate Button */}
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={handleGeneratePayslip}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
-            >
-              <FiDownload size={18} className="mr-2" />
-              <span>Generate PaySlip</span>
-            </button>
-          </div>
+        </div>
+        
+        <div className="mt-6">
+          <button
+            onClick={handleGeneratePayslip}
+            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
+          >
+            <FiDownload size={18} className="mr-2" />
+            <span>Generate Payslip</span>
+          </button>
         </div>
       </div>
 

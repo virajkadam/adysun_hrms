@@ -1260,7 +1260,7 @@ const BankStatement = () => {
         <div className="flex justify-between items-center mb-6 md:mb-12 mt-4 md:mt-6">
           <div className="ml-2 md:ml-4">
             <Link
-              to="/"
+              href="/"
               className="back-link flex items-center text-gray-600 hover:text-gray-900"
             >
               <FiArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />

@@ -5,15 +5,17 @@ import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import "../assets/styles/ButtonStyles.css";
 import "../assets/styles/AppraisalLetter.css";
-import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import "../assets/styles/ButtonStyles.css";
+import { db } from "@/firebase/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 function AppraisalLetter() {
   const containerRef = useRef(null);
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     employeeName: "",
     date: "",
@@ -25,29 +27,71 @@ function AppraisalLetter() {
     total: "",
     salaryInWords: ""
   });
+
   useEffect(() => {
-    fetchCompanies();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchCompanies();
+        await fetchCandidates();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   const fetchCompanies = async () => {
-
     const querySnapshot = await getDocs(collection(db, "companies"));
     const companyList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-    console.log(companyList);
     setCompanies(companyList);
   };
-  useEffect(() => {
-    fetchCandidates();
-  }, []);
 
   const fetchCandidates = async () => {
-
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-    console.log(candidateList);
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection instead of 'candidates'
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   // Convert number to words
@@ -105,58 +149,102 @@ function AppraisalLetter() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
+    
     if (name === "company") {
       const selectedCompany = companies.find(company => company.name === value);
       if (selectedCompany) {
-        setFormData({
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
+          companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,
-          companyLogo: selectedCompany.logo,
-          companyColor:selectedCompany.serverColor,
-
-        });
+          companyLogo: selectedCompany.logo
+        }));
       }
     } else if (name === "employeeName") {
-      // Find selected candidate and calculate salary components
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        const lpa = parseFloat(selectedCandidate.packageLPA);
-        const components = calculateSalaryComponents(formData.newLPA || lpa); // Use new LPA if available
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let joiningDate;
+        let employeeDesignation;
+        let employeeDepartment;
+        let employeeSalary;
+        let incrementDate;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          employeeDepartment = employmentDetails.department;
+          employeeSalary = employmentDetails.salary;
+          incrementDate = employmentDetails.incrementDate || new Date().toISOString().split('T')[0];
+        } else {
+          // Fallback to employee record if no employment details
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          employeeDepartment = selectedEmployee.department;
+          employeeSalary = selectedEmployee.salary;
+          incrementDate = new Date().toISOString().split('T')[0];
+        }
+        
+        // Default values for new salary calculations
+        const previousSalary = employeeSalary || 0;
+        const percentageIncrease = 10; // Default 10% increase
+        const incrementAmount = Math.round(previousSalary * (percentageIncrease / 100));
+        const newSalary = previousSalary + incrementAmount;
         
         setFormData(prev => ({
           ...prev,
-          employeeName: value,
-          currentLPA: lpa, // Store current LPA
-          lpa: formData.newLPA || lpa, // Use new LPA if available
-          basic: components.basic,
-          da: components.da,
-          packageLPA: formData.newLPA || selectedCandidate.packageLPA,
-          conveyance: components.conveyance,
-          other: components.other,
-          total: components.total,
-          salaryInWords: components.salaryInWords
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          department: employeeDepartment || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          incrementDate: incrementDate,
+          effectiveDate: incrementDate,
+          previousSalary: previousSalary.toString(),
+          newSalary: newSalary.toString(),
+          incrementAmount: incrementAmount.toString(),
+          percentageIncrease: percentageIncrease.toString()
         }));
       }
-    } else if (name === "newLPA") {
-      const newLPA = parseFloat(value) || 0;
-      const components = calculateSalaryComponents(newLPA);
+    } else if (name === "newSalary" || name === "previousSalary") {
+      // Recalculate percentage and increment when salary values change
+      let updatedFormData = { ...formData, [name]: value };
+      const prevSalary = parseFloat(updatedFormData.previousSalary) || 0;
+      const newSalary = parseFloat(updatedFormData.newSalary) || 0;
+      
+      if (prevSalary > 0 && newSalary > 0) {
+        const incrementAmount = newSalary - prevSalary;
+        const percentageIncrease = prevSalary > 0 ? ((incrementAmount / prevSalary) * 100).toFixed(2) : 0;
+        
+        updatedFormData = {
+          ...updatedFormData,
+          incrementAmount: incrementAmount.toString(),
+          percentageIncrease: percentageIncrease.toString()
+        };
+      }
+      
+      setFormData(updatedFormData);
+    } else if (name === "percentageIncrease") {
+      // Recalculate new salary when percentage changes
+      const percentage = parseFloat(value) || 0;
+      const prevSalary = parseFloat(formData.previousSalary) || 0;
+      const incrementAmount = Math.round(prevSalary * (percentage / 100));
+      const newSalary = prevSalary + incrementAmount;
       
       setFormData(prev => ({
         ...prev,
-        newLPA: value,
-        lpa: newLPA,
-        basic: components.basic,
-        da: components.da,
-        packageLPA: value,
-        conveyance: components.conveyance,
-        other: components.other,
-        total: components.total,
-        salaryInWords: components.salaryInWords
+        [name]: value,
+        incrementAmount: incrementAmount.toString(),
+        newSalary: newSalary.toString()
       }));
     } else {
       setFormData(prev => ({
@@ -279,17 +367,17 @@ console.log("salary:", numericSalary);
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Employee Name */}
             <div className="form-group">
-              <label className="block mb-1 text-sm font-medium text-gray-700">Employee Name</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Employee Name:</label>
               <select
                 name="employeeName"
+                value={formData.employeeName}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
-                <option value="">Select Employee</option>
+                <option value="">Select an employee</option>
                 {candidates.map((candidate) => (
-                  <option key={candidate.id} value={candidate.candidateName}>
-                    {candidate.candidateName}
-                    {/* - {candidate.packageLPA} LPA */}
+                  <option key={candidate.id} value={candidate.name}>
+                    {candidate.name}
                   </option>
                 ))}
               </select>

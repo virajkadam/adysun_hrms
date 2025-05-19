@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+'use client';
+
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "../assets/styles/ButtonStyles.css";
 import "../assets/styles/RelievingLetter.css";
-import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 function RelievingLetter() {
-  const containerRef = React.useRef(null);
+  const containerRef = useRef(null);
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -22,59 +26,111 @@ function RelievingLetter() {
   });
 
   useEffect(() => {
-    fetchCompanies();
-    fetchCandidates();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchCompanies();
+        await fetchCandidates();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchData();
   }, []);
 
   const fetchCompanies = async () => {
     const querySnapshot = await getDocs(collection(db, "companies"));
     const companyList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    
-    console.log(companyList);
     setCompanies(companyList);
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    
-    console.log(candidateList);
-    setCandidates(candidateList);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
+    
     if (name === "company") {
       const selectedCompany = companies.find(company => company.name === value);
       if (selectedCompany) {
-        setFormData({
-          ...formData,
+        setFormData(prev => ({
+          ...prev,
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
+          companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,
-          companyLogo: selectedCompany.logo,
-          companyHR: selectedCompany.hrName,
-          companyColor: selectedCompany.serverColor,
-        });
+          companyLogo: selectedCompany.logo
+        }));
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let joiningDate;
+        let employeeDesignation;
+        let lastWorkingDate;
+        
+        if (employmentDetails) {
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+          lastWorkingDate = employmentDetails.lastWorkingDate || employmentDetails.endDate;
+        } else {
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+          lastWorkingDate = new Date().toISOString().split('T')[0];
+        }
+        
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          employeeCode: selectedCandidate.employeeCode,
-          designation: selectedCandidate.designation,
-          department: selectedCandidate.department,
-          dateOfJoining: selectedCandidate.dateOfJoining,
-          lastWorkingDate: selectedCandidate.lastWorkingDate,
-          location: selectedCandidate.location,
-          inhandSalary: selectedCandidate.inhandSalary,
-          packageLPA: selectedCandidate.packageLPA,
-          panNo: selectedCandidate.panNo
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          lastWorkingDate: lastWorkingDate || new Date().toISOString().split('T')[0]
         }));
       }
     } else {
@@ -122,7 +178,7 @@ function RelievingLetter() {
       <div className="max-w-[210mm] mx-auto">
         <div className="flex justify-between items-center mb-6 md:mb-12 mt-4 md:mt-6">
           <div className="ml-2 md:ml-4">
-            <Link to="/" className="back-link flex items-center text-gray-600 hover:text-gray-900">
+            <Link href="/" className="back-link flex items-center text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />
               <span className="text-sm md:text-base">Back to Home</span>
             </Link>
@@ -135,16 +191,17 @@ function RelievingLetter() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="form-group">
-              <label className="block mb-1 text-sm font-medium text-gray-700">Employee Name</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Employee Name:</label>
               <select
                 name="employeeName"
+                value={formData.employeeName}
                 onChange={handleInputChange}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               >
-                <option value="">Select Employee</option>
+                <option value="">Select an employee</option>
                 {candidates.map((candidate) => (
-                  <option key={candidate.id} value={candidate.candidateName}>
-                    {candidate.candidateName}
+                  <option key={candidate.id} value={candidate.name}>
+                    {candidate.name}
                   </option>
                 ))}
               </select>

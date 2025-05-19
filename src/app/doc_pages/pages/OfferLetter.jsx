@@ -7,14 +7,16 @@ import html2canvas from "html2canvas";
 import Link from "next/link";
 import "../assets/styles/OfferLetter.css";
 import "../assets/styles/ButtonStyles.css";
-import { db } from "./firebase";
+import { db } from "@/firebase/config";
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 function OfferLetter() {
   const containerRef = useRef(null);
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [employments, setEmployments] = useState({});
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     employeeName: "",
     joiningDate: "",
@@ -81,10 +83,48 @@ function OfferLetter() {
   };
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log("Fetched Candidates:", candidateList);
-    setCandidates(candidateList);
+    try {
+      // Try fetching from 'employees' collection instead of 'candidates'
+      const querySnapshot = await getDocs(collection(db, 'employees'));
+      const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      console.log("Fetched Employees:", employeesList);
+      setCandidates(employeesList);
+      
+      // Now fetch all employments for these employees
+      const employmentData = {};
+      for (const employee of employeesList) {
+        try {
+          // Query employments for this employee
+          const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
+          const empSnapshot = await getDocs(q);
+          
+          if (!empSnapshot.empty) {
+            // Get the most recent employment (usually there will be just one)
+            const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            // Sort by startDate (descending) to get the most recent employment first
+            const sortedEmployments = employmentsList.sort((a, b) => {
+              return new Date(b.startDate) - new Date(a.startDate);
+            });
+            
+            employmentData[employee.id] = sortedEmployments[0];
+            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
+          } else {
+            console.log(`No employment found for employee: ${employee.name}`);
+          }
+        } catch (err) {
+          console.error(`Error fetching employment for employee ${employee.id}:`, err);
+        }
+      }
+      
+      setEmployments(employmentData);
+      
+      if (employeesList.length === 0) {
+        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    }
   };
 
   // Calculate salary components based on LPA
@@ -131,7 +171,6 @@ function OfferLetter() {
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
           companyColor: selectedCompany.serverColor,
-
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,
@@ -141,15 +180,42 @@ function OfferLetter() {
         });
       }
     } else if (name === "employeeName") {
-      const selectedCandidate = candidates.find(candidate => candidate.candidateName === value);
-      if (selectedCandidate) {
-        const components = calculateSalaryComponents(selectedCandidate.packageLPA);
+      const selectedEmployee = candidates.find(employee => employee.name === value);
+      if (selectedEmployee) {
+        console.log("Selected Employee:", selectedEmployee);
+        
+        // Get the employment details for this employee
+        const employmentDetails = employments[selectedEmployee.id];
+        console.log("Employment details:", employmentDetails);
+        
+        let employeeSalary;
+        let joiningDate;
+        let employeeDesignation;
+        
+        if (employmentDetails) {
+          // If we have employment details, use those for salary, joining date, etc.
+          employeeSalary = employmentDetails.salary || employmentDetails.ctc;
+          joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
+          employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
+        } else {
+          // Fallback to employee record if no employment details
+          employeeSalary = selectedEmployee.salary;
+          joiningDate = selectedEmployee.joinDate;
+          employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
+        }
+        
+        // Calculate LPA from annual salary if it exists
+        const employeeLPA = employeeSalary ? (employeeSalary / 100000) : 0;
+        
+        // Calculate salary components
+        const components = calculateSalaryComponents(employeeLPA);
+        
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedCandidate.candidateName,
-          designation: selectedCandidate.designation,
-          joiningDate: selectedCandidate.DateOfJoining,
-          lpa: selectedCandidate.packageLPA,
+          employeeName: selectedEmployee.name,
+          designation: employeeDesignation || "",
+          joiningDate: joiningDate || new Date().toISOString().split('T')[0],
+          lpa: employeeLPA,
           ...components
         }));
       }
@@ -310,8 +376,8 @@ function OfferLetter() {
               >
                 <option value="">Select Employee</option>
                 {candidates.map((candidate) => (
-                  <option key={candidate.id} value={candidate.candidateName}>
-                    {candidate.candidateName}
+                  <option key={candidate.id} value={candidate.name}>
+                    {candidate.name}
                   </option>
                 ))}
               </select>

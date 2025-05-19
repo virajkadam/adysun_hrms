@@ -1,10 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+'use client';
+
+import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { ArrowLeft, Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import "../assets/styles/ButtonStyles.css";
 import "../assets/styles/IncrementLetter.css";
+import "../assets/styles/ButtonStyles.css";
+import { db } from "@/firebase/config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 function IncrementLetter() {
   const containerRef = React.useRef(null);
@@ -51,7 +55,7 @@ function IncrementLetter() {
     <div className="max-w-[210mm] mx-auto">
       <div className="flex justify-between items-center mb-6 md:mb-12 mt-4 md:mt-6">
         <div className="ml-2 md:ml-4">
-          <Link to="/" className="back-link flex items-center text-gray-600 hover:text-gray-900">
+          <Link href="/" className="back-link flex items-center text-gray-600 hover:text-gray-900">
             <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />
             <span className="text-sm md:text-base">Back to Home</span>
           </Link>
