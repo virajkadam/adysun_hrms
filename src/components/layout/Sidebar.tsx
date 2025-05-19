@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiLogOut } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { logout } = useAuth();
 
@@ -16,7 +17,8 @@ const Sidebar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      // Redirect will be handled by the auth state change in the context
+      // After successful logout, navigate to the login page
+      router.push('/login');
     } catch (error) {
       console.error('Error logging out:', error);
     }
