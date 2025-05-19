@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Inter } from 'next/font/google';
-import { usePathname } from 'next/navigation';
 
 // Initialize font
 const inter = Inter({ subsets: ['latin'] });
@@ -12,8 +11,6 @@ export default function DocumentGeneratorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  
   return (
     <div className={`${inter.className} document-generator-layout`}>
       {/* Basic styling for document generator contents */}

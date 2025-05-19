@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FiFileText, FiBriefcase, FiFile, FiUser, FiClipboard, FiHome } from 'react-icons/fi';
+import { FiFileText, FiBriefcase, FiFile, FiClipboard } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 
 // Define document types for the dashboard

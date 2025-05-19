@@ -9,7 +9,16 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, updateEmployee } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 
-export default function EditEmployeePage({ params }: { params: { id: string } }) {
+// Define API error type
+type ApiError = Error | unknown;
+
+type PageParams = {
+  params: {
+    id: string;
+  };
+};
+
+export default function EditEmployeePage({ params }: PageParams) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,10 +34,11 @@ export default function EditEmployeePage({ params }: { params: { id: string } })
         setLoading(true);
         const employeeData = await getEmployee(id);
         // Reset form with all employee data except id
-        const { id: _id, ...rest } = employeeData;
+        const { id: _, ...rest } = employeeData;
         reset(rest);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch employee data');
+      } catch (error: ApiError) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -43,8 +53,9 @@ export default function EditEmployeePage({ params }: { params: { id: string } })
       setError(null);
       await updateEmployee(id, data);
       router.push(`/employees/${id}`);
-    } catch (error: any) {
-      setError(error.message || 'Failed to update employee');
+    } catch (error: ApiError) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update employee';
+      setError(errorMessage);
       setIsSubmitting(false);
     }
   };

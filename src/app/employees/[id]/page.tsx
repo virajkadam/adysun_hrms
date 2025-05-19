@@ -1,14 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiPhone, FiMail, FiMapPin, FiCalendar, FiCreditCard, FiBook } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, deleteEmployee, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 import { Employee, Employment } from '@/types';
 
-export default function EmployeeViewPage({ params }: { params: { id: string } }) {
+// Define API error type
+type ApiError = Error | unknown;
+
+type PageParams = {
+  params: {
+    id: string;
+  };
+};
+
+export default function EmployeeViewPage({ params }: PageParams) {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [employments, setEmployments] = useState<Employment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,8 +37,9 @@ export default function EmployeeViewPage({ params }: { params: { id: string } })
         // Fetch related employments
         const employmentsData = await getEmploymentsByEmployee(id);
         setEmployments(employmentsData);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch employee data');
+      } catch (error: ApiError) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -46,8 +56,9 @@ export default function EmployeeViewPage({ params }: { params: { id: string } })
     try {
       await deleteEmployee(id);
       router.push('/employees');
-    } catch (error: any) {
-      setError(error.message || 'Failed to delete employee');
+    } catch (error: ApiError) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete employee';
+      setError(errorMessage);
     }
   };
 
@@ -233,10 +244,10 @@ export default function EmployeeViewPage({ params }: { params: { id: string } })
             <p className="text-sm text-gray-500">Is Active</p>
           </div>
           
-          {employee.homeState && (
+          {employee.homeTown && (
             <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{employee.homeState}</p>
-              <p className="text-sm text-gray-500">Home State</p>
+              <p className="text-lg font-medium text-gray-900">{employee.homeTown}</p>
+              <p className="text-sm text-gray-500">Home Town</p>
             </div>
           )}
           
@@ -491,7 +502,7 @@ export default function EmployeeViewPage({ params }: { params: { id: string } })
       <div id="employments" className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold flex items-center">
-            <FiCalendar className="mr-2" /> Employment History
+            <FiBook className="mr-2" /> Employment History
           </h2>
           <Link
             href={`/employments/add?employeeId=${id}`}

@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import generateStaticPaths from "./scripts/exportPaths";
 
 // Set the repository name for GitHub Pages
 const repo = 'Employee_Admin_Dashboard';
@@ -27,15 +26,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Generate static paths for dynamic routes
-  // This is necessary for GitHub Pages because it doesn't support server-side dynamic routes
-  async exportPathMap(defaultPathMap) {
-    // Merge the default path map with our custom paths
-    return {
-      ...defaultPathMap,
-      ...(await generateStaticPaths())
-    };
-  },
+  
+  // Note: rewrites don't work with static exports, but we'll leave this commented for reference
+  // when deploying to a platform that supports server-side functionality
+  /* 
   async rewrites() {
     // Get the document generator URL from environment variables or use defaults
     const docGenUrl = process.env.DOCUMENT_GENERATOR_URL || 
@@ -50,6 +44,7 @@ const nextConfig: NextConfig = {
       }
     ]
   }
+  */
 };
 
 export default nextConfig;

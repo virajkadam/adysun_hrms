@@ -10,6 +10,9 @@ import { FiSave, FiX } from 'react-icons/fi';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
 
+// Define API error type
+type ApiError = Error | unknown;
+
 type EmployeeFormData = Omit<Employee, 'id'>;
 
 export default function AddEmployeePage() {
@@ -32,9 +35,10 @@ export default function AddEmployeePage() {
       await addEmployee(data);
       toast.success('Employee added successfully!', { id: 'add-employee' });
       router.push('/employees');
-    } catch (error: any) {
-      setError(error.message || 'Failed to add employee');
-      toast.error(error.message || 'Failed to add employee', { id: 'add-employee' });
+    } catch (error: ApiError) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add employee';
+      setError(errorMessage);
+      toast.error(errorMessage, { id: 'add-employee' });
       setIsSubmitting(false);
     }
   };

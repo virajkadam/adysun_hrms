@@ -5,8 +5,9 @@ import { Download } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Link from "next/link";
-import "../assets/styles/AppointmentLetter.css";
-import "../assets/styles/ButtonStyles.css";
+// CSS imports removed as files are missing
+// import "../assets/styles/AppointmentLetter.css";
+// import "../assets/styles/ButtonStyles.css";
 import { ArrowLeft } from "lucide-react";
 import { db } from "@/firebase/config";
 import { collection, getDocs, query, where } from "firebase/firestore";

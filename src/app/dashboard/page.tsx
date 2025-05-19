@@ -5,8 +5,7 @@ import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { FiUsers, FiBriefcase } from 'react-icons/fi';
 import { getEmployees, getEmployments } from '@/utils/firebaseUtils';
-import { Employee, Employment } from '@/types';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 export default function DashboardPage() {
   const [employeeCount, setEmployeeCount] = useState(0);
