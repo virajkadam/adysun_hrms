@@ -12,8 +12,16 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // Keep dynamic routes (without needing to specify all possible paths)
-  output: 'standalone',
+  // For GitHub Pages deployment with a static export
+  output: 'export',
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
+  },
+  // Set the base path for GitHub Pages
+  basePath: '/Employee_Admin_Dashboard',
+  // Use trailing slashes for GitHub Pages compatibility
+  trailingSlash: true,
 };
 
 export default nextConfig; 

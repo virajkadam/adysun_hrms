@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, updateEmployee } from '@/utils/firebaseUtils';
+import { getEmployee, updateEmployee, getEmployees } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 
 // Define API error type

@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build --no-lint",
+    "export": "next export",
     "start": "next start",
     "lint": "next lint",
     "setup-tailwind": "npm install @tailwindcss/forms",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d out",
-    "deploy:script": "node scripts/deploy.js"
+    "github": "gh-pages -d out"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.0",
