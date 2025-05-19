@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // We can't use output: 'export' because we have dynamic routes
+  // that would require generateStaticParams() for all routes
   typescript: {
     // For faster builds, ignore typescript errors
     ignoreBuildErrors: true,
@@ -17,7 +19,7 @@ const nextConfig = {
       'localhost',
       'employee-admin-c83e8.appspot.com',
     ],
-    unoptimized: true, // Use unoptimized images for static site generation
+    unoptimized: true, // Use unoptimized images
     remotePatterns: [
       {
         protocol: 'https',

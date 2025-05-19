@@ -5,18 +5,18 @@
   "homepage": "https://Santosh-Mhetre.github.io/Employee_Admin_Dashboard",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --no-lint",
+    "build": "next build",
     "export": "next export",
     "start": "next start",
     "lint": "next lint",
     "setup-tailwind": "npm install @tailwindcss/forms",
-    "netlify-deploy": "netlify deploy",
-    "netlify-build": "npm run build && npm install @netlify/plugin-nextjs"
+    "netlify-deploy": "netlify deploy"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.0",
     "@tailwindcss/forms": "^0.5.10",
     "firebase": "^11.7.3",
+    "fs-extra": "^11.2.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.511.0",
