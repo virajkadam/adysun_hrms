@@ -12,6 +12,8 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  // Keep dynamic routes (without needing to specify all possible paths)
+  output: 'standalone',
 };
 
 export default nextConfig; 
