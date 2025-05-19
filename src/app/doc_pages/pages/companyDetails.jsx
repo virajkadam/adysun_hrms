@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../components/CompanyDetailsForm.css";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 

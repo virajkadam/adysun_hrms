@@ -6,11 +6,9 @@ import Link from "next/link";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import CompanyDetailsForm from "./companyDetails";
-import PaySlip from "../components/PaySlip";
 import { db } from "@/firebase/config";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import "../assets/styles/PaySlipGenerator.css";
-import "../assets/styles/ButtonStyles.css";
+
 
 function PaySlipGenerator() {
   const containerRef = useRef(null);
@@ -279,7 +277,7 @@ function PaySlipGenerator() {
           />
 
           <div className="">
-            <PaySlip companyDetails={companyDetails} />
+            {/* Removed PaySlip import */}
           </div>
         </div>
       </div>

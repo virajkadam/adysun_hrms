@@ -1,3 +1,103 @@
+# Admin Dashboard for Employee Management
+
+## Deployment to Netlify
+
+This project is configured for easy deployment to Netlify, which provides full support for Next.js applications with dynamic routes and server-side features.
+
+### Prerequisites
+
+- A [Netlify](https://www.netlify.com/) account
+- [Node.js](https://nodejs.org/) (version 18 or later recommended)
+- [npm](https://www.npmjs.com/) (usually comes with Node.js)
+
+### Deployment Steps
+
+#### Option 1: Using the Netlify UI
+
+1. Push your code to a GitHub, GitLab, or Bitbucket repository
+2. Log in to Netlify and click "New site from Git"
+3. Select your repository and configure as follows:
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+4. Click "Deploy site"
+
+#### Option 2: Using the Netlify CLI
+
+1. Install Netlify CLI globally (if not already installed):
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. Install project dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Build the project:
+   ```bash
+   npm run build
+   ```
+
+4. Deploy to Netlify:
+   ```bash
+   # For a draft preview URL
+   npm run netlify-deploy
+   
+   # For production deployment
+   npm run netlify-deploy -- --prod
+   ```
+
+### Environment Variables
+
+Set the following environment variables in your Netlify site dashboard (Site settings → Environment variables):
+
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+
+## Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Build for Production
+
+```bash
+# Create optimized production build
+npm run build
+
+# Start production server locally
+npm start
+```
+
+## Features
+
+- Employee management
+- Employment history tracking
+- Document generation
+- Dashboard analytics
+- User authentication and authorization
+- Responsive design for all devices
+
+## Technologies Used
+
+- Next.js 15
+- React 19
+- Firebase (Auth, Firestore, Storage)
+- TypeScript
+- Tailwind CSS
+- React Hook Form
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
