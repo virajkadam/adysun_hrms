@@ -9,15 +9,16 @@ import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import { commonStyles } from '@/components/pdf/PDFStyles';
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer } from '@/components/pdf/PDFComponents';
 import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtils';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Define styles for the AppraisalLetter
 const appraisalLetterStyles = StyleSheet.create({
   page: {
-    padding: '25px 50px',
-    fontSize: 10,
+    padding: 40,
+    paddingBottom: 60,
     fontFamily: 'Calibri',
-    lineHeight: 1.3,
-    color: '#000000',
+    fontSize: 12,
+    lineHeight: 1.5,
   },
   title: {
     fontSize: 12,
@@ -329,7 +330,14 @@ function AppraisalLetterV2() {
     companyEmail: "",
     companyPhone: "",
     companyWebsite: "",
-    companyLogo: ""
+    companyLogo: "",
+    // Add salary breakdown fields
+    basic: "0.00",
+    da: "0.00",
+    conveyance: "0.00",
+    other: "0.00",
+    total: "0.00",
+    date: new Date().toISOString().split('T')[0]
   });
 
   // Use React.useMemo to memoize the PDF document to prevent unnecessary re-renders
@@ -345,6 +353,7 @@ function AppraisalLetterV2() {
         await fetchCandidates();
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Failed to load data");
       }
       setIsLoading(false);
     };
@@ -400,6 +409,7 @@ function AppraisalLetterV2() {
       }
     } catch (error) {
       console.error("Error fetching employees:", error);
+      toast.error("Failed to load employees");
     }
   };
 
@@ -457,6 +467,16 @@ function AppraisalLetterV2() {
         const incrementAmount = Math.round(previousSalary * (percentageIncrease / 100));
         const newSalary = previousSalary + incrementAmount;
         
+        // Calculate monthly breakdown
+        const monthlySalary = newSalary / 12;
+        const basic = Math.round(monthlySalary * 0.4); // 40% of monthly salary
+        const da = Math.round(monthlySalary * 0.1); // 10% of monthly salary
+        const conveyance = 1600; // Fixed amount (19200 annually)
+        const hra = Math.round(basic * 0.5); // 50% of Basic
+        const medical = 1250; // Fixed monthly amount (15000 annually)
+        const other = monthlySalary - basic - da - conveyance - hra - medical; // Remaining amount
+        const total = monthlySalary;
+        
         setFormData(prev => ({
           ...prev,
           employeeName: selectedEmployee.name,
@@ -468,7 +488,14 @@ function AppraisalLetterV2() {
           previousSalary: previousSalary.toString(),
           newSalary: newSalary.toString(),
           incrementAmount: incrementAmount.toString(),
-          percentageIncrease: percentageIncrease.toString()
+          percentageIncrease: percentageIncrease.toString(),
+          // Add monthly breakdown components
+          basic: formatIndianCurrency(basic),
+          da: formatIndianCurrency(da),
+          conveyance: formatIndianCurrency(conveyance),
+          other: formatIndianCurrency(other),
+          total: formatIndianCurrency(monthlySalary),
+          date: incrementDate
         }));
       }
     } else if (name === "newSalary" || name === "previousSalary") {
@@ -481,10 +508,26 @@ function AppraisalLetterV2() {
         const incrementAmount = newSalary - prevSalary;
         const percentageIncrease = prevSalary > 0 ? ((incrementAmount / prevSalary) * 100).toFixed(2) : 0;
         
+        // Calculate monthly breakdown
+        const monthlySalary = newSalary / 12;
+        const basic = Math.round(monthlySalary * 0.4); // 40% of monthly salary
+        const da = Math.round(monthlySalary * 0.1); // 10% of monthly salary
+        const conveyance = 1600; // Fixed amount (19200 annually)
+        const hra = Math.round(basic * 0.5); // 50% of Basic
+        const medical = 1250; // Fixed monthly amount (15000 annually)
+        const other = monthlySalary - basic - da - conveyance - hra - medical; // Remaining amount
+        const total = monthlySalary;
+        
         updatedFormData = {
           ...updatedFormData,
           incrementAmount: incrementAmount.toString(),
-          percentageIncrease: percentageIncrease.toString()
+          percentageIncrease: percentageIncrease.toString(),
+          // Add monthly breakdown components
+          basic: formatIndianCurrency(basic),
+          da: formatIndianCurrency(da),
+          conveyance: formatIndianCurrency(conveyance),
+          other: formatIndianCurrency(other),
+          total: formatIndianCurrency(monthlySalary)
         };
       }
       
@@ -496,11 +539,33 @@ function AppraisalLetterV2() {
       const incrementAmount = Math.round(prevSalary * (percentage / 100));
       const newSalary = prevSalary + incrementAmount;
       
+      // Calculate monthly breakdown
+      const monthlySalary = newSalary / 12;
+      const basic = Math.round(monthlySalary * 0.4); // 40% of monthly salary
+      const da = Math.round(monthlySalary * 0.1); // 10% of monthly salary
+      const conveyance = 1600; // Fixed amount (19200 annually)
+      const hra = Math.round(basic * 0.5); // 50% of Basic
+      const medical = 1250; // Fixed monthly amount (15000 annually)
+      const other = monthlySalary - basic - da - conveyance - hra - medical; // Remaining amount
+      const total = monthlySalary;
+      
       setFormData(prev => ({
         ...prev,
         [name]: value,
         incrementAmount: incrementAmount.toString(),
-        newSalary: newSalary.toString()
+        newSalary: newSalary.toString(),
+        // Add monthly breakdown components
+        basic: formatIndianCurrency(basic),
+        da: formatIndianCurrency(da),
+        conveyance: formatIndianCurrency(conveyance),
+        other: formatIndianCurrency(other),
+        total: formatIndianCurrency(monthlySalary)
+      }));
+    } else if (name === "effectiveDate") {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        date: value
       }));
     } else {
       setFormData(prev => ({
@@ -514,119 +579,141 @@ function AppraisalLetterV2() {
     setShowPDF(true);
   };
 
+  const handleDownloadSuccess = () => {
+    toast.success("Appraisal letter downloaded successfully");
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <div className="mb-4">
-        <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
-          <FiArrowLeft size={16} /> Back to Documents
-        </Link>
-      </div>
+    <div className="container mx-auto px-4 py-6">
+      <Toaster position="top-center" />
+      <Link href="/dashboard/documents" className="back-link flex items-center text-slate-700 hover:text-gray-900">
+        <FiArrowLeft className="h-5 w-5 mr-2" />
+        <span>Back to Documents</span>
+      </Link>
 
-      {/* Form Section */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Appraisal Letter Details</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
-            <select
-              name="employeeName"
-              value={formData.employeeName}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Employee</option>
-              {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.name}>
-                  {candidate.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
-            <select
-              name="company"
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Company</option>
-              {companies.map((company) => (
-                <option key={company.id} value={company.name}>
-                  {company.name}
-                </option>
-              ))}
-            </select>
-          </div>
+      <div className="grid md:grid-cols-2 gap-8 mt-8">
+        <div>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Appraisal Letter Details</h2>
           
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Effective Date</label>
-            <input
-              type="date"
-              name="effectiveDate"
-              value={formData.effectiveDate}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Previous Salary (Annual)</label>
-            <input
-              type="number"
-              name="previousSalary"
-              value={formData.previousSalary}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">New Salary (Annual)</label>
-            <input
-              type="number"
-              name="newSalary"
-              value={formData.newSalary}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Percentage Increase (%)</label>
-            <input
-              type="number"
-              name="percentageIncrease"
-              value={formData.percentageIncrease}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* PDF Preview Section - only show when Generate button is clicked */}
-      {showPDF && (
-        <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
+          <form onSubmit={handleGenerateDocument}>
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">Employee Name</label>
+              <select
+                name="employeeName"
+                value={formData.employeeName}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              >
+                <option value="">Select Employee</option>
+                {candidates.map((candidate) => (
+                  <option key={candidate.id} value={candidate.name}>
+                    {candidate.name}
+                  </option>
+                ))}
+              </select>
+            </div>
             
-            <PDFDownloadLink 
-              document={memoizedPdfDocument}
-              fileName={`AppraisalLetter_${formData.employeeName || 'Employee'}.pdf`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">Company</label>
+              <select
+                name="company"
+                value={formData.companyName}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              >
+                <option value="">Select Company</option>
+                {companies.map((company) => (
+                  <option key={company.id} value={company.name}>
+                    {company.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">Effective Date</label>
+              <input
+                type="date"
+                name="effectiveDate"
+                value={formData.effectiveDate}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">Previous Salary (Annual)</label>
+              <input
+                type="number"
+                name="previousSalary"
+                value={formData.previousSalary}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">New Salary (Annual)</label>
+              <input
+                type="number"
+                name="newSalary"
+                value={formData.newSalary}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block mb-2 text-sm font-medium text-slate-800">Percentage Increase (%)</label>
+              <input
+                type="number"
+                name="percentageIncrease"
+                value={formData.percentageIncrease}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                required
+              />
+            </div>
+            
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
+              Generate Letter
+            </button>
+          </form>
+        </div>
+        
+        {showPDF && (
+          <div>
+            <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
+            <div className="mt-4 border border-gray-300" style={{height: '600px'}}>
+              <PDFViewer width="100%" height="100%">
+                {memoizedPdfDocument}
+              </PDFViewer>
+            </div>
+            
+            <PDFDownloadLink
+              document={memoizedPdfDocument}
+              fileName={`appraisal_letter_${formData.employeeName.replace(/\s+/g, '_').toLowerCase()}.pdf`}
+              className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={handleDownloadSuccess}
+            >
+              {({ loading }) => (
+                <>
+                  <FiDownload className="mr-2" />
+                  {loading ? 'Preparing document...' : 'Download PDF'}
+                </>
+              )}
             </PDFDownloadLink>
           </div>
-          
-          <div className="border rounded-lg" style={{ height: '80vh' }}>
-            <PDFViewer width="100%" height="100%" className="rounded-lg">
-              {memoizedPdfDocument}
-            </PDFViewer>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

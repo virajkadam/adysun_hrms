@@ -6,6 +6,7 @@ import { db } from "@/firebase/config";
 import { collection, getDocs } from "firebase/firestore";
 import { FiArrowLeft, FiDownload } from "react-icons/fi";
 import Link from 'next/link';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   Document,
   Page,
@@ -226,6 +227,7 @@ const AUStatementFooter = ({ purple }) => (
       left: 0,
       right: 0,
       bottom: 0,
+      marginTop: 30,
     }}
   >
     {/* Border line at the top of footer */}
@@ -1155,6 +1157,7 @@ const BankStatement = () => {
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [selectedBank, setSelectedBank] = useState(null);
   const [statementData, setStatementData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [startDate, setStartDate] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -1174,83 +1177,109 @@ const BankStatement = () => {
   }, []);
 
   const fetchCandidates = async () => {
-    const querySnapshot = await getDocs(collection(db, "candidates"));
-    const candidateList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setCandidates(candidateList);
+    try {
+      // Fetch from 'employees' collection instead of 'candidates'
+      const querySnapshot = await getDocs(collection(db, "employees"));
+      const employeesList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCandidates(employeesList);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      toast.error("Failed to load employees data");
+    }
   };
 
   const fetchBanks = async () => {
-    const querySnapshot = await getDocs(collection(db, "banks"));
-    const bankList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setBanks(bankList);
+    try {
+      const querySnapshot = await getDocs(collection(db, "banks"));
+      const bankList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      
+      setBanks(bankList);
+    } catch (error) {
+      console.error("Error fetching banks:", error);
+      toast.error("Failed to load banks data");
+    }
   };
 
   // Replace or modify the useEffect for generating statement data
-  // Replace the section that creates the statementData object (around line ~1130)
   useEffect(() => {
     if (selectedCandidate && selectedBank) {
-      // Format statement period
-      const formatDate = (dateStr) => {
-        const d = new Date(dateStr);
-        return d.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
+      setIsLoading(true);
+      try {
+        // Format statement period
+        const formatDate = (dateStr) => {
+          const d = new Date(dateStr);
+          return d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+        };
+        const period = `${formatDate(startDate)} to ${formatDate(endDate)}`;
+        
+        // Generate random transactions for the date range
+        const initialBalance = 50000; // Starting balance of 50,000
+        const { transactions, openingBalance, closingBalance } = 
+          generateRandomTransactions(new Date(startDate), new Date(endDate), initialBalance);
+        
+        setStatementData({
+          bankName: selectedBank.bankName || "Unknown Bank",
+          name: selectedCandidate.name || "Unknown Employee", 
+          customerId: selectedCandidate.employeeCode || "12345678",
+          customerType: "Individual - Full KYC",
+          address: selectedCandidate.address || "N/A",
+          accountNumber: selectedCandidate.accountNumber || "XXXXXXXXXXXX",
+          accountType: selectedBank.accountType || "Salary Account",
+          branch: selectedBank.branch || "Main Branch",
+          nominee: "Not Registered",
+          statementDate: new Date(endDate).toLocaleDateString("en-GB"),
+          statementPeriod: period,
+          openingBalance: openingBalance,
+          closingBalance: closingBalance,
+          transactions: transactions,
         });
-      };
-      const period = `${formatDate(startDate)} to ${formatDate(endDate)}`;
-      
-      // Generate random transactions for the date range
-      const initialBalance = 50000; // Starting balance of 50,000
-      const { transactions, openingBalance, closingBalance } = 
-        generateRandomTransactions(new Date(startDate), new Date(endDate), initialBalance);
-      
-      setStatementData({
-        bankName: selectedBank.bankName,
-        name: selectedCandidate.candidateName,
-        customerId: selectedCandidate.employeeCode || "12345678",
-        customerType: "Individual - Full KYC",
-        address: selectedCandidate.address || "N/A",
-        accountNumber: selectedCandidate.accountNumber || "XXXXXXXXXXXX",
-        accountType: selectedBank.accountType || "Salary Account",
-        branch: selectedBank.branch || "Main Branch",
-        nominee: "Not Registered",
-        statementDate: new Date(endDate).toLocaleDateString("en-GB"),
-        statementPeriod: period,
-        openingBalance: openingBalance,
-        closingBalance: closingBalance,
-        transactions: transactions,
-      });
+        
+        // Show success toast when statement data is successfully generated
+        toast.success("Bank statement generated successfully");
+      } catch (error) {
+        console.error("Error generating statement data:", error);
+        toast.error("Failed to generate bank statement");
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       setStatementData(null);
     }
   }, [selectedCandidate, selectedBank, startDate, endDate]);
 
-  // PDF document for preview/download
-  const pdfDocument =
-    statementData && statementData.bankName === "AU Small Finance Bank" ? (
-      <AUBankStatementPDF
-        statementData={statementData}
-        logo={selectedBank?.logo}
-      />
-    ) : (
-      <Document>
-        <Page size="A4" style={commonStyles.page}>
-          <Text>
-            Bank statement template for this bank is not yet implemented.
-          </Text>
-        </Page>
-      </Document>
-    );
+  const handleDownloadSuccess = () => {
+    toast.success("Bank statement downloaded successfully");
+  };
+
+  // Make the template work for any bank name until we have multiple templates
+  const pdfDocument = statementData ? (
+    <AUBankStatementPDF
+      statementData={statementData}
+      logo={selectedBank?.logo || "https://www.aubank.in/themes/custom/au/images/logo.svg"}
+    />
+  ) : (
+    <Document>
+      <Page size="A4" style={commonStyles.page}>
+        <Text>
+          Please select an employee and a bank to generate a statement.
+        </Text>
+      </Page>
+    </Document>
+  );
 
   return (
     <div className="container mx-auto p-4">
+      <Toaster position="top-center" />
       <div className="mb-4">
         <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
           <FiArrowLeft size={16} /> Back to Documents
@@ -1261,7 +1290,7 @@ const BankStatement = () => {
           <div className="ml-2 md:ml-4">
             <Link
               href="/"
-              className="back-link flex items-center text-gray-600 hover:text-gray-900"
+              className="back-link flex items-center text-slate-700 hover:text-gray-900"
             >
               <FiArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />
               <span className="text-sm md:text-base">Back to Home</span>
@@ -1275,8 +1304,8 @@ const BankStatement = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Candidate Dropdown */}
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
-                Candidate
+              <label className="block mb-2 text-sm font-medium text-slate-800">
+                Employee
               </label>
               <select
                 value={selectedCandidate ? selectedCandidate.id : ""}
@@ -1285,18 +1314,19 @@ const BankStatement = () => {
                   setSelectedCandidate(cand || null);
                 }}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={isLoading}
               >
-                <option value="">Select Candidate</option>
+                <option value="">Select Employee</option>
                 {candidates.map((candidate) => (
                   <option key={candidate.id} value={candidate.id}>
-                    {candidate.candidateName}
+                    {candidate.name}
                   </option>
                 ))}
               </select>
             </div>
             {/* Bank Dropdown */}
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="block mb-2 text-sm font-medium text-slate-800">
                 Bank
               </label>
               <select
@@ -1306,6 +1336,7 @@ const BankStatement = () => {
                   setSelectedBank(bank || null);
                 }}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={isLoading}
               >
                 <option value="">Select Bank</option>
                 {banks.map((bank) => (
@@ -1319,7 +1350,7 @@ const BankStatement = () => {
           {/* Date Pickers */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="block mb-2 text-sm font-medium text-slate-800">
                 Statement Start Date
               </label>
               <input
@@ -1327,10 +1358,11 @@ const BankStatement = () => {
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={isLoading}
               />
             </div>
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="block mb-2 text-sm font-medium text-slate-800">
                 Statement End Date
               </label>
               <input
@@ -1338,12 +1370,22 @@ const BankStatement = () => {
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                disabled={isLoading}
               />
             </div>
           </div>
         </div>
+        
+        {/* Loading indicator */}
+        {isLoading && (
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-8 flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p className="text-slate-700 font-medium">Generating bank statement...</p>
+          </div>
+        )}
+        
         {/* PDF Preview and Download */}
-        {statementData && (
+        {!isLoading && statementData && (
           <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">
               Preview
@@ -1356,9 +1398,13 @@ const BankStatement = () => {
             <PDFDownloadLink
               document={pdfDocument}
               fileName="bank-statement.pdf"
+              onClick={handleDownloadSuccess}
             >
               {({ loading }) => (
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-md flex items-center gap-2 hover:bg-blue-700 transition-colors">
+                <button 
+                  className="bg-blue-600 text-white px-6 py-3 rounded-md flex items-center gap-2 hover:bg-blue-700 transition-colors"
+                  disabled={loading}
+                >
                   <FiDownload className="w-5 h-5" />
                   {loading ? "Preparing document..." : "Download PDF"}
                 </button>

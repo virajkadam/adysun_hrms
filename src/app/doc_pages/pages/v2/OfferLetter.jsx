@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiDownload } from 'react-icons/fi';
 import { 
   Document, 
   Page, 
@@ -15,6 +15,7 @@ import {
 } from '@react-pdf/renderer';
 import { db } from '@/firebase/config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Import our custom PDF components and styles
 import { 
@@ -107,6 +108,7 @@ const documentStyles = StyleSheet.create({
   page: {
     ...offerLetterStyles.page,
     fontSize: 12, // Update base font size
+    paddingBottom: 60, // Add more padding at the bottom to prevent footer overlap
   }
 });
 
@@ -408,6 +410,8 @@ function OfferLetterV2() {
     companyWebsite: "",
     companyLogo: ""
   });
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [showPDF, setShowPDF] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -425,9 +429,17 @@ function OfferLetterV2() {
   }, []);
 
   const fetchCompanies = async () => {
-    const querySnapshot = await getDocs(collection(db, "companies"));
-    const companyList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setCompanies(companyList);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'companies'));
+      const companiesList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setCompanies(companiesList);
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+      toast.error('Failed to load companies data');
+    }
   };
 
   const fetchCandidates = async () => {
@@ -540,8 +552,34 @@ function OfferLetterV2() {
     }
   };
 
+  const handleGenerateDocument = () => {
+    try {
+      // Validate form
+      if (!formData.employeeName || !formData.companyName || !formData.joiningDate || !formData.designation || !formData.lpa) {
+        toast.error('Please fill all required fields');
+        return;
+      }
+      
+      // Format data for PDF
+      const selectedCompany = companies.find(c => c.id === formData.companyName);
+      setSelectedCompany(selectedCompany);
+      
+      // Generate the PDF
+      setShowPDF(true);
+      toast.success('Offer letter generated successfully!');
+    } catch (error) {
+      console.error('Error generating offer letter:', error);
+      toast.error('Failed to generate offer letter');
+    }
+  };
+
+  const handleDownloadSuccess = () => {
+    toast.success('Offer letter downloaded successfully');
+  };
+
   return (
     <div className="container mx-auto p-4">
+      <Toaster position="top-center" />
       <div className="mb-4">
         <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
           <FiArrowLeft size={16} /> Back to Documents
@@ -554,59 +592,105 @@ function OfferLetterV2() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
-            <select
+            <label className="block mb-2 text-sm font-medium text-slate-800">Employee Name</label>
+            <input
+              type="text"
               name="employeeName"
               value={formData.employeeName}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Employee</option>
-              {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.name}>
-                  {candidate.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
+          
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
+            <label className="block mb-2 text-sm font-medium text-slate-800">Company</label>
             <select
-              name="company"
+              name="companyName"
+              value={formData.companyName}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Select Company</option>
-              {companies.map((company) => (
-                <option key={company.id} value={company.name}>
-                  {company.name}
-                </option>
+              {companies.map(company => (
+                <option key={company.id} value={company.id}>{company.name}</option>
               ))}
             </select>
           </div>
-        </div>
-      </div>
-
-      {/* PDF Preview Section */}
-      <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
           
-          <PDFDownloadLink 
-            document={<OfferLetterPDF formData={formData} />}
-            fileName="offer-letter.pdf"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
-          </PDFDownloadLink>
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-slate-800">Position</label>
+            <input
+              type="text"
+              name="designation"
+              value={formData.designation}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-slate-800">Join Date</label>
+            <input
+              type="date"
+              name="joiningDate"
+              value={formData.joiningDate}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-slate-800">Annual Salary (₹)</label>
+            <input
+              type="number"
+              name="lpa"
+              value={formData.lpa}
+              onChange={handleInputChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
         </div>
         
-        <div className="border rounded-lg" style={{ height: '80vh' }}>
-          <PDFViewer width="100%" height="100%" className="rounded-lg">
-            <OfferLetterPDF formData={formData} />
-          </PDFViewer>
+        <div className="mt-6">
+          <button
+            onClick={handleGenerateDocument}
+            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
+          >
+            <FiDownload size={18} className="mr-2" />
+            <span>Generate Offer Letter</span>
+          </button>
         </div>
       </div>
+      
+      {/* PDF Preview Section - only show when Generate button is clicked */}
+      {showPDF && (
+        <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
+            
+            <PDFDownloadLink
+              document={
+                <OfferLetterPDF 
+                  formData={formData}
+                />
+              }
+              fileName={`OfferLetter_${formData.employeeName || 'Employee'}.pdf`}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              onClick={handleDownloadSuccess}
+            >
+              {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
+            </PDFDownloadLink>
+          </div>
+          
+          <div className="border rounded-lg" style={{ height: '80vh' }}>
+            <PDFViewer width="100%" height="100%" className="rounded-lg">
+              <OfferLetterPDF 
+                formData={formData}
+              />
+            </PDFViewer>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

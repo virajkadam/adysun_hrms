@@ -17,10 +17,11 @@ const fireStorage = storage;
 // PDF Styles
 const relievingLetterStyles = StyleSheet.create({
   page: {
-    padding: '30px 50px',
-    fontSize: 11,
+    padding: 40,
+    paddingBottom: 60,
+    fontSize: 12,
     fontFamily: 'Calibri',
-    lineHeight: 1.4,
+    lineHeight: 1.5,
     color: '#000000',
   },
   title: {

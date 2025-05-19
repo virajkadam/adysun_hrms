@@ -38,14 +38,8 @@ const documents = [
     icon: <FiClipboard size={24} /> 
   },
   { 
-    title: 'Increment Letter', 
-    description: 'Generate increment letters for salary revisions',
-    path: '/dashboard/documents/increment-letter', 
-    icon: <FiFileText size={24} /> 
-  },
-  { 
-    title: 'Company Card', 
-    description: 'View company information details',
+    title: 'Manage Company', 
+    description: 'View and update company information details',
     path: '/dashboard/documents/company-card', 
     icon: <FiBriefcase size={24} /> 
   },
@@ -57,8 +51,8 @@ export default function DocumentsPage() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Document Generator</h1>
-            <p className="text-gray-600">Generate HR documents with customizable templates</p>
+            <h1 className="text-2xl font-bold text-slate-800">Document Generator</h1>
+            <p className="text-slate-800">Generate HR documents with customizable templates</p>
           </div>
           <Link href="/dashboard/documents/v2" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
             Try Version 2
@@ -76,9 +70,9 @@ export default function DocumentsPage() {
                 <div className="p-2 bg-blue-50 rounded-lg text-blue-600 mr-3">
                   {doc.icon}
                 </div>
-                <h2 className="text-lg font-semibold">{doc.title}</h2>
+                <h2 className="text-lg font-semibold text-slate-800">{doc.title}</h2>
               </div>
-              <p className="text-gray-600 text-sm">{doc.description}</p>
+              <p className="text-slate-800 text-sm">{doc.description}</p>
             </Link>
           ))}
         </div>

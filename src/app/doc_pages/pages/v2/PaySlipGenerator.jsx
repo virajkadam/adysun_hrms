@@ -9,6 +9,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer, Watermark } from '@/components/pdf/PDFComponents';
 import { commonStyles } from '@/components/pdf/PDFStyles';
 import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtils';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Define styles for the PaySlip
 const payslipStyles = StyleSheet.create({
@@ -190,6 +191,13 @@ const payslipStyles = StyleSheet.create({
     fontFamily: 'Calibri',
     marginTop: 20,
   },
+  page: {
+    padding: 40,
+    paddingBottom: 60,
+    fontFamily: 'Calibri',
+    fontSize: 11,
+    backgroundColor: 'white',
+  },
 });
 
 // PaySlip PDF Document Component
@@ -223,7 +231,7 @@ const PaySlipPDF = ({ formData }) => {
 
   return (
     <Document>
-      <Page size="A4" style={commonStyles.page}>
+      <Page size="A4" style={payslipStyles.page}>
         {/* Watermark */}
         <Watermark logoSrc={safeFormData.companyLogo} />
         
@@ -481,6 +489,7 @@ function PaySlipGeneratorV2() {
         await fetchCandidates();
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error('Failed to load data');
       }
       setIsLoading(false);
     };
@@ -555,6 +564,9 @@ function PaySlipGeneratorV2() {
     // Get total days in selected month
     const daysInMonth = getDaysInMonth(monthNum);
     
+    // Calculate payable days
+    const payableDays = Math.max(0, daysInMonth - leavesNum);
+    
     // Calculate base annual salary
     const annualSalary = lpaNum * 100000;
     
@@ -592,7 +604,8 @@ function PaySlipGeneratorV2() {
       cca,
       professionalTax,
       otherDeductions: 0,
-      amountInWords
+      amountInWords,
+      payableDays
     };
   };
 
@@ -714,6 +727,7 @@ function PaySlipGeneratorV2() {
 
   return (
     <div className="container mx-auto p-4">
+      <Toaster position="top-center" />
       <div className="mb-4">
         <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
           <FiArrowLeft size={16} /> Back to Documents
@@ -791,6 +805,17 @@ function PaySlipGeneratorV2() {
               min="0"
               max={getDaysInMonth(Number(formData.month))}
             />
+          </div>
+          
+          <div className="form-group">
+            <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days</label>
+            <input
+              type="text"
+              value={formData.payableDays || getDaysInMonth(Number(formData.month))}
+              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+              readOnly
+            />
+           
           </div>
           
           <div className="form-group">

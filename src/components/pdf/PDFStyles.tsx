@@ -82,11 +82,11 @@ export const commonStyles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 20,
     left: 40,
     right: 40,
     textAlign: 'center',
-    paddingTop: 10,
+    paddingTop: 5,
     borderTopWidth: 1,
     borderTopColor: '#000',
     borderTopStyle: 'solid',
@@ -174,7 +174,7 @@ export const offerLetterStyles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 20,
     left: 40,
     right: 40,
     borderTopWidth: 1,

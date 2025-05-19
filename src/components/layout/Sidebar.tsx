@@ -1,14 +1,41 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiLogOut } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Redirect will be handled by the auth state change in the context
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  // Function to determine if a menu item is active
+  const isActive = (path: string) => {
+    if (path === '/dashboard') {
+      // Only consider dashboard active if we're exactly on the dashboard path
+      return pathname === '/dashboard';
+    }
+    
+    if (path === '/dashboard/documents') {
+      // For documents, consider any document-related path to be active
+      return pathname.includes('/documents') || pathname.includes('/doc_pages');
+    }
+    
+    // For other paths, use the original logic
+    return pathname === path || pathname.startsWith(path + '/');
   };
 
   const menuItems = [
@@ -32,11 +59,7 @@ const Sidebar = () => {
       name: 'Documents',
       icon: <FiFile className="w-5 h-5" />
     },
-    {
-      path: '/letters',
-      name: 'Letters',
-      icon: <FiFileText className="w-5 h-5" />
-    }
+    
   ];
 
   return (
@@ -65,16 +88,16 @@ const Sidebar = () => {
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        <div className="p-5">
+        <div className="p-5 flex flex-col h-full">
           <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
-          <nav>
+          <nav className="flex-grow">
             <ul className="space-y-2">
               {menuItems.map((item) => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
                     className={`flex items-center gap-3 p-3 rounded-md transition-colors ${
-                      pathname === item.path || pathname.startsWith(item.path + '/')
+                      isActive(item.path)
                         ? 'bg-blue-600 text-white'
                         : 'hover:bg-gray-700'
                     }`}
@@ -86,6 +109,17 @@ const Sidebar = () => {
               ))}
             </ul>
           </nav>
+          
+          {/* Logout button at bottom of sidebar */}
+          <div className="mt-auto pt-4 border-t border-gray-700">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 p-3 rounded-md transition-colors text-white hover:bg-gray-700 w-full cursor-pointer"
+            >
+              <FiLogOut className="w-5 h-5" />
+              <span>Logout</span>
+            </button>
+          </div>
         </div>
       </div>
     </>

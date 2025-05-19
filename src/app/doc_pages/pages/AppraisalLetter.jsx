@@ -353,9 +353,9 @@ console.log("salary:", numericSalary);
       <div className="max-w-[210mm] mx-auto">
         <div className="flex justify-between items-center mb-6 md:mb-12 mt-4 md:mt-6">
           <div className="ml-2 md:ml-4">
-            <Link href="/" className="back-link flex items-center text-gray-600 hover:text-gray-900">
+            <Link href="/dashboard" className="back-link flex items-center text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4 md:h-5 md:w-5 mr-2" />
-              <span className="text-sm md:text-base">Back to Home</span>
+              <span className="text-sm md:text-base">Back to Dashboard</span>
             </Link>
           </div>
         </div>

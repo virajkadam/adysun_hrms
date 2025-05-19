@@ -50,8 +50,8 @@ const documents = [
     icon: <FiBriefcase size={24} /> 
   },
   { 
-    title: 'Company Card',
-    description: 'View company information details',
+    title: 'Manage Company',
+    description: 'View and update company information',
     path: '/dashboard/documents/company-card', 
     icon: <FiHome size={24} /> 
   },
@@ -63,8 +63,8 @@ export default function DocumentsV2Page() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Document Generator (v2)</h1>
-            <p className="text-gray-600">Generate documents with selectable text</p>
+            <h1 className="text-2xl font-bold text-slate-800">Document Generator (v2)</h1>
+            <p className="text-slate-800">Generate documents with selectable text</p>
           </div>
           <Link href="/dashboard/documents" className="bg-blue-100 text-blue-700 px-4 py-2 rounded-md hover:bg-blue-200 transition">
             Standard Version
@@ -82,9 +82,9 @@ export default function DocumentsV2Page() {
                 <div className="p-2 bg-blue-50 rounded-lg text-blue-600 mr-3">
                   {doc.icon}
                 </div>
-                <h2 className="text-lg font-semibold">{doc.title}</h2>
+                <h2 className="text-lg font-semibold text-slate-800">{doc.title}</h2>
               </div>
-              <p className="text-gray-600 text-sm">{doc.description}</p>
+              <p className="text-slate-800 text-sm">{doc.description}</p>
             </Link>
           ))}
         </div>

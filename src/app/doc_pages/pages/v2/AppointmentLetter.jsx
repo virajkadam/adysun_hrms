@@ -135,6 +135,13 @@ const appointmentStyles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Calibri',
   },
+  page: {
+    padding: 40,
+    paddingBottom: 60, // Add more padding at bottom for footer
+    fontFamily: 'Calibri',
+    fontSize: 12,
+    backgroundColor: '#ffffff',
+  },
 });
 
 // Styled component for the salary table
@@ -226,7 +233,7 @@ const calculateSalaryComponents = (lpa) => {
   // Employer Contributions
   const gratuity = basic * 0.0417; // 4.17% of basic
   const monthlyWellness = 1200;
-  const healthInsurance = annual * 0.00429; // 0.429% of CTC
+  const healthInsurance = Math.round(annual * 0.00429); // 0.429% of CTC, rounded to match original
   const employerPF = Math.min(basic * 0.12, 21600); // 12% of basic, capped at 21600
   
   // Special Allowance is the balancing amount
