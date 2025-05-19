@@ -12,16 +12,18 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // For GitHub Pages deployment with a static export
-  output: 'export',
+  // For development, we want a complete application with SSR
+  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   // Disable image optimization for static export
   images: {
     unoptimized: true,
   },
-  // Set the base path for GitHub Pages
-  basePath: '/Employee_Admin_Dashboard',
-  // Use trailing slashes for GitHub Pages compatibility
-  trailingSlash: true,
+  // Base path for GitHub Pages
+  basePath: process.env.NODE_ENV === 'production' ? '/Employee_Admin_Dashboard' : '',
+  // Required for GitHub Pages
+  trailingSlash: process.env.NODE_ENV === 'production',
+  // Disable strict mode to enable more compatibility options
+  reactStrictMode: false,
 };
 
 export default nextConfig; 

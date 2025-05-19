@@ -17,6 +17,8 @@ type PageParams = {
   };
 };
 
+// The generateStaticParams function is now in the staticParams.ts file
+
 export default function EmployeeViewPage({ params }: PageParams) {
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [employments, setEmployments] = useState<Employment[]>([]);
