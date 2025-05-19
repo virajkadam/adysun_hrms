@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "setup-tailwind": "npm install @tailwindcss/forms",
-    "netlify-deploy": "netlify deploy"
+    "netlify-deploy": "netlify deploy",
+    "netlify-build": "npm run build && npm install @netlify/plugin-nextjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.0",

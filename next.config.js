@@ -17,7 +17,7 @@ const nextConfig = {
       'localhost',
       'employee-admin-c83e8.appspot.com',
     ],
-    unoptimized: false, // Let Netlify optimize images
+    unoptimized: true, // Use unoptimized images for static site generation
     remotePatterns: [
       {
         protocol: 'https',
