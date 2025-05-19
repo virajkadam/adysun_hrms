@@ -26,6 +26,7 @@ export interface Employee {
   accountNo?: string;
   ifscCode?: string;
   accountHolderName?: string;
+  branchName?: string;
   
   // Educational Details
   // Higher Education
@@ -74,6 +75,9 @@ export interface Employee {
   joinDate: string;
   status: 'active' | 'inactive';
   imageUrl?: string;
+  
+  // Salary information for offer letter
+  salary?: number;
 }
 
 // Employment type
@@ -111,16 +115,40 @@ export interface Employment {
   paymentMode?: string;
   additionalAllowance?: number;
   specialAllowance?: number;
+  educationAllowance?: number;
+  monthlyReimbursement?: number;
+  lta?: number;
+  statutoryBonus?: number;
+  healthInsurance?: number;
+  employerPF?: number;
   paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
   
   // Job Details
   jobTitle?: string;
+  designation?: string;
   department?: string;
   location?: string;
   reportingManager?: string;
+  reportingAuthority?: string;
   employmentType?: string;
   workSchedule?: string;
+  probationPeriod?: string;
+  noticePeriod?: string;
   benefits: string[];
+  
+  // Resignation Details
+  resignationDate?: string;
+  lastWorkingDate?: string;
+  reasonForLeaving?: string;
+  exitInterviewDate?: string;
+  
+  // Appraisal Details
+  appraisalDate?: string;
+  previousSalary?: number;
+  newSalary?: number;
+  percentageIncrease?: number;
+  performanceRating?: string;
+  effectiveDate?: string;
 }
 
 // Salary Slip type
@@ -140,6 +168,12 @@ export interface SalarySlip {
     amount: number;
   }[];
   netSalary: number;
+  grossSalary?: number;
+  totalAllowances?: number;
+  totalDeductions?: number;
+  lossOfPay?: number;
+  workingDays?: number;
+  paidDays?: number;
   issueDate: string;
   paidDate?: string;
   status: 'draft' | 'issued' | 'paid';
@@ -156,31 +190,33 @@ export interface Document {
   updatedAt: string;
   status: 'draft' | 'issued' | 'signed';
   documentUrl?: string;
-  data: any; // Document specific data
+  data?: any;
 }
 
 // Company information for documents
 export interface Company {
   id: string;
   name: string;
-  logo?: string;
   address: string;
-  phone?: string;
-  email?: string;
-  website?: string;
+  mobile: string;
+  email: string;
+  website: string;
+  cin: string;
+  logo: string;
+  hrName: string;
+  hrMobile: string;
+  color: string;
   gstin?: string;
   pan?: string;
-  cin?: string;
   bankDetails?: {
-    accountName?: string;
-    accountNumber?: string;
-    bankName?: string;
-    ifscCode?: string;
-    branch?: string;
+    accountName: string;
+    accountNumber: string;
+    bankName: string;
+    ifscCode: string;
+    branch: string;
   };
   signatory?: {
     name: string;
     designation: string;
-    signature?: string;
   };
 } 

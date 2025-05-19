@@ -28,7 +28,7 @@ const Sidebar = () => {
       icon: <FiBriefcase className="w-5 h-5" />
     },
     {
-      path: '/documents',
+      path: '/dashboard/documents',
       name: 'Documents',
       icon: <FiFile className="w-5 h-5" />
     },
