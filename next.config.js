@@ -1,16 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // We can't use output: 'export' because we have dynamic routes
-  // that would require generateStaticParams() for all routes
-  typescript: {
-    // For faster builds, ignore typescript errors
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    // For faster builds, ignore eslint errors
-    ignoreDuringBuilds: true,
-  },
-  // Optimize images for Netlify
+  trailingSlash: true,
   images: {
     domains: [
       'firebasestorage.googleapis.com',
@@ -19,29 +9,24 @@ const nextConfig = {
       'localhost',
       'employee-admin-c83e8.appspot.com',
     ],
-    unoptimized: true, // Use unoptimized images
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    unoptimized: true,
   },
-  // Rewrite configuration
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // We need to disable strict mode to avoid double rendering in development
+  reactStrictMode: false,
+  
+  // Since we're exporting static files, we can't use rewrites
+  // Uncomment this if you don't need the rewrites functionality
+  /*
   async rewrites() {
-    // Get the document generator URL from environment variables or use defaults
-    const docGenUrl = process.env.DOCUMENT_GENERATOR_URL || 
-      (process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:3001'
-        : 'https://document-generator.yourdomain.com');
-    
-    return [
-      {
-        source: '/document-generator/:path*',
-        destination: `${docGenUrl}/:path*`
-      }
-    ]
+    return [];
   }
+  */
 };
 
 module.exports = nextConfig; 

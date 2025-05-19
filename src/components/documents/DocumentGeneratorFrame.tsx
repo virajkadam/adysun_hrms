@@ -12,7 +12,9 @@ const AppraisalLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/Apprais
 const PaySlipGeneratorV2 = dynamic(() => import('@/app/doc_pages/pages/v2/PaySlipGenerator'), { ssr: false });
 const BankStatementV2 = dynamic(() => import('@/app/doc_pages/pages/v2/BankStatement'), { ssr: false });
 const ManageBankV2 = dynamic(() => import('@/app/doc_pages/pages/v2/ManageBank'), { ssr: false });
-const IncrementLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/OfferLetter'), { ssr: false }); // Using OfferLetter as fallback
+
+// Legacy v1 components when needed
+const IncrementLetterV1 = dynamic(() => import('@/app/doc_pages/pages/IncrementLetter'), { ssr: false });
 
 interface DocumentGeneratorFrameProps {
   documentType: string;
@@ -64,7 +66,7 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
         case 'appraisal-letter':
           return <AppraisalLetterV2 />;
         case 'increment-letter':
-          return <IncrementLetterV2 />;
+          return <IncrementLetterV1 />;
         case 'payslip':
           return <PaySlipGeneratorV2 />;
         default:
