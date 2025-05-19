@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "setup-tailwind": "npm install @tailwindcss/forms",
-    "predeploy": "npm run build",
+    "predeploy": "node deploy.js",
     "deploy": "gh-pages -d out",
     "github": "gh-pages -d out"
   },

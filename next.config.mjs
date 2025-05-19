@@ -12,7 +12,7 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // For development, we want a complete application with SSR
+  // For GitHub Pages, we need to use 'export' mode
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   // Disable image optimization for static export
   images: {
@@ -24,6 +24,11 @@ const nextConfig = {
   trailingSlash: process.env.NODE_ENV === 'production',
   // Disable strict mode to enable more compatibility options
   reactStrictMode: false,
+  // Enable SPA experience for static export
+  experimental: {
+    // This allows client-side navigation to work better with static export
+    appDocumentPreloading: false
+  },
 };
 
 export default nextConfig; 

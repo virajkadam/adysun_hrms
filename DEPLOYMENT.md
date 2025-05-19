@@ -1,102 +1,73 @@
-# Deploying to GitHub Pages
+# Deploying the Admin Dashboard to GitHub Pages
 
-This document outlines the steps to deploy the Admin Dashboard application to GitHub Pages.
+This guide explains how to deploy the Next.js Admin Dashboard to GitHub Pages.
 
-## Prerequisites
+## Understanding the Challenges
 
-- A GitHub account
-- Git installed on your local machine
-- Access to the repository with appropriate permissions
-- Node.js and npm installed
+Next.js applications with dynamic routes (like `/employees/[id]`) face challenges when deployed as static sites on GitHub Pages:
 
-## Setup
+1. **Static Generation**: GitHub Pages only supports static websites.
+2. **Dynamic Routes**: Paths like `/employees/[id]` require all possible values of `[id]` to be known at build time.
+3. **Client-side Navigation**: For a good UX, we need client-side navigation between pages.
 
-1. **Update the homepage URL in package.json**
+## Our Solution
 
-   Replace `[your-github-username]` with your actual GitHub username in the homepage property:
+The deployment strategy uses:
 
-   ```json
-   "homepage": "https://your-github-username.github.io/AdysunAdminDashboard"
-   ```
+1. **Static Export**: Using Next.js's `output: 'export'` to generate static HTML.
+2. **BasePath Configuration**: Configuring the app for the GitHub Pages subdirectory.
+3. **Client-side Data Fetching**: Loading actual data on the client side.
+4. **Fallback Static Pages**: Generating placeholder pages for dynamic routes.
+5. **Custom 404 Page**: Redirecting unknown routes to the main application.
 
-2. **Set up GitHub repository secrets (if using GitHub Actions)**
+## Deployment Steps
 
-   If you're using GitHub Actions for automated deployment, add the following secrets to your repository (Settings > Secrets and variables > Actions):
+1. **Prepare your code**:
+   - Ensure all dynamic routes have corresponding `generateStaticParams()` functions.
+   - Make sure client-side data fetching is robust with proper loading states.
 
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`
-   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
-   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
-   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
-   - `NEXT_PUBLIC_FIREBASE_APP_ID`
-
-## Deployment Options
-
-### Option 1: Automated GitHub Actions Deployment
-
-The repository is set up with GitHub Actions workflow that automatically deploys to GitHub Pages whenever changes are pushed to the main branch.
-
-1. Push your changes to the main branch:
-
+2. **Deploy to GitHub Pages**:
    ```bash
-   git add .
-   git commit -m "Your commit message"
-   git push origin main
-   ```
-
-2. GitHub Actions will automatically build and deploy the application
-3. Wait for the GitHub Actions workflow to complete (check the Actions tab in your repository)
-4. Your site will be available at the URL specified in the homepage property of your package.json
-
-### Option 2: Manual Deployment
-
-You can deploy manually using the provided script:
-
-1. Navigate to the project directory
-2. Run the deployment script:
-
-   ```bash
-   npm run deploy:script
-   ```
-
-   Or run the commands separately:
-
-   ```bash
-   npm run build
+   # Install dependencies if needed
+   npm install
+   
+   # Deploy to GitHub Pages
    npm run deploy
    ```
 
-3. The app will be deployed to the `gh-pages` branch of your repository
-4. GitHub Pages will serve the application from this branch
-5. Your site will be available at the URL specified in the homepage property of your package.json
+   This runs:
+   - `predeploy`: Executes `deploy.js` script that builds the app and prepares it for GitHub Pages
+   - `deploy`: Uses `gh-pages` to push the `out` directory to the `gh-pages` branch
+
+3. **Verify the deployment**:
+   - Check your GitHub repository settings to ensure GitHub Pages is enabled
+   - Visit `https://[your-username].github.io/Employee_Admin_Dashboard`
 
 ## Troubleshooting
 
-### Issue: Static Path Generation
+If you encounter issues:
 
-If you encounter issues with dynamic routes not being generated correctly:
+1. **"Page X is missing generateStaticParams()"**:
+   - Add `generateStaticParams()` to the page or import it from another file.
 
-1. Update the `scripts/exportPaths.ts` file to include all dynamic routes used in the application
-2. Make sure the `exportPathMap` function in `next.config.ts` is correctly configured
+2. **"Cannot find module 'X'"**:
+   - Check for missing dependencies in package.json.
 
-### Issue: CSS or JS not loading
+3. **Page not found on GitHub**:
+   - Ensure GitHub Pages is publishing from the `gh-pages` branch.
+   - Check if the `.nojekyll` file exists to prevent GitHub from ignoring underscore files.
 
-If styles or scripts don't load:
+4. **Cannot access API endpoints**:
+   - Remember that GitHub Pages only serves static files. All API calls must be made client-side.
 
-1. Check the browser console for 404 errors
-2. Verify that the `basePath` and `assetPrefix` in `next.config.ts` are set correctly
-3. Make sure the `homepage` URL in `package.json` is correct
+## Local Testing
 
-### Issue: API or Firebase not working
+To test the static export locally before deploying:
 
-For apps with backends:
+```bash
+# Build the static export
+npm run build
 
-1. Update any API URLs to use absolute paths instead of relative paths
-2. Make sure environment variables are properly set in the GitHub repository secrets
-3. Consider setting up a separate API service or using serverless functions
-
-## Notes
-
-- Remember that GitHub Pages only serves static content, so server-side rendering won't work
-- All API calls must be to external APIs or serverless functions
-- The `.nojekyll` file is essential to prevent GitHub Pages from ignoring files that start with underscore 
+# Serve the static files
+npx serve out
+``` 

@@ -3,51 +3,47 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-console.log('Starting GitHub Pages deployment...');
-
-// Set production environment
-process.env.NODE_ENV = 'production';
-
+// Clean previous build
+console.log('Cleaning previous build...');
 try {
-  // 1. Run the Next.js build
-  console.log('Building Next.js application...');
+  fs.rmSync(path.join(__dirname, 'out'), { recursive: true, force: true });
+  fs.rmSync(path.join(__dirname, '.next'), { recursive: true, force: true });
+} catch (error) {
+  console.log('No previous build found or error cleaning:', error.message);
+}
+
+// Build the application
+console.log('Building the application...');
+try {
   execSync('npm run build', { stdio: 'inherit' });
+} catch (error) {
+  console.error('Build failed:', error);
+  process.exit(1);
+}
 
-  // 2. Create .nojekyll file to prevent GitHub from ignoring files that begin with an underscore
-  const nojekyllPath = path.join(__dirname, 'out', '.nojekyll');
-  fs.writeFileSync(nojekyllPath, '');
-  console.log('Created .nojekyll file');
+// Create a .nojekyll file to prevent GitHub Pages from using Jekyll processing
+fs.writeFileSync(path.join(__dirname, 'out', '.nojekyll'), '');
 
-  // 3. Create a 404.html page that redirects to the index
-  const notFoundPath = path.join(__dirname, 'out', '404.html');
-  const notFoundContent = `
+// Create a simple 404.html that redirects to index.html
+const notFoundContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found - Redirecting</title>
+  <title>Redirecting...</title>
   <script>
-    // Single Page Application handling for GitHub Pages
-    // Redirects all requests to the index.html
-    sessionStorage.setItem('redirect', window.location.pathname);
-    window.location.href = '/Employee_Admin_Dashboard/';
+    // Redirect to the homepage
+    window.location.href = window.location.origin + '/Employee_Admin_Dashboard';
   </script>
 </head>
 <body>
-  <p>Redirecting...</p>
+  <p>Redirecting to the homepage...</p>
 </body>
 </html>
-  `;
-  fs.writeFileSync(notFoundPath, notFoundContent);
-  console.log('Created 404.html file for SPA routing');
+`;
 
-  // 4. Deploy to GitHub Pages
-  console.log('Deploying to GitHub Pages...');
-  execSync('npm run deploy', { stdio: 'inherit' });
+fs.writeFileSync(path.join(__dirname, 'out', '404.html'), notFoundContent);
 
-  console.log('Deployment completed successfully!');
-} catch (error) {
-  console.error('Deployment failed:', error.message);
-  process.exit(1);
-} 
+console.log('Successfully prepared for GitHub Pages deployment!');
+console.log('You can now push the "out" directory to your gh-pages branch.'); 
