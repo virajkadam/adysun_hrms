@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-// CSS import removed as file is missing
-// import "../components/CompanyDetailsForm.css";
-import { db } from "@/firebase/config";
+import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const CompanyDetailsForm = ({ onUpdateCompanyDetails }) => {

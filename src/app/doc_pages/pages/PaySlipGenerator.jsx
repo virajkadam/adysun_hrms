@@ -9,6 +9,7 @@ import CompanyDetailsForm from "./companyDetails";
 import { db } from "@/firebase/config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
+
 function PaySlipGenerator() {
   const containerRef = useRef(null);
   const [companies, setCompanies] = useState([]);
@@ -276,7 +277,7 @@ function PaySlipGenerator() {
           />
 
           <div className="">
-            {/* PaySlip component removed as it's missing */}
+            {/* Removed PaySlip import */}
           </div>
         </div>
       </div>

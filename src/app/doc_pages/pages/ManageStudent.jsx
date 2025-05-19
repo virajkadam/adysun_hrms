@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { db } from "@/firebase/config";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 const ManageStudent = () => {
   const [candidates, setCandidates] = useState([]);
@@ -22,7 +22,6 @@ const ManageStudent = () => {
   });
   const [editId, setEditId] = useState(null);
   const [isListView, setIsListView] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     fetchCandidates();
@@ -79,10 +78,10 @@ const ManageStudent = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <div onClick={() => router.back()} className="flex items-center text-gray-600 hover:text-gray-900 cursor-pointer">
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 cursor-pointer">
             <ArrowLeft className="h-5 w-5 mr-2" />
             <span>Back</span>
-          </div>
+          </Link>
         </div>
 
         {isListView ? (

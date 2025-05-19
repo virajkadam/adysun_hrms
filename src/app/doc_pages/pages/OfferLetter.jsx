@@ -5,6 +5,7 @@ import { Download, ArrowLeft } from "lucide-react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import Link from "next/link";
+;
 import { db } from "@/firebase/config";
 
 import { collection, getDocs, query, where } from "firebase/firestore";
