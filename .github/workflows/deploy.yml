@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]  # Set this to your default branch
+    branches: [ master ]  # Set this to your default branch
   workflow_dispatch:
 
 jobs:
@@ -19,18 +19,18 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build
         run: npm run build
         env:
-          # Add any environment variables your app needs here
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          # Firebase config values from config.ts
+          NEXT_PUBLIC_FIREBASE_API_KEY: "AIzaSyClAPu6h2UqoQjluZjT1cm8Z9GKI2N3yN8"
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: "employee-admin-c83e8.firebaseapp.com"
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: "employee-admin-c83e8"
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: "employee-admin-c83e8.appspot.com"
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "505257318838"
+          NEXT_PUBLIC_FIREBASE_APP_ID: "1:505257318838:web:a2757c97da2c16b8020917"
 
       # Create .nojekyll file to prevent GitHub from ignoring files that begin with an underscore
       - name: Add .nojekyll file

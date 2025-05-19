@@ -2,7 +2,7 @@
   "name": "admin-dashboard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://[your-github-username].github.io/AdysunAdminDashboard",
+  "homepage": "https://Santosh-Mhetre.github.io/Employee_Admin_Dashboard",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

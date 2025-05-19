@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 import generateStaticPaths from "./scripts/exportPaths";
 
-// Get the repository name from package.json if deploying to GitHub Pages
-const repo = process.env.GITHUB_REPOSITORY ? process.env.GITHUB_REPOSITORY.split('/')[1] : '';
+// Set the repository name for GitHub Pages
+const repo = 'Employee_Admin_Dashboard';
 const basePath = process.env.NODE_ENV === 'production' ? `/${repo}` : '';
 
 const nextConfig: NextConfig = {
