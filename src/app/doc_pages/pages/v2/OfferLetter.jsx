@@ -490,12 +490,12 @@ function OfferLetterV2() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     
-    if (name === "company") {
-      const selectedCompany = companies.find(company => company.name === value);
+    if (name === "companyName") {
+      const selectedCompany = companies.find(company => company.id === value);
       if (selectedCompany) {
         setFormData(prev => ({
           ...prev,
-          companyName: selectedCompany.name,
+          companyName: value,
           companyAddressLine1: selectedCompany.address,
           companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
@@ -505,7 +505,7 @@ function OfferLetterV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedEmployee = candidates.find(employee => employee.name === value);
+      const selectedEmployee = candidates.find(employee => employee.id === value);
       if (selectedEmployee) {
         console.log("Selected Employee:", selectedEmployee);
         
@@ -537,6 +537,7 @@ function OfferLetterV2() {
         
         setFormData(prev => ({
           ...prev,
+          employeeId: value,
           employeeName: selectedEmployee.name,
           designation: employeeDesignation || "",
           joiningDate: joiningDate || new Date().toISOString().split('T')[0],
@@ -544,25 +545,16 @@ function OfferLetterV2() {
           salaryComponentsV2
         }));
       }
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
     }
   };
 
   const handleGenerateDocument = () => {
     try {
       // Validate form
-      if (!formData.employeeName || !formData.companyName || !formData.joiningDate || !formData.designation || !formData.lpa) {
-        toast.error('Please fill all required fields');
+      if (!formData.employeeName || !formData.companyName) {
+        toast.error('Please select both an employee and a company');
         return;
       }
-      
-      // Format data for PDF
-      const selectedCompany = companies.find(c => c.id === formData.companyName);
-      setSelectedCompany(selectedCompany);
       
       // Generate the PDF
       setShowPDF(true);
@@ -592,14 +584,18 @@ function OfferLetterV2() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-slate-800">Employee Name</label>
-            <input
-              type="text"
+            <label className="block mb-2 text-sm font-medium text-slate-800">Employee</label>
+            <select
               name="employeeName"
-              value={formData.employeeName}
+              value={formData.employeeId || ""}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
+              <option value="">Select Employee</option>
+              {candidates.map(employee => (
+                <option key={employee.id} value={employee.id}>{employee.name}</option>
+              ))}
+            </select>
           </div>
           
           <div className="form-group">
@@ -615,39 +611,6 @@ function OfferLetterV2() {
                 <option key={company.id} value={company.id}>{company.name}</option>
               ))}
             </select>
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-slate-800">Position</label>
-            <input
-              type="text"
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-slate-800">Join Date</label>
-            <input
-              type="date"
-              name="joiningDate"
-              value={formData.joiningDate}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-slate-800">Annual Salary (₹)</label>
-            <input
-              type="number"
-              name="lpa"
-              value={formData.lpa}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
           </div>
         </div>
         
