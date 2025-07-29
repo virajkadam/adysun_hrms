@@ -8,6 +8,8 @@ import { getEmployments, deleteEmployment, getEmployee } from '@/utils/firebaseU
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { ActionButton } from '@/components/ui/ActionButton';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import SearchBar from '@/components/ui/SearchBar';
 
 export default function EmploymentsPage() {
   const [employments, setEmployments] = useState<Employment[]>([]);
@@ -123,18 +125,16 @@ export default function EmploymentsPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-4 border-b">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search employments..."
-              className="pl-10 pr-4 py-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <div className="p-4 border-b flex justify-between items-center">
+          <div className="text-sm text-gray-600">
+            Total: <span className="font-medium">{filteredEmployments.length}</span> employments
+          </div>
+          <div className="w-64">
+            <SearchBar
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label="Search employments"
+              placeholder="Search"
+              ariaLabel="Search employments"
             />
           </div>
         </div>
@@ -194,9 +194,9 @@ export default function EmploymentsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {new Date(employment.startDate).toLocaleDateString()}
+                        {formatDateToDayMonYear(employment.startDate)}<br/>
                         {employment.endDate && (
-                          <> - {new Date(employment.endDate).toLocaleDateString()}</>
+                          <> - {formatDateToDayMonYear(employment.endDate)}</>
                         )}
                       </div>
                     </td>
