@@ -148,8 +148,6 @@ const Tooltip: React.FC<TooltipProps> = ({
         className={`relative inline-block ${className}`}
         onMouseEnter={showTooltip}
         onMouseLeave={hideTooltip}
-        onFocus={showTooltip}
-        onBlur={hideTooltip}
       >
         {children}
       </div>
