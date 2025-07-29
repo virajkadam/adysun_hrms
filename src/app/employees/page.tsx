@@ -8,6 +8,7 @@ import { getEmployees, deleteEmployee } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import { ActionButton } from '@/components/ui/ActionButton';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -222,34 +223,31 @@ export default function EmployeesPage() {
                         </div>
                       ) : (
                         <div className="flex items-center justify-center space-x-3">
-                          <Link
-                            href={`/employees/${employee.id}`}
-                            className="bg-blue-100 text-blue-600 hover:text-blue-900 tooltip border border-gray-300 rounded-lg p-2"
+                          <ActionButton
+                            icon={<FiEye className="w-5 h-5" />}
                             title="View Employee Details"
-                          >
-                            <FiEye className="w-5 h-5" />
-                          </Link>
-                          <Link
-                            href={`/employees/${employee.id}#employments`}
-                            className="bg-green-100 text-green-600 hover:text-green-900 tooltip border border-gray-300 rounded-lg p-2"
+                            colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
+                            href={`/employees/${employee.id}`}
+                          />
+                          <ActionButton
+                            icon={<FiBriefcase className="w-5 h-5" />}
                             title="View Employment History"
-                          >
-                            <FiBriefcase className="w-5 h-5" />
-                          </Link>
-                          <Link
-                            href={`/employees/${employee.id}/edit`}
-                            className="bg-amber-100 text-amber-600 hover:text-amber-900 tooltip border border-gray-300 rounded-lg p-2"
+                            colorClass="bg-green-100 text-green-600 hover:text-green-900"
+                            href={`/employees/${employee.id}#employments`}
+                          />
+                          <ActionButton
+                            icon={<FiEdit className="w-5 h-5" />}
                             title="Edit Employee"
-                          >
-                            <FiEdit className="w-5 h-5" />
-                          </Link>
-                          <button
-                            onClick={() => handleDeleteClick(employee.id)}
-                            className="bg-red-100 text-red-600 hover:text-red-900 tooltip border border-gray-300 rounded-lg p-2"
+                            colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
+                            href={`/employees/${employee.id}/edit`}
+                          />
+                          <ActionButton
+                            icon={<FiTrash2 className="w-5 h-5" />}
                             title="Delete Employee"
-                          >
-                            <FiTrash2 className="w-5 h-5" />
-                          </button>
+                            colorClass="bg-red-100 text-red-600 hover:text-red-900"
+                            onClick={() => handleDeleteClick(employee.id)}
+                            as="button"
+                          />
                         </div>
                       )}
                     </td>

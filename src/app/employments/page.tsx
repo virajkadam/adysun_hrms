@@ -7,6 +7,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployments, deleteEmployment, getEmployee } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
+import { ActionButton } from '@/components/ui/ActionButton';
 
 export default function EmploymentsPage() {
   const [employments, setEmployments] = useState<Employment[]>([]);
@@ -230,24 +231,25 @@ export default function EmploymentsPage() {
                         </div>
                       ) : (
                         <div className="flex items-center justify-end space-x-2">
-                          <Link
+                          <ActionButton
+                            icon={<FiEye className="w-5 h-5" />}
+                            title="View Employment Details"
+                            colorClass="bg-green-100 text-green-600 hover:text-green-900"
                             href={`/employments/${employment.id}`}
-                            className="text-green-600 hover:text-green-900"
-                          >
-                            <FiEye className="w-4 h-4" />
-                          </Link>
-                          <Link
+                          />
+                          <ActionButton
+                            icon={<FiEdit className="w-5 h-5" />}
+                            title="Edit Employment"
+                            colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                             href={`/employments/${employment.id}/edit`}
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            <FiEdit className="w-4 h-4" />
-                          </Link>
-                          <button
+                          />
+                          <ActionButton
+                            icon={<FiTrash2 className="w-5 h-5" />}
+                            title="Delete Employment"
+                            colorClass="bg-red-100 text-red-600 hover:text-red-900"
                             onClick={() => handleDeleteClick(employment.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
+                            as="button"
+                          />
                         </div>
                       )}
                     </td>
