@@ -2,6 +2,58 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, 
 import { db } from '../firebase/config';
 import { Employee, Employment } from '../types';
 
+// Admin authentication functions
+export const checkAdminByPhone = async (phoneNumber: string) => {
+  try {
+    // Remove +91 prefix if present and clean the phone number
+    const cleanPhone = phoneNumber.replace(/^\+91/, '');
+    
+    const q = query(collection(db, 'admins'), where('mobile', '==', cleanPhone));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const adminDoc = querySnapshot.docs[0];
+      const adminData = adminDoc.data();
+      return { 
+        id: adminDoc.id, 
+        name: adminData.name || '',
+        email: adminData.email || '',
+        mobile: adminData.mobile || '',
+        pass: adminData.password || '', // Changed from 'pass' to 'password'
+        active: adminData.active || false,
+        createdAt: adminData.createdAt,
+        isAdmin: true 
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error checking admin by phone:', error);
+    throw error;
+  }
+};
+
+export const checkAdminByEmail = async (email: string) => {
+  try {
+    const q = query(collection(db, 'admins'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const adminDoc = querySnapshot.docs[0];
+      return { 
+        id: adminDoc.id, 
+        ...adminDoc.data(),
+        isAdmin: true 
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error checking admin by email:', error);
+    throw error;
+  }
+};
+
 // Employee CRUD operations
 export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
   try {

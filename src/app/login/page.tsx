@@ -8,6 +8,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 type LoginFormValues = {
   phone: string;
+  password: string;
 };
 
 export default function LoginPage() {
@@ -15,27 +16,34 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
-  const { signInWithPhone } = useAuth();
+  const { signInWithCredentials } = useAuth();
   const router = useRouter();
 
-  const handlePhoneSubmit = async (data: LoginFormValues) => {
+  const handleLoginSubmit = async (data: LoginFormValues) => {
     try {
       setIsLoading(true);
       setError(null);
       
+      console.log('🔍 Debug: Form data submitted:', data);
+      
       const formattedPhoneNumber = `+91${data.phone}`;
-      toast.loading('Sending verification code...', { id: 'sendingOtp' });
+      console.log('🔍 Debug: Formatted phone number:', formattedPhoneNumber);
       
-      const result = await signInWithPhone(formattedPhoneNumber);
+      toast.loading('Verifying credentials...', { id: 'login' });
       
-      toast.success('Verification code sent successfully!', { id: 'sendingOtp' });
+      const result = await signInWithCredentials(formattedPhoneNumber, data.password);
       
-      // Navigate to verify page with phone and verificationId as query params
-      router.push(`/verify?phone=${data.phone}&verificationId=${result.verificationId}`);
-      // Keep loading state active until navigation completes (it happens automatically)
+      if (result.admin && result.admin.active) {
+        toast.success('Login successful!', { id: 'login' });
+        router.push('/dashboard');
+      } else {
+        setError('Invalid credentials or access denied.');
+        toast.error('Invalid credentials or access denied.', { id: 'login' });
+        setIsLoading(false);
+      }
     } catch (error: any) {
-      setError(error.message || 'Failed to send verification code');
-      toast.error(error.message || 'Failed to send verification code', { id: 'sendingOtp' });
+      setError(error.message || 'Login failed');
+      toast.error(error.message || 'Login failed', { id: 'login' });
       setIsLoading(false);
     }
   };
@@ -47,7 +55,7 @@ export default function LoginPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
           <p className="mt-2 text-gray-600">
-            Enter your phone number to continue
+            Enter your credentials to continue
           </p>
         </div>
 
@@ -58,7 +66,7 @@ export default function LoginPage() {
         )}
 
         <form 
-          onSubmit={handleSubmit(handlePhoneSubmit)}
+          onSubmit={handleSubmit(handleLoginSubmit)}
           className="mt-8 space-y-6"
         >
           <div>
@@ -87,17 +95,36 @@ export default function LoginPage() {
           </div>
 
           <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              {...register('password', { 
+                required: 'Password is required',
+                minLength: {
+                  value: 4,
+                  message: 'Password must be at least 4 characters'
+                }
+              })}
+              className="py-3 px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"
+              placeholder="Enter password"
+            />
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
+            )}
+          </div>
+
+          <div>
             <button
               type="submit"
               disabled={isLoading}
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Sending Code...' : 'Send Code'}
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </div>
-
-          {/* Hidden recaptcha container */}
-          <div id="recaptcha-container"></div>
         </form>
       </div>
     </div>

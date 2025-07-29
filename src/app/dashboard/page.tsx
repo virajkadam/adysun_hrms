@@ -6,13 +6,23 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { FiUsers, FiBriefcase } from 'react-icons/fi';
 import { getEmployees, getEmployments } from '@/utils/firebaseUtils';
 import { Toaster } from 'react-hot-toast';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   const [employeeCount, setEmployeeCount] = useState(0);
   const [employmentCount, setEmploymentCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const { currentAdmin } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
+    // Check if user is admin
+    if (!currentAdmin) {
+      router.push('/login');
+      return;
+    }
+
     const fetchData = async () => {
       try {
         const employees = await getEmployees();
@@ -28,7 +38,12 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, []);
+  }, [currentAdmin, router]);
+
+  // If not admin, don't render dashboard
+  if (!currentAdmin) {
+    return null;
+  }
 
   const cards = [
     {
@@ -52,7 +67,8 @@ export default function DashboardPage() {
       <Toaster position="top-center" />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-slate-700">Welcome to the admin dashboard</p>
+        <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
+        <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p>
       </div>
 
       {loading ? (
@@ -83,29 +99,29 @@ export default function DashboardPage() {
 
       <div className="mt-12">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
             href="/employees/add"
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
+            className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
           >
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-100 p-2 rounded-full">
-                <FiUsers className="w-5 h-5 text-blue-600" />
-              </div>
-              <span className="text-slate-800 font-medium">Add New Employee</span>
-            </div>
+            <h3 className="font-medium text-gray-800">Add Employee</h3>
+            <p className="text-sm text-gray-600 mt-1">Create a new employee record</p>
           </Link>
           
           <Link
             href="/employments/add"
-            className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
+            className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
           >
-            <div className="flex items-center space-x-3">
-              <div className="bg-green-100 p-2 rounded-full">
-                <FiBriefcase className="w-5 h-5 text-green-600" />
-              </div>
-              <span className="text-slate-800 font-medium">Create Employment</span>
-            </div>
+            <h3 className="font-medium text-gray-800">Add Employment</h3>
+            <p className="text-sm text-gray-600 mt-1">Create a new employment record</p>
+          </Link>
+          
+          <Link
+            href="/dashboard/documents"
+            className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
+          >
+            <h3 className="font-medium text-gray-800">Documents</h3>
+            <p className="text-sm text-gray-600 mt-1">Generate and manage documents</p>
           </Link>
         </div>
       </div>

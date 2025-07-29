@@ -14,8 +14,8 @@ export default function VerifyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const phoneNumber = searchParams.get('phone');
-  const verificationId = searchParams.get('verificationId');
+  const phoneNumber = searchParams?.get('phone');
+  const verificationId = searchParams?.get('verificationId');
   
   const { verifyOTP } = useAuth();
   
@@ -83,10 +83,17 @@ export default function VerifyPage() {
       setError(null);
       toast.loading('Verifying code...', { id: 'verifyingOtp' });
       
-      await verifyOTP(verificationId, otpValue);
+      const result = await verifyOTP(verificationId, otpValue);
       
-      toast.success('Verification successful!', { id: 'verifyingOtp' });
-      router.push('/dashboard');
+      // Check if user is an admin
+      if (result.admin && result.admin.active) {
+        toast.success('Admin verification successful!', { id: 'verifyingOtp' });
+        router.push('/dashboard');
+      } else {
+        setError('Access denied. Only admins can access this system.');
+        toast.error('Access denied. Only admins can access this system.', { id: 'verifyingOtp' });
+        setIsLoading(false);
+      }
     } catch (error: any) {
       setError(error.message || 'Invalid verification code');
       toast.error(error.message || 'Invalid verification code', { id: 'verifyingOtp' });
