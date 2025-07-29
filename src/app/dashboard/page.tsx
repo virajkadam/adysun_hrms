@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FiUsers, FiBriefcase } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiRefreshCw } from 'react-icons/fi';
 import { getEmployees, getEmployments } from '@/utils/firebaseUtils';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -13,8 +13,40 @@ export default function DashboardPage() {
   const [employeeCount, setEmployeeCount] = useState(0);
   const [employmentCount, setEmploymentCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { currentAdmin } = useAuth();
   const router = useRouter();
+
+  const fetchData = async () => {
+    try {
+      const employees = await getEmployees();
+      const employments = await getEmployments();
+      
+      setEmployeeCount(employees.length);
+      setEmploymentCount(employments.length);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const employees = await getEmployees();
+      const employments = await getEmployments();
+      
+      setEmployeeCount(employees.length);
+      setEmploymentCount(employments.length);
+      toast.success('Dashboard refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error);
+      toast.error('Failed to refresh dashboard');
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     // Check if user is admin
@@ -22,20 +54,6 @@ export default function DashboardPage() {
       router.push('/login');
       return;
     }
-
-    const fetchData = async () => {
-      try {
-        const employees = await getEmployees();
-        const employments = await getEmployments();
-        
-        setEmployeeCount(employees.length);
-        setEmploymentCount(employments.length);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchData();
   }, [currentAdmin, router]);
@@ -65,10 +83,27 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
-        {/* <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p> */}
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+          <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
+          {/* <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p> */}
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className={`p-2 rounded-md transition-all duration-200 ${
+            refreshing 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+          }`}
+          title="Refresh dashboard data"
+          aria-label="Refresh dashboard data"
+        >
+          <FiRefreshCw 
+            className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} 
+          />
+        </button>
       </div>
 
       {loading ? (

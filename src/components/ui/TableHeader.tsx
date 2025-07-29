@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiRefreshCw } from 'react-icons/fi';
 import SearchBar from './SearchBar';
 
 interface TableHeaderProps {
@@ -10,6 +11,8 @@ interface TableHeaderProps {
   searchPlaceholder?: string;
   searchAriaLabel?: string;
   dropdown?: React.ReactNode;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -21,6 +24,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   searchPlaceholder = 'Search',
   searchAriaLabel = 'Search',
   dropdown,
+  onRefresh,
+  isRefreshing = false,
 }) => (
   <div className="p-4 border-b flex justify-between items-center">
     <div className="flex items-center gap-4 text-sm text-gray-600">
@@ -33,13 +38,32 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       )}
       {dropdown && <span>{dropdown}</span>}
     </div>
-    <div className="w-64">
-      <SearchBar
-        value={searchValue}
-        onChange={onSearchChange}
-        placeholder={searchPlaceholder}
-        ariaLabel={searchAriaLabel}
-      />
+    <div className="flex items-center gap-3">
+      {onRefresh && (
+        <button
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className={`p-2 rounded-md transition-all duration-200 ${
+            isRefreshing 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+          }`}
+          title="Refresh data"
+          aria-label="Refresh data"
+        >
+          <FiRefreshCw 
+            className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+          />
+        </button>
+      )}
+      <div className="w-64">
+        <SearchBar
+          value={searchValue}
+          onChange={onSearchChange}
+          placeholder={searchPlaceholder}
+          ariaLabel={searchAriaLabel}
+        />
+      </div>
     </div>
   </div>
 );

@@ -15,6 +15,7 @@ import TableHeader from '@/components/ui/TableHeader';
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -31,6 +32,20 @@ export default function EmployeesPage() {
       console.error('Error fetching employees:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const data = await getEmployees();
+      setEmployees(data);
+      toast.success('Data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing employees:', error);
+      toast.error('Failed to refresh data');
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -117,6 +132,8 @@ export default function EmployeesPage() {
           onSearchChange={(e) => setSearchTerm(e.target.value)}
           searchPlaceholder="Search"
           searchAriaLabel="Search employees"
+          onRefresh={handleRefresh}
+          isRefreshing={refreshing}
         />
 
         {filteredEmployees.length === 0 ? (

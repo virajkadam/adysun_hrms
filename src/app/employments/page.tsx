@@ -10,11 +10,13 @@ import toast, { Toaster } from 'react-hot-toast';
 import { ActionButton } from '@/components/ui/ActionButton';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import SearchBar from '@/components/ui/SearchBar';
+import TableHeader from '@/components/ui/TableHeader';
 
 export default function EmploymentsPage() {
   const [employments, setEmployments] = useState<Employment[]>([]);
   const [employeeNames, setEmployeeNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -43,6 +45,32 @@ export default function EmploymentsPage() {
       console.error('Error fetching employments:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const data = await getEmployments();
+      setEmployments(data);
+      
+      // Fetch employee names for each employment
+      const namesMap: Record<string, string> = {};
+      for (const employment of data) {
+        try {
+          const employee = await getEmployee(employment.employeeId);
+          namesMap[employment.employeeId] = employee.name;
+        } catch (error) {
+          namesMap[employment.employeeId] = 'Unknown Employee';
+        }
+      }
+      setEmployeeNames(namesMap);
+      toast.success('Data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing employments:', error);
+      toast.error('Failed to refresh data');
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -125,19 +153,15 @@ export default function EmploymentsPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-4 border-b flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            Total: <span className="font-medium">{filteredEmployments.length}</span> employments
-          </div>
-          <div className="w-64">
-            <SearchBar
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search"
-              ariaLabel="Search employments"
-            />
-          </div>
-        </div>
+        <TableHeader
+          total={filteredEmployments.length}
+          searchValue={searchTerm}
+          onSearchChange={(e) => setSearchTerm(e.target.value)}
+          searchPlaceholder="Search"
+          searchAriaLabel="Search employments"
+          onRefresh={handleRefresh}
+          isRefreshing={refreshing}
+        />
 
         {filteredEmployments.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
