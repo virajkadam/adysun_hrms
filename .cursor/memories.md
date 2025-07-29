@@ -48,8 +48,12 @@ The user prefers always using formatDateToDayMonYear from @documentUtils.ts for 
 
 ---
 
-The user prefers joining dates across the entire project formatted as 'DD MMM YYYY' (e.g., 20 Jun 2025) using a reusable parsing method, always using formatDateToDayMonYear from @documentUtils.ts and parsing time into 12-hour format with Indian timezone handling. 
+The user prefers joining dates across the entire project formatted as 'DD MMM YYYY' (e.g., 20 Jun 2025) using a reusable parsing method, always using formatDateToDayMonYear from @documentUtils.ts and parsing time into 12-hour format with Indian timezone handling.
 
 ---
 
 The user wants the assistant to always include the @memories.md file in every chat and agent session of the Cursor IDE.
+
+---
+
+The user prefers that tooltips should match the accent color of the button they are attached to - using the lighter accent color (like button background) rather than the darker base color (like button icon), following the pattern where button background is accent color and button icon is base color.
