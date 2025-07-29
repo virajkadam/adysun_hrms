@@ -200,25 +200,26 @@ export default function EmploymentsPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          employment.contractType === 'full-time'
+                          employment.employmentType === 'full-time'
                             ? 'bg-green-100 text-green-800'
-                            : employment.contractType === 'part-time'
+                            : employment.employmentType === 'part-time'
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}
                       >
-                        {employment.contractType && employment.contractType.includes('-') ?
-                          employment.contractType.split('-').map(word => 
+                        {employment.employmentType && employment.employmentType.includes('-') ?
+                          employment.employmentType.split('-').map(word => 
                             word.charAt(0).toUpperCase() + word.slice(1)
                           ).join(' ') : 
-                          employment.contractType ? 
-                            employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1) : 
+                          employment.employmentType ? 
+                            employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1) : 
                             'Unknown'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {formatDateToDayMonYear(employment.startDate)}<br/>
+                        {employment.joiningDate ? formatDateToDayMonYear(employment.joiningDate) : 
+                         employment.startDate ? formatDateToDayMonYear(employment.startDate) : '-'}<br/>
                         {employment.endDate && (
                           <> - {formatDateToDayMonYear(employment.endDate)}</>
                         )}

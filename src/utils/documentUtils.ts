@@ -136,7 +136,8 @@ export const getPDFInfo = async (pdfBytes) => {
  * @param date - The date string or Date object to format.
  * @returns The formatted date string.
  */
-export function formatDateToDayMonYear(date: string | Date): string {
+export function formatDateToDayMonYear(date: string | Date | null | undefined): string {
+  if (!date) return '-';
   const d = typeof date === 'string' ? new Date(date) : date;
   if (isNaN(d.getTime())) return '-';
   return d.toLocaleDateString('en-GB', {
