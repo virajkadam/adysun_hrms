@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
+import TableHeader from '@/components/ui/TableHeader';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -60,6 +61,10 @@ export default function EmployeesPage() {
     employee.phone?.includes(searchTerm)
   );
 
+  const total = filteredEmployees.length;
+  const active = filteredEmployees.filter(e => e.status === 'active').length;
+  const inactive = filteredEmployees.filter(e => e.status === 'inactive').length;
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -104,19 +109,15 @@ export default function EmployeesPage() {
       </div>
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-4 border-b flex justify-between items-center">
-          <div className="text-sm text-gray-600">
-            Total: <span className="font-medium">{filteredEmployees.length}</span> employees
-          </div>
-          <div className="relative w-64">
-            <SearchBar
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search"
-              ariaLabel="Search employees"
-            />
-          </div>
-        </div>
+        <TableHeader
+          total={total}
+          active={active}
+          inactive={inactive}
+          searchValue={searchTerm}
+          onSearchChange={(e) => setSearchTerm(e.target.value)}
+          searchPlaceholder="Search"
+          searchAriaLabel="Search employees"
+        />
 
         {filteredEmployees.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
