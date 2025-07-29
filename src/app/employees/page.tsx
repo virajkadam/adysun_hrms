@@ -133,6 +133,9 @@ export default function EmployeesPage() {
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Employee ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Mobile
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -144,6 +147,9 @@ export default function EmployeesPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Total Salaries Credited
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -154,39 +160,13 @@ export default function EmployeesPage() {
                   <tr key={employee.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          {employee.imageUrl ? (
-                            <img
-                              className="h-10 w-10 rounded-full"
-                              src={employee.imageUrl}
-                              alt={employee.name}
-                            />
-                          ) : (
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                              <span className="text-gray-500 font-medium">
-                                {employee.name?.charAt(0)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{employee.name}</div>
-                          <div className="text-sm text-gray-500">
-                            {employee.employeeId || '-'}
-                            {employee.status && (
-                              <span
-                                className={`ml-2 px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                  employee.status === 'active'
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-red-100 text-red-800'
-                                }`}
-                              >
-                                {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
-                              </span>
-                            )}
-                          </div>
                         </div>
                       </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{employee.employeeId || '-'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{employee.phone || '-'}</div>
@@ -214,6 +194,17 @@ export default function EmployeesPage() {
                         }).format(600000)}
                       </div>
                     </td>
+                    <td className='px-6 py-4 whitespace-nowrap text-center'>{employee.status && (
+                              <span
+                                className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  employee.status === 'active'
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-red-100 text-red-800'
+                                }`}
+                              >
+                                {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
+                              </span>
+                            )}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {deleteConfirm === employee.id ? (
                         <div className="flex items-center justify-center space-x-2">
