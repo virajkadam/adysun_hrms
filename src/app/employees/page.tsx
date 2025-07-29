@@ -223,28 +223,28 @@ export default function EmployeesPage() {
                         <div className="flex items-center justify-center space-x-3">
                           <Link
                             href={`/employees/${employee.id}`}
-                            className="text-blue-600 hover:text-blue-900 tooltip"
+                            className="bg-blue-100 text-blue-600 hover:text-blue-900 tooltip border border-gray-300 rounded-lg p-2"
                             title="View Employee Details"
                           >
                             <FiEye className="w-5 h-5" />
                           </Link>
                           <Link
                             href={`/employees/${employee.id}#employments`}
-                            className="text-green-600 hover:text-green-900 tooltip"
+                            className="bg-green-100 text-green-600 hover:text-green-900 tooltip border border-gray-300 rounded-lg p-2"
                             title="View Employment History"
                           >
                             <FiBriefcase className="w-5 h-5" />
                           </Link>
                           <Link
                             href={`/employees/${employee.id}/edit`}
-                            className="text-amber-600 hover:text-amber-900 tooltip"
+                            className="bg-amber-100 text-amber-600 hover:text-amber-900 tooltip border border-gray-300 rounded-lg p-2"
                             title="Edit Employee"
                           >
                             <FiEdit className="w-5 h-5" />
                           </Link>
                           <button
                             onClick={() => handleDeleteClick(employee.id)}
-                            className="text-red-600 hover:text-red-900 tooltip"
+                            className="bg-red-100 text-red-600 hover:text-red-900 tooltip border border-gray-300 rounded-lg p-2"
                             title="Delete Employee"
                           >
                             <FiTrash2 className="w-5 h-5" />
