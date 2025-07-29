@@ -8,10 +8,12 @@ import {
   onAuthStateChanged,
   User,
   RecaptchaVerifier,
-  signInWithCredential
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { checkAdminByPhone } from '../utils/firebaseUtils';
+import { checkAdminByPhone, createAdminSession } from '../utils/firebaseUtils';
 
 // Extend Window interface to include recaptchaVerifier
 declare global {
@@ -85,6 +87,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // In production, you should hash passwords and compare hashes
         if (adminData.pass === password) {
           console.log('✅ Password match successful!');
+          
+          // For Mobile + Password, we'll use custom authentication
+          console.log('📱 Using Mobile + Password authentication (custom approach)');
+          console.log('🔐 Creating custom authentication session...');
+          
+          // Create a custom session for the admin
+          const sessionId = await createAdminSession(adminData.id, adminData);
+          console.log('✅ Custom authentication session created:', sessionId);
+          console.log('🎉 Admin authenticated with Mobile + Password!');
+          
+          // Store session ID in localStorage for persistence
+          localStorage.setItem('adminSessionId', sessionId);
+          localStorage.setItem('adminData', JSON.stringify(adminData));
+          
           setCurrentAdmin(adminData);
           return { admin: adminData };
         } else {

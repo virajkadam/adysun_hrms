@@ -68,7 +68,7 @@ export default function DashboardPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
         <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
-        <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p>
+        {/* <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p> */}
       </div>
 
       {loading ? (

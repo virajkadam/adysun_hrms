@@ -88,7 +88,7 @@ export default function VerifyPage() {
       // Check if user is an admin
       if (result.admin && result.admin.active) {
         toast.success('Admin verification successful!', { id: 'verifyingOtp' });
-        router.push('/dashboard');
+      router.push('/dashboard');
       } else {
         setError('Access denied. Only admins can access this system.');
         toast.error('Access denied. Only admins can access this system.', { id: 'verifyingOtp' });

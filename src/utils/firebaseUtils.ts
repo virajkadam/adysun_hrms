@@ -54,12 +54,99 @@ export const checkAdminByEmail = async (email: string) => {
   }
 };
 
+// Custom session management for Mobile + Password authentication
+export const createAdminSession = async (adminId: string, adminData: any) => {
+  try {
+    console.log('🔐 Creating custom admin session...');
+    
+    // Create a session document
+    const sessionData = {
+      adminId: adminId,
+      adminName: adminData.name,
+      adminEmail: adminData.email,
+      adminMobile: adminData.mobile,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      isActive: true
+    };
+    
+    const sessionRef = await addDoc(collection(db, 'admin_sessions'), sessionData);
+    console.log('✅ Admin session created:', sessionRef.id);
+    
+    return sessionRef.id;
+  } catch (error) {
+    console.error('Error creating admin session:', error);
+    throw error;
+  }
+};
+
+export const validateAdminSession = async (sessionId: string) => {
+  try {
+    const sessionDoc = await getDoc(doc(db, 'admin_sessions', sessionId));
+    
+    if (sessionDoc.exists()) {
+      const sessionData = sessionDoc.data();
+      const now = new Date();
+      const expiresAt = sessionData.expiresAt.toDate();
+      
+      if (sessionData.isActive && now < expiresAt) {
+        return sessionData;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error validating admin session:', error);
+    return null;
+  }
+};
+
 // Employee CRUD operations
 export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
   try {
+    console.log('🚀 Starting employee creation process...');
+    console.log('📋 Employee data to save:', employeeData);
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('🔐 === FIRESTORE WRITE ATTEMPT ===');
+    console.log('📁 Collection: employees');
+    console.log('📄 Document data:', JSON.stringify(employeeData, null, 2));
+    
     const docRef = await addDoc(collection(db, 'employees'), employeeData);
+    
+    console.log('✅ === SUCCESS ===');
+    console.log('🆔 New Employee ID:', docRef.id);
+    console.log('📁 Document created in Firestore successfully!');
+    
     return { id: docRef.id, ...employeeData };
-  } catch (error) {
+  } catch (error: any) {
+    console.log('❌ === ERROR ===');
+    console.log('🚨 Error type:', error.constructor.name);
+    console.log('📝 Error message:', error.message);
+    console.log('🔍 Error code:', error.code);
+    
+    if (error.code === 'permission-denied') {
+      console.log('🔒 PERMISSION DENIED - This means:');
+      console.log('   1. Custom admin session is invalid or expired');
+      console.log('   2. Firestore rules are blocking the operation');
+      console.log('   3. Check if admin is properly logged in with Mobile + Password');
+    }
+    
     console.error('Error adding employee:', error);
     throw error;
   }
@@ -88,11 +175,33 @@ export const deleteEmployee = async (id: string) => {
 
 export const getEmployees = async () => {
   try {
+    console.log('🔍 Fetching employees with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching from collection: employees');
+    
     const querySnapshot = await getDocs(collection(db, 'employees'));
     const employees: Employee[] = [];
     querySnapshot.forEach((doc) => {
       employees.push({ id: doc.id, ...doc.data() } as Employee);
     });
+    
+    console.log('✅ Successfully fetched employees:', employees.length);
     return employees;
   } catch (error) {
     console.error('Error getting employees:', error);
@@ -150,11 +259,27 @@ export const deleteEmployment = async (id: string) => {
 
 export const getEmployments = async () => {
   try {
+    console.log('🔍 Fetching employments with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching from collection: employments');
+    
     const querySnapshot = await getDocs(collection(db, 'employments'));
     const employments: Employment[] = [];
     querySnapshot.forEach((doc) => {
       employments.push({ id: doc.id, ...doc.data() } as Employment);
     });
+    
+    console.log('✅ Successfully fetched employments:', employments.length);
     return employments;
   } catch (error) {
     console.error('Error getting employments:', error);
