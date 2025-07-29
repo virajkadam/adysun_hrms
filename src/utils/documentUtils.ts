@@ -130,3 +130,18 @@ export const getPDFInfo = async (pdfBytes) => {
     return null;
   }
 }; 
+
+/**
+ * Formats a date as '20 Jun 2025'.
+ * @param date - The date string or Date object to format.
+ * @returns The formatted date string.
+ */
+export function formatDateToDayMonYear(date: string | Date): string {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  if (isNaN(d.getTime())) return '-';
+  return d.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+} 

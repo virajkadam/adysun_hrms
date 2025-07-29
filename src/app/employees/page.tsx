@@ -7,6 +7,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployees, deleteEmployee } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -171,7 +172,7 @@ export default function EmployeesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {employee.joinDate ? new Date(employee.joinDate).toLocaleDateString() : '-'}
+                        {employee.joinDate ? formatDateToDayMonYear(employee.joinDate) : '-'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
