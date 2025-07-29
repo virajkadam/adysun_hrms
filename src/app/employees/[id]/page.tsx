@@ -7,6 +7,7 @@ import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'reac
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, deleteEmployee, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 import { Employee, Employment } from '@/types';
+import { formatDateToDayMonYearWithTime, formatDateToDayMonYear } from '@/utils/documentUtils';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -216,14 +217,14 @@ export default function EmployeeViewPage({ params }: PageParams) {
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employee.dateOfBirth ? new Date(employee.dateOfBirth).toLocaleDateString() : '-'}
+              {employee.dateOfBirth ? formatDateToDayMonYear(employee.dateOfBirth) : '-'}
             </p>
             <p className="text-sm text-gray-500">Date of Birth</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employee.joinDate ? new Date(employee.joinDate).toLocaleDateString() : '-'}
+              {employee.joinDate ? formatDateToDayMonYear(employee.joinDate) : '-'}
             </p>
             <p className="text-sm text-gray-500">Join Date</p>
           </div>
@@ -557,9 +558,9 @@ export default function EmployeeViewPage({ params }: PageParams) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {new Date(employment.startDate).toLocaleDateString()}
+                        {formatDateToDayMonYear(employment.startDate)}
                         {employment.endDate && (
-                          <> - {new Date(employment.endDate).toLocaleDateString()}</>
+                          <> - {formatDateToDayMonYear(employment.endDate)}</>
                         )}
                       </div>
                     </td>
@@ -594,6 +595,47 @@ export default function EmployeeViewPage({ params }: PageParams) {
             </table>
           </div>
         )}
+      </div>
+
+      {/* Audit Trail Section */}
+      <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <FiBook className="mr-2" /> Audit Trail
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Created By */}
+          <div className="bg-gray-50 rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employee.createdBy || 'System'}
+            </p>
+            <p className="text-sm text-gray-500">Created By</p>
+          </div>
+          
+          {/* Created At */}
+          <div className="bg-gray-50 rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employee.createdAt ? formatDateToDayMonYearWithTime(employee.createdAt) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Created At</p>
+          </div>
+          
+          {/* Updated By */}
+          <div className="bg-gray-50 rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employee.updatedBy || 'Not Updated'}
+            </p>
+            <p className="text-sm text-gray-500">Updated By</p>
+          </div>
+          
+          {/* Updated At */}
+          <div className="bg-gray-50 rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employee.updatedAt ? formatDateToDayMonYearWithTime(employee.updatedAt) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Updated At</p>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
