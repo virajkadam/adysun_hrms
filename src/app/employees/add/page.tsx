@@ -86,7 +86,7 @@ export default function AddEmployeePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name*
+                  <span className="text-red-500">*</span> Name
                 </label>
                 <input
                   type="text"
@@ -111,7 +111,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date of Birth*
+                  <span className="text-red-500">*</span> Date of Birth
                 </label>
                 <input
                   type="date"
@@ -134,7 +134,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Employee ID*
+                  <span className="text-red-500">*</span> Employee ID
                 </label>
                 <input
                   type="text"
@@ -196,7 +196,7 @@ export default function AddEmployeePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Mobile No.*
+                  <span className="text-red-500">*</span> Mobile No.
                 </label>
                 <input
                   type="tel"
@@ -217,7 +217,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email ID*
+                  <span className="text-red-500">*</span> Email ID
                 </label>
                 <input
                   type="email"
@@ -240,7 +240,7 @@ export default function AddEmployeePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Current Address*
+                  <span className="text-red-500">*</span> Current Address
                 </label>
                 <textarea
                   placeholder="Enter current address"
@@ -273,7 +273,7 @@ export default function AddEmployeePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Aadhar Card*
+                  <span className="text-red-500">*</span> Aadhar Card
                 </label>
                 <input
                   type="text"
@@ -305,7 +305,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  PAN Card*
+                  <span className="text-red-500">*</span> PAN Card
                 </label>
                 <input
                   type="text"
@@ -351,7 +351,7 @@ export default function AddEmployeePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Bank Name*
+                  <span className="text-red-500">*</span> Bank Name
                 </label>
                 <input
                   type="text"
@@ -368,7 +368,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Account No.*
+                  <span className="text-red-500">*</span> Account No.
                 </label>
                 <input
                   type="text"
@@ -389,7 +389,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  IFSC Code*
+                  <span className="text-red-500">*</span> IFSC Code
                 </label>
                 <input
                   type="text"
@@ -410,7 +410,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Account Holder Name*
+                  <span className="text-red-500">*</span> Account Holder Name
                 </label>
                 <input
                   type="text"

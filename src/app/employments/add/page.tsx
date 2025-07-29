@@ -197,7 +197,7 @@ export default function AddEmploymentPage() {
             <div className="mb-6">
               <div className="w-full md:w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Employee*
+                  <span className="text-red-500">*</span> Employee
                 </label>
                 <select
                   {...register('employeeId', { required: 'Employee is required' })}
@@ -223,7 +223,7 @@ export default function AddEmploymentPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Employment ID*
+                    <span className="text-red-500">*</span> Employment ID
                   </label>
                   <input
                     type="text"
@@ -244,7 +244,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Joining Date*
+                    <span className="text-red-500">*</span> Joining Date
                   </label>
                   <input
                     type="date"
@@ -269,7 +269,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    CTC (₹)*
+                    <span className="text-red-500">*</span> CTC (₹)
                   </label>
                   <input
                     type="number"
@@ -288,7 +288,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    In-hand CTC (₹)*
+                    <span className="text-red-500">*</span> In-hand CTC (₹)
                   </label>
                   <input
                     type="number"
@@ -352,7 +352,7 @@ export default function AddEmploymentPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Salary ID*
+                    <span className="text-red-500">*</span> Salary ID
                   </label>
                   <input
                     type="text"
@@ -373,7 +373,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Salary per annum (₹)*
+                    <span className="text-red-500">*</span> Salary per annum (₹)
                   </label>
                   <input
                     type="number"
@@ -392,7 +392,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Salary per month (₹)*
+                    <span className="text-red-500">*</span> Salary per month (₹)
                   </label>
                   <input
                     type="number"
@@ -410,7 +410,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Basic (₹)*
+                    <span className="text-red-500">*</span> Basic (₹)
                   </label>
                   <input
                     type="number"
@@ -620,7 +620,7 @@ export default function AddEmploymentPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Job Title*
+                    <span className="text-red-500">*</span> Job Title
                   </label>
                   <input
                     type="text"
@@ -673,7 +673,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Employment Type*
+                    <span className="text-red-500">*</span> Employment Type
                   </label>
                   <select
                     {...register('employmentType', { required: 'Employment type is required' })}

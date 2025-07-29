@@ -57,3 +57,6 @@ The user wants the assistant to always include the @memories.md file in every ch
 ---
 
 The user prefers that tooltips should match the accent color of the button they are attached to - using the lighter accent color (like button background) rather than the darker base color (like button icon), following the pattern where button background is accent color and button icon is base color.
+
+---
+
