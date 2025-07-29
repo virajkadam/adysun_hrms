@@ -22,11 +22,12 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   className = '',
 }) => {
   // Extract color from colorClass to determine tooltip color
-  const getTooltipColor = (colorClass: string): 'blue' | 'green' | 'red' | 'gray' | 'purple' => {
+  const getTooltipColor = (colorClass: string): 'blue' | 'green' | 'red' | 'gray' | 'purple' | 'yellow' => {
     if (colorClass.includes('blue')) return 'blue';
     if (colorClass.includes('green')) return 'green';
     if (colorClass.includes('red')) return 'red';
-    if (colorClass.includes('amber') || colorClass.includes('yellow')) return 'purple'; // Using purple for amber/yellow
+    if (colorClass.includes('amber') || colorClass.includes('yellow')) return 'yellow';
+    if (colorClass.includes('purple')) return 'purple';
     return 'gray';
   };
 

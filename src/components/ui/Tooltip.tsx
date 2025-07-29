@@ -8,7 +8,7 @@ interface TooltipProps {
   className?: string;
   delay?: number;
   maxWidth?: number;
-  color?: 'blue' | 'green' | 'red' | 'gray' | 'purple';
+  color?: 'blue' | 'green' | 'red' | 'gray' | 'purple' | 'yellow';
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -97,6 +97,8 @@ const Tooltip: React.FC<TooltipProps> = ({
         return 'bg-red-50 text-red-700 border-red-200';
       case 'purple':
         return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'yellow':
+        return 'bg-yellow-50 text-yellow-700 border-yellow-200';
       case 'gray':
       default:
         return 'bg-gray-50 text-gray-700 border-gray-200';
@@ -113,6 +115,8 @@ const Tooltip: React.FC<TooltipProps> = ({
         return 'border-t-red-50';
       case 'purple':
         return 'border-t-purple-50';
+      case 'yellow':
+        return 'border-t-yellow-50';
       case 'gray':
       default:
         return 'border-t-gray-50';

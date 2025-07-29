@@ -239,7 +239,7 @@ export default function EmployeesPage() {
                         <div className="flex items-center justify-center space-x-3">
                           <ActionButton
                             icon={<FiEye className="w-5 h-5" />}
-                            title="View Employee Details"
+                            title="View"
                             colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                             href={`/employees/${employee.id}`}
                           />
