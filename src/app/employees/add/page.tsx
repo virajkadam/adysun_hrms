@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployee } from '@/utils/firebaseUtils';
+import { getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import { FiSave, FiX } from 'react-icons/fi';
 import Link from 'next/link';
@@ -32,7 +33,20 @@ export default function AddEmployeePage() {
       setIsSubmitting(true);
       setError(null);
       toast.loading('Adding employee...', { id: 'add-employee' });
-      await addEmployee(data);
+      
+      // Get admin data for audit fields
+      const { adminId, currentTimestamp } = getAdminDataForAudit();
+      
+      // Add audit fields to employee data
+      const employeeDataWithAudit = {
+        ...data,
+        createdAt: currentTimestamp,
+        createdBy: adminId, // Permanent admin document ID
+        updatedAt: currentTimestamp,
+        updatedBy: adminId,
+      };
+      
+      await addEmployee(employeeDataWithAudit);
       toast.success('Employee added successfully!', { id: 'add-employee' });
       router.push('/employees');
     } catch (error: ApiError) {

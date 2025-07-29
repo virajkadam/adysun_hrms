@@ -317,3 +317,23 @@ export const getEmploymentsByEmployee = async (employeeId: string) => {
     throw error;
   }
 }; 
+
+/**
+ * Get admin data from localStorage for audit purposes
+ * @returns Admin data object or throws error if not found
+ */
+export const getAdminDataForAudit = () => {
+  const adminSessionId = localStorage.getItem('adminSessionId');
+  const adminData = localStorage.getItem('adminData');
+  
+  if (!adminSessionId || !adminData) {
+    throw new Error('No admin session found. Please log in as admin first.');
+  }
+  
+  const admin = JSON.parse(adminData);
+  return {
+    adminId: admin.id,
+    adminName: admin.name,
+    currentTimestamp: new Date().toISOString()
+  };
+}; 

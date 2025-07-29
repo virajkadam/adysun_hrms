@@ -5,18 +5,19 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployment, getEmployees } from '@/utils/firebaseUtils';
+import { getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import { FiSave, FiX } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 
-interface EmploymentFormData extends Omit<Employment, 'id'> {
+interface EmploymentFormData extends Omit<Employment, 'id' | 'relievingCtc'> {
   // Add all the fields we need
   employmentId: string;
   joiningDate: string;
   incrementDate: string;
   ctc: number;
   inHandCtc: number;
-  relievingCtc?: number;
+  relievingCtc?: string; // Form input is string, will be converted to number|null
   isIT: boolean;
   isResignation: boolean;
   
@@ -99,6 +100,9 @@ export default function AddEmploymentPage() {
       setError(null);
       toast.loading('Creating employment record...', { id: 'add-employment' });
       
+      // Get admin data for audit fields
+      const { adminId, currentTimestamp } = getAdminDataForAudit();
+      
       // Convert string values to numbers and handle undefined values
       const formattedData = {
         ...data,
@@ -117,6 +121,11 @@ export default function AddEmploymentPage() {
         payableDays: Number(data.payableDays),
         additionalAllowance: Number(data.additionalAllowance) || 0,
         specialAllowance: Number(data.specialAllowance) || 0,
+        // Add audit fields
+        createdAt: currentTimestamp,
+        createdBy: adminId, // Permanent admin document ID
+        updatedAt: currentTimestamp,
+        updatedBy: adminId,
       };
       
       await addEmployment(formattedData);

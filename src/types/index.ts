@@ -78,6 +78,12 @@ export interface Employee {
   
   // Salary information for offer letter
   salary?: number;
+  
+  // Audit fields
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 // Employment type
@@ -94,7 +100,7 @@ export interface Employment {
   endDate?: string;
   ctc?: number;
   inHandCtc?: number;
-  relievingCtc?: number;
+  relievingCtc?: number | null;
   isIT?: boolean;
   isResignation?: boolean;
   
@@ -149,6 +155,12 @@ export interface Employment {
   percentageIncrease?: number;
   performanceRating?: string;
   effectiveDate?: string;
+  
+  // Audit fields
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 // Salary Slip type
