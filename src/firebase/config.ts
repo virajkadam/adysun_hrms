@@ -4,15 +4,15 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics } from 'firebase/analytics';
 
-// Your Firebase configuration
+// Updated Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyClAPu6h2UqoQjluZjT1cm8Z9GKI2N3yN8",
-  authDomain: "employee-admin-c83e8.firebaseapp.com",
-  projectId: "employee-admin-c83e8",
-  storageBucket: "employee-admin-c83e8.appspot.com",
-  messagingSenderId: "505257318838",
-  appId: "1:505257318838:web:a2757c97da2c16b8020917",
-  measurementId: "G-VNLCEDFYCV"
+  apiKey: "AIzaSyCHNx1oTFKeC88VWneyRuDvWtzcpMpPew0",
+  authDomain: "adysun-hrms.firebaseapp.com",
+  projectId: "adysun-hrms",
+  storageBucket: "adysun-hrms.firebasestorage.app",
+  messagingSenderId: "481182176506",
+  appId: "1:481182176506:web:85848f6acd565f1b1e6543",
+  measurementId: "G-VY9WBFGBM3"
 };
 
 // Initialize Firebase
