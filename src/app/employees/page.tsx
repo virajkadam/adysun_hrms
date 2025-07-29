@@ -245,19 +245,19 @@ export default function EmployeesPage() {
                           />
                           <ActionButton
                             icon={<FiBriefcase className="w-5 h-5" />}
-                            title="View Employment History"
+                            title="View"
                             colorClass="bg-green-100 text-green-600 hover:text-green-900"
                             href={`/employees/${employee.id}#employments`}
                           />
                           <ActionButton
                             icon={<FiEdit className="w-5 h-5" />}
-                            title="Edit Employee"
+                            title="Edit"
                             colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
                             href={`/employees/${employee.id}/edit`}
                           />
                           <ActionButton
                             icon={<FiTrash2 className="w-5 h-5" />}
-                            title="Delete Employee"
+                            title="Delete"
                             colorClass="bg-red-100 text-red-600 hover:text-red-900"
                             onClick={() => handleDeleteClick(employee.id)}
                             as="button"
