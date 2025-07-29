@@ -9,7 +9,7 @@ interface SearchBarProps {
   className?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, placeholder = 'Search...', ariaLabel = 'Search', className = '' }) => (
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, placeholder = 'Search', ariaLabel = 'Search', className = '' }) => (
   <div className={`relative w-full ${className}`}>
     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
       <FiSearch className="text-gray-400" />
