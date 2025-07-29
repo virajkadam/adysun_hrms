@@ -1,6 +1,7 @@
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Employee, Employment } from '../types';
+import { useAuditTrail } from '../hooks/useAuditTrail';
 
 // Admin authentication functions
 export const checkAdminByPhone = async (phoneNumber: string) => {
@@ -154,9 +155,25 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
 
 export const updateEmployee = async (id: string, employeeData: Partial<Employee>) => {
   try {
+    console.log('🔄 Starting employee update process...');
+    
+    // Get audit fields using the hook
+    const { getAuditFields } = useAuditTrail();
+    const auditFields = getAuditFields();
+    
+    // Add audit fields to update data
+    const updateDataWithAudit = {
+      ...employeeData,
+      ...auditFields,
+    };
+    
+    console.log('📋 Employee update data with audit:', updateDataWithAudit);
+    
     const employeeRef = doc(db, 'employees', id);
-    await updateDoc(employeeRef, employeeData);
-    return { id, ...employeeData };
+    await updateDoc(employeeRef, updateDataWithAudit);
+    
+    console.log('✅ Employee updated successfully with audit trail');
+    return { id, ...updateDataWithAudit };
   } catch (error) {
     console.error('Error updating employee:', error);
     throw error;
@@ -238,9 +255,25 @@ export const addEmployment = async (employmentData: Omit<Employment, 'id'>) => {
 
 export const updateEmployment = async (id: string, employmentData: Partial<Employment>) => {
   try {
+    console.log('🔄 Starting employment update process...');
+    
+    // Get audit fields using the hook
+    const { getAuditFields } = useAuditTrail();
+    const auditFields = getAuditFields();
+    
+    // Add audit fields to update data
+    const updateDataWithAudit = {
+      ...employmentData,
+      ...auditFields,
+    };
+    
+    console.log('📋 Employment update data with audit:', updateDataWithAudit);
+    
     const employmentRef = doc(db, 'employments', id);
-    await updateDoc(employmentRef, employmentData);
-    return { id, ...employmentData };
+    await updateDoc(employmentRef, updateDataWithAudit);
+    
+    console.log('✅ Employment updated successfully with audit trail');
+    return { id, ...updateDataWithAudit };
   } catch (error) {
     console.error('Error updating employment:', error);
     throw error;

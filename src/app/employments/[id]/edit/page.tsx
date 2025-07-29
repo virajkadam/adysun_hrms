@@ -6,12 +6,13 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployment, updateEmployment, getEmployees } from '@/utils/firebaseUtils';
+import { getEmployment, updateEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 
-interface EmploymentFormData extends Omit<Employment, 'id' | 'benefits'> {
+interface EmploymentFormData extends Omit<Employment, 'id' | 'benefits' | 'relievingCtc'> {
   benefits: string | string[];
+  relievingCtc?: string; // Form input is string, will be converted to number|null
 }
 
 export default function EditEmploymentPage({ params }: { params: { id: string } }) {
@@ -37,50 +38,21 @@ export default function EditEmploymentPage({ params }: { params: { id: string } 
         // Fetch employment data
         const employmentData = await getEmployment(id);
         
-        // Reset form with employment data
+        // Reset form with employment data (excluding audit fields)
+        const { 
+          id: _, 
+          createdAt, 
+          createdBy, 
+          updatedAt, 
+          updatedBy, 
+          relievingCtc,
+          ...rest 
+        } = employmentData;
+        
         reset({
-          employeeId: employmentData.employeeId,
-          contractType: employmentData.contractType,
-          startDate: employmentData.startDate,
-          endDate: employmentData.endDate || '',
-          salary: employmentData.salary,
-          paymentFrequency: employmentData.paymentFrequency,
+          ...rest,
+          relievingCtc: relievingCtc ? relievingCtc.toString() : '',
           benefits: employmentData.benefits?.join(', ') || '',
-          
-          // Employment Information
-          employmentId: employmentData.employmentId || '',
-          joiningDate: employmentData.joiningDate || employmentData.startDate || '',
-          incrementDate: employmentData.incrementDate || '',
-          ctc: employmentData.ctc || employmentData.salary || 0,
-          inHandCtc: employmentData.inHandCtc || 0,
-          relievingCtc: employmentData.relievingCtc || 0,
-          isIT: employmentData.isIT || false,
-          isResignation: employmentData.isResignation || false,
-          
-          // Salary Information
-          salaryId: employmentData.salaryId || '',
-          salaryPerMonth: employmentData.salaryPerMonth || employmentData.salary / 12 || 0,
-          basic: employmentData.basic || 0,
-          da: employmentData.da || 0,
-          hra: employmentData.hra || 0,
-          pf: employmentData.pf || 0,
-          medicalAllowance: employmentData.medicalAllowance || 0,
-          transport: employmentData.transport || 0,
-          gratuity: employmentData.gratuity || 0,
-          totalLeaves: employmentData.totalLeaves || 0,
-          salaryCreditDate: employmentData.salaryCreditDate || '',
-          payableDays: employmentData.payableDays || 0,
-          paymentMode: employmentData.paymentMode || '',
-          additionalAllowance: employmentData.additionalAllowance || 0,
-          specialAllowance: employmentData.specialAllowance || 0,
-          
-          // Job Details
-          jobTitle: employmentData.jobTitle || '',
-          department: employmentData.department || '',
-          location: employmentData.location || '',
-          reportingManager: employmentData.reportingManager || '',
-          employmentType: employmentData.employmentType || employmentData.contractType || '',
-          workSchedule: employmentData.workSchedule || '',
         });
       } catch (error: any) {
         setError(error.message || 'Failed to fetch data');

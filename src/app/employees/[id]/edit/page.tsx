@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, updateEmployee } from '@/utils/firebaseUtils';
+import { getEmployee, updateEmployee, getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -33,8 +34,8 @@ export default function EditEmployeePage({ params }: PageParams) {
       try {
         setLoading(true);
         const employeeData = await getEmployee(id);
-        // Reset form with all employee data except id
-        const { id: _, ...rest } = employeeData;
+        // Reset form with all employee data except id and audit fields
+        const { id: _, createdAt, createdBy, updatedAt, updatedBy, ...rest } = employeeData;
         reset(rest);
       } catch (error: ApiError) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
@@ -51,11 +52,15 @@ export default function EditEmployeePage({ params }: PageParams) {
     try {
       setIsSubmitting(true);
       setError(null);
+      toast.loading('Updating employee...', { id: 'updateEmployee' });
+      
       await updateEmployee(id, data);
+      toast.success('Employee updated successfully!', { id: 'updateEmployee' });
       router.push(`/employees/${id}`);
     } catch (error: ApiError) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to update employee';
       setError(errorMessage);
+      toast.error(errorMessage, { id: 'updateEmployee' });
       setIsSubmitting(false);
     }
   };
@@ -393,6 +398,7 @@ export default function EditEmployeePage({ params }: PageParams) {
           </div>
         </form>
       </div>
+      <Toaster />
     </DashboardLayout>
   );
 } 
