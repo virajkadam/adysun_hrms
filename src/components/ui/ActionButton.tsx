@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Tooltip from './Tooltip';
 
 type ActionButtonProps = {
   icon: React.ReactNode;
@@ -20,19 +21,39 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   as,
   className = '',
 }) => {
-  const baseClasses =
-    'tooltip border border-gray-300 rounded-lg p-2 ' + colorClass + ' ' + className;
+  // Extract color from colorClass to determine tooltip color
+  const getTooltipColor = (colorClass: string): 'blue' | 'green' | 'red' | 'gray' | 'purple' => {
+    if (colorClass.includes('blue')) return 'blue';
+    if (colorClass.includes('green')) return 'green';
+    if (colorClass.includes('red')) return 'red';
+    if (colorClass.includes('amber') || colorClass.includes('yellow')) return 'purple'; // Using purple for amber/yellow
+    return 'gray';
+  };
+
+  const tooltipColor = getTooltipColor(colorClass);
+  // Ensure perfect square buttons with proper padding like refresh button
+  const baseClasses = `border border-gray-300 rounded-md p-2 w-10 h-10 flex items-center justify-center ${colorClass} ${className}`;
+
+  const buttonContent = (
+    <div className="flex items-center justify-center w-full h-full">
+      {icon}
+    </div>
+  );
 
   if (as === 'link' || href) {
     return (
-      <Link href={href!} className={baseClasses} title={title}>
-        {icon}
-      </Link>
+      <Tooltip content={title} color={tooltipColor} position="top">
+        <Link href={href!} className={baseClasses}>
+          {buttonContent}
+        </Link>
+      </Tooltip>
     );
   }
   return (
-    <button onClick={onClick} className={baseClasses} title={title}>
-      {icon}
-    </button>
+    <Tooltip content={title} color={tooltipColor} position="top">
+      <button onClick={onClick} className={baseClasses}>
+        {buttonContent}
+      </button>
+    </Tooltip>
   );
 };
