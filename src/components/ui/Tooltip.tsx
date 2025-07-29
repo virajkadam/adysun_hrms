@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 interface TooltipProps {
@@ -8,6 +8,7 @@ interface TooltipProps {
   className?: string;
   delay?: number;
   maxWidth?: number;
+  color?: 'blue' | 'green' | 'red' | 'gray' | 'purple';
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -16,7 +17,8 @@ const Tooltip: React.FC<TooltipProps> = ({
   position = 'top',
   className = '',
   delay = 200,
-  maxWidth = 200
+  maxWidth = 200,
+  color = 'gray'
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
@@ -24,21 +26,7 @@ const Tooltip: React.FC<TooltipProps> = ({
   const tooltipRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  const showTooltip = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsVisible(true);
-      updatePosition();
-    }, delay);
-  };
-
-  const hideTooltip = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setIsVisible(false);
-  };
-
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!triggerRef.current || !tooltipRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -69,13 +57,27 @@ const Tooltip: React.FC<TooltipProps> = ({
     }
 
     setTooltipPosition({ top, left });
+  }, [position]);
+
+  const showTooltip = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(true);
+      updatePosition();
+    }, delay);
+  };
+
+  const hideTooltip = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsVisible(false);
   };
 
   useEffect(() => {
     if (isVisible) {
       updatePosition();
     }
-  }, [isVisible, position]);
+  }, [isVisible, updatePosition]);
 
   useEffect(() => {
     return () => {
@@ -85,18 +87,53 @@ const Tooltip: React.FC<TooltipProps> = ({
     };
   }, []);
 
+  const getColorClasses = () => {
+    switch (color) {
+      case 'blue':
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'green':
+        return 'bg-green-50 text-green-700 border-green-200';
+      case 'red':
+        return 'bg-red-50 text-red-700 border-red-200';
+      case 'purple':
+        return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'gray':
+      default:
+        return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getArrowColorClasses = () => {
+    switch (color) {
+      case 'blue':
+        return 'border-t-blue-50';
+      case 'green':
+        return 'border-t-green-50';
+      case 'red':
+        return 'border-t-red-50';
+      case 'purple':
+        return 'border-t-purple-50';
+      case 'gray':
+      default:
+        return 'border-t-gray-50';
+    }
+  };
+
   const getArrowClasses = () => {
+    const baseClasses = 'absolute w-0 h-0 border-4 border-transparent';
+    const colorClasses = getArrowColorClasses();
+    
     switch (position) {
       case 'top':
-        return 'top-full left-1/2 transform -translate-x-1/2 border-t-gray-800';
+        return `${baseClasses} top-full left-1/2 transform -translate-x-1/2 ${colorClasses}`;
       case 'bottom':
-        return 'bottom-full left-1/2 transform -translate-x-1/2 border-b-gray-800';
+        return `${baseClasses} bottom-full left-1/2 transform -translate-x-1/2 ${colorClasses.replace('border-t-', 'border-b-')}`;
       case 'left':
-        return 'left-full top-1/2 transform -translate-y-1/2 border-l-gray-800';
+        return `${baseClasses} left-full top-1/2 transform -translate-y-1/2 ${colorClasses.replace('border-t-', 'border-l-')}`;
       case 'right':
-        return 'right-full top-1/2 transform -translate-y-1/2 border-r-gray-800';
+        return `${baseClasses} right-full top-1/2 transform -translate-y-1/2 ${colorClasses.replace('border-t-', 'border-r-')}`;
       default:
-        return 'top-full left-1/2 transform -translate-x-1/2 border-t-gray-800';
+        return `${baseClasses} top-full left-1/2 transform -translate-x-1/2 ${colorClasses}`;
     }
   };
 
@@ -124,14 +161,14 @@ const Tooltip: React.FC<TooltipProps> = ({
           aria-hidden="true"
         >
           <div 
-            className="relative bg-gray-800 text-white px-4 py-2.5 rounded-lg shadow-xl border border-gray-700"
+            className={`relative px-4 py-2.5 rounded-lg shadow-xl border ${getColorClasses()}`}
             style={{ maxWidth: `${maxWidth}px` }}
           >
             <div className="text-sm font-medium leading-relaxed whitespace-nowrap">
               {content}
             </div>
             {/* Arrow */}
-            <div className={`absolute w-0 h-0 border-4 border-transparent ${getArrowClasses()}`}></div>
+            <div className={getArrowClasses()}></div>
           </div>
         </div>,
         document.body

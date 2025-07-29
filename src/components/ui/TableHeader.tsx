@@ -41,7 +41,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     </div>
     <div className="flex items-center gap-3">
       {onRefresh && (
-        <Tooltip content="Refresh data" position="top">
+        <Tooltip content="Refresh" position="top" color="blue">
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
