@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiRefreshCw } from 'react-icons/fi';
 import SearchBar from './SearchBar';
+import Tooltip from './Tooltip';
 
 interface TableHeaderProps {
   total: number;
@@ -40,21 +41,22 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     </div>
     <div className="flex items-center gap-3">
       {onRefresh && (
-        <button
-          onClick={onRefresh}
-          disabled={isRefreshing}
-          className={`p-2 rounded-md transition-all duration-200 ${
-            isRefreshing 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-              : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
-          }`}
-          title="Refresh data"
-          aria-label="Refresh data"
-        >
-          <FiRefreshCw 
-            className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
-          />
-        </button>
+        <Tooltip content="Refresh data" position="top">
+          <button
+            onClick={onRefresh}
+            disabled={isRefreshing}
+            className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
+              isRefreshing 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+            }`}
+            aria-label="Refresh data"
+          >
+            <FiRefreshCw 
+              className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+            />
+          </button>
+        </Tooltip>
       )}
       <div className="w-64">
         <SearchBar
