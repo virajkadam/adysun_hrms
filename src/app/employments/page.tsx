@@ -18,6 +18,7 @@ export default function EmploymentsPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
@@ -104,10 +105,18 @@ export default function EmploymentsPage() {
 
   const filteredEmployments = employments.filter(employment => {
     const employeeName = employeeNames[employment.employeeId] || '';
-    return employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           employment.contractType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           (employment.jobTitle && employment.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
-           (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch = 
+      employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employment.contractType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (employment.jobTitle && employment.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesFilter = 
+      filterValue === 'all' || 
+      (filterValue === 'active' && employment.employmentType === 'full-time') ||
+      (filterValue === 'inactive' && employment.employmentType === 'part-time');
+    
+    return matchesSearch && matchesFilter;
   });
 
   const total = filteredEmployments.length;
@@ -160,8 +169,8 @@ export default function EmploymentsPage() {
                 </div>
               </div>
               <div className="p-6">
-                <div className="animate-pulse space-y-4">
-                  {[...Array(5)].map((_, index) => (
+            <div className="animate-pulse space-y-4">
+              {[...Array(5)].map((_, index) => (
                     <div key={index} className="flex items-center space-x-6">
                       <div className="bg-gray-200 h-4 w-32 rounded animate-pulse"></div>
                       <div className="bg-gray-200 h-6 w-20 rounded-full animate-pulse"></div>
@@ -172,7 +181,7 @@ export default function EmploymentsPage() {
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                       </div>
-                    </div>
+                  </div>
                   ))}
                 </div>
               </div>
@@ -186,7 +195,7 @@ export default function EmploymentsPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Employments"
@@ -199,6 +208,9 @@ export default function EmploymentsPage() {
           searchAriaLabel="Search employments"
           onRefresh={handleRefresh}
           isRefreshing={refreshing}
+          showFilter={true}
+          filterValue={filterValue}
+          onFilterChange={setFilterValue}
           backButton={{
             href: '/dashboard',
             label: 'Back'
@@ -215,7 +227,12 @@ export default function EmploymentsPage() {
 
         {filteredEmployments.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            {searchTerm ? 'No employments match your search' : 'No employments found. Add your first employment!'}
+            {searchTerm && filterValue === 'all' && 'No employments match your search'}
+            {searchTerm && filterValue === 'active' && 'No active employments match your search'}
+            {searchTerm && filterValue === 'inactive' && 'No inactive employments match your search'}
+            {!searchTerm && filterValue === 'active' && 'No active employments found'}
+            {!searchTerm && filterValue === 'inactive' && 'No inactive employments found'}
+            {!searchTerm && filterValue === 'all' && 'No employments found. Add your first employment!'}
           </div>
         ) : (
           <div className="overflow-x-auto">
