@@ -113,18 +113,10 @@ export default function EmployeesPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Employees</h1>
-        <Link
-          href="/employees/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-700"
-        >
-          <FiPlus /> Add Employee
-        </Link>
-      </div>
-
+      
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
+          title="Employees"
           total={total}
           active={active}
           inactive={inactive}
@@ -134,6 +126,14 @@ export default function EmployeesPage() {
           searchAriaLabel="Search employees"
           onRefresh={handleRefresh}
           isRefreshing={refreshing}
+          actionButtons={[
+            {
+              label: 'Add Employee',
+              href: '/employees/add',
+              icon: <FiPlus />,
+              variant: 'primary'
+            }
+          ]}
         />
 
         {filteredEmployees.length === 0 ? (

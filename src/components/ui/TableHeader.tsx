@@ -1,9 +1,20 @@
 import React from 'react';
-import { FiRefreshCw } from 'react-icons/fi';
+import { FiRefreshCw, FiPlus, FiEdit } from 'react-icons/fi';
+import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
 
+interface ActionButton {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  icon?: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  disabled?: boolean;
+}
+
 interface TableHeaderProps {
+  title?: string;
   total: number;
   active?: number;
   inactive?: number;
@@ -14,9 +25,12 @@ interface TableHeaderProps {
   dropdown?: React.ReactNode;
   onRefresh?: () => void;
   isRefreshing?: boolean;
+  actionButtons?: ActionButton[];
+  showStats?: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
+  title,
   total,
   active,
   inactive,
@@ -27,47 +41,124 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   dropdown,
   onRefresh,
   isRefreshing = false,
-}) => (
-  <div className="p-4 border-b flex justify-between items-center">
-    <div className="flex items-center gap-4 text-sm text-gray-600">
-      <span>Total: <span className="font-medium">{total}</span></span>
-      {typeof active === 'number' && (
-        <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
+  actionButtons = [],
+  showStats = true,
+}) => {
+  const getButtonClasses = (variant: string = 'primary') => {
+    const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
+    
+    switch (variant) {
+      case 'primary':
+        return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700`;
+      case 'secondary':
+        return `${baseClasses} bg-gray-600 text-white hover:bg-gray-700`;
+      case 'success':
+        return `${baseClasses} bg-green-600 text-white hover:bg-green-700`;
+      case 'warning':
+        return `${baseClasses} bg-amber-600 text-white hover:bg-amber-700`;
+      case 'danger':
+        return `${baseClasses} bg-red-600 text-white hover:bg-red-700`;
+      default:
+        return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700`;
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Page Title and Action Buttons */}
+      {(title || actionButtons.length > 0) && (
+        <div className="flex justify-between items-center px-6 pt-6 mb-0">
+          {title && (
+            <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+          )}
+          {actionButtons.length > 0 && (
+            <div className="flex items-center gap-3">
+              {actionButtons.map((button, index) => {
+                const buttonContent = (
+                  <>
+                    {button.icon}
+                    {button.label}
+                  </>
+                );
+
+                if (button.href) {
+                  return (
+                    <Link
+                      key={index}
+                      href={button.href}
+                      className={`${getButtonClasses(button.variant)} ${
+                        button.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      onClick={button.onClick}
+                    >
+                      {buttonContent}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={button.onClick}
+                    disabled={button.disabled}
+                    className={`${getButtonClasses(button.variant)} ${
+                      button.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {buttonContent}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       )}
-      {typeof inactive === 'number' && (
-        <span className="text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
-      )}
-      {dropdown && <span>{dropdown}</span>}
-    </div>
-    <div className="flex items-center gap-3">
-      {onRefresh && (
-        <Tooltip content="Refresh" position="top" color="blue">
-          <button
-            onClick={onRefresh}
-            disabled={isRefreshing}
-            className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
-              isRefreshing 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
-            }`}
-            aria-label="Refresh data"
-          >
-            <FiRefreshCw 
-              className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+
+      {/* Stats and Search Section */}
+      <div className="px-6 py-6 border-b border-gray-200 flex justify-between items-center">
+        {showStats && (
+          <div className="flex items-center gap-6 text-sm text-gray-600">
+            <span>Total: <span className="font-medium">{total}</span></span>
+            {typeof active === 'number' && (
+              <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
+            )}
+            {typeof inactive === 'number' && (
+              <span className="text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
+            )}
+            {dropdown && <span>{dropdown}</span>}
+          </div>
+        )}
+        <div className="flex items-center gap-4">
+          {onRefresh && (
+            <Tooltip content="Refresh" position="top" color="blue">
+              <button
+                onClick={onRefresh}
+                disabled={isRefreshing}
+                className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
+                  isRefreshing 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+                }`}
+                aria-label="Refresh data"
+              >
+                <FiRefreshCw 
+                  className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+                />
+              </button>
+            </Tooltip>
+          )}
+          <div className="w-64">
+            <SearchBar
+              value={searchValue}
+              onChange={onSearchChange}
+              placeholder={searchPlaceholder}
+              ariaLabel={searchAriaLabel}
             />
-          </button>
-        </Tooltip>
-      )}
-      <div className="w-64">
-        <SearchBar
-          value={searchValue}
-          onChange={onSearchChange}
-          placeholder={searchPlaceholder}
-          ariaLabel={searchAriaLabel}
-        />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default TableHeader; 
