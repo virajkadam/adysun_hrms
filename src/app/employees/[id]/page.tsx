@@ -8,6 +8,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, deleteEmployee, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 import { Employee, Employment } from '@/types';
 import { formatDateToDayMonYearWithTime, formatDateToDayMonYear } from '@/utils/documentUtils';
+import TableHeader from '@/components/ui/TableHeader';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -72,14 +73,45 @@ export default function EmployeeViewPage({ params }: PageParams) {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-gray-200 h-12 w-12"></div>
-            <div className="flex-1 space-y-4 py-1">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded"></div>
-                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          {/* Skeleton for TableHeader */}
+          <div className="space-y-6">
+            {/* Title and Action Buttons Skeleton */}
+            <div className="flex justify-between items-center px-6 py-6">
+              <div className="flex items-center">
+                <div className="bg-gray-200 h-10 w-20 rounded-full animate-pulse"></div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="bg-gray-200 h-8 w-32 rounded animate-pulse"></div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-200 h-10 w-24 rounded animate-pulse"></div>
+                <div className="bg-gray-200 h-10 w-24 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="px-6 pb-6">
+            <div className="animate-pulse space-y-6">
+              {/* Personal Details Skeleton */}
+              <div>
+                <div className="bg-gray-200 h-6 w-32 rounded mb-4"></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  {[...Array(8)].map((_, index) => (
+                    <div key={index} className="bg-gray-200 h-20 rounded"></div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Educational Details Skeleton */}
+              <div>
+                <div className="bg-gray-200 h-6 w-40 rounded mb-4"></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  {[...Array(4)].map((_, index) => (
+                    <div key={index} className="bg-gray-200 h-20 rounded"></div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -120,88 +152,41 @@ export default function EmployeeViewPage({ params }: PageParams) {
 
   return (
     <DashboardLayout>
-      {/* Header with Actions */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center">
-            {employee.imageUrl ? (
-              <img 
-                src={employee.imageUrl} 
-                alt={employee.name} 
-                className="w-20 h-20 rounded-full object-cover mr-4 border-2 border-blue-100"
-              />
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mr-4 border-2 border-blue-200">
-                <span className="text-2xl font-medium text-blue-500">
-                  {employee.name.charAt(0)}
-                </span>
-              </div>
-            )}
-            <div>
-              <Link href="/employees" className="text-blue-600 hover:underline flex items-center gap-1 text-sm mb-1">
-                <FiArrowLeft size={14} /> Back to Employees
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-800">{employee.name}</h1>
-              <div className="flex items-center text-gray-600 mt-1">
-                <span className="inline-flex items-center mr-3">
-                  <FiUser className="mr-1" size={14} />
-                  {employee.employeeId || 'No ID'}
-                </span>
-                {employee.position && (
-                  <span className="inline-flex items-center mr-3">
-                    <FiBriefcase className="mr-1" size={14} />
-                    {employee.position}
-                  </span>
-                )}
-                {employee.department && (
-                  <span className="inline-flex items-center">
-                    {employee.department}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/employees/${id}/edit`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-            >
-              <FiEdit size={16} /> Edit
-            </Link>
-            
-            {!deleteConfirm ? (
-              <button
-                onClick={handleDeleteClick}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 flex items-center gap-2"
-              >
-                <FiTrash2 size={16} /> Delete
-              </button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={confirmDelete}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                >
-                  Confirm
-                </button>
-                <button
-                  onClick={cancelDelete}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <TableHeader
+          title="Employee Details"
+          total={0}
+          active={0}
+          inactive={0}
+          searchValue=""
+          onSearchChange={() => {}}
+          searchPlaceholder=""
+          showStats={false}
+          showSearch={false}
+          showFilter={false}
+          headerClassName="px-6 py-6"
+          backButton={{
+            href: '/employees',
+            label: 'Back'
+          }}
+          actionButtons={
+            deleteConfirm ? [
+              { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
+              { label: 'Confirm', icon: <FiTrash2 />, variant: 'danger' as const, onClick: confirmDelete },
+              { label: 'Cancel', icon: <FiArrowLeft />, variant: 'secondary' as const, onClick: cancelDelete }
+            ] : [
+              { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
+              { label: 'Delete', icon: <FiTrash2 />, variant: 'danger' as const, onClick: handleDeleteClick }
+            ]
+          }
+                />
 
-      {/* Personal Details Section */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiUser className="mr-2" /> Personal Details
-        </h2>
+        <div className="px-6 pb-6">
+          {/* Personal Details Section */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <FiUser className="mr-2" /> Personal Details
+            </h2>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Basic Information Card */}
@@ -669,6 +654,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
             </p>
             <p className="text-sm text-gray-500">Updated At</p>
           </div>
+        </div>
+      </div>
         </div>
       </div>
     </DashboardLayout>
