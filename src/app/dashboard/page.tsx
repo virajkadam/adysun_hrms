@@ -1,52 +1,27 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { FiUsers, FiBriefcase, FiRefreshCw } from 'react-icons/fi';
-import { getEmployees, getEmployments } from '@/utils/firebaseUtils';
 import { Toaster, toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useDashboardStatsOptimized } from '@/hooks/useDashboard';
 
 export default function DashboardPage() {
-  const [employeeCount, setEmployeeCount] = useState(0);
-  const [employmentCount, setEmploymentCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const { currentAdmin } = useAuth();
   const router = useRouter();
-
-  const fetchData = async () => {
-    try {
-      const employees = await getEmployees();
-      const employments = await getEmployments();
-      
-      setEmployeeCount(employees.length);
-      setEmploymentCount(employments.length);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRefresh = async () => {
-    try {
-      setRefreshing(true);
-      const employees = await getEmployees();
-      const employments = await getEmployments();
-      
-      setEmployeeCount(employees.length);
-      setEmploymentCount(employments.length);
-      toast.success('Dashboard refreshed successfully');
-    } catch (error) {
-      console.error('Error refreshing dashboard data:', error);
-      toast.error('Failed to refresh dashboard');
-    } finally {
-      setRefreshing(false);
-    }
-  };
+  
+  // Use Tanstack Query for dashboard stats
+  const {
+    employeeCount,
+    employmentCount,
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useDashboardStatsOptimized();
 
   useEffect(() => {
     // Check if user is admin
@@ -54,9 +29,26 @@ export default function DashboardPage() {
       router.push('/login');
       return;
     }
-
-    fetchData();
   }, [currentAdmin, router]);
+
+  // Handle refresh with toast feedback
+  const handleRefresh = async () => {
+    try {
+      refetch();
+      toast.success('Dashboard refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing dashboard data:', error);
+      toast.error('Failed to refresh dashboard');
+    }
+  };
+
+  // Handle error state
+  useEffect(() => {
+    if (isError && error) {
+      console.error('Dashboard data error:', error);
+      toast.error('Failed to load dashboard data');
+    }
+  }, [isError, error]);
 
   // If not admin, don't render dashboard
   if (!currentAdmin) {
@@ -87,13 +79,12 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
           <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
-          {/* <p className="text-sm text-gray-500">Admin ID: {currentAdmin.id}</p> */}
         </div>
         <button
           onClick={handleRefresh}
-          disabled={refreshing}
+          disabled={isLoading}
           className={`p-2 rounded-md transition-all duration-200 ${
-            refreshing 
+            isLoading 
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
               : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
           }`}
@@ -101,15 +92,32 @@ export default function DashboardPage() {
           aria-label="Refresh dashboard data"
         >
           <FiRefreshCw 
-            className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} 
+            className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} 
           />
         </button>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[1, 2].map((i) => (
             <div key={i} className="h-32 bg-gray-100 rounded-lg animate-pulse"></div>
+          ))}
+        </div>
+      ) : isError ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {cards.map((card) => (
+            <div
+              key={card.title}
+              className={`${card.color} p-6 rounded-lg shadow-sm border-2 border-red-200`}
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-slate-700 font-medium">{card.title}</p>
+                  <p className="text-red-600 text-sm mt-1">Error loading data</p>
+                </div>
+                <div>{card.icon}</div>
+              </div>
+            </div>
           ))}
         </div>
       ) : (

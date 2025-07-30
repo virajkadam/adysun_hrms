@@ -70,3 +70,6 @@ The user prefers a consistent 4-column grid layout (grid-cols-1 md:grid-cols-4 g
 
 The user prefers the TableHeader component pattern for add/edit screens with consistent structure: title, back button (left), action button (right), no stats/search/filter, headerClassName="px-6 py-6", and form buttons layout with Cancel (left) and Add/Save button (right) using justify-between layout with px-6 py-3 padding.
 
+---
+
+The user requires that when implementing Tanstack Query, always use globally declared configuration from @lib/queryClient.ts and never declare individual staleTime, gcTime, or retry values in custom hooks. All query configurations should inherit from the global QueryClient defaultOptions to maintain consistency across the application.
