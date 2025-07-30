@@ -37,11 +37,12 @@ export default function AddEmployeePage() {
       // Get admin data for audit fields
       const { adminId, currentTimestamp } = getAdminDataForAudit();
       
-      // Add audit fields to employee data
+      // Add audit fields to employee data and ensure isActive is true
       const employeeDataWithAudit = {
         ...data,
+        isActive: true, // Always set to true for new employees
         createdAt: currentTimestamp,
-        createdBy: adminId, // Permanent admin document ID
+        createdBy: adminId,
         updatedAt: currentTimestamp,
         updatedBy: adminId,
       };
@@ -155,19 +156,6 @@ export default function AddEmployeePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Is Active
-                </label>
-                <select
-                  {...register('isActive')}
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                >
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Home Town
