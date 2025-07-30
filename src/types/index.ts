@@ -38,6 +38,7 @@ export interface Employee {
     collegeName?: string;
     universityName?: string;
     marks?: string;
+    grade?: string;
   };
   
   // 12th Standard
@@ -48,6 +49,8 @@ export interface Employee {
     passingYear?: string;
     schoolName?: string;
     marks?: string;
+    board?: string;
+    grade?: string;
   };
   
   // Other Education
@@ -58,6 +61,8 @@ export interface Employee {
     passingYear?: string;
     collegeName?: string;
     marks?: string;
+    institute?: string;
+    grade?: string;
   };
   
   // 10th Standard
@@ -67,6 +72,9 @@ export interface Employee {
     passingYear?: string;
     schoolName?: string;
     marks?: string;
+    board?: string;
+    grade?: string;
+    medium?: string;
   };
   
   // Legacy fields (keeping for backward compatibility)
