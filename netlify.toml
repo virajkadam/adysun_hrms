@@ -11,12 +11,6 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Redirects for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 # Headers for static assets
 [[headers]]
   for = "/_next/static/*"
