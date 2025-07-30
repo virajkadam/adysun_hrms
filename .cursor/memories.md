@@ -64,3 +64,5 @@ The user prefers the TableHeader component pattern with consistent three-column 
 
 ---
 
+The user prefers a consistent 4-column grid layout (grid-cols-1 md:grid-cols-4 gap-4) for all form sections in create/view/edit screens across the project. Each section should be organized in groups of 4 fields, with longer fields like addresses or descriptions optionally spanning multiple columns using col-span classes. This applies to all form sections including personal details, contact information, documents, and educational details.
+
