@@ -369,4 +369,27 @@ export const getAdminDataForAudit = () => {
     adminName: admin.name,
     currentTimestamp: new Date().toISOString()
   };
+};
+
+/**
+ * Get admin name by admin ID
+ * @param adminId - The admin ID to look up
+ * @returns Admin name or 'Unknown Admin' if not found
+ */
+export const getAdminNameById = async (adminId: string): Promise<string> => {
+  try {
+    if (!adminId) return 'Unknown Admin';
+    
+    const adminDoc = await getDoc(doc(db, 'admins', adminId));
+    
+    if (adminDoc.exists()) {
+      const adminData = adminDoc.data();
+      return adminData.name || 'Unknown Admin';
+    }
+    
+    return 'Unknown Admin';
+  } catch (error) {
+    console.error('Error getting admin name by ID:', error);
+    return 'Unknown Admin';
+  }
 }; 

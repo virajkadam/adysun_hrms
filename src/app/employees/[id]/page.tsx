@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, deleteEmployee, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
+import { getEmployee, deleteEmployee, getEmploymentsByEmployee, getAdminNameById } from '@/utils/firebaseUtils';
 import { Employee, Employment } from '@/types';
 import { formatDateToDayMonYearWithTime, formatDateToDayMonYear } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
@@ -27,6 +27,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [createdByAdmin, setCreatedByAdmin] = useState<string>('');
+  const [updatedByAdmin, setUpdatedByAdmin] = useState<string>('');
   
   const router = useRouter();
   const id = params.id;
@@ -41,6 +43,17 @@ export default function EmployeeViewPage({ params }: PageParams) {
         // Fetch related employments
         const employmentsData = await getEmploymentsByEmployee(id);
         setEmployments(employmentsData);
+        
+        // Fetch admin names for audit trail
+        if (employeeData.createdBy) {
+          const createdByAdminName = await getAdminNameById(employeeData.createdBy);
+          setCreatedByAdmin(createdByAdminName);
+        }
+        
+        if (employeeData.updatedBy) {
+          const updatedByAdminName = await getAdminNameById(employeeData.updatedBy);
+          setUpdatedByAdmin(updatedByAdminName);
+        }
       } catch (error: ApiError) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
         setError(errorMessage);
@@ -626,7 +639,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           {/* Created By */}
           <div className="bg-gray-50 rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employee.createdBy || 'System'}
+              {createdByAdmin || employee.createdBy || 'System'}
             </p>
             <p className="text-sm text-gray-500">Created By</p>
           </div>
@@ -642,7 +655,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           {/* Updated By */}
           <div className="bg-gray-50 rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employee.updatedBy || 'Not Updated'}
+              {updatedByAdmin || employee.updatedBy || 'Not Updated'}
             </p>
             <p className="text-sm text-gray-500">Updated By</p>
           </div>
