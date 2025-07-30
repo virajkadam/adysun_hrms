@@ -39,7 +39,7 @@ export default function AddEmployeePage() {
       // Add audit fields to employee data and ensure status is active
       const employeeDataWithAudit = {
         ...data,
-        status: 'active', // Always set to active for new employees
+        status: 'active' as const, // Always set to active for new employees
         createdAt: currentTimestamp,
         createdBy: adminId,
         updatedAt: currentTimestamp,
@@ -83,10 +83,10 @@ export default function AddEmployeePage() {
           
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Basic Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Name
+                  <span className="text-red-500 mr-1">*</span> Name
                 </label>
                 <input
                   type="text"
@@ -111,7 +111,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Date of Birth
+                  <span className="text-red-500 mr-1">*</span> Date of Birth
                 </label>
                 <input
                   type="date"
@@ -134,7 +134,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Employee ID
+                  <span className="text-red-500 mr-1">*</span> Employee ID
                 </label>
                 <input
                   type="text"
@@ -152,9 +152,7 @@ export default function AddEmployeePage() {
                   <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
                 )}
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Home Town
@@ -180,10 +178,10 @@ export default function AddEmployeePage() {
           {/* Contact Information */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Contact Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Mobile No.
+                  <span className="text-red-500 mr-1">*</span> Mobile No.
                 </label>
                 <input
                   type="tel"
@@ -204,7 +202,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Email ID
+                  <span className="text-red-500 mr-1">*</span> Email ID
                 </label>
                 <input
                   type="email"
@@ -222,34 +220,56 @@ export default function AddEmployeePage() {
                   <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
                 )}
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Current Address
+                  Position
                 </label>
-                <textarea
+                <input
+                  type="text"
+                  placeholder="Enter position/designation"
+                  {...register('position')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Department
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter department"
+                  {...register('department')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-500 mr-1">*</span> Current Address
+                </label>
+                <input
+                  type="text"
                   placeholder="Enter current address"
                   {...register('currentAddress', { required: 'Current address is required' })}
-                  rows={3}
                   className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                ></textarea>
+                />
                 {errors.currentAddress && (
                   <p className="mt-1 text-sm text-red-600">{errors.currentAddress.message}</p>
                 )}
               </div>
 
-              <div>
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Permanent Address
                 </label>
-                <textarea
+                <input
+                  type="text"
                   placeholder="Enter permanent address (if different from current)"
                   {...register('permanentAddress')}
-                  rows={3}
                   className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                ></textarea>
+                />
               </div>
             </div>
           </div>
@@ -257,10 +277,10 @@ export default function AddEmployeePage() {
           {/* Identification Documents */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Identification Documents</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Aadhar Card
+                  <span className="text-red-500 mr-1">*</span> Aadhar Card
                 </label>
                 <input
                   type="text"
@@ -280,19 +300,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Driving License
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter driving license number"
-                  {...register('drivingLicense')}
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> PAN Card
+                  <span className="text-red-500 mr-1">*</span> PAN Card
                 </label>
                 <input
                   type="text"
@@ -309,25 +317,29 @@ export default function AddEmployeePage() {
                   <p className="mt-1 text-sm text-red-600">{errors.panCard.message}</p>
                 )}
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Van No
+                  Driving License
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter van number"
-                  {...register('vanNo', {
-                    pattern: {
-                      value: /^[A-Z0-9]{2,10}$/i,
-                      message: 'Please enter a valid van number'
-                    }
-                  })}
+                  placeholder="Enter driving license number"
+                  {...register('drivingLicense')}
                   className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                 />
-                {errors.vanNo && (
-                  <p className="mt-1 text-sm text-red-600">{errors.vanNo.message}</p>
-                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Voter ID
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter voter ID number"
+                  {...register('voterID')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                />
               </div>
             </div>
           </div>
@@ -335,10 +347,10 @@ export default function AddEmployeePage() {
           {/* Bank Details */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Bank Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Bank Name
+                  <span className="text-red-500 mr-1">*</span> Bank Name
                 </label>
                 <input
                   type="text"
@@ -355,7 +367,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Account No.
+                  <span className="text-red-500 mr-1">*</span> Account No.
                 </label>
                 <input
                   type="text"
@@ -376,7 +388,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> IFSC Code
+                  <span className="text-red-500 mr-1">*</span> IFSC Code
                 </label>
                 <input
                   type="text"
@@ -397,7 +409,7 @@ export default function AddEmployeePage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Account Holder Name
+                  <span className="text-red-500 mr-1">*</span> Account Holder Name
                 </label>
                 <input
                   type="text"
@@ -422,7 +434,7 @@ export default function AddEmployeePage() {
           {/* Higher Education */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Higher Education</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Degree
@@ -532,7 +544,7 @@ export default function AddEmployeePage() {
           {/* 12th Standard */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   School
@@ -630,7 +642,7 @@ export default function AddEmployeePage() {
           {/* Other Education */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Other Education</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Diploma
@@ -728,7 +740,7 @@ export default function AddEmployeePage() {
           {/* 10th Standard */}
           <div className="bg-white p-4 rounded-lg mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   School
