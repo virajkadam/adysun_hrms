@@ -1,79 +1,62 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployments, deleteEmployment, getEmployee } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { ActionButton } from '@/components/ui/ActionButton';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
+import { useEmployments, useDeleteEmployment } from '@/hooks/useEmployments';
+import { useEmployees } from '@/hooks/useEmployees';
 
 export default function EmploymentsPage() {
-  const [employments, setEmployments] = useState<Employment[]>([]);
-  const [employeeNames, setEmployeeNames] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchEmployments();
-  }, []);
+  // Use Tanstack Query for employment data
+  const {
+    data: employments = [],
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useEmployments();
 
-  const fetchEmployments = async () => {
-    try {
-      setLoading(true);
-      const data = await getEmployments();
-      setEmployments(data);
-      
-      // Fetch employee names for each employment
-      const namesMap: Record<string, string> = {};
-      for (const employment of data) {
-        try {
-          const employee = await getEmployee(employment.employeeId);
-          namesMap[employment.employeeId] = employee.name;
-        } catch (error) {
-          namesMap[employment.employeeId] = 'Unknown Employee';
-        }
-      }
-      setEmployeeNames(namesMap);
-    } catch (error) {
-      console.error('Error fetching employments:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Use Tanstack Query for employee data (for names)
+  const {
+    data: employees = []
+  } = useEmployees();
 
+  // Use mutation for delete operation
+  const deleteEmploymentMutation = useDeleteEmployment();
+
+  // Create employee names map
+  const employeeNames = employees.reduce((acc, employee) => {
+    acc[employee.id] = employee.name;
+    return acc;
+  }, {} as Record<string, string>);
+
+  // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
-      setRefreshing(true);
-      const data = await getEmployments();
-      setEmployments(data);
-      
-      // Fetch employee names for each employment
-      const namesMap: Record<string, string> = {};
-      for (const employment of data) {
-        try {
-          const employee = await getEmployee(employment.employeeId);
-          namesMap[employment.employeeId] = employee.name;
-        } catch (error) {
-          namesMap[employment.employeeId] = 'Unknown Employee';
-        }
-      }
-      setEmployeeNames(namesMap);
+      await refetch();
       toast.success('Data refreshed successfully');
     } catch (error) {
       console.error('Error refreshing employments:', error);
       toast.error('Failed to refresh data');
-    } finally {
-      setRefreshing(false);
     }
   };
+
+  // Handle error state
+  if (isError && error) {
+    console.error('Employment data error:', error);
+    toast.error('Failed to load employment data');
+  }
 
   const handleDeleteClick = (id: string) => {
     setDeleteConfirm(id);
@@ -82,8 +65,7 @@ export default function EmploymentsPage() {
   const confirmDelete = async (id: string) => {
     try {
       toast.loading('Deleting employment...', { id: 'delete-employment' });
-      await deleteEmployment(id);
-      setEmployments(employments.filter(emp => emp.id !== id));
+      await deleteEmploymentMutation.mutateAsync(id);
       setDeleteConfirm(null);
       toast.success('Employment deleted successfully', { id: 'delete-employment' });
     } catch (error) {
@@ -96,41 +78,33 @@ export default function EmploymentsPage() {
     setDeleteConfirm(null);
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount);
-  };
-
   const filteredEmployments = employments.filter(employment => {
-    const employeeName = employeeNames[employment.employeeId] || '';
+    const employeeName = employeeNames[employment.employeeId] || 'Unknown Employee';
     const matchesSearch = 
       employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           employment.contractType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           (employment.jobTitle && employment.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
-           (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
+      employment.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employment.department?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = 
       filterValue === 'all' || 
-      (filterValue === 'active' && employment.employmentType === 'full-time') ||
-      (filterValue === 'inactive' && employment.employmentType === 'part-time');
+      (filterValue === 'active' && employment.contractType === 'full-time') ||
+      (filterValue === 'inactive' && employment.contractType === 'part-time');
     
     return matchesSearch && matchesFilter;
   });
 
   const total = filteredEmployments.length;
-  const active = filteredEmployments.filter(e => e.employmentType === 'full-time').length;
-  const inactive = filteredEmployments.filter(e => e.employmentType === 'part-time').length;
+  const active = filteredEmployments.filter(e => e.contractType === 'full-time').length;
+  const inactive = filteredEmployments.filter(e => e.contractType === 'part-time').length;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Skeleton for TableHeader */}
           <div className="space-y-6">
             {/* Title and Action Buttons Skeleton */}
-            <div className="flex justify-between items-center px-6 pt-6 mb-0">
+            <div className="flex justify-between items-center px-6 pt-6 mb-6">
               <div className="flex items-center">
                 <div className="bg-gray-200 h-10 w-20 rounded-full animate-pulse"></div>
               </div>
@@ -161,27 +135,34 @@ export default function EmploymentsPage() {
             <div className="min-w-full divide-y divide-gray-200">
               <div className="bg-gray-50 px-6 py-3">
                 <div className="flex space-x-6">
+                  <div className="bg-gray-200 h-4 w-16 rounded animate-pulse"></div>
+                  <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
+                  <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
+                  <div className="bg-gray-200 h-4 w-28 rounded animate-pulse"></div>
                   <div className="bg-gray-200 h-4 w-24 rounded animate-pulse"></div>
                   <div className="bg-gray-200 h-4 w-28 rounded animate-pulse"></div>
-                  <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
                   <div className="bg-gray-200 h-4 w-16 rounded animate-pulse"></div>
                   <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
                 </div>
               </div>
               <div className="p-6">
-            <div className="animate-pulse space-y-4">
-              {[...Array(5)].map((_, index) => (
+                <div className="animate-pulse space-y-4">
+                  {[...Array(5)].map((_, index) => (
                     <div key={index} className="flex items-center space-x-6">
                       <div className="bg-gray-200 h-4 w-32 rounded animate-pulse"></div>
-                      <div className="bg-gray-200 h-6 w-20 rounded-full animate-pulse"></div>
+                      <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
+                      <div className="bg-gray-200 h-4 w-24 rounded animate-pulse"></div>
                       <div className="bg-gray-200 h-4 w-24 rounded animate-pulse"></div>
                       <div className="bg-gray-200 h-4 w-28 rounded animate-pulse"></div>
+                      <div className="bg-gray-200 h-4 w-28 rounded animate-pulse"></div>
+                      <div className="bg-gray-200 h-6 w-16 rounded-full animate-pulse"></div>
                       <div className="flex items-center space-x-2 ml-auto">
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
+                        <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                       </div>
-                  </div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -207,7 +188,7 @@ export default function EmploymentsPage() {
           searchPlaceholder="Search"
           searchAriaLabel="Search employments"
           onRefresh={handleRefresh}
-          isRefreshing={refreshing}
+          isRefreshing={false} // Tanstack Query handles refreshing state
           showFilter={true}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
@@ -225,7 +206,17 @@ export default function EmploymentsPage() {
           ]}
         />
 
-        {filteredEmployments.length === 0 ? (
+        {isError ? (
+          <div className="p-8 text-center text-red-500">
+            <p>Failed to load employments. Please try refreshing the page.</p>
+            <button 
+              onClick={() => refetch()}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        ) : filteredEmployments.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             {searchTerm && filterValue === 'all' && 'No employments match your search'}
             {searchTerm && filterValue === 'active' && 'No active employments match your search'}
@@ -240,18 +231,24 @@ export default function EmploymentsPage() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Employment
+                    Employee
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contract Type
+                    Job Title
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Duration
+                    Department
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Start Date
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Salary
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contract Type
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -260,79 +257,76 @@ export default function EmploymentsPage() {
                 {filteredEmployments.map((employment) => (
                   <tr key={employment.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {employeeNames[employment.employeeId] || 'Unknown Employee'}
+                      <div className="flex items-center">
+                        <div className="text-sm font-medium text-gray-900">
+                          {employeeNames[employment.employeeId] || 'Unknown Employee'}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          employment.employmentType === 'full-time'
-                            ? 'bg-green-100 text-green-800'
-                            : employment.employmentType === 'part-time'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}
-                      >
-                        {employment.employmentType && employment.employmentType.includes('-') ?
-                          employment.employmentType.split('-').map(word => 
-                            word.charAt(0).toUpperCase() + word.slice(1)
-                          ).join(' ') : 
-                          employment.employmentType ? 
-                            employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1) : 
-                            'Unknown'}
-                      </span>
+                      <div className="text-sm text-gray-900">{employment.jobTitle || '-'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{employment.department || '-'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {employment.joiningDate ? formatDateToDayMonYear(employment.joiningDate) : 
-                         employment.startDate ? formatDateToDayMonYear(employment.startDate) : '-'}<br/>
-                        {employment.endDate && (
-                          <> - {formatDateToDayMonYear(employment.endDate)}</>
-                        )}
+                        {employment.startDate ? formatDateToDayMonYear(employment.startDate) : '-'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {formatCurrency(employment.salary)} / {
-                          employment.paymentFrequency ? (
-                            employment.paymentFrequency.includes('-') ?
-                              employment.paymentFrequency.split('-').map(word => 
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                              ).join(' ') :
-                              employment.paymentFrequency.charAt(0).toUpperCase() + employment.paymentFrequency.slice(1)
-                          ) : 'Monthly'
-                        }
+                        {employment.salary ? new Intl.NumberFormat('en-IN', {
+                          style: 'currency',
+                          currency: 'INR'
+                        }).format(employment.salary) : '-'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className='px-6 py-4 whitespace-nowrap text-center'>
+                      {employment.contractType && (
+                        <span
+                          className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            employment.contractType === 'full-time'
+                              ? 'bg-green-100 text-green-800'
+                              : employment.contractType === 'part-time'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}
+                        >
+                          {employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1)}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       {deleteConfirm === employment.id ? (
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="flex items-center justify-center space-x-2">
                           <button
                             onClick={() => confirmDelete(employment.id)}
                             className="text-red-600 hover:text-red-900"
+                            disabled={deleteEmploymentMutation.isPending}
                           >
-                            Confirm
+                            {deleteEmploymentMutation.isPending ? 'Deleting...' : 'Confirm'}
                           </button>
                           <button
                             onClick={cancelDelete}
                             className="text-gray-600 hover:text-gray-900"
+                            disabled={deleteEmploymentMutation.isPending}
                           >
                             Cancel
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center justify-end space-x-2">
+                        <div className="flex items-center justify-center space-x-3">
                           <ActionButton
                             icon={<FiEye className="w-5 h-5" />}
-                            title="View"
-                            colorClass="bg-green-100 text-green-600 hover:text-green-900"
+                            title="View Employment Details"
+                            colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                             href={`/employments/${employment.id}`}
                           />
                           <ActionButton
                             icon={<FiEdit className="w-5 h-5" />}
                             title="Edit"
-                            colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
+                            colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
                             href={`/employments/${employment.id}/edit`}
                           />
                           <ActionButton

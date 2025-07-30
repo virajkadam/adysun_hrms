@@ -1,54 +1,50 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiBriefcase } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployees, deleteEmployee } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
+import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
 
 export default function EmployeesPage() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+  // Use Tanstack Query for employee data
+  const {
+    data: employees = [],
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useEmployees();
 
-  const fetchEmployees = async () => {
-    try {
-      setLoading(true);
-      const data = await getEmployees();
-      setEmployees(data);
-    } catch (error) {
-      console.error('Error fetching employees:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Use mutation for delete operation
+  const deleteEmployeeMutation = useDeleteEmployee();
 
+  // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
-      setRefreshing(true);
-      const data = await getEmployees();
-      setEmployees(data);
+      await refetch();
       toast.success('Data refreshed successfully');
     } catch (error) {
       console.error('Error refreshing employees:', error);
       toast.error('Failed to refresh data');
-    } finally {
-      setRefreshing(false);
     }
   };
+
+  // Handle error state
+  if (isError && error) {
+    console.error('Employee data error:', error);
+    toast.error('Failed to load employee data');
+  }
 
   const handleDeleteClick = (id: string) => {
     setDeleteConfirm(id);
@@ -57,8 +53,7 @@ export default function EmployeesPage() {
   const confirmDelete = async (id: string) => {
     try {
       toast.loading('Deleting employee...', { id: 'delete-employee' });
-      await deleteEmployee(id);
-      setEmployees(employees.filter(emp => emp.id !== id));
+      await deleteEmployeeMutation.mutateAsync(id);
       setDeleteConfirm(null);
       toast.success('Employee deleted successfully', { id: 'delete-employee' });
     } catch (error) {
@@ -89,7 +84,7 @@ export default function EmployeesPage() {
   const active = filteredEmployees.filter(e => e.status === 'active').length;
   const inactive = filteredEmployees.filter(e => e.status === 'inactive').length;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -180,7 +175,7 @@ export default function EmployeesPage() {
           searchPlaceholder="Search"
           searchAriaLabel="Search employees"
           onRefresh={handleRefresh}
-          isRefreshing={refreshing}
+          isRefreshing={false} // Tanstack Query handles refreshing state
           showFilter={true}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
@@ -198,7 +193,17 @@ export default function EmployeesPage() {
           ]}
         />
 
-        {filteredEmployees.length === 0 ? (
+        {isError ? (
+          <div className="p-8 text-center text-red-500">
+            <p>Failed to load employees. Please try refreshing the page.</p>
+            <button 
+              onClick={() => refetch()}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        ) : filteredEmployees.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             {searchTerm && filterValue === 'all' && 'No employees match your search'}
             {searchTerm && filterValue === 'active' && 'No active employees match your search'}
@@ -292,12 +297,14 @@ export default function EmployeesPage() {
                           <button
                             onClick={() => confirmDelete(employee.id)}
                             className="text-red-600 hover:text-red-900"
+                            disabled={deleteEmployeeMutation.isPending}
                           >
-                            Confirm
+                            {deleteEmployeeMutation.isPending ? 'Deleting...' : 'Confirm'}
                           </button>
                           <button
                             onClick={cancelDelete}
                             className="text-gray-600 hover:text-gray-900"
+                            disabled={deleteEmployeeMutation.isPending}
                           >
                             Cancel
                           </button>
