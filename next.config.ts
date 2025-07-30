@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 
-// Set the repository name for GitHub Pages
-const repo = 'Employee_Admin_Dashboard';
-const basePath = process.env.NODE_ENV === 'production' ? `/${repo}` : '';
-
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'export', // Required for GitHub Pages static deployment
-  basePath: basePath, // For GitHub Pages deployment
-  assetPrefix: basePath, // For GitHub Pages deployment
-  trailingSlash: true, // Makes URLs end with a slash for better compatibility with static hosting
+  // Remove static export for Netlify - it supports SSR
+  // output: 'export', // Required for GitHub Pages static deployment
+  // basePath: basePath, // For GitHub Pages deployment
+  // assetPrefix: basePath, // For GitHub Pages deployment
+  // trailingSlash: true, // Makes URLs end with a slash for better compatibility with static hosting
+  
   images: {
     domains: [
       'firebasestorage.googleapis.com',
@@ -18,7 +16,7 @@ const nextConfig: NextConfig = {
       'localhost',                      // For local development
       'employee-admin-c83e8.appspot.com', // Your specific Firebase Storage bucket
     ],
-    unoptimized: true, // Required for GitHub Pages
+    unoptimized: false, // Enable image optimization for Netlify
     remotePatterns: [
       {
         protocol: 'https',

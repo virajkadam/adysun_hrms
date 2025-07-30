@@ -10,6 +10,7 @@ import { getEmployee, updateEmployee, getAdminDataForAudit } from '@/utils/fireb
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -26,7 +27,7 @@ export default function EditEmployeePage({ params }: PageParams) {
   const router = useRouter();
   const { id } = use(params);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<Omit<Employee, 'id'>>();
+  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<Omit<Employee, 'id'>>();
 
   useEffect(() => {
     const fetchEmployee = async () => {
@@ -127,8 +128,15 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Date of Birth
                   </label>
-                  <input type="date" {...register('dateOfBirth', { required: 'Date of birth is required', validate: value => { if (!value) return 'Date of birth is required'; const date = new Date(value); const today = new Date(); const age = today.getFullYear() - date.getFullYear(); return (age >= 18) || 'Employee must be at least 18 years old'; } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  {errors.dateOfBirth && (<p className="mt-1 text-sm text-red-600">{errors.dateOfBirth.message}</p>)}
+                  <input
+                    type="date"
+                    {...register('dateOfBirth')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={watch('dateOfBirth') ? formatDateToDayMonYear(watch('dateOfBirth')) : 'Select date of birth'}
+                  />
+                  {errors.dateOfBirth && (
+                    <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth.message}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employee, Employment } from '@/types';
-import { formatDateToDayMonYearWithTime, formatDateToDayMonYear } from '@/utils/documentUtils';
+import { formatDateToDayMonYear, formatDateToDayMonYearWithTime } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployee, useDeleteEmployee } from '@/hooks/useEmployees';
 import { useEmploymentsByEmployee } from '@/hooks/useEmployments';

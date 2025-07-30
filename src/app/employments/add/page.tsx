@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { addEmployment, getEmployees } from '@/utils/firebaseUtils';
-import { getAdminDataForAudit } from '@/utils/firebaseUtils';
+import { addEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import { FiSave, FiX, FiPlus } from 'react-icons/fi';
+import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 interface EmploymentFormData extends Omit<Employment, 'id' | 'relievingCtc'> {
   // Add all the fields we need
@@ -56,16 +57,10 @@ export default function AddEmploymentPage() {
   
   const router = useRouter();
   
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<EmploymentFormData>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmploymentFormData>({
     defaultValues: {
-      employmentType: 'full-time',
-      paymentFrequency: 'monthly',
-      paymentMode: 'bank-transfer',
-      isIT: true,
+      isIT: false,
       isResignation: false,
-      payableDays: 30,
-      totalLeaves: 24,
-      salaryCreditDate: '1st of every month',
     }
   });
 
@@ -273,7 +268,8 @@ export default function AddEmploymentPage() {
                   <input
                     type="date"
                     {...register('joiningDate', { required: 'Joining date is required' })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={watch('joiningDate') ? formatDateToDayMonYear(watch('joiningDate')) : 'Select joining date'}
                   />
                   {errors.joiningDate && (
                     <p className="mt-1 text-sm text-red-600">{errors.joiningDate.message}</p>
@@ -287,7 +283,8 @@ export default function AddEmploymentPage() {
                   <input
                     type="date"
                     {...register('incrementDate')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={watch('incrementDate') ? formatDateToDayMonYear(watch('incrementDate')) : 'Select increment date'}
                   />
                 </div>
 

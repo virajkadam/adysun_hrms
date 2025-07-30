@@ -10,6 +10,7 @@ import { getEmployment, updateEmployment, getEmployees, getAdminDataForAudit } f
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 interface EmploymentFormData extends Omit<Employment, 'id' | 'benefits' | 'relievingCtc'> {
   benefits: string | string[];
@@ -25,7 +26,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
   const router = useRouter();
   const { id } = use(params);
   
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<EmploymentFormData>();
+  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<EmploymentFormData>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -256,6 +257,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                 type="date"
                 {...register('startDate', { required: 'Start date is required' })}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder={watch('startDate') ? formatDateToDayMonYear(watch('startDate')) : 'Select start date'}
               />
               {errors.startDate && (
                 <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
@@ -270,6 +272,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                 type="date"
                 {...register('endDate')}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder={watch('endDate') ? formatDateToDayMonYear(watch('endDate')) : 'Select end date'}
               />
             </div>
 
@@ -332,6 +335,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                 type="date"
                 {...register('joiningDate')}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder={watch('joiningDate') ? formatDateToDayMonYear(watch('joiningDate')) : 'Select joining date'}
               />
             </div>
             
@@ -343,6 +347,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                 type="date"
                 {...register('incrementDate')}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder={watch('incrementDate') ? formatDateToDayMonYear(watch('incrementDate')) : 'Select increment date'}
               />
             </div>
             

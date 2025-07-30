@@ -3,7 +3,7 @@
   publish = ".next"
   
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
   NETLIFY_USE_YARN = "false"
   NEXT_TELEMETRY_DISABLED = "1"
@@ -11,6 +11,13 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Redirects for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers for static assets
 [[headers]]
   for = "/_next/static/*"
   [headers.values]

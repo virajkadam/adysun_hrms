@@ -1,90 +1,63 @@
+#!/usr/bin/env node
+
 const { execSync } = require('child_process');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
-// Colors for console output
-const colors = {
-  reset: '\x1b[0m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  red: '\x1b[31m'
-};
+console.log('🚀 Starting Netlify deployment preparation...\n');
 
-// Helper function to execute commands with pretty output
-function execute(command, message) {
-  console.log(`${colors.blue}[INFO]${colors.reset} ${message}...`);
-  try {
-    execSync(command, { stdio: 'inherit' });
-    console.log(`${colors.green}[SUCCESS]${colors.reset} ${message} completed successfully.`);
-    return true;
-  } catch (error) {
-    console.error(`${colors.red}[ERROR]${colors.reset} ${message} failed.`);
-    console.error(error.message);
-    return false;
-  }
+// Check if we're in the right directory
+if (!fs.existsSync('package.json')) {
+  console.error('❌ Error: package.json not found. Please run this script from the project root.');
+  process.exit(1);
 }
 
-// Main deployment function
-async function deployToGitHubPages() {
+// Check if netlify-cli is installed
+try {
+  execSync('netlify --version', { stdio: 'ignore' });
+  console.log('✅ Netlify CLI is installed');
+} catch (error) {
+  console.log('⚠️  Netlify CLI not found. Installing...');
   try {
-    console.log(`${colors.blue}=== GitHub Pages Deployment Script ===${colors.reset}`);
-    
-    // Step 1: Build the Next.js application in standalone mode
-    if (!execute('npm run build', 'Building Next.js application')) return;
-    
-    // Step 2: Create an out directory for GitHub Pages
-    const outDir = path.join(process.cwd(), 'out');
-    if (!fs.existsSync(outDir)) {
-      fs.mkdirSync(outDir, { recursive: true });
-    }
-    
-    // Step 3: Copy the build output to the out directory
-    const buildDir = path.join(process.cwd(), 'build');
-    if (fs.existsSync(buildDir)) {
-      // Simple copy for demonstration. In a real project, you'd need to properly
-      // copy the entire standalone output structure
-      execute(`xcopy "${buildDir}" "${outDir}" /E /I /H /Y`, 'Copying build files to out directory');
-    }
-    
-    // Step 4: Make sure the .nojekyll file exists in the output directory
-    const nojekyllPath = path.join(outDir, '.nojekyll');
-    if (!fs.existsSync(nojekyllPath)) {
-      fs.writeFileSync(nojekyllPath, '');
-      console.log(`${colors.green}[SUCCESS]${colors.reset} Created .nojekyll file.`);
-    }
-    
-    // Step 5: Create a basic index.html that redirects to the app
-    const indexPath = path.join(outDir, 'index.html');
-    const indexContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Dashboard</title>
-        <meta http-equiv="refresh" content="0;url=./build/index.html">
-      </head>
-      <body>
-        <p>Redirecting to the Admin Dashboard...</p>
-      </body>
-      </html>
-    `;
-    fs.writeFileSync(indexPath, indexContent);
-    console.log(`${colors.green}[SUCCESS]${colors.reset} Created redirecting index.html file.`);
-    
-    // Step 6: Deploy to GitHub Pages
-    if (!execute('npm run deploy', 'Deploying to GitHub Pages')) return;
-    
-    console.log(`${colors.green}=== Deployment Completed Successfully ===${colors.reset}`);
-    console.log(`${colors.yellow}Your site should be live at: https://santosh-mhetre.github.io/Employee_Admin_Dashboard/${colors.reset}`);
-    
-  } catch (error) {
-    console.error(`${colors.red}[ERROR]${colors.reset} Deployment failed with error:`);
-    console.error(error);
+    execSync('npm install -g netlify-cli', { stdio: 'inherit' });
+    console.log('✅ Netlify CLI installed successfully');
+  } catch (installError) {
+    console.error('❌ Failed to install Netlify CLI. Please install it manually:');
+    console.error('   npm install -g netlify-cli');
     process.exit(1);
   }
 }
 
-// Run the deployment
-deployToGitHubPages(); 
+// Check if user is logged in to Netlify
+try {
+  execSync('netlify status', { stdio: 'ignore' });
+  console.log('✅ Logged in to Netlify');
+} catch (error) {
+  console.log('⚠️  Not logged in to Netlify. Please login:');
+  console.log('   netlify login');
+  process.exit(1);
+}
+
+// Build the project
+console.log('\n🔨 Building the project...');
+try {
+  execSync('npm run build', { stdio: 'inherit' });
+  console.log('✅ Build completed successfully');
+} catch (error) {
+  console.error('❌ Build failed. Please fix the errors and try again.');
+  process.exit(1);
+}
+
+// Deploy to Netlify
+console.log('\n🚀 Deploying to Netlify...');
+try {
+  execSync('netlify deploy --prod', { stdio: 'inherit' });
+  console.log('\n✅ Deployment completed successfully!');
+  console.log('\n📝 Next steps:');
+  console.log('1. Set up environment variables in your Netlify dashboard');
+  console.log('2. Configure your custom domain (optional)');
+  console.log('3. Set up continuous deployment');
+} catch (error) {
+  console.error('❌ Deployment failed. Please check the error messages above.');
+  process.exit(1);
+} 

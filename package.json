@@ -2,15 +2,14 @@
   "name": "admin-dashboard",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Santosh-Mhetre.github.io/Employee_Admin_Dashboard",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/netlify-postbuild.js",
-    "export": "next export",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "setup-tailwind": "npm install @tailwindcss/forms",
-    "netlify-deploy": "netlify deploy"
+    "netlify-deploy": "netlify deploy",
+    "deploy": "node scripts/deploy.js"
   },
   "dependencies": {
     "@netlify/plugin-nextjs": "4.41.3",

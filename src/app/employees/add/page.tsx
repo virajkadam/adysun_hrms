@@ -11,6 +11,7 @@ import { FiSave, FiX, FiPlus } from 'react-icons/fi';
 import Link from 'next/link';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -22,7 +23,7 @@ export default function AddEmployeePage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<EmployeeFormData>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmployeeFormData>({
     defaultValues: {
       status: 'active',
     }
@@ -142,17 +143,9 @@ export default function AddEmployeePage() {
                   </label>
                   <input
                     type="date"
-                    {...register('dateOfBirth', {
-                      required: 'Date of birth is required',
-                      validate: value => {
-                        if (!value) return 'Date of birth is required';
-                        const date = new Date(value);
-                        const today = new Date();
-                        const age = today.getFullYear() - date.getFullYear();
-                        return (age >= 18) || 'Employee must be at least 18 years old';
-                      }
-                    })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    {...register('dateOfBirth')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={watch('dateOfBirth') ? formatDateToDayMonYear(watch('dateOfBirth')) : 'Select date of birth'}
                   />
                   {errors.dateOfBirth && (
                     <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth.message}</p>

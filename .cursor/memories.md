@@ -77,3 +77,8 @@ The user requires that when implementing Tanstack Query, always use globally dec
 ---
 
 The user requires that only big/large API responses should be cached (like employee lists, employment lists, dashboard stats) while small/quick operations should not be cached. Mutations should only be triggered when there are actual changes in the main API data, not for every UI interaction. This ensures efficient caching strategy where only heavy data operations benefit from cache while keeping the system responsive for quick operations.
+
+---
+In create/edit screens, date inputs must use standard HTML date inputs (type="date") for consistent browser date picker functionality. Date input placeholders should display formatted dates using formatDateToDayMonYear from @documentUtils.ts when a date is selected. All date displays in @page.tsx files must use formatDateToDayMonYear from @documentUtils.ts for consistency.
+
+---
