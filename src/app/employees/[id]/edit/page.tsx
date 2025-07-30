@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { FiArrowLeft, FiSave } from 'react-icons/fi';
+import { FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, updateEmployee, getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
+import TableHeader from '@/components/ui/TableHeader';
 
 // Define API error type
 type ApiError = Error | unknown;
@@ -23,10 +24,10 @@ export default function EditEmployeePage({ params }: PageParams) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const router = useRouter();
   const id = params.id;
-  
+
   const { register, handleSubmit, formState: { errors }, reset } = useForm<Omit<Employee, 'id'>>();
 
   useEffect(() => {
@@ -53,7 +54,7 @@ export default function EditEmployeePage({ params }: PageParams) {
       setIsSubmitting(true);
       setError(null);
       toast.loading('Updating employee...', { id: 'updateEmployee' });
-      
+
       await updateEmployee(id, data);
       toast.success('Employee updated successfully!', { id: 'updateEmployee' });
       router.push(`/employees/${id}`);
@@ -77,12 +78,9 @@ export default function EditEmployeePage({ params }: PageParams) {
 
   return (
     <DashboardLayout>
-      <div className="mb-6 flex items-center">
-        <Link href={`/employees/${id}`} className="text-blue-600 hover:underline flex items-center gap-1 mr-4">
-          <FiArrowLeft size={16} /> Back
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-800">Edit Employee</h1>
-      </div>
+      <Toaster />
+
+
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
@@ -90,7 +88,29 @@ export default function EditEmployeePage({ params }: PageParams) {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm mb-6">
+        <TableHeader
+          title="Edit Employee"
+          total={0}
+          showStats={false}
+          showSearch={false}
+          searchValue=""
+          onSearchChange={() => { }}
+          headerClassName="px-6 py-6"
+          backButton={{
+            href: `/employees/${id}`,
+            label: 'Back'
+          }}
+          actionButtons={[
+            {
+              label: isSubmitting ? 'Saving...' : 'Save Changes',
+              icon: <FiSave />,
+              variant: 'success',
+              onClick: handleSubmit(onSubmit),
+              disabled: isSubmitting
+            }
+          ]}
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Personal Details Section */}
           <div className="bg-gray-100 p-4 mb-4 rounded-lg">
@@ -417,8 +437,12 @@ export default function EditEmployeePage({ params }: PageParams) {
             </div>
           </div>
           <div className="flex justify-end gap-4 mt-6">
-            <Link href={`/employees/${id}`} className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</Link>
-            <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2 disabled:opacity-50"><FiSave />{isSubmitting ? 'Saving...' : 'Save Changes'}</button>
+            <Link
+              href={`/employees/${id}`}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </Link>
           </div>
         </form>
       </div>

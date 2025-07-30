@@ -73,8 +73,8 @@ export default function EmployeesPage() {
 
   const filteredEmployees = employees.filter(employee => {
     const matchesSearch = 
-      employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.phone?.includes(searchTerm);
     
     const matchesFilter = 
@@ -96,7 +96,7 @@ export default function EmployeesPage() {
           {/* Skeleton for TableHeader */}
           <div className="space-y-6">
             {/* Title and Action Buttons Skeleton */}
-            <div className="flex justify-between items-center px-6 pt-6 mb-0">
+            <div className="flex justify-between items-center px-6 pt-6 mb-6">
               <div className="flex items-center">
                 <div className="bg-gray-200 h-10 w-20 rounded-full animate-pulse"></div>
               </div>
@@ -117,7 +117,7 @@ export default function EmployeesPage() {
               </div>
               <div className="flex items-center gap-4">
                 <div className="bg-gray-200 h-10 w-10 rounded animate-pulse"></div>
-                <div className="bg-gray-200 h-10 w-64 rounded animate-pulse"></div>
+            <div className="bg-gray-200 h-10 w-64 rounded animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -138,8 +138,8 @@ export default function EmployeesPage() {
                 </div>
               </div>
               <div className="p-6">
-                <div className="animate-pulse space-y-4">
-                  {[...Array(5)].map((_, index) => (
+            <div className="animate-pulse space-y-4">
+              {[...Array(5)].map((_, index) => (
                     <div key={index} className="flex items-center space-x-6">
                       <div className="bg-gray-200 h-4 w-32 rounded animate-pulse"></div>
                       <div className="bg-gray-200 h-4 w-20 rounded animate-pulse"></div>
@@ -153,9 +153,9 @@ export default function EmployeesPage() {
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
                         <div className="bg-gray-200 h-8 w-8 rounded animate-pulse"></div>
-                      </div>
-                    </div>
-                  ))}
+                  </div>
+                </div>
+              ))}
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ export default function EmployeesPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Employees"

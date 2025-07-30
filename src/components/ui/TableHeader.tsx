@@ -38,11 +38,13 @@ interface TableHeaderProps {
   isRefreshing?: boolean;
   actionButtons?: ActionButton[];
   showStats?: boolean;
+  showSearch?: boolean;
   backButton?: BackButton;
   filterValue?: string;
   onFilterChange?: (value: string) => void;
   filterOptions?: FilterOption[];
   showFilter?: boolean;
+  headerClassName?: string;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -59,6 +61,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   isRefreshing = false,
   actionButtons = [],
   showStats = true,
+  showSearch = true,
   backButton,
   filterValue = 'all',
   onFilterChange,
@@ -68,6 +71,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     { value: 'inactive', label: 'Inactive' }
   ],
   showFilter = false,
+  headerClassName = 'px-6 pt-6 mb-0',
 }) => {
   const getButtonClasses = (variant: string = 'primary') => {
     const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
@@ -96,7 +100,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     <div className="space-y-6">
       {/* Page Title and Action Buttons */}
       {(title || actionButtons.length > 0 || backButton) && (
-        <div className="flex justify-between items-center px-6 pt-6 mb-0">
+        <div className={`flex justify-between items-center ${headerClassName}`}>
           {/* Left Side - Back Button */}
           <div className="flex items-center">
             {backButton && (
@@ -171,66 +175,70 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       )}
 
       {/* Stats and Search Section */}
-      <div className="px-6 py-6 border-b border-gray-200 flex justify-between items-center">
-        {showStats && (
-          <div className="flex items-center gap-6 text-sm text-gray-600">
-            <span>Total: <span className="font-medium">{total}</span></span>
-            {typeof active === 'number' && (
-              <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
-            )}
-            {typeof inactive === 'number' && (
-              <span className="text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
-            )}
-            {dropdown && <span>{dropdown}</span>}
-          </div>
-        )}
-        <div className="flex items-center gap-4">
-          {onRefresh && (
-            <Tooltip content="Refresh" position="top" color="blue">
-              <button
-                onClick={onRefresh}
-                disabled={isRefreshing}
-                className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
-                  isRefreshing 
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
-                }`}
-                aria-label="Refresh data"
-              >
-                <FiRefreshCw 
-                  className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
-                />
-              </button>
-            </Tooltip>
-          )}
-          {showFilter && onFilterChange && (
-            <div className="relative">
-              <select
-                value={filterValue}
-                onChange={(e) => onFilterChange(e.target.value)}
-                className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {filterOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiFilter className="w-4 h-4 text-gray-500" />
-              </div>
+      {(showStats || showSearch || showFilter) && (
+        <div className="px-6 py-6 border-b border-gray-200 flex justify-between items-center">
+          {showStats && (
+            <div className="flex items-center gap-6 text-sm text-gray-600">
+              <span>Total: <span className="font-medium">{total}</span></span>
+              {typeof active === 'number' && (
+                <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
+              )}
+              {typeof inactive === 'number' && (
+                <span className="text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
+              )}
+              {dropdown && <span>{dropdown}</span>}
             </div>
           )}
-          <div className="w-64">
-            <SearchBar
-              value={searchValue}
-              onChange={onSearchChange}
-              placeholder={searchPlaceholder}
-              ariaLabel={searchAriaLabel}
-            />
+          <div className="flex items-center gap-4">
+            {onRefresh && (
+              <Tooltip content="Refresh" position="top" color="blue">
+                <button
+                  onClick={onRefresh}
+                  disabled={isRefreshing}
+                  className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
+                    isRefreshing 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+                  }`}
+                  aria-label="Refresh data"
+                >
+                  <FiRefreshCw 
+                    className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+                  />
+                </button>
+              </Tooltip>
+            )}
+            {showFilter && onFilterChange && (
+              <div className="relative">
+                <select
+                  value={filterValue}
+                  onChange={(e) => onFilterChange(e.target.value)}
+                  className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {filterOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiFilter className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+            )}
+            {showSearch && (
+              <div className="w-64">
+                <SearchBar
+                  value={searchValue}
+                  onChange={onSearchChange}
+                  placeholder={searchPlaceholder}
+                  ariaLabel={searchAriaLabel}
+                />
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

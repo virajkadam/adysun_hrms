@@ -107,9 +107,9 @@ export default function EmploymentsPage() {
     const employeeName = employeeNames[employment.employeeId] || '';
     const matchesSearch = 
       employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employment.contractType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (employment.jobTitle && employment.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
+           employment.contractType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           (employment.jobTitle && employment.jobTitle.toLowerCase().includes(searchTerm.toLowerCase())) ||
+           (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesFilter = 
       filterValue === 'all' || 
