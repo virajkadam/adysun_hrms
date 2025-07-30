@@ -73,3 +73,7 @@ The user prefers the TableHeader component pattern for add/edit screens with con
 ---
 
 The user requires that when implementing Tanstack Query, always use globally declared configuration from @lib/queryClient.ts and never declare individual staleTime, gcTime, or retry values in custom hooks. All query configurations should inherit from the global QueryClient defaultOptions to maintain consistency across the application.
+
+---
+
+The user requires that only big/large API responses should be cached (like employee lists, employment lists, dashboard stats) while small/quick operations should not be cached. Mutations should only be triggered when there are actual changes in the main API data, not for every UI interaction. This ensures efficient caching strategy where only heavy data operations benefit from cache while keeping the system responsive for quick operations.
