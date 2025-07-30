@@ -471,6 +471,25 @@ export default function EditEmployeePage({ params }: PageParams) {
             </div>
           </div>
         </form>
+        
+        {/* Form Buttons */}
+        <div className="flex justify-between items-center gap-4 px-6 py-3">
+          <Link
+            href={`/employees/${id}`}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2 disabled:opacity-50"
+            onClick={handleSubmit(onSubmit)}
+          >
+            <FiSave />
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
       </div>
       <Toaster />
     </DashboardLayout>
