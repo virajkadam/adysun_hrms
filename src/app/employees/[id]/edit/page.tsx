@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -15,9 +15,7 @@ import TableHeader from '@/components/ui/TableHeader';
 type ApiError = Error | unknown;
 
 type PageParams = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 export default function EditEmployeePage({ params }: PageParams) {
@@ -26,7 +24,7 @@ export default function EditEmployeePage({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const id = params.id;
+  const { id } = use(params);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<Omit<Employee, 'id'>>();
 

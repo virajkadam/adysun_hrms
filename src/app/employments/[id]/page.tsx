@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin } from 'react-icons/fi';
@@ -9,7 +9,7 @@ import { getEmployment, deleteEmployment, getEmployee } from '@/utils/firebaseUt
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function EmploymentViewPage({ params }: { params: { id: string } }) {
+export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
   const [employment, setEmployment] = useState<Employment | null>(null);
   const [employee, setEmployee] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export default function EmploymentViewPage({ params }: { params: { id: string } 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   
   const router = useRouter();
-  const id = params.id;
+  const { id } = use(params);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -306,9 +306,9 @@ export default function EmploymentViewPage({ params }: { params: { id: string } 
                   : 'bg-yellow-100 text-yellow-800'
               }`}
             >
-              {employment.contractType.split('-').map(word => 
+              {employment.contractType ? employment.contractType.split('-').map(word => 
                 word.charAt(0).toUpperCase() + word.slice(1)
-              ).join(' ')}
+              ).join(' ') : '-'}
             </span>
             <p className="text-sm text-gray-500 mt-2">Contract Type</p>
           </div>
@@ -503,4 +503,4 @@ export default function EmploymentViewPage({ params }: { params: { id: string } 
       </div>
     </DashboardLayout>
   );
-} 
+}   
