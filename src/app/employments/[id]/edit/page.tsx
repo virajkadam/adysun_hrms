@@ -170,7 +170,7 @@ export default function EditEmploymentPage({ params }: { params: { id: string } 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Employee
+                <span className="text-red-500 mr-1">*</span>Employee
               </label>
               <select
                 {...register('employeeId', { required: 'Employee is required' })}
@@ -190,7 +190,7 @@ export default function EditEmploymentPage({ params }: { params: { id: string } 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Contract Type
+                <span className="text-red-500 mr-1">*</span>Contract Type
               </label>
               <select
                 {...register('contractType', { required: 'Contract type is required' })}
@@ -207,7 +207,7 @@ export default function EditEmploymentPage({ params }: { params: { id: string } 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Start Date
+                <span className="text-red-500 mr-1">*</span>Start Date
               </label>
               <input
                 type="date"
@@ -232,7 +232,7 @@ export default function EditEmploymentPage({ params }: { params: { id: string } 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Salary
+                <span className="text-red-500 mr-1">*</span>Salary
               </label>
               <input
                 type="number"
