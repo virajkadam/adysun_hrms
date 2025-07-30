@@ -2,6 +2,7 @@ import * as React from "react"
 import { ChevronRight } from "lucide-react"
 import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
+import { getEmployeeNameById, getEmploymentTitleById } from "@/utils/firebaseUtils"
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
@@ -74,6 +75,62 @@ const BreadcrumbPage = React.forwardRef<
 ))
 BreadcrumbPage.displayName = "BreadcrumbPage"
 
+// Enhanced breadcrumb components for dynamic content
+const DynamicBreadcrumbItem = React.forwardRef<
+  HTMLLIElement,
+  React.ComponentPropsWithoutRef<"li"> & {
+    id?: string
+    type?: 'employee' | 'employment'
+    fallback?: string
+  }
+>(({ className, id, type, fallback = 'Loading...', children, ...props }, ref) => {
+  const [displayName, setDisplayName] = React.useState<string>(fallback)
+  const [loading, setLoading] = React.useState<boolean>(false)
+
+  React.useEffect(() => {
+    if (!id || !type) return
+
+    const fetchName = async () => {
+      try {
+        setLoading(true)
+        let name: string
+        
+        if (type === 'employee') {
+          name = await getEmployeeNameById(id)
+        } else if (type === 'employment') {
+          name = await getEmploymentTitleById(id)
+        } else {
+          name = fallback
+        }
+        
+        setDisplayName(name)
+      } catch (error) {
+        console.error(`Error fetching ${type} name:`, error)
+        setDisplayName(fallback)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchName()
+  }, [id, type, fallback])
+
+  return (
+    <li
+      ref={ref}
+      className={cn("inline-flex items-center gap-1.5", className)}
+      {...props}
+    >
+      {loading ? (
+        <span className="animate-pulse bg-gray-200 h-4 w-20 rounded"></span>
+      ) : (
+        children || displayName
+      )}
+    </li>
+  )
+})
+DynamicBreadcrumbItem.displayName = "DynamicBreadcrumbItem"
+
 const BreadcrumbSeparator = ({
   children,
   className,
@@ -97,4 +154,5 @@ export {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  DynamicBreadcrumbItem,
 } 

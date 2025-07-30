@@ -392,4 +392,50 @@ export const getAdminNameById = async (adminId: string): Promise<string> => {
     console.error('Error getting admin name by ID:', error);
     return 'Unknown Admin';
   }
+};
+
+/**
+ * Get employee name by employee ID
+ * @param employeeId - The employee ID to look up
+ * @returns Employee name or 'Unknown Employee' if not found
+ */
+export const getEmployeeNameById = async (employeeId: string): Promise<string> => {
+  try {
+    if (!employeeId) return 'Unknown Employee';
+    
+    const employeeDoc = await getDoc(doc(db, 'employees', employeeId));
+    
+    if (employeeDoc.exists()) {
+      const employeeData = employeeDoc.data();
+      return employeeData.name || 'Unknown Employee';
+    }
+    
+    return 'Unknown Employee';
+  } catch (error) {
+    console.error('Error getting employee name by ID:', error);
+    return 'Unknown Employee';
+  }
+};
+
+/**
+ * Get employment title by employment ID
+ * @param employmentId - The employment ID to look up
+ * @returns Employment title or 'Unknown Employment' if not found
+ */
+export const getEmploymentTitleById = async (employmentId: string): Promise<string> => {
+  try {
+    if (!employmentId) return 'Unknown Employment';
+    
+    const employmentDoc = await getDoc(doc(db, 'employments', employmentId));
+    
+    if (employmentDoc.exists()) {
+      const employmentData = employmentDoc.data();
+      return employmentData.jobTitle || employmentData.contractType || 'Unknown Employment';
+    }
+    
+    return 'Unknown Employment';
+  } catch (error) {
+    console.error('Error getting employment title by ID:', error);
+    return 'Unknown Employment';
+  }
 }; 
