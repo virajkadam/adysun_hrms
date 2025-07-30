@@ -24,7 +24,6 @@ export default function AddEmployeePage() {
   const { register, handleSubmit, formState: { errors } } = useForm<EmployeeFormData>({
     defaultValues: {
       status: 'active',
-      isActive: true,
     }
   });
 
@@ -37,10 +36,10 @@ export default function AddEmployeePage() {
       // Get admin data for audit fields
       const { adminId, currentTimestamp } = getAdminDataForAudit();
       
-      // Add audit fields to employee data and ensure isActive is true
+      // Add audit fields to employee data and ensure status is active
       const employeeDataWithAudit = {
         ...data,
-        isActive: true, // Always set to true for new employees
+        status: 'active', // Always set to active for new employees
         createdAt: currentTimestamp,
         createdBy: adminId,
         updatedAt: currentTimestamp,
