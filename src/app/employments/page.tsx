@@ -110,6 +110,10 @@ export default function EmploymentsPage() {
            (employment.department && employment.department.toLowerCase().includes(searchTerm.toLowerCase()));
   });
 
+  const total = filteredEmployments.length;
+  const active = filteredEmployments.filter(e => e.employmentType === 'full-time').length;
+  const inactive = filteredEmployments.filter(e => e.employmentType === 'part-time').length;
+
   if (loading) {
     return (
       <DashboardLayout>
@@ -142,25 +146,31 @@ export default function EmploymentsPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Employments</h1>
-        <Link
-          href="/employments/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-blue-700"
-        >
-          <FiPlus /> Add Employment
-        </Link>
-      </div>
-
+      
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          total={filteredEmployments.length}
+          title="Employments"
+          total={total}
+          active={active}
+          inactive={inactive}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
           searchPlaceholder="Search"
           searchAriaLabel="Search employments"
           onRefresh={handleRefresh}
           isRefreshing={refreshing}
+          backButton={{
+            href: '/dashboard',
+            label: 'Back'
+          }}
+          actionButtons={[
+            {
+              label: 'Add Employment',
+              href: '/employments/add',
+              icon: <FiPlus />,
+              variant: 'success'
+            }
+          ]}
         />
 
         {filteredEmployments.length === 0 ? (
