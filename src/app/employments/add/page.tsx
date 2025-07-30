@@ -7,8 +7,9 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployment, getEmployees } from '@/utils/firebaseUtils';
 import { getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
-import { FiSave, FiX } from 'react-icons/fi';
+import { FiSave, FiX, FiPlus } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
+import TableHeader from '@/components/ui/TableHeader';
 
 interface EmploymentFormData extends Omit<Employment, 'id' | 'relievingCtc'> {
   // Add all the fields we need
@@ -142,11 +143,13 @@ export default function AddEmploymentPage() {
     return (
       <DashboardLayout>
         <Toaster position="top-center" />
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Add New Employment</h1>
-          <div className="bg-gray-200 h-10 w-10 rounded animate-pulse"></div>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="flex justify-between items-center px-6 py-6">
+            <div className="bg-gray-200 h-8 w-48 rounded animate-pulse"></div>
+            <div className="bg-gray-200 h-10 w-32 rounded animate-pulse"></div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
           <div className="animate-pulse space-y-4">
             <div className="h-10 bg-gray-200 rounded w-1/2"></div>
             <div className="space-y-2">
@@ -170,15 +173,36 @@ export default function AddEmploymentPage() {
   return (
     <DashboardLayout>
       <Toaster position="top-center" />
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Add New Employment</h1>
-        <button
-          onClick={() => router.back()}
-          className="text-gray-600 hover:text-gray-800"
-        >
-          <FiX size={24} />
-        </button>
-      </div>
+      
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <TableHeader
+          title="Add New Employment"
+          total={0}
+          active={0}
+          inactive={0}
+          searchValue=""
+          onSearchChange={() => { }}
+          searchPlaceholder="Search"
+          searchAriaLabel="Search employments"
+          showStats={false}
+          showSearch={false}
+          showFilter={false}
+          headerClassName="px-6 py-6"
+          backButton={{
+            href: '/employments',
+            label: 'Back'
+          }}
+          actionButtons={[
+            {
+              label: isSubmitting ? 'Saving...' : 'Add Employment',
+              icon: <FiPlus />,
+              variant: 'success',
+              onClick: handleSubmit(onSubmit),
+              disabled: isSubmitting
+            }
+          ]}
+        />
+      
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700">
@@ -220,10 +244,10 @@ export default function AddEmploymentPage() {
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-blue-500 pl-2">Employment Information</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Employment ID
+                    <span className="text-red-500 mr-1">*</span> Employment ID
                   </label>
                   <input
                     type="text"
@@ -244,7 +268,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Joining Date
+                    <span className="text-red-500 mr-1">*</span> Joining Date
                   </label>
                   <input
                     type="date"
@@ -269,7 +293,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> CTC (₹)
+                    <span className="text-red-500 mr-1">*</span> CTC (₹)
                   </label>
                   <input
                     type="number"
@@ -288,7 +312,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> In-hand CTC (₹)
+                    <span className="text-red-500 mr-1">*</span> In-hand CTC (₹)
                   </label>
                   <input
                     type="number"
@@ -349,10 +373,10 @@ export default function AddEmploymentPage() {
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-green-500 pl-2">Salary Information</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Salary ID
+                    <span className="text-red-500 mr-1">*</span> Salary ID
                   </label>
                   <input
                     type="text"
@@ -373,7 +397,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Salary per annum (₹)
+                    <span className="text-red-500 mr-1">*</span> Salary per annum (₹)
                   </label>
                   <input
                     type="number"
@@ -392,7 +416,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Salary per month (₹)
+                    <span className="text-red-500 mr-1">*</span> Salary per month (₹)
                   </label>
                   <input
                     type="number"
@@ -410,7 +434,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Basic (₹)
+                    <span className="text-red-500 mr-1">*</span> Basic (₹)
                   </label>
                   <input
                     type="number"
@@ -617,10 +641,10 @@ export default function AddEmploymentPage() {
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">Job Details</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Job Title
+                    <span className="text-red-500 mr-1">*</span> Job Title
                   </label>
                   <input
                     type="text"
@@ -673,7 +697,7 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Employment Type
+                    <span className="text-red-500 mr-1">*</span> Employment Type
                   </label>
                   <select
                     {...register('employmentType', { required: 'Employment type is required' })}
@@ -703,26 +727,26 @@ export default function AddEmploymentPage() {
               </div>
             </div>
 
-            <div className="mt-8 flex justify-end">
+            <div className="flex justify-between items-center gap-4 px-6 py-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="mr-4 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2 disabled:opacity-50"
               >
                 <FiSave />
-                {isSubmitting ? 'Saving...' : 'Save Employment'}
+                {isSubmitting ? 'Saving...' : 'Add Employment'}
               </button>
             </div>
           </form>
         </div>
-      )}
+      )}</div>
     </DashboardLayout>
   );
 } 
