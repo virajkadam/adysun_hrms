@@ -203,7 +203,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           <FiUser className="mr-2" /> Personal Details
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Basic Information Card */}
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employee.name || '-'}</p>
@@ -247,12 +247,10 @@ export default function EmployeeViewPage({ params }: PageParams) {
             <p className="text-sm text-gray-500">Is Active</p>
           </div>
           
-          {employee.homeTown && (
-            <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{employee.homeTown}</p>
-              <p className="text-sm text-gray-500">Home Town</p>
-            </div>
-          )}
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employee.homeTown || '-'}</p>
+            <p className="text-sm text-gray-500">Home Town</p>
+          </div>
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employee.email || '-'}</p>
@@ -264,30 +262,26 @@ export default function EmployeeViewPage({ params }: PageParams) {
             <p className="text-sm text-gray-500">Phone</p>
           </div>
           
-          {employee.position && (
-            <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{employee.position}</p>
-              <p className="text-sm text-gray-500">Position</p>
-            </div>
-          )}
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employee.position || '-'}</p>
+            <p className="text-sm text-gray-500">Position</p>
+          </div>
           
-          {employee.department && (
-            <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{employee.department}</p>
-              <p className="text-sm text-gray-500">Department</p>
-            </div>
-          )}
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employee.department || '-'}</p>
+            <p className="text-sm text-gray-500">Department</p>
+          </div>
         </div>
         
         {/* Addresses Section */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">Address Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg shadow p-5">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow p-5 md:col-span-2">
             <p className="text-lg font-medium text-gray-900 whitespace-pre-wrap">{employee.currentAddress || '-'}</p>
             <p className="text-sm text-gray-500">Current Address</p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-5">
+          <div className="bg-white rounded-lg shadow p-5 md:col-span-2">
             <p className="text-lg font-medium text-gray-900 whitespace-pre-wrap">{employee.permanentAddress || '-'}</p>
             <p className="text-sm text-gray-500">Permanent Address</p>
           </div>
@@ -295,7 +289,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         
         {/* Identification Documents */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">Identification Documents</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employee.aadharCard || '-'}</p>
             <p className="text-sm text-gray-500">Aadhar Card</p>
@@ -319,7 +313,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         
         {/* Bank Details */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">Bank Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employee.bankName || '-'}</p>
             <p className="text-sm text-gray-500">Bank Name</p>
@@ -351,7 +345,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         {/* Higher Education */}
         <h3 className="text-md font-medium text-gray-700 mb-4">Higher Education</h3>
         {employee.graduation ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.graduation.degree || '-'}</p>
               <p className="text-sm text-gray-500">Degree</p>
@@ -384,6 +378,11 @@ export default function EmployeeViewPage({ params }: PageParams) {
               <p className="text-lg font-medium text-gray-900">{employee.graduation.marks || '-'}</p>
               <p className="text-sm text-gray-500">Marks</p>
             </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.graduation.grade || '-'}</p>
+              <p className="text-sm text-gray-500">Grade</p>
+            </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow p-5 mb-4">
@@ -394,7 +393,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         {/* 12th Standard */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">12th Standard</h3>
         {employee.twelthStandard ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.school || '-'}</p>
               <p className="text-sm text-gray-500">School</p>
@@ -419,8 +418,18 @@ export default function EmployeeViewPage({ params }: PageParams) {
             </div>
             
             <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.board || '-'}</p>
+              <p className="text-sm text-gray-500">Board</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.marks || '-'}</p>
               <p className="text-sm text-gray-500">Marks</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.grade || '-'}</p>
+              <p className="text-sm text-gray-500">Grade</p>
             </div>
           </div>
         ) : (
@@ -432,7 +441,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         {/* Other Education */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">Other Education</h3>
         {employee.otherEducation ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.otherEducation.diploma || '-'}</p>
               <p className="text-sm text-gray-500">Diploma</p>
@@ -457,8 +466,18 @@ export default function EmployeeViewPage({ params }: PageParams) {
             </div>
             
             <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.otherEducation.institute || '-'}</p>
+              <p className="text-sm text-gray-500">Institute</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.otherEducation.marks || '-'}</p>
               <p className="text-sm text-gray-500">Marks</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.otherEducation.grade || '-'}</p>
+              <p className="text-sm text-gray-500">Grade</p>
             </div>
           </div>
         ) : (
@@ -470,7 +489,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         {/* 10th Standard */}
         <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">10th Standard</h3>
         {employee.tenthStandard ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.school || '-'}</p>
               <p className="text-sm text-gray-500">School</p>
@@ -490,8 +509,23 @@ export default function EmployeeViewPage({ params }: PageParams) {
             </div>
             
             <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.board || '-'}</p>
+              <p className="text-sm text-gray-500">Board</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
               <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.marks || '-'}</p>
               <p className="text-sm text-gray-500">Marks</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.grade || '-'}</p>
+              <p className="text-sm text-gray-500">Grade</p>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.medium || '-'}</p>
+              <p className="text-sm text-gray-500">Medium</p>
             </div>
           </div>
         ) : (
@@ -603,7 +637,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           <FiBook className="mr-2" /> Audit Trail
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Created By */}
           <div className="bg-gray-50 rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
