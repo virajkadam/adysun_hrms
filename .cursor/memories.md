@@ -60,3 +60,7 @@ The user prefers that tooltips should match the accent color of the button they 
 
 ---
 
+The user prefers the TableHeader component pattern with consistent three-column layout: Left (back button), Center (title), Right (action buttons), with stats section below showing Total/Active/Inactive counts, and optional filter dropdown with All/Active/Inactive options positioned between refresh button and search bar.
+
+---
+

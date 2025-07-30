@@ -17,6 +17,7 @@ export default function EmployeesPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => {
@@ -70,11 +71,19 @@ export default function EmployeesPage() {
     setDeleteConfirm(null);
   };
 
-  const filteredEmployees = employees.filter(employee => 
-    employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.phone?.includes(searchTerm)
-  );
+  const filteredEmployees = employees.filter(employee => {
+    const matchesSearch = 
+      employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.phone?.includes(searchTerm);
+    
+    const matchesFilter = 
+      filterValue === 'all' || 
+      (filterValue === 'active' && employee.status === 'active') ||
+      (filterValue === 'inactive' && employee.status === 'inactive');
+    
+    return matchesSearch && matchesFilter;
+  });
 
   const total = filteredEmployees.length;
   const active = filteredEmployees.filter(e => e.status === 'active').length;
@@ -172,6 +181,9 @@ export default function EmployeesPage() {
           searchAriaLabel="Search employees"
           onRefresh={handleRefresh}
           isRefreshing={refreshing}
+          showFilter={true}
+          filterValue={filterValue}
+          onFilterChange={setFilterValue}
           backButton={{
             href: '/dashboard',
             label: 'Back'
@@ -188,7 +200,12 @@ export default function EmployeesPage() {
 
         {filteredEmployees.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            {searchTerm ? 'No employees match your search' : 'No employees found. Add your first employee!'}
+            {searchTerm && filterValue === 'all' && 'No employees match your search'}
+            {searchTerm && filterValue === 'active' && 'No active employees match your search'}
+            {searchTerm && filterValue === 'inactive' && 'No inactive employees match your search'}
+            {!searchTerm && filterValue === 'active' && 'No active employees found'}
+            {!searchTerm && filterValue === 'inactive' && 'No inactive employees found'}
+            {!searchTerm && filterValue === 'all' && 'No employees found. Add your first employee!'}
           </div>
         ) : (
           <div className="overflow-x-auto">

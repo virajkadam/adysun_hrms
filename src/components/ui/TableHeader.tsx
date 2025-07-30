@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiPlus, FiEdit, FiChevronLeft } from 'react-icons/fi';
+import { FiRefreshCw, FiPlus, FiEdit, FiChevronLeft, FiFilter } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -19,6 +19,11 @@ interface BackButton {
   label?: string;
 }
 
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
 interface TableHeaderProps {
   title?: string;
   total: number;
@@ -34,6 +39,10 @@ interface TableHeaderProps {
   actionButtons?: ActionButton[];
   showStats?: boolean;
   backButton?: BackButton;
+  filterValue?: string;
+  onFilterChange?: (value: string) => void;
+  filterOptions?: FilterOption[];
+  showFilter?: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -51,6 +60,14 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   actionButtons = [],
   showStats = true,
   backButton,
+  filterValue = 'all',
+  onFilterChange,
+  filterOptions = [
+    { value: 'all', label: 'All' },
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' }
+  ],
+  showFilter = false,
 }) => {
   const getButtonClasses = (variant: string = 'primary') => {
     const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
@@ -185,6 +202,24 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 />
               </button>
             </Tooltip>
+          )}
+          {showFilter && onFilterChange && (
+            <div className="relative">
+              <select
+                value={filterValue}
+                onChange={(e) => onFilterChange(e.target.value)}
+                className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                {filterOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiFilter className="w-4 h-4 text-gray-500" />
+              </div>
+            </div>
           )}
           <div className="w-64">
             <SearchBar
