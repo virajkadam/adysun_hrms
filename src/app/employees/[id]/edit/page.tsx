@@ -117,7 +117,7 @@ export default function EditEmployeePage({ params }: PageParams) {
             <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-blue-500 pl-2">Personal Details</h2>
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Basic Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Name
@@ -139,8 +139,6 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="text" placeholder="Enter employee ID" {...register('employeeId', { required: 'Employee ID is required', pattern: { value: /^[A-Z0-9-]{3,15}$/i, message: 'Please enter a valid employee ID' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.employeeId && (<p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>)}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select {...register('status')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
@@ -155,10 +153,11 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
               </div>
             </div>
+
             {/* Contact Information */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Mobile No.
@@ -173,25 +172,24 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="email" placeholder="Enter email address" {...register('email', { required: 'Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.email && (<p className="mt-1 text-sm text-red-600">{errors.email.message}</p>)}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Current Address
                   </label>
-                  <textarea placeholder="Enter current address" {...register('currentAddress', { required: 'Current address is required' })} rows={3} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"></textarea>
+                  <input type="text" placeholder="Enter current address" {...register('currentAddress', { required: 'Current address is required' })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.currentAddress && (<p className="mt-1 text-sm text-red-600">{errors.currentAddress.message}</p>)}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
-                  <textarea placeholder="Enter permanent address (if different from current)" {...register('permanentAddress')} rows={3} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"></textarea>
+                  <input type="text" placeholder="Enter permanent address" {...register('permanentAddress')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
               </div>
             </div>
+
             {/* Identification Documents */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Identification Documents</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Aadhar Card
@@ -217,10 +215,11 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
               </div>
             </div>
+
             {/* Bank Details */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Bank Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Bank Name
@@ -258,14 +257,14 @@ export default function EditEmployeePage({ params }: PageParams) {
             {/* Higher Education */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Higher Education</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
-                  <input type="text" placeholder="Enter degree name (e.g., B.Tech, MBA)" {...register('graduation.degree')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter degree name" {...register('graduation.degree')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input type="text" placeholder="Enter specialization/branch" {...register('graduation.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter specialization" {...register('graduation.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
@@ -292,7 +291,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-                  <input type="text" placeholder="Enter college/institution name" {...register('graduation.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter college name" {...register('graduation.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">University Name</label>
@@ -302,19 +301,24 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
                   <input type="text" placeholder="CGPA or Percentage" {...register('graduation.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                  <input type="text" placeholder="Enter grade" {...register('graduation.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
               </div>
             </div>
+
             {/* 12th Standard */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
                   <input type="text" placeholder="Enter school name" {...register('twelthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input type="text" placeholder="Enter branch/stream (e.g., Science, Commerce)" {...register('twelthStandard.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter stream" {...register('twelthStandard.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
@@ -344,22 +348,31 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="text" placeholder="Enter full school name" {...register('twelthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
+                  <input type="text" placeholder="Enter board name" {...register('twelthStandard.board')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                  <input type="text" placeholder="Percentage" {...register('twelthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter percentage" {...register('twelthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                  <input type="text" placeholder="Enter grade" {...register('twelthStandard.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
               </div>
             </div>
+
             {/* Other Education */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Other Education</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Diploma</label>
                   <input type="text" placeholder="Enter diploma name" {...register('otherEducation.diploma')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input type="text" placeholder="Enter specialization/branch" {...register('otherEducation.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter specialization" {...register('otherEducation.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
@@ -386,18 +399,27 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-                  <input type="text" placeholder="Enter college/institution name" {...register('otherEducation.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter college name" {...register('otherEducation.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Institute</label>
+                  <input type="text" placeholder="Enter institute name" {...register('otherEducation.institute')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                  <input type="text" placeholder="Percentage" {...register('otherEducation.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter percentage" {...register('otherEducation.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                  <input type="text" placeholder="Enter grade" {...register('otherEducation.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
               </div>
             </div>
+
             {/* 10th Standard */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
                   <input type="text" placeholder="Enter school name" {...register('tenthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
@@ -430,19 +452,23 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="text" placeholder="Enter full school name" {...register('tenthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
+                  <input type="text" placeholder="Enter board name" {...register('tenthStandard.board')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                  <input type="text" placeholder="Percentage" {...register('tenthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter percentage" {...register('tenthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                  <input type="text" placeholder="Enter grade" {...register('tenthStandard.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Medium</label>
+                  <input type="text" placeholder="Enter medium" {...register('tenthStandard.medium')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
               </div>
             </div>
-          </div>
-          <div className="flex justify-end gap-4 mt-6">
-            <Link
-              href={`/employees/${id}`}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </Link>
           </div>
         </form>
       </div>
