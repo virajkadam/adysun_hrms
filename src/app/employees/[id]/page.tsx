@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, deleteEmployee, getEmploymentsByEmployee, getAdminNameById } from '@/utils/firebaseUtils';
 import { Employee, Employment } from '@/types';
 import { formatDateToDayMonYearWithTime, formatDateToDayMonYear } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
-
-// Define API error type
-type ApiError = Error | unknown;
+import { useEmployee, useDeleteEmployee } from '@/hooks/useEmployees';
+import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
+import toast, { Toaster } from 'react-hot-toast';
 
 type PageParams = {
   params: {
@@ -19,13 +18,7 @@ type PageParams = {
   };
 };
 
-// The generateStaticParams function is now in the staticParams.ts file
-
 export default function EmployeeViewPage({ params }: PageParams) {
-  const [employee, setEmployee] = useState<Employee | null>(null);
-  const [employments, setEmployments] = useState<Employment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [createdByAdmin, setCreatedByAdmin] = useState<string>('');
   const [updatedByAdmin, setUpdatedByAdmin] = useState<string>('');
@@ -33,37 +26,34 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const router = useRouter();
   const id = params.id;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const employeeData = await getEmployee(id);
-        setEmployee(employeeData);
-        
-        // Fetch related employments
-        const employmentsData = await getEmploymentsByEmployee(id);
-        setEmployments(employmentsData);
-        
-        // Fetch admin names for audit trail
-        if (employeeData.createdBy) {
-          const createdByAdminName = await getAdminNameById(employeeData.createdBy);
-          setCreatedByAdmin(createdByAdminName);
-        }
-        
-        if (employeeData.updatedBy) {
-          const updatedByAdminName = await getAdminNameById(employeeData.updatedBy);
-          setUpdatedByAdmin(updatedByAdminName);
-        }
-      } catch (error: ApiError) {
-        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Use Tanstack Query for employee data
+  const {
+    data: employee,
+    isLoading,
+    isError,
+    error
+  } = useEmployee(id);
 
-    fetchData();
-  }, [id]);
+  // Use Tanstack Query for employments data
+  const {
+    data: employments = [],
+    isLoading: employmentsLoading,
+    isError: employmentsError
+  } = useEmploymentsByEmployee(id);
+
+  // Use mutation for delete operation
+  const deleteEmployeeMutation = useDeleteEmployee();
+
+  // Handle error states
+  if (isError && error) {
+    console.error('Employee data error:', error);
+    toast.error('Failed to load employee data');
+  }
+
+  if (employmentsError) {
+    console.error('Employments data error:', employmentsError);
+    toast.error('Failed to load employment data');
+  }
 
   const handleDeleteClick = () => {
     setDeleteConfirm(true);
@@ -71,11 +61,13 @@ export default function EmployeeViewPage({ params }: PageParams) {
 
   const confirmDelete = async () => {
     try {
-      await deleteEmployee(id);
+      toast.loading('Deleting employee...', { id: 'delete-employee' });
+      await deleteEmployeeMutation.mutateAsync(id);
+      toast.success('Employee deleted successfully', { id: 'delete-employee' });
       router.push('/employees');
-    } catch (error: ApiError) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to delete employee';
-      setError(errorMessage);
+      toast.error(errorMessage, { id: 'delete-employee' });
     }
   };
 
@@ -83,7 +75,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
     setDeleteConfirm(false);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -133,11 +125,11 @@ export default function EmployeeViewPage({ params }: PageParams) {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <DashboardLayout>
         <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4">
-          <p>{error}</p>
+          <p>Failed to load employee data. Please try refreshing the page.</p>
         </div>
         <div className="mt-4">
           <Link href="/employees" className="text-blue-600 hover:underline flex items-center gap-1">
@@ -165,6 +157,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
 
   return (
     <DashboardLayout>
+      <Toaster position="top-center" />
+      
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Employee Details"
@@ -185,14 +179,32 @@ export default function EmployeeViewPage({ params }: PageParams) {
           actionButtons={
             deleteConfirm ? [
               { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
-              { label: 'Confirm', icon: <FiTrash2 />, variant: 'danger' as const, onClick: confirmDelete },
-              { label: 'Cancel', icon: <FiArrowLeft />, variant: 'secondary' as const, onClick: cancelDelete }
+              { 
+                label: 'Confirm', 
+                icon: <FiTrash2 />, 
+                variant: 'danger' as const, 
+                onClick: confirmDelete,
+                disabled: deleteEmployeeMutation.isPending
+              },
+              { 
+                label: 'Cancel', 
+                icon: <FiArrowLeft />, 
+                variant: 'secondary' as const, 
+                onClick: cancelDelete,
+                disabled: deleteEmployeeMutation.isPending
+              }
             ] : [
               { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
-              { label: 'Delete', icon: <FiTrash2 />, variant: 'danger' as const, onClick: handleDeleteClick }
+              { 
+                label: 'Delete', 
+                icon: <FiTrash2 />, 
+                variant: 'danger' as const, 
+                onClick: handleDeleteClick,
+                disabled: deleteEmployeeMutation.isPending
+              }
             ]
           }
-                />
+        />
 
         <div className="px-6 pb-6">
           {/* Personal Details Section */}
@@ -547,7 +559,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
           </Link>
         </div>
         
-        {employments.length === 0 ? (
+        {employmentsLoading ? (
+          <div className="p-8 text-center text-gray-500">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-2">Loading employment history...</p>
+          </div>
+        ) : employments.length === 0 ? (
           <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
             <FiBriefcase className="w-12 h-12 mx-auto text-gray-400 mb-3" />
             <p>No employment records found for this employee.</p>

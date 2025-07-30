@@ -1,44 +1,50 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployment, deleteEmployment, getEmployee } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { useEmployment, useDeleteEmployment } from '@/hooks/useEmployments';
+import { useEmployee } from '@/hooks/useEmployees';
 
 export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
-  const [employment, setEmployment] = useState<Employment | null>(null);
-  const [employee, setEmployee] = useState<Employee | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   
   const router = useRouter();
   const { id } = use(params);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const employmentData = await getEmployment(id);
-        setEmployment(employmentData);
-        
-        // Fetch related employee
-        const employeeData = await getEmployee(employmentData.employeeId);
-        setEmployee(employeeData);
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch employment data');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Use Tanstack Query for employment data
+  const {
+    data: employment,
+    isLoading,
+    isError,
+    error
+  } = useEmployment(id);
 
-    fetchData();
-  }, [id]);
+  // Use Tanstack Query for employee data
+  const {
+    data: employee,
+    isLoading: employeeLoading,
+    isError: employeeError
+  } = useEmployee(employment?.employeeId || '');
+
+  // Use mutation for delete operation
+  const deleteEmploymentMutation = useDeleteEmployment();
+
+  // Handle error states
+  if (isError && error) {
+    console.error('Employment data error:', error);
+    toast.error('Failed to load employment data');
+  }
+
+  if (employeeError) {
+    console.error('Employee data error:', employeeError);
+    toast.error('Failed to load employee data');
+  }
 
   const handleDeleteClick = () => {
     setDeleteConfirm(true);
@@ -47,11 +53,10 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
   const confirmDelete = async () => {
     try {
       toast.loading('Deleting employment...', { id: 'delete-employment' });
-      await deleteEmployment(id);
+      await deleteEmploymentMutation.mutateAsync(id);
       toast.success('Employment deleted successfully', { id: 'delete-employment' });
       router.push('/employments');
     } catch (error: any) {
-      setError(error.message || 'Failed to delete employment');
       toast.error('Failed to delete employment', { id: 'delete-employment' });
     }
   };
@@ -67,7 +72,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     }).format(amount);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <DashboardLayout>
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -111,11 +116,11 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <DashboardLayout>
         <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4">
-          <p>{error}</p>
+          <p>Failed to load employment data. Please try refreshing the page.</p>
         </div>
         <div className="mt-4">
           <Link href="/employments" className="text-blue-600 hover:underline flex items-center gap-1">
@@ -162,41 +167,44 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             href: "/employments",
             label: 'Back'
           }}
-                     actionButtons={
-             deleteConfirm ? [
-               {
-                 label: 'Edit',
-                 icon: <FiEdit />,
-                 variant: 'primary' as const,
-                 href: `/employments/${id}/edit`
-               },
-               {
-                 label: 'Confirm',
-                 icon: <FiTrash2 />,
-                 variant: 'danger' as const,
-                 onClick: confirmDelete
-               },
-               {
-                 label: 'Cancel',
-                 icon: <FiArrowLeft />,
-                 variant: 'secondary' as const,
-                 onClick: cancelDelete
-               }
-             ] : [
-               {
-                 label: 'Edit',
-                 icon: <FiEdit />,
-                 variant: 'primary' as const,
-                 href: `/employments/${id}/edit`
-               },
-               {
-                 label: 'Delete',
-                 icon: <FiTrash2 />,
-                 variant: 'danger' as const,
-                 onClick: handleDeleteClick
-               }
-             ]
-           }
+          actionButtons={
+            deleteConfirm ? [
+              {
+                label: 'Edit',
+                icon: <FiEdit />,
+                variant: 'primary' as const,
+                href: `/employments/${id}/edit`
+              },
+              {
+                label: 'Confirm',
+                icon: <FiTrash2 />,
+                variant: 'danger' as const,
+                onClick: confirmDelete,
+                disabled: deleteEmploymentMutation.isPending
+              },
+              {
+                label: 'Cancel',
+                icon: <FiArrowLeft />,
+                variant: 'secondary' as const,
+                onClick: cancelDelete,
+                disabled: deleteEmploymentMutation.isPending
+              }
+            ] : [
+              {
+                label: 'Edit',
+                icon: <FiEdit />,
+                variant: 'primary' as const,
+                href: `/employments/${id}/edit`
+              },
+              {
+                label: 'Delete',
+                icon: <FiTrash2 />,
+                variant: 'danger' as const,
+                onClick: handleDeleteClick,
+                disabled: deleteEmploymentMutation.isPending
+              }
+            ]
+          }
         />
 
       {employee && (
