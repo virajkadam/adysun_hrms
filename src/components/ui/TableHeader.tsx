@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiPlus, FiEdit } from 'react-icons/fi';
+import { FiRefreshCw, FiPlus, FiEdit, FiChevronLeft } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -11,6 +11,12 @@ interface ActionButton {
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
   disabled?: boolean;
+}
+
+interface BackButton {
+  href?: string;
+  onClick?: () => void;
+  label?: string;
 }
 
 interface TableHeaderProps {
@@ -27,6 +33,7 @@ interface TableHeaderProps {
   isRefreshing?: boolean;
   actionButtons?: ActionButton[];
   showStats?: boolean;
+  backButton?: BackButton;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -43,6 +50,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   isRefreshing = false,
   actionButtons = [],
   showStats = true,
+  backButton,
 }) => {
   const getButtonClasses = (variant: string = 'primary') => {
     const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
@@ -63,54 +71,85 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     }
   };
 
+  const getBackButtonClasses = () => {
+    return 'px-3 py-2 rounded-full flex items-center gap-2 transition-colors duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300';
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Title and Action Buttons */}
-      {(title || actionButtons.length > 0) && (
+      {(title || actionButtons.length > 0 || backButton) && (
         <div className="flex justify-between items-center px-6 pt-6 mb-0">
+          {/* Left Side - Back Button */}
+          <div className="flex items-center">
+            {backButton && (
+              backButton.href ? (
+                <Link
+                  href={backButton.href}
+                  className={getBackButtonClasses()}
+                  onClick={backButton.onClick}
+                >
+                  <FiChevronLeft className="w-4 h-4" />
+                  {backButton.label || 'Back'}
+                </Link>
+              ) : (
+                <button
+                  onClick={backButton.onClick}
+                  className={getBackButtonClasses()}
+                >
+                  <FiChevronLeft className="w-4 h-4" />
+                  {backButton.label || 'Back'}
+                </button>
+              )
+            )}
+          </div>
+
+          {/* Center - Title */}
           {title && (
-            <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+            <div className="flex-1 flex justify-center">
+              <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+            </div>
           )}
-          {actionButtons.length > 0 && (
-            <div className="flex items-center gap-3">
-              {actionButtons.map((button, index) => {
-                const buttonContent = (
-                  <>
-                    {button.icon}
-                    {button.label}
-                  </>
-                );
 
-                if (button.href) {
-                  return (
-                    <Link
-                      key={index}
-                      href={button.href}
-                      className={`${getButtonClasses(button.variant)} ${
-                        button.disabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      onClick={button.onClick}
-                    >
-                      {buttonContent}
-                    </Link>
-                  );
-                }
+          {/* Right Side - Action Buttons */}
+          <div className="flex items-center gap-3">
+            {actionButtons.map((button, index) => {
+              const buttonContent = (
+                <>
+                  {button.icon}
+                  {button.label}
+                </>
+              );
 
+              if (button.href) {
                 return (
-                  <button
+                  <Link
                     key={index}
-                    onClick={button.onClick}
-                    disabled={button.disabled}
+                    href={button.href}
                     className={`${getButtonClasses(button.variant)} ${
                       button.disabled ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
+                    onClick={button.onClick}
                   >
                     {buttonContent}
-                  </button>
+                  </Link>
                 );
-              })}
-            </div>
-          )}
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={button.onClick}
+                  disabled={button.disabled}
+                  className={`${getButtonClasses(button.variant)} ${
+                    button.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {buttonContent}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 

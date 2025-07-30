@@ -126,12 +126,16 @@ export default function EmployeesPage() {
           searchAriaLabel="Search employees"
           onRefresh={handleRefresh}
           isRefreshing={refreshing}
+          backButton={{
+            href: '/dashboard',
+            label: 'Back'
+          }}
           actionButtons={[
             {
               label: 'Add Employee',
               href: '/employees/add',
               icon: <FiPlus />,
-              variant: 'primary'
+              variant: 'success'
             }
           ]}
         />
