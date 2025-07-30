@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployment, useDeleteEmployment } from '@/hooks/useEmployments';
 import { useEmployee } from '@/hooks/useEmployees';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -265,9 +266,9 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
               {employment.joiningDate 
-                ? new Date(employment.joiningDate).toLocaleDateString() 
+                ? formatDateToDayMonYear(employment.joiningDate)
                 : employment.startDate 
-                  ? new Date(employment.startDate).toLocaleDateString()
+                  ? formatDateToDayMonYear(employment.startDate)
                   : '-'}
             </p>
             <p className="text-sm text-gray-500">Joining Date</p>
@@ -276,7 +277,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
               {employment.incrementDate 
-                ? new Date(employment.incrementDate).toLocaleDateString()
+                ? formatDateToDayMonYear(employment.incrementDate)
                 : '-'}
             </p>
             <p className="text-sm text-gray-500">Increment Date</p>
@@ -494,9 +495,9 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
               {employment.joiningDate 
-                ? new Date(employment.joiningDate).toLocaleDateString()
+                ? formatDateToDayMonYear(employment.joiningDate)
                 : employment.startDate 
-                  ? new Date(employment.startDate).toLocaleDateString()
+                  ? formatDateToDayMonYear(employment.startDate)
                   : '-'}
             </p>
             <p className="text-sm text-gray-500">Start Date</p>
@@ -504,7 +505,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employment.endDate ? new Date(employment.endDate).toLocaleDateString() : '-'}
+              {employment.endDate ? formatDateToDayMonYear(employment.endDate) : '-'}
             </p>
             <p className="text-sm text-gray-500">End Date</p>
           </div>
