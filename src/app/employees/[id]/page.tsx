@@ -233,10 +233,10 @@ export default function EmployeeViewPage({ params }: PageParams) {
               }
             ] : [
               { 
-                label: 'View Employments', 
+                label: 'View Employment', 
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
-                href: `/employments?employeeId=${id}` 
+                href: `/employments/${employments[0].id}` 
               },
               { 
                 label: 'View Salary', 
