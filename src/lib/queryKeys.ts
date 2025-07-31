@@ -25,6 +25,16 @@ export const queryKeys = {
     byEmployee: (employeeId: string) => [...queryKeys.employments.all, 'byEmployee', employeeId] as const,
   },
   
+  // Salary keys
+  salaries: {
+    all: ['salaries'] as const,
+    lists: () => [...queryKeys.salaries.all, 'list'] as const,
+    list: (filters?: string) => [...queryKeys.salaries.lists(), { filters: filters || 'all' }] as const,
+    details: () => [...queryKeys.salaries.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.salaries.details(), id] as const,
+    byEmployee: (employeeId: string) => [...queryKeys.salaries.all, 'byEmployee', employeeId] as const,
+  },
+  
   // Company keys
   companies: {
     all: ['companies'] as const,

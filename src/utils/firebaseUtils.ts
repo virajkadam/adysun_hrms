@@ -1,6 +1,6 @@
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { Employee, Employment } from '../types';
+import { Employee, Employment, Salary } from '../types';
 import { useAuditTrail } from '../hooks/useAuditTrail';
 
 // Admin authentication functions
@@ -437,5 +437,108 @@ export const getEmploymentTitleById = async (employmentId: string): Promise<stri
   } catch (error) {
     console.error('Error getting employment title by ID:', error);
     return 'Unknown Employment';
+  }
+};
+
+// Salary CRUD functions
+export const addSalary = async (salaryData: Omit<Salary, 'id'>) => {
+  try {
+    const adminData = getAdminDataForAudit();
+    
+    const salaryWithAudit = {
+      ...salaryData,
+      createdAt: new Date().toISOString(),
+      createdBy: adminData.adminId,
+      updatedAt: new Date().toISOString(),
+      updatedBy: adminData.adminId,
+    };
+    
+    const docRef = await addDoc(collection(db, 'salaries'), salaryWithAudit);
+    console.log('✅ Salary added successfully:', docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding salary:', error);
+    throw error;
+  }
+};
+
+export const updateSalary = async (id: string, salaryData: Partial<Salary>) => {
+  try {
+    const adminData = getAdminDataForAudit();
+    
+    const salaryWithAudit = {
+      ...salaryData,
+      updatedAt: new Date().toISOString(),
+      updatedBy: adminData.adminId,
+    };
+    
+    const salaryRef = doc(db, 'salaries', id);
+    await updateDoc(salaryRef, salaryWithAudit);
+    console.log('✅ Salary updated successfully:', id);
+  } catch (error) {
+    console.error('Error updating salary:', error);
+    throw error;
+  }
+};
+
+export const deleteSalary = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, 'salaries', id));
+    console.log('✅ Salary deleted successfully:', id);
+  } catch (error) {
+    console.error('Error deleting salary:', error);
+    throw error;
+  }
+};
+
+export const getSalaries = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'salaries'));
+    const salaries: Salary[] = [];
+    querySnapshot.forEach((doc) => {
+      salaries.push({ id: doc.id, ...doc.data() } as Salary);
+    });
+    return salaries.sort((a, b) => {
+      // Sort by year descending, then by month descending
+      if (a.year !== b.year) return b.year - a.year;
+      return b.month - a.month;
+    });
+  } catch (error) {
+    console.error('Error getting salaries:', error);
+    throw error;
+  }
+};
+
+export const getSalary = async (id: string) => {
+  try {
+    const salaryDoc = await getDoc(doc(db, 'salaries', id));
+    
+    if (salaryDoc.exists()) {
+      return { id: salaryDoc.id, ...salaryDoc.data() } as Salary;
+    }
+    
+    throw new Error('Salary not found');
+  } catch (error) {
+    console.error('Error getting salary:', error);
+    throw error;
+  }
+};
+
+export const getSalariesByEmployee = async (employeeId: string) => {
+  try {
+    const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
+    const querySnapshot = await getDocs(q);
+    const salaries: Salary[] = [];
+    querySnapshot.forEach((doc) => {
+      salaries.push({ id: doc.id, ...doc.data() } as Salary);
+    });
+    return salaries.sort((a, b) => {
+      // Sort by year descending, then by month descending
+      if (a.year !== b.year) return b.year - a.year;
+      return b.month - a.month;
+    });
+  } catch (error) {
+    console.error('Error getting salaries by employee:', error);
+    throw error;
   }
 }; 
