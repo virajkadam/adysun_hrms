@@ -177,7 +177,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       {/* Stats and Search Section */}
       {(showStats || showSearch || showFilter) && (
         <div className="px-6 py-6 border-b border-gray-200 flex justify-between items-center">
-          {showStats && (
+          {showStats ? (
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <span>Total: <span className="font-medium">{total}</span></span>
               {typeof active === 'number' && (
@@ -188,6 +188,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
               )}
               {dropdown && <span>{dropdown}</span>}
             </div>
+          ) : (
+            <div className="flex-1"></div>
           )}
           <div className="flex items-center gap-4">
             {onRefresh && (
