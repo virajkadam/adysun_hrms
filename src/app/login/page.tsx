@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -53,6 +54,17 @@ export default function LoginPage() {
       <Toaster position="top-center" />
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/adysun-logo.png"
+              alt="Adysun Ventures Logo"
+              width={120}
+              height={60}
+              className="object-contain"
+              priority
+            />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
           <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
           <p className="mt-2 text-gray-600">
