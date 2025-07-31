@@ -21,7 +21,7 @@ type PageParams = {
 
 export default function SalaryViewPage({ params }: PageParams) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
-  const [employeeName, setEmployeeName] = useState<string>('');
+  const [employeeName, setEmployeeName] = useState<string>('Loading...');
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,53 +30,11 @@ export default function SalaryViewPage({ params }: PageParams) {
   const id = params.id;
 
   // Use Tanstack Query for salary data
-  const { data: apiSalary, isLoading, isError } = useSalary(id);
-
-  // Dummy salary data for demonstration
-  const dummySalary = {
-    id: '1',
-    employeeId: 'EMP001',
-    employmentId: 'EMP001',
-    basicSalary: 50000,
-    totalSalary: 75000,
-    netSalary: 65000,
-    month: 12,
-    year: 2024,
-    status: 'paid' as const,
-    da: 15000,
-    hra: 8000,
-    medicalAllowance: 2000,
-    transportAllowance: 1000,
-    pf: 5000,
-    gratuity: 2000,
-    healthInsurance: 1500,
-    employerPF: 5000,
-    statutoryBonus: 3000,
-    specialAllowance: 5000,
-    educationAllowance: 1000,
-    lta: 2000,
-    additionalAllowance: 1000,
-    monthlyReimbursement: 500,
-    totalWorkingDays: 22,
-    paidDays: 22,
-    lossOfPay: 0,
-    paymentFrequency: 'monthly' as const,
-    paymentMode: 'Bank Transfer',
-    salaryCreditDate: '2024-12-01',
-    documentUrl: '',
-    issueDate: '2024-12-01',
-    paidDate: '2024-12-01',
-    createdAt: '2024-12-01T00:00:00Z',
-    createdBy: 'admin1',
-    updatedAt: '2024-12-01T00:00:00Z',
-    updatedBy: 'admin1'
-  };
-
-  // Use dummy data for now, fallback to API data when available
-  const salary = dummySalary;
+  const { data: salary, isLoading, isError } = useSalary(id);
 
   const deleteSalaryMutation = useDeleteSalary();
 
+  // Fetch employee name from Firebase when salary is loaded
   useEffect(() => {
     const fetchEmployeeName = async () => {
       if (salary?.employeeId) {
@@ -89,7 +47,6 @@ export default function SalaryViewPage({ params }: PageParams) {
         }
       }
     };
-
     fetchEmployeeName();
   }, [salary]);
 
@@ -115,11 +72,17 @@ export default function SalaryViewPage({ params }: PageParams) {
     return months[month - 1] || 'Unknown';
   };
 
+  const getMonthShort = (month: number) => {
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+                   'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return months[month - 1] || 'UNK';
+  };
+
   if (isLoading) {
     return (
       <DashboardLayout breadcrumbItems={[
         { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Salaries', href: '/salaries' },
+        { label: 'Employee', href: '/employees' },
         { label: 'Loading...', isCurrent: true }
       ]}>
         <div className="bg-white rounded-lg shadow-sm p-6">
@@ -136,29 +99,15 @@ export default function SalaryViewPage({ params }: PageParams) {
     );
   }
 
-  if (isError) {
+  if (isError || !salary) {
     return (
-      <DashboardLayout>
+      <DashboardLayout breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Employee', href: '/employees' },
+        { label: 'Salaries', href: '/salaries', isCurrent: true }
+      ]}>
         <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4">
           <p>Failed to load salary data. Please try refreshing the page.</p>
-        </div>
-        <div className="mt-4">
-          <Link 
-            href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} 
-            className="text-blue-600 hover:underline flex items-center gap-1"
-          >
-            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeName}'s Salaries` : 'Salaries'}
-          </Link>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
-  if (!salary) {
-    return (
-      <DashboardLayout>
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
-          <p>Salary not found</p>
         </div>
         <div className="mt-4">
           <Link 
@@ -175,9 +124,10 @@ export default function SalaryViewPage({ params }: PageParams) {
   return (
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Salaries', href: '/salaries' },
-      ...(salary?.employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${salary.employeeId}` }] : []),
-      { label: `${getMonthName(salary.month)} ${salary.year}`, isCurrent: true }
+      { label: 'Employee', href: '/employees' },
+      { label: employeeName, href: `/employees/${salary.employeeId}` },
+      { label: 'Salaries', href: `/salaries?employeeId=${salary.employeeId}` },
+      { label: `${getMonthShort(salary.month)} - ${salary.year}`, isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
