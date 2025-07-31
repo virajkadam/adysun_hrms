@@ -194,9 +194,9 @@ export default function SalariesPage() {
           inactive={inactiveSalaries}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
-          searchPlaceholder="Search by employee or employment ID..."
+          searchPlaceholder="Search"
           showStats={true}
-          showSearch={!employeeId} // Hide search when viewing specific employee
+          showSearch={true}
           showFilter={true}
           filterOptions={[
             { value: 'all', label: 'All' },
@@ -207,6 +207,7 @@ export default function SalariesPage() {
           filterValue={filterValue}
           onFilterChange={setFilterValue}
           onRefresh={handleRefresh}
+          isRefreshing={isLoading}
           actionButtons={[
             { 
               label: 'Create', 

@@ -211,18 +211,16 @@ export default function EmployeesPage() {
           showFilter={true}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
-          backButton={{
-            href: '/dashboard',
-            label: 'Back'
-          }}
+          backButton={{ href: '/dashboard' }}
           actionButtons={[
             {
-              label: 'Add Employee',
+              label: 'Create',
               href: '/employees/add',
               icon: <FiPlus />,
-              variant: 'success'
+              variant: 'primary'
             }
           ]}
+          headerClassName="px-6 pt-6 mb-0"
         />
 
         {isError ? (
