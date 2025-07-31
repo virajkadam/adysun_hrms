@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
@@ -14,6 +15,9 @@ import { useEmployments, useDeleteEmployment } from '@/hooks/useEmployments';
 import { useEmployees } from '@/hooks/useEmployees';
 
 export default function EmploymentsPage() {
+  const searchParams = useSearchParams();
+  const employeeIdFilter = searchParams?.get('employeeId');
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -40,6 +44,9 @@ export default function EmploymentsPage() {
     acc[employee.id] = employee.name;
     return acc;
   }, {} as Record<string, string>);
+
+  // Get employee name for filtering
+  const filteredEmployeeName = employeeIdFilter ? employeeNames[employeeIdFilter] : null;
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
@@ -90,7 +97,9 @@ export default function EmploymentsPage() {
       (filterValue === 'active' && employment.contractType === 'full-time') ||
       (filterValue === 'inactive' && employment.contractType === 'part-time');
     
-    return matchesSearch && matchesFilter;
+    const matchesEmployeeFilter = !employeeIdFilter || employment.employeeId === employeeIdFilter;
+    
+    return matchesSearch && matchesFilter && matchesEmployeeFilter;
   });
 
   const total = filteredEmployments.length;
@@ -179,7 +188,7 @@ export default function EmploymentsPage() {
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title="Employments"
+          title={employeeIdFilter && filteredEmployeeName ? `${filteredEmployeeName}'s Employments` : employeeIdFilter ? "Employee's Employments" : "Employments"}
           total={total}
           active={active}
           inactive={inactive}
@@ -193,8 +202,8 @@ export default function EmploymentsPage() {
           filterValue={filterValue}
           onFilterChange={setFilterValue}
           backButton={{
-            href: '/dashboard',
-            label: 'Back'
+            href: employeeIdFilter ? '/employees' : '/dashboard',
+            label: employeeIdFilter ? 'Back to Employees' : 'Back'
           }}
           actionButtons={[
             {
@@ -218,12 +227,13 @@ export default function EmploymentsPage() {
           </div>
         ) : filteredEmployments.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            {searchTerm && filterValue === 'all' && 'No employments match your search'}
-            {searchTerm && filterValue === 'active' && 'No active employments match your search'}
-            {searchTerm && filterValue === 'inactive' && 'No inactive employments match your search'}
-            {!searchTerm && filterValue === 'active' && 'No active employments found'}
-            {!searchTerm && filterValue === 'inactive' && 'No inactive employments found'}
-            {!searchTerm && filterValue === 'all' && 'No employments found. Add your first employment!'}
+            {employeeIdFilter && filteredEmployeeName && `${filteredEmployeeName} has no employments yet.`}
+            {!employeeIdFilter && searchTerm && filterValue === 'all' && 'No employments match your search'}
+            {!employeeIdFilter && searchTerm && filterValue === 'active' && 'No active employments match your search'}
+            {!employeeIdFilter && searchTerm && filterValue === 'inactive' && 'No inactive employments match your search'}
+            {!employeeIdFilter && !searchTerm && filterValue === 'active' && 'No active employments found'}
+            {!employeeIdFilter && !searchTerm && filterValue === 'inactive' && 'No inactive employments found'}
+            {!employeeIdFilter && !searchTerm && filterValue === 'all' && 'No employments found. Add your first employment!'}
           </div>
         ) : (
           <div className="overflow-x-auto">
