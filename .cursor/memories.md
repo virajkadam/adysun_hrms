@@ -79,3 +79,7 @@ The user requires that when implementing Tanstack Query, always use globally dec
 The user requires that only big/large API responses should be cached (like employee lists, employment lists, dashboard stats) while small/quick operations should not be cached. Mutations should only be triggered when there are actual changes in the main API data, not for every UI interaction. This ensures efficient caching strategy where only heavy data operations benefit from cache while keeping the system responsive for quick operations.
 
 ---
+
+The user prefers that when navigating from Employee Details page to Add Employment page, the employee ID should be passed as a query parameter (?employeeId=id) and the employment add page should pre-select the employee and completely hide the employee selection section. The employee selection should only be shown when no employee is pre-selected from the URL parameter. After successfully adding employment, navigation should go back to the Employee Details page when employee was pre-selected, otherwise to the employments list.
+
+---

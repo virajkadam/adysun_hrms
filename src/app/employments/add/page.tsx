@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
@@ -54,8 +54,11 @@ export default function AddEmploymentPage() {
   const [error, setError] = useState<string | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
+  const [preSelectedEmployee, setPreSelectedEmployee] = useState<Employee | null>(null);
   
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const employeeIdFromUrl = searchParams ? searchParams.get('employeeId') : null;
   
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmploymentFormData>({
     defaultValues: {
@@ -80,6 +83,17 @@ export default function AddEmploymentPage() {
       try {
         const data = await getEmployees();
         setEmployees(data);
+        
+        // If employeeId is provided in URL, find and pre-select that employee
+        if (employeeIdFromUrl) {
+          const selectedEmployee = data.find(emp => emp.id === employeeIdFromUrl);
+          if (selectedEmployee) {
+            setPreSelectedEmployee(selectedEmployee);
+            setValue('employeeId', employeeIdFromUrl);
+          } else {
+            toast.error('Selected employee not found');
+          }
+        }
       } catch (error) {
         console.error('Error fetching employees:', error);
       } finally {
@@ -88,7 +102,7 @@ export default function AddEmploymentPage() {
     };
 
     fetchEmployees();
-  }, []);
+  }, [employeeIdFromUrl, setValue]);
 
   const onSubmit = async (data: EmploymentFormData) => {
     try {
@@ -126,7 +140,13 @@ export default function AddEmploymentPage() {
       
       await addEmployment(formattedData);
       toast.success('Employment record created successfully!', { id: 'add-employment' });
-      router.push('/employments');
+      
+      // Navigate back to employee details if employee was pre-selected, otherwise to employments list
+      if (preSelectedEmployee) {
+        router.push(`/employees/${preSelectedEmployee.id}`);
+      } else {
+        router.push('/employments');
+      }
     } catch (error: any) {
       setError(error.message || 'Failed to add employment');
       toast.error(error.message || 'Failed to add employment', { id: 'add-employment' });
@@ -184,7 +204,7 @@ export default function AddEmploymentPage() {
           showFilter={false}
           headerClassName="px-6 py-6"
           backButton={{
-            href: '/employments',
+            href: preSelectedEmployee ? `/employees/${preSelectedEmployee.id}` : '/employments',
             label: 'Back'
           }}
           actionButtons={[
@@ -212,28 +232,39 @@ export default function AddEmploymentPage() {
       ) : (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Employee Selection */}
-            <div className="mb-6">
-              <div className="w-full md:w-1/2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <span className="text-red-500">*</span> Employee
-                </label>
-                <select
-                  {...register('employeeId', { required: 'Employee is required' })}
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map((employee) => (
-                    <option key={employee.id} value={employee.id}>
-                      {employee.name} {employee.employeeId ? `- ${employee.employeeId}` : ''}
-                    </option>
-                  ))}
-                </select>
-                {errors.employeeId && (
-                  <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
-                )}
+            {/* Employee Selection - Only show when no employee is pre-selected */}
+            {!preSelectedEmployee && (
+              <div className="mb-6">
+                <div className="w-full md:w-1/2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500">*</span> Employee
+                  </label>
+                  <select
+                    {...register('employeeId', { required: 'Employee is required' })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map((employee) => (
+                      <option key={employee.id} value={employee.id}>
+                        {employee.name} {employee.employeeId ? `- ${employee.employeeId}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.employeeId && (
+                    <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* Hidden input for pre-selected employee */}
+            {preSelectedEmployee && (
+              <input
+                type="hidden"
+                {...register('employeeId', { required: 'Employee is required' })}
+                value={preSelectedEmployee.id}
+              />
+            )}
 
             {/* Employment Information Section */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
