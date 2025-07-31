@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -9,6 +9,7 @@ import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useCreateSalary } from '@/hooks/useSalaries';
 import Link from 'next/link';
+import { getEmployeeNameById } from '@/utils/firebaseUtils';
 
 type SalaryFormData = {
   employeeId: string;
@@ -24,17 +25,39 @@ type SalaryFormData = {
 
 export default function AddSalaryPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [employeeName, setEmployeeName] = useState<string>('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const employeeId = searchParams?.get('employeeId');
+  
   const createSalaryMutation = useCreateSalary();
   
-  const { register, handleSubmit, formState: { errors } } = useForm<SalaryFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<SalaryFormData>({
     defaultValues: {
       status: 'draft',
       paymentFrequency: 'monthly',
       month: new Date().getMonth() + 1,
-      year: new Date().getFullYear()
+      year: new Date().getFullYear(),
+      employeeId: employeeId || '' // Pre-fill employee ID if available
     }
   });
+
+  // Fetch employee name when employeeId is available
+  useEffect(() => {
+    const fetchEmployeeName = async () => {
+      if (employeeId) {
+        try {
+          const name = await getEmployeeNameById(employeeId);
+          setEmployeeName(name);
+        } catch (error) {
+          console.error('Error fetching employee name:', error);
+          setEmployeeName('Unknown Employee');
+        }
+      }
+    };
+
+    fetchEmployeeName();
+  }, [employeeId]);
 
   const onSubmit = async (data: SalaryFormData) => {
     try {
@@ -79,7 +102,7 @@ export default function AddSalaryPage() {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      { label: 'Add Salary', isCurrent: true }
+      { label: employeeId ? `Add Salary - ${employeeName || 'Loading...'}` : 'Add Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
@@ -87,10 +110,15 @@ export default function AddSalaryPage() {
         <div className="px-6 py-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Link href="/salaries" className="mr-4">
+              <Link href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} className="mr-4">
                 <FiArrowLeft className="w-5 h-5 text-gray-600" />
               </Link>
-              <h1 className="text-2xl font-semibold text-gray-900">Add New Salary</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {employeeId 
+                  ? `Add Salary for ${employeeName || 'Loading...'}`
+                  : 'Add New Salary'
+                }
+              </h1>
             </div>
           </div>
         </div>
@@ -107,6 +135,7 @@ export default function AddSalaryPage() {
                 {...register('employeeId', { required: 'Employee ID is required' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter employee ID"
+                disabled={!!employeeId} // Disable if employeeId is provided in URL
               />
               {errors.employeeId && (
                 <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>

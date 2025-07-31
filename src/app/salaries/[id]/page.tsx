@@ -25,6 +25,7 @@ export default function SalaryViewPage({ params }: PageParams) {
   const router = useRouter();
   const id = params.id;
 
+  // Use Tanstack Query for salary data
   const { data: apiSalary, isLoading, isError } = useSalary(id);
 
   // Dummy salary data for demonstration
@@ -73,15 +74,19 @@ export default function SalaryViewPage({ params }: PageParams) {
   const deleteSalaryMutation = useDeleteSalary();
 
   useEffect(() => {
-    // Dummy employee names for demonstration
-    const dummyNames: { [key: string]: string } = {
-      'EMP001': 'John Doe',
-      'EMP002': 'Jane Smith',
-      'EMP003': 'Mike Johnson'
+    const fetchEmployeeName = async () => {
+      if (salary?.employeeId) {
+        try {
+          const name = await getEmployeeNameById(salary.employeeId);
+          setEmployeeName(name);
+        } catch (error) {
+          console.error('Error fetching employee name:', error);
+          setEmployeeName('Unknown Employee');
+        }
+      }
     };
-    
-    const name = dummyNames[salary?.employeeId || ''] || 'Unknown Employee';
-    setEmployeeName(name);
+
+    fetchEmployeeName();
   }, [salary]);
 
   const handleDeleteClick = () => setDeleteConfirm(true);
@@ -91,7 +96,8 @@ export default function SalaryViewPage({ params }: PageParams) {
       toast.loading('Deleting salary...', { id: 'delete-salary' });
       await deleteSalaryMutation.mutateAsync(id);
       toast.success('Salary deleted successfully', { id: 'delete-salary' });
-      router.push('/salaries');
+      // Navigate back to employee's salary list if we came from there
+      router.push(salary?.employeeId ? `/salaries?employeeId=${salary.employeeId}` : '/salaries');
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete salary', { id: 'delete-salary' });
     }
@@ -145,13 +151,14 @@ export default function SalaryViewPage({ params }: PageParams) {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
+      ...(salary?.employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${salary.employeeId}` }] : []),
       { label: `${getMonthName(salary.month)} ${salary.year}`, isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title="Salary Details"
+          title={`${employeeName}'s Salary Details - ${getMonthName(salary.month)} ${salary.year}`}
           total={0}
           active={0}
           inactive={0}
@@ -162,14 +169,27 @@ export default function SalaryViewPage({ params }: PageParams) {
           showSearch={false}
           showFilter={false}
           headerClassName="px-6 py-6"
-          backButton={{ href: '/salaries', label: 'Back' }}
+          backButton={{ 
+            href: salary?.employeeId ? `/salaries?employeeId=${salary.employeeId}` : '/salaries', 
+            label: 'Back' 
+          }}
           actionButtons={
             deleteConfirm ? [
-              { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/salaries/${id}/edit` },
+              { 
+                label: 'Edit', 
+                icon: <FiEdit />, 
+                variant: 'primary' as const, 
+                href: `/salaries/${id}/edit?employeeId=${salary.employeeId}` 
+              },
               { label: 'Confirm', icon: <FiTrash2 />, variant: 'danger' as const, onClick: confirmDelete },
               { label: 'Cancel', icon: <FiArrowLeft />, variant: 'secondary' as const, onClick: cancelDelete }
             ] : [
-              { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/salaries/${id}/edit` },
+              { 
+                label: 'Edit', 
+                icon: <FiEdit />, 
+                variant: 'primary' as const, 
+                href: `/salaries/${id}/edit?employeeId=${salary.employeeId}` 
+              },
               { label: 'Delete', icon: <FiTrash2 />, variant: 'danger' as const, onClick: handleDeleteClick }
             ]
           }

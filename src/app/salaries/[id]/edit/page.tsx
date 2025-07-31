@@ -9,6 +9,8 @@ import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSalary, useUpdateSalary } from '@/hooks/useSalaries';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { getEmployeeNameById } from '@/utils/firebaseUtils';
 
 type SalaryFormData = {
   employeeId: string;
@@ -30,16 +32,37 @@ type PageParams = {
 
 export default function EditSalaryPage({ params }: PageParams) {
   const [isLoading, setIsLoading] = useState(false);
+  const [employeeName, setEmployeeName] = useState<string>('');
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const employeeId = searchParams?.get('employeeId');
+  
   const { data: salary, isLoading: isSalaryLoading } = useSalary(params.id);
   const updateSalaryMutation = useUpdateSalary();
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm<SalaryFormData>();
 
+  // Fetch employee name when employeeId is available
+  useEffect(() => {
+    const fetchEmployeeName = async () => {
+      if (employeeId) {
+        try {
+          const name = await getEmployeeNameById(employeeId);
+          setEmployeeName(name);
+        } catch (error) {
+          console.error('Error fetching employee name:', error);
+          setEmployeeName('Unknown Employee');
+        }
+      }
+    };
+
+    fetchEmployeeName();
+  }, [employeeId]);
+
   useEffect(() => {
     if (salary) {
       reset({
-        employeeId: salary.employeeId || '',
+        employeeId: salary.employeeId || employeeId || '',
         employmentId: salary.employmentId || '',
         month: salary.month || 1,
         year: salary.year || new Date().getFullYear(),
@@ -50,7 +73,7 @@ export default function EditSalaryPage({ params }: PageParams) {
         paymentFrequency: salary.paymentFrequency || 'monthly'
       });
     }
-  }, [salary, reset]);
+  }, [salary, reset, employeeId]);
 
   const onSubmit = async (data: SalaryFormData) => {
     try {
@@ -87,7 +110,8 @@ export default function EditSalaryPage({ params }: PageParams) {
       });
       
       toast.success('Salary updated successfully!', { id: 'update-salary' });
-      router.push(`/salaries/${params.id}`);
+      // Navigate back to employee's salary list if we came from there
+      router.push(employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${params.id}`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update salary', { id: 'update-salary' });
       setIsLoading(false);
@@ -134,6 +158,7 @@ export default function EditSalaryPage({ params }: PageParams) {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
+      ...(employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${employeeId}` }] : []),
       { label: 'Edit Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
@@ -142,10 +167,21 @@ export default function EditSalaryPage({ params }: PageParams) {
         <div className="px-6 py-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Link href={`/salaries/${params.id}`} className="mr-4">
+              <Link 
+                href={employeeId 
+                  ? `/salaries?employeeId=${employeeId}` 
+                  : `/salaries/${params.id}`
+                } 
+                className="mr-4"
+              >
                 <FiArrowLeft className="w-5 h-5 text-gray-600" />
               </Link>
-              <h1 className="text-2xl font-semibold text-gray-900">Edit Salary</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {employeeId 
+                  ? `Edit ${employeeName}'s Salary`
+                  : 'Edit Salary'
+                }
+              </h1>
             </div>
           </div>
         </div>
@@ -162,6 +198,7 @@ export default function EditSalaryPage({ params }: PageParams) {
                 {...register('employeeId', { required: 'Employee ID is required' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter employee ID"
+                disabled={!!employeeId} // Disable if employeeId is provided in URL
               />
               {errors.employeeId && (
                 <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
@@ -315,7 +352,7 @@ export default function EditSalaryPage({ params }: PageParams) {
 
           <div className="mt-8 flex justify-end space-x-4">
             <Link
-              href={`/salaries/${params.id}`}
+              href={employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${params.id}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Cancel

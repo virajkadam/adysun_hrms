@@ -303,7 +303,7 @@ export default function SalariesPage() {
           onRefresh={handleRefresh}
           actionButtons={[
             { 
-              label: 'Add Salary', 
+              label: employeeId ? `Add Salary for ${employeeName}` : 'Add Salary', 
               icon: <FiPlus />, 
               variant: 'primary' as const, 
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
