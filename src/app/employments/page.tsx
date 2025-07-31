@@ -203,7 +203,7 @@ export default function EmploymentsPage() {
           onFilterChange={setFilterValue}
           backButton={{
             href: employeeIdFilter ? '/employees' : '/dashboard',
-            label: employeeIdFilter ? 'Back to Employees' : 'Back'
+            label: employeeIdFilter ? 'Back' : 'Back'
           }}
           actionButtons={[
             {
