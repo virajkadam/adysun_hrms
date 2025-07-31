@@ -170,9 +170,9 @@ export default function EditSalaryPage({ params }: PageParams) {
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title={employeeId 
-            ? `Edit ${employeeName}'s Salary`
-            : 'Edit Salary'
-          }
+                  ? `Edit ${employeeName}'s Salary`
+                  : 'Edit Salary'
+                }
           total={0}
           active={0}
           inactive={0}

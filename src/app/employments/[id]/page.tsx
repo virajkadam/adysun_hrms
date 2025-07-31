@@ -242,44 +242,77 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
 
       {employee && (
           <div className="px-6 pb-6">
-            <div className="bg-white p-4 rounded-lg mb-6 border border-gray-200">
-          <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-              <FiUser className="mr-2" /> Employee Information
-            </h2>
-            <Link
-              href={`/employees/${employee.id}`}
-              className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-            >
-              <FiUser size={16} /> View Employee Profile
-            </Link>
-          </div>
-          
-          <div className="flex items-center">
-            <div className="flex-shrink-0 mr-4">
-              {employee.imageUrl ? (
-                <img
-                  src={employee.imageUrl}
-                  alt={employee.name}
-                  className="h-16 w-16 rounded-full object-cover"
-                />
-              ) : (
-                <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-xl font-medium text-gray-600">
-                    {employee.name.charAt(0)}
-                  </span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Employee Information Card */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <FiUser className="mr-2" /> Employee Information
+                  </h2>
+                  <Link
+                    href={`/employees/${employee.id}`}
+                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  >
+                    <FiUser size={16} /> View Profile
+                  </Link>
                 </div>
-              )}
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">{employee.name}</h3>
-                  <p className="text-sm text-gray-600">{employee.email} • {employee.phone}</p>
-                  <p className="text-sm text-gray-600">{employment.jobTitle || employee.position} • {employment.department || employee.department}</p>
+                
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 mr-4">
+                    {employee.imageUrl ? (
+                      <img
+                        src={employee.imageUrl}
+                        alt={employee.name}
+                        className="h-16 w-16 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-xl font-medium text-gray-600">
+                          {employee.name.charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900">{employee.name}</h3>
+                    <p className="text-sm text-gray-600">{employee.email} • {employee.phone}</p>
+                    <p className="text-sm text-gray-600">{employment.jobTitle || employee.position} • {employment.department || employee.department}</p>
+                  </div>
                 </div>
               </div>
+
+              {/* Attendance Card */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <FiCalendar className="mr-2" /> Attendance
+                  </h2>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">85%</div>
+                  <p className="text-sm text-gray-600">Present Days: 17/20</p>
+                  <p className="text-sm text-gray-500">This Month</p>
+                </div>
+              </div>
+
+              {/* Leaves Card */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                    <FiCalendar className="mr-2" /> Leaves
+                  </h2>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-2">12</div>
+                  <p className="text-sm text-gray-600">Days Remaining</p>
+                  <p className="text-sm text-gray-500">Annual Leave Balance</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
       )}
 
         <div className="px-6 pb-6">

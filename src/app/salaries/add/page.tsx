@@ -131,9 +131,9 @@ export default function AddSalaryPage() {
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title={employeeId 
-            ? `Add Salary for ${employeeName || 'Loading...'}`
-            : 'Add New Salary'
-          }
+                  ? `Add Salary for ${employeeName || 'Loading...'}`
+                  : 'Add New Salary'
+                }
           total={0}
           active={0}
           inactive={0}
