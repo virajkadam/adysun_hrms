@@ -11,16 +11,30 @@ import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
+import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
+  const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
+  
+  // Get the first (and only) employment
+  const employment = employments[0];
+  
+  if (!employment) {
+    return (
+      <div className="w-10 h-10 border border-gray-300 rounded-md p-2 flex items-center justify-center bg-gray-100 text-gray-400 cursor-not-allowed">
+        <FiBriefcase className="w-5 h-5" />
+      </div>
+    );
+  }
+  
   return (
     <ActionButton
       icon={<FiBriefcase className="w-5 h-5" />}
-      title="View Employments"
+      title="View Employment"
       colorClass="bg-green-100 text-green-600 hover:text-green-900"
-      href={`/employments?employeeId=${employeeId}`}
+      href={`/employments/${employment.id}`}
     />
   );
 };
