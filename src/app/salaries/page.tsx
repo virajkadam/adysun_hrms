@@ -10,7 +10,7 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
-import { useSalaries, useDeleteSalary } from '@/hooks/useSalaries';
+import { useSalaries, useDeleteSalary, useSalariesByEmployee } from '@/hooks/useSalaries';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 import { useSearchParams } from 'next/navigation';
@@ -43,6 +43,29 @@ export default function SalariesPage() {
   const searchParams = useSearchParams();
   const employeeId = searchParams?.get('employeeId') || null;
 
+  // Use appropriate query based on whether we have an employeeId
+  const {
+    data: employeeSalaries = [],
+    isLoading: isEmployeeSalariesLoading,
+    isError: isEmployeeSalariesError,
+    error: employeeSalariesError,
+    refetch: refetchEmployeeSalaries
+  } = useSalariesByEmployee(employeeId || '');
+
+  const {
+    data: allSalaries = [],
+    isLoading: isAllSalariesLoading,
+    isError: isAllSalariesError,
+    error: allSalariesError,
+    refetch: refetchAllSalaries
+  } = useSalaries();
+
+  // Use the appropriate data based on context
+  const salaries = employeeId ? employeeSalaries : allSalaries;
+  const isLoading = employeeId ? isEmployeeSalariesLoading : isAllSalariesLoading;
+  const isError = employeeId ? isEmployeeSalariesError : isAllSalariesError;
+  const error = employeeId ? employeeSalariesError : allSalariesError;
+
   // Fetch employee name when employeeId is available
   useEffect(() => {
     const fetchEmployeeName = async () => {
@@ -60,143 +83,17 @@ export default function SalariesPage() {
     fetchEmployeeName();
   }, [employeeId]);
 
-  // Use Tanstack Query for salary data
-  const {
-    data: apiSalaries = [],
-    isLoading,
-    isError,
-    error,
-    refetch
-  } = useSalaries();
-
-  // Dummy salary data for demonstration
-  const dummySalaries = [
-    {
-      id: '1',
-      employeeId: 'EMP001',
-      employmentId: 'EMP001',
-      basicSalary: 50000,
-      totalSalary: 75000,
-      netSalary: 65000,
-      month: 12,
-      year: 2024,
-      status: 'paid' as const,
-      da: 15000,
-      hra: 8000,
-      medicalAllowance: 2000,
-      transportAllowance: 1000,
-      pf: 5000,
-      gratuity: 2000,
-      healthInsurance: 1500,
-      employerPF: 5000,
-      statutoryBonus: 3000,
-      specialAllowance: 5000,
-      educationAllowance: 1000,
-      lta: 2000,
-      additionalAllowance: 1000,
-      monthlyReimbursement: 500,
-      totalWorkingDays: 22,
-      paidDays: 22,
-      lossOfPay: 0,
-      paymentFrequency: 'monthly' as const,
-      paymentMode: 'Bank Transfer',
-      salaryCreditDate: '2024-12-01',
-      documentUrl: '',
-      issueDate: '2024-12-01',
-      paidDate: '2024-12-01',
-      createdAt: '2024-12-01T00:00:00Z',
-      createdBy: 'admin1',
-      updatedAt: '2024-12-01T00:00:00Z',
-      updatedBy: 'admin1'
-    },
-    {
-      id: '2',
-      employeeId: 'EMP002',
-      employmentId: 'EMP002',
-      basicSalary: 45000,
-      totalSalary: 68000,
-      netSalary: 58000,
-      month: 12,
-      year: 2024,
-      status: 'issued' as const,
-      da: 12000,
-      hra: 7000,
-      medicalAllowance: 1800,
-      transportAllowance: 900,
-      pf: 4500,
-      gratuity: 1800,
-      healthInsurance: 1200,
-      employerPF: 4500,
-      statutoryBonus: 2700,
-      specialAllowance: 4500,
-      educationAllowance: 900,
-      lta: 1800,
-      additionalAllowance: 900,
-      monthlyReimbursement: 450,
-      totalWorkingDays: 21,
-      paidDays: 20,
-      lossOfPay: 4500,
-      paymentFrequency: 'monthly' as const,
-      paymentMode: 'Bank Transfer',
-      salaryCreditDate: '2024-12-01',
-      documentUrl: '',
-      issueDate: '2024-12-01',
-      paidDate: '',
-      createdAt: '2024-12-01T00:00:00Z',
-      createdBy: 'admin1',
-      updatedAt: '2024-12-01T00:00:00Z',
-      updatedBy: 'admin1'
-    },
-    {
-      id: '3',
-      employeeId: 'EMP003',
-      employmentId: 'EMP003',
-      basicSalary: 60000,
-      totalSalary: 90000,
-      netSalary: 78000,
-      month: 11,
-      year: 2024,
-      status: 'draft' as const,
-      da: 18000,
-      hra: 10000,
-      medicalAllowance: 2500,
-      transportAllowance: 1200,
-      pf: 6000,
-      gratuity: 2500,
-      healthInsurance: 2000,
-      employerPF: 6000,
-      statutoryBonus: 4000,
-      specialAllowance: 6000,
-      educationAllowance: 1200,
-      lta: 2500,
-      additionalAllowance: 1200,
-      monthlyReimbursement: 600,
-      totalWorkingDays: 22,
-      paidDays: 22,
-      lossOfPay: 0,
-      paymentFrequency: 'monthly' as const,
-      paymentMode: 'Bank Transfer',
-      salaryCreditDate: '2024-11-01',
-      documentUrl: '',
-      issueDate: '',
-      paidDate: '',
-      createdAt: '2024-11-01T00:00:00Z',
-      createdBy: 'admin1',
-      updatedAt: '2024-11-01T00:00:00Z',
-      updatedBy: 'admin1'
-    }
-  ];
-
-  // Use dummy data for now, fallback to API data when available
-  const salaries = dummySalaries;
-
   // Use mutation for delete operation
   const deleteSalaryMutation = useDeleteSalary();
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
-      await refetch();
+      if (employeeId) {
+        await refetchEmployeeSalaries();
+      } else {
+        await refetchAllSalaries();
+      }
       toast.success('Data refreshed successfully');
     } catch (error) {
       console.error('Error refreshing salaries:', error);

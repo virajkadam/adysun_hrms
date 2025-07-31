@@ -526,19 +526,31 @@ export const getSalary = async (id: string) => {
 
 export const getSalariesByEmployee = async (employeeId: string) => {
   try {
+    console.log('🔍 Fetching salaries for employee:', employeeId);
+    
     const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
+    console.log('📝 Query created with filter:', { employeeId });
+    
     const querySnapshot = await getDocs(q);
+    console.log('📊 Query results count:', querySnapshot.size);
+    
     const salaries: Salary[] = [];
     querySnapshot.forEach((doc) => {
-      salaries.push({ id: doc.id, ...doc.data() } as Salary);
+      const salary = { id: doc.id, ...doc.data() } as Salary;
+      salaries.push(salary);
+      console.log('💰 Found salary:', { id: doc.id, month: salary.month, year: salary.year });
     });
-    return salaries.sort((a, b) => {
+    
+    const sortedSalaries = salaries.sort((a, b) => {
       // Sort by year descending, then by month descending
       if (a.year !== b.year) return b.year - a.year;
       return b.month - a.month;
     });
+    
+    console.log('✅ Returning sorted salaries:', sortedSalaries.length);
+    return sortedSalaries;
   } catch (error) {
-    console.error('Error getting salaries by employee:', error);
+    console.error('❌ Error getting salaries by employee:', error);
     throw error;
   }
 }; 

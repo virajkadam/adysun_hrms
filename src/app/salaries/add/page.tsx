@@ -9,7 +9,7 @@ import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useCreateSalary } from '@/hooks/useSalaries';
 import Link from 'next/link';
-import { getEmployeeNameById } from '@/utils/firebaseUtils';
+import { getEmployeeNameById, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 
 type SalaryFormData = {
   employeeId: string;
@@ -26,6 +26,7 @@ type SalaryFormData = {
 export default function AddSalaryPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [employeeName, setEmployeeName] = useState<string>('');
+  const [employmentId, setEmploymentId] = useState<string>('');
   const router = useRouter();
   const searchParams = useSearchParams();
   const employeeId = searchParams?.get('employeeId');
@@ -42,30 +43,43 @@ export default function AddSalaryPage() {
     }
   });
 
-  // Fetch employee name when employeeId is available
+  // Fetch employee name and employment ID when employeeId is available
   useEffect(() => {
-    const fetchEmployeeName = async () => {
+    const fetchEmployeeData = async () => {
       if (employeeId) {
         try {
+          // Fetch employee name
           const name = await getEmployeeNameById(employeeId);
           setEmployeeName(name);
+
+          // Fetch latest employment
+          const employments = await getEmploymentsByEmployee(employeeId);
+          if (employments && employments.length > 0) {
+            // Get the latest employment
+            const latestEmployment = employments[0];
+            setEmploymentId(latestEmployment.id);
+            setValue('employmentId', latestEmployment.id); // Pre-fill employment ID
+          }
         } catch (error) {
-          console.error('Error fetching employee name:', error);
+          console.error('Error fetching employee data:', error);
           setEmployeeName('Unknown Employee');
         }
       }
     };
 
-    fetchEmployeeName();
-  }, [employeeId]);
+    fetchEmployeeData();
+  }, [employeeId, setValue]);
 
   const onSubmit = async (data: SalaryFormData) => {
     try {
       setIsLoading(true);
       toast.loading('Creating salary...', { id: 'create-salary' });
       
-      await createSalaryMutation.mutateAsync({
+      // Create salary record in Firestore
+      const salaryId = await createSalaryMutation.mutateAsync({
         ...data,
+        employeeId: employeeId || data.employeeId, // Use URL param if available
+        employmentId: employmentId || data.employmentId, // Use fetched ID if available
         da: 0,
         hra: 0,
         medicalAllowance: 0,
@@ -91,7 +105,13 @@ export default function AddSalaryPage() {
       });
       
       toast.success('Salary created successfully!', { id: 'create-salary' });
-      router.push('/salaries');
+      
+      // Navigate back to the appropriate page
+      if (employeeId) {
+        router.push(`/salaries?employeeId=${employeeId}`);
+      } else {
+        router.push('/salaries');
+      }
     } catch (error: any) {
       toast.error(error.message || 'Failed to create salary', { id: 'create-salary' });
       setIsLoading(false);
@@ -102,7 +122,8 @@ export default function AddSalaryPage() {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      { label: employeeId ? `Add Salary - ${employeeName || 'Loading...'}` : 'Add Salary', isCurrent: true }
+      ...(employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${employeeId}` }] : []),
+      { label: 'Add Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
@@ -289,7 +310,7 @@ export default function AddSalaryPage() {
 
           <div className="mt-8 flex justify-end space-x-4">
             <Link
-              href="/salaries"
+              href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Cancel
