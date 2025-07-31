@@ -94,3 +94,9 @@ The user requires that action buttons in TableHeader should always use simple, c
 
 
 In the UI design, the TableHeader component should always include a back button and should not use hardcoded text like 'Back to Employees', ensuring consistent back navigation across views.
+
+---
+
+The user requires that all save buttons should use green color with success class for consistent styling across the application.
+
+---
