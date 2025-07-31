@@ -242,7 +242,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 label: 'View Salary', 
                 icon: <FiDollarSign />, 
                 variant: 'warning' as const, 
-                href: `/salaries?employeeId=${id}` 
+                href: '/salaries' 
               },
               { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
               { 
