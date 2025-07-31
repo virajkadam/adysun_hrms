@@ -75,7 +75,13 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employments', href: '/employments' },
+          { label: 'Loading...', isCurrent: true }
+        ]}
+      >
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Skeleton for TableHeader */}
           <div className="space-y-6">
@@ -119,7 +125,13 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
 
   if (isError) {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employments', href: '/employments' },
+          { label: 'Error', isCurrent: true }
+        ]}
+      >
         <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4">
           <p>Failed to load employment data. Please try refreshing the page.</p>
         </div>
@@ -134,7 +146,13 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
 
   if (!employment) {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employments', href: '/employments' },
+          { label: 'Not Found', isCurrent: true }
+        ]}
+      >
         <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
           <p>Employment not found</p>
         </div>
@@ -148,7 +166,21 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbItems={
+        employee && employment ? [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employees', href: '/employees' },
+          { label: employee.name, href: `/employees/${employment.employeeId}` },
+          { label: 'Employments', href: `/employments?employeeId=${employment.employeeId}` },
+          { label: employment.jobTitle || 'Employment Details', isCurrent: true }
+        ] : [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employments', href: '/employments' },
+          { label: 'Loading...', isCurrent: true }
+        ]
+      }
+    >
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
