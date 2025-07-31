@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiDollarSign } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -13,6 +13,7 @@ import TableHeader from '@/components/ui/TableHeader';
 import { useSalaries, useDeleteSalary } from '@/hooks/useSalaries';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
+import { useSearchParams } from 'next/navigation';
 
 // Component to handle employee name display
 const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
@@ -37,6 +38,27 @@ export default function SalariesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [employeeName, setEmployeeName] = useState<string>('');
+  
+  const searchParams = useSearchParams();
+  const employeeId = searchParams?.get('employeeId') || null;
+
+  // Fetch employee name when employeeId is available
+  useEffect(() => {
+    const fetchEmployeeName = async () => {
+      if (employeeId) {
+        try {
+          const name = await getEmployeeNameById(employeeId);
+          setEmployeeName(name);
+        } catch (error) {
+          console.error('Error fetching employee name:', error);
+          setEmployeeName('Unknown Employee');
+        }
+      }
+    };
+
+    fetchEmployeeName();
+  }, [employeeId]);
 
   // Use Tanstack Query for salary data
   const {
@@ -215,7 +237,9 @@ export default function SalariesPage() {
     
     const matchesFilter = filterValue === 'all' || salary.status === filterValue;
     
-    return matchesSearch && matchesFilter;
+    const matchesEmployeeId = employeeId ? salary.employeeId === employeeId : true;
+    
+    return matchesSearch && matchesFilter && matchesEmployeeId;
   });
 
   const activeSalaries = salaries.filter(salary => salary.status === 'paid').length;
@@ -247,22 +271,26 @@ export default function SalariesPage() {
     <DashboardLayout
       breadcrumbItems={[
         { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Salaries', isCurrent: true }
+        { label: 'Salaries', href: '/salaries' },
+        ...(employeeId ? [{ label: employeeName || 'Loading...', isCurrent: true }] : [])
       ]}
     >
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title="Salary Management"
-          total={salaries.length}
+          title={employeeId 
+            ? `${employeeName || 'Loading...'}'s Salary Records`
+            : "Salary Management"
+          }
+          total={filteredSalaries.length}
           active={activeSalaries}
           inactive={inactiveSalaries}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
           searchPlaceholder="Search by employee or employment ID..."
           showStats={true}
-          showSearch={true}
+          showSearch={!employeeId} // Hide search when viewing specific employee
           showFilter={true}
           filterOptions={[
             { value: 'all', label: 'All' },
@@ -278,7 +306,7 @@ export default function SalariesPage() {
               label: 'Add Salary', 
               icon: <FiPlus />, 
               variant: 'primary' as const, 
-              href: '/salaries/add' 
+              href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
             }
           ]}
         />
@@ -382,17 +410,21 @@ export default function SalariesPage() {
           {filteredSalaries.length === 0 && !isLoading && (
             <div className="text-center py-12">
               <FiDollarSign className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No salaries found</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                {employeeId ? 'No salary records found for this employee' : 'No salaries found'}
+              </h3>
               <p className="mt-1 text-sm text-gray-500">
                 {searchTerm || filterValue !== 'all' 
                   ? 'Try adjusting your search or filter criteria.'
-                  : 'Get started by creating a new salary record.'
+                  : employeeId 
+                    ? 'Get started by adding a salary record for this employee.'
+                    : 'Get started by creating a new salary record.'
                 }
               </p>
               {!searchTerm && filterValue === 'all' && (
                 <div className="mt-6">
                   <Link
-                    href="/salaries/add"
+                    href={employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'}
                     className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
                     <FiPlus className="-ml-1 mr-2 h-4 w-4" />
