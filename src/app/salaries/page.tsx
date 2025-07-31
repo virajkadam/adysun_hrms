@@ -190,8 +190,6 @@ export default function SalariesPage() {
             : "Salary Management"
           }
           total={filteredSalaries.length}
-          active={activeSalaries}
-          inactive={inactiveSalaries}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
           searchPlaceholder="Search"
