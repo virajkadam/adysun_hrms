@@ -206,6 +206,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 disabled: deleteEmployeeMutation.isPending
               }
             ] : [
+              { 
+                label: 'View Employments', 
+                icon: <FiBriefcase />, 
+                variant: 'success' as const, 
+                href: `/employments?employeeId=${id}` 
+              },
               { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
               { 
                 label: 'Delete', 
@@ -557,106 +563,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         )}
       </div>
 
-      {/* Employment History */}
-      <div id="employments" className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold flex items-center">
-            <FiBook className="mr-2" /> Employment History
-          </h2>
-          <Link
-            href={`/employments/add?employeeId=${id}`}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-          >
-            <FiBriefcase size={16} /> Add Employment
-          </Link>
-        </div>
-        
-        {employmentsLoading ? (
-          <div className="p-8 text-center text-gray-500">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2">Loading employment history...</p>
-          </div>
-        ) : employments.length === 0 ? (
-          <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg border border-gray-200">
-            <FiBriefcase className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-            <p>No employment records found for this employee.</p>
-            <p className="text-sm mt-2">Click "Add Employment" to create a new employment record.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contract Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Duration
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Salary
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {employments.map((employment) => (
-                  <tr key={employment.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          employment.contractType === 'full-time'
-                            ? 'bg-green-100 text-green-800'
-                            : employment.contractType === 'part-time'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}
-                      >
-                        {employment.contractType || "-"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {formatDateToDayMonYear(employment.startDate)}
-                        {employment.endDate && (
-                          <> - {formatDateToDayMonYear(employment.endDate)}</>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 font-medium">
-                        {new Intl.NumberFormat('en-IN', {
-                          style: 'currency',
-                          currency: 'INR'
-                        }).format(employment.salary)}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        per {employment.paymentFrequency}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link
-                        href={`/employments/${employment.id}`}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
-                      >
-                        View
-                      </Link>
-                      <Link
-                        href={`/employments/${employment.id}/edit`}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        Edit
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+   
 
       {/* Audit Trail Section */}
       <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
@@ -666,7 +573,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Created By */}
-          <div className="bg-gray-50 rounded-lg shadow p-3">
+          <div className="p-3">
             <p className="text-lg font-medium text-gray-900">
               {createdByAdmin || employee.createdBy || 'System'}
             </p>
@@ -674,7 +581,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           </div>
           
           {/* Created At */}
-          <div className="bg-gray-50 rounded-lg shadow p-3">
+          <div className="p-3">
             <p className="text-lg font-medium text-gray-900">
               {employee.createdAt ? formatDateToDayMonYearWithTime(employee.createdAt) : '-'}
             </p>
@@ -682,7 +589,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           </div>
           
           {/* Updated By */}
-          <div className="bg-gray-50 rounded-lg shadow p-3">
+          <div className="p-3">
             <p className="text-lg font-medium text-gray-900">
               {updatedByAdmin || employee.updatedBy || 'Not Updated'}
             </p>
@@ -690,7 +597,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           </div>
           
           {/* Updated At */}
-          <div className="bg-gray-50 rounded-lg shadow p-3">
+          <div className="p-3">
             <p className="text-lg font-medium text-gray-900">
               {employee.updatedAt ? formatDateToDayMonYearWithTime(employee.updatedAt) : '-'}
             </p>
