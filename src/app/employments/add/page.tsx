@@ -191,7 +191,7 @@ export default function AddEmploymentPage() {
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title="Add New Employment"
+          title={preSelectedEmployee ? `Add Employment for ${preSelectedEmployee.name}` : "Add New Employment"}
           total={0}
           active={0}
           inactive={0}
@@ -257,13 +257,23 @@ export default function AddEmploymentPage() {
               </div>
             )}
             
-            {/* Hidden input for pre-selected employee */}
+            {/* Pre-selected employee display */}
             {preSelectedEmployee && (
-              <input
-                type="hidden"
-                {...register('employeeId', { required: 'Employee is required' })}
-                value={preSelectedEmployee.id}
-              />
+              <div className="mb-6">
+                <div className="w-full md:w-1/2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500">*</span> Employee
+                  </label>
+                  <div className="w-full p-2 border rounded-md bg-gray-50 text-gray-700">
+                    {preSelectedEmployee.name} {preSelectedEmployee.employeeId ? `- ${preSelectedEmployee.employeeId}` : ''}
+                  </div>
+                  <input
+                    type="hidden"
+                    {...register('employeeId', { required: 'Employee is required' })}
+                    value={preSelectedEmployee.id}
+                  />
+                </div>
+              </div>
             )}
 
             {/* Employment Information Section */}

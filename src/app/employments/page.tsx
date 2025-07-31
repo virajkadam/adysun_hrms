@@ -208,7 +208,7 @@ export default function EmploymentsPage() {
           actionButtons={[
             {
               label: 'Add Employment',
-              href: '/employments/add',
+              href: employeeIdFilter ? `/employments/add?employeeId=${employeeIdFilter}` : '/employments/add',
               icon: <FiPlus />,
               variant: 'success'
             }
