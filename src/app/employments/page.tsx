@@ -184,10 +184,17 @@ export default function EmploymentsPage() {
 
   return (
     <DashboardLayout
-      breadcrumbItems={[
-        { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Employments', isCurrent: true }
-      ]}
+      breadcrumbItems={
+        employeeIdFilter && filteredEmployeeName ? [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employees', href: '/employees' },
+          { label: filteredEmployeeName, href: `/employees/${employeeIdFilter}` },
+          { label: 'Employments', isCurrent: true }
+        ] : [
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employments', isCurrent: true }
+        ]
+      }
     >
       <Toaster position="top-center" />
 
