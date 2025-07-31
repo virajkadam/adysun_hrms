@@ -13,6 +13,7 @@ import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
 import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
+import Pagination from '@/components/ui/Pagination';
 
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
@@ -43,6 +44,8 @@ export default function EmployeesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   // Use Tanstack Query for employee data
   const {
@@ -110,6 +113,21 @@ export default function EmployeesPage() {
   const total = filteredEmployees.length;
   const active = filteredEmployees.filter(e => e.status === 'active').length;
   const inactive = filteredEmployees.filter(e => e.status === 'inactive').length;
+
+  const totalItems = filteredEmployees.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedEmployees = filteredEmployees.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   if (isLoading) {
     return (
@@ -274,7 +292,7 @@ export default function EmployeesPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredEmployees.map((employee) => (
+                {paginatedEmployees.map((employee) => (
                   <tr key={employee.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -369,6 +387,17 @@ export default function EmployeesPage() {
               </tbody>
             </table>
           </div>
+        )}
+        
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         )}
       </div>
     </DashboardLayout>
