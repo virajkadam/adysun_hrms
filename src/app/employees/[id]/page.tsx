@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
@@ -10,6 +10,7 @@ import { formatDateToDayMonYear, formatDateToDayMonYearWithTime } from '@/utils/
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployee, useDeleteEmployee } from '@/hooks/useEmployees';
 import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
+import { getAdminNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 
 type PageParams = {
@@ -74,6 +75,31 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const cancelDelete = () => {
     setDeleteConfirm(false);
   };
+
+  // Fetch admin names for audit trail
+  useEffect(() => {
+    const fetchAdminNames = async () => {
+      if (employee) {
+        try {
+          // Fetch created by admin name
+          if (employee.createdBy) {
+            const createdByAdminName = await getAdminNameById(employee.createdBy);
+            setCreatedByAdmin(createdByAdminName);
+          }
+          
+          // Fetch updated by admin name
+          if (employee.updatedBy) {
+            const updatedByAdminName = await getAdminNameById(employee.updatedBy);
+            setUpdatedByAdmin(updatedByAdminName);
+          }
+        } catch (error) {
+          console.error('Error fetching admin names:', error);
+        }
+      }
+    };
+
+    fetchAdminNames();
+  }, [employee]);
 
   if (isLoading) {
     return (
