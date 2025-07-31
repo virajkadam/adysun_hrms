@@ -146,8 +146,11 @@ export default function EditSalaryPage({ params }: PageParams) {
           <p>Salary not found</p>
         </div>
         <div className="mt-4">
-          <Link href="/salaries" className="text-blue-600 hover:underline flex items-center gap-1">
-            <FiArrowLeft size={16} /> Back to Salaries
+          <Link 
+            href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} 
+            className="text-blue-600 hover:underline flex items-center gap-1"
+          >
+            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeName}'s Salaries` : 'Salaries'}
           </Link>
         </div>
       </DashboardLayout>

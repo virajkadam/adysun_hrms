@@ -15,21 +15,25 @@ import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 import { useSearchParams } from 'next/navigation';
 
-// Component to handle employee name display
+// Component to handle employee name display with proper Firebase integration
 const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
   const [employeeName, setEmployeeName] = useState<string>('Loading...');
 
-  useState(() => {
-    // Dummy employee names for demonstration
-    const dummyNames: { [key: string]: string } = {
-      'EMP001': 'John Doe',
-      'EMP002': 'Jane Smith',
-      'EMP003': 'Mike Johnson'
+  useEffect(() => {
+    const fetchEmployeeName = async () => {
+      if (employeeId) {
+        try {
+          const name = await getEmployeeNameById(employeeId);
+          setEmployeeName(name);
+        } catch (error) {
+          console.error('Error fetching employee name:', error);
+          setEmployeeName('Unknown Employee');
+        }
+      }
     };
-    
-    const name = dummyNames[employeeId] || 'Unknown Employee';
-    setEmployeeName(name);
-  });
+
+    fetchEmployeeName();
+  }, [employeeId]);
 
   return <span>{employeeName}</span>;
 };
@@ -168,8 +172,13 @@ export default function SalariesPage() {
     <DashboardLayout
       breadcrumbItems={[
         { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Salaries', href: '/salaries' },
-        ...(employeeId ? [{ label: employeeName || 'Loading...', isCurrent: true }] : [])
+        { label: 'Employee', href: '/employees' },
+        ...(employeeId ? [
+          { label: employeeName || 'Loading...', href: `/employees/${employeeId}` },
+          { label: 'Salaries', href: `/salaries?employeeId=${employeeId}`, isCurrent: true }
+        ] : [
+          { label: 'Salaries', href: '/salaries', isCurrent: true }
+        ])
       ]}
     >
       <Toaster position="top-center" />
@@ -262,13 +271,13 @@ export default function SalariesPage() {
                         icon={<FiEye className="w-4 h-4" />}
                         title="View Details"
                         colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
-                        href={`/salaries/${salary.id}`}
+                        href={`/salaries/${salary.id}${employeeId ? `?employeeId=${employeeId}` : ''}`}
                       />
                       <ActionButton
                         icon={<FiEdit className="w-4 h-4" />}
                         title="Edit Salary"
                         colorClass="bg-yellow-100 text-yellow-600 hover:text-yellow-900"
-                        href={`/salaries/${salary.id}/edit`}
+                        href={`/salaries/${salary.id}/edit${employeeId ? `?employeeId=${employeeId}` : ''}`}
                       />
                       {deleteConfirm === salary.id ? (
                         <>

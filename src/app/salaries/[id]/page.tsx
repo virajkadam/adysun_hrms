@@ -11,6 +11,7 @@ import TableHeader from '@/components/ui/TableHeader';
 import { useSalary, useDeleteSalary } from '@/hooks/useSalaries';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
+import { useSearchParams } from 'next/navigation';
 
 type PageParams = {
   params: {
@@ -23,6 +24,9 @@ export default function SalaryViewPage({ params }: PageParams) {
   const [employeeName, setEmployeeName] = useState<string>('');
   
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const employeeId = searchParams?.get('employeeId');
+  
   const id = params.id;
 
   // Use Tanstack Query for salary data
@@ -132,15 +136,36 @@ export default function SalaryViewPage({ params }: PageParams) {
     );
   }
 
-  if (isError || !salary) {
+  if (isError) {
     return (
       <DashboardLayout>
-        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4">
-          <p>Failed to load salary data.</p>
+        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+          <p>Failed to load salary data. Please try refreshing the page.</p>
         </div>
         <div className="mt-4">
-          <Link href="/salaries" className="text-blue-600 hover:underline flex items-center gap-1">
-            <FiArrowLeft size={16} /> Back to Salaries
+          <Link 
+            href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} 
+            className="text-blue-600 hover:underline flex items-center gap-1"
+          >
+            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeName}'s Salaries` : 'Salaries'}
+          </Link>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!salary) {
+    return (
+      <DashboardLayout>
+        <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
+          <p>Salary not found</p>
+        </div>
+        <div className="mt-4">
+          <Link 
+            href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} 
+            className="text-blue-600 hover:underline flex items-center gap-1"
+          >
+            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeName}'s Salaries` : 'Salaries'}
           </Link>
         </div>
       </DashboardLayout>
