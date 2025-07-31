@@ -288,6 +288,12 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiCalendar className="mr-2" /> Attendance
                   </h2>
+                  <Link
+                    href={`/employments/${id}/attendance`}
+                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  >
+                    <FiCalendar size={16} /> View Details
+                  </Link>
                 </div>
                 
                 <div className="text-center">
@@ -303,6 +309,12 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiCalendar className="mr-2" /> Leaves
                   </h2>
+                  <Link
+                    href={`/employments/${id}/leaves`}
+                    className="text-green-600 hover:text-green-800 flex items-center gap-1"
+                  >
+                    <FiCalendar size={16} /> View Details
+                  </Link>
                 </div>
                 
                 <div className="text-center">
