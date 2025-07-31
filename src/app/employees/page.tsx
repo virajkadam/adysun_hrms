@@ -11,6 +11,38 @@ import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
+import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
+
+// Component to handle employment navigation
+const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
+  const { data: employments = [], isLoading } = useEmploymentsByEmployee(employeeId);
+  
+  // Get the first (most recent) employment
+  const employment = employments[0];
+  
+  if (isLoading) {
+    return (
+      <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
+    );
+  }
+  
+  if (!employment) {
+    return (
+      <div className="w-10 h-10 border border-gray-300 rounded-md p-2 flex items-center justify-center bg-gray-100 text-gray-400 cursor-not-allowed">
+        <FiBriefcase className="w-5 h-5" />
+      </div>
+    );
+  }
+  
+  return (
+    <ActionButton
+      icon={<FiBriefcase className="w-5 h-5" />}
+      title="View Employment Details"
+      colorClass="bg-green-100 text-green-600 hover:text-green-900"
+      href={`/employments/${employment.id}`}
+    />
+  );
+};
 
 export default function EmployeesPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -317,12 +349,7 @@ export default function EmployeesPage() {
                             colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                             href={`/employees/${employee.id}`}
                           />
-                          <ActionButton
-                            icon={<FiBriefcase className="w-5 h-5" />}
-                            title="View Employments Details"
-                            colorClass="bg-green-100 text-green-600 hover:text-green-900"
-                            href={`/employees/${employee.id}#employments`}
-                          />
+                          <EmploymentActionButton employeeId={employee.id} />
                           <ActionButton
                             icon={<FiEdit className="w-5 h-5" />}
                             title="Edit"
