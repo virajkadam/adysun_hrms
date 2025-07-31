@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiDollarSign } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -344,6 +344,12 @@ export default function EmploymentsPage() {
                             title="View Employment Details"
                             colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                             href={`/employments/${employment.id}`}
+                          />
+                          <ActionButton
+                            icon={<FiDollarSign className="w-5 h-5" />}
+                            title="View Salary Details"
+                            colorClass="bg-green-100 text-green-600 hover:text-green-900"
+                            href={`/employments/${employment.id}#salary`}
                           />
                           <ActionButton
                             icon={<FiEdit className="w-5 h-5" />}

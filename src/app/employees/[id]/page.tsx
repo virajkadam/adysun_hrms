@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiTrash2, FiBriefcase, FiUser, FiBook, FiDollarSign } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employee, Employment } from '@/types';
 import { formatDateToDayMonYear, formatDateToDayMonYearWithTime } from '@/utils/documentUtils';
@@ -237,6 +237,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
                 href: `/employments?employeeId=${id}` 
+              },
+              { 
+                label: 'View Salary', 
+                icon: <FiDollarSign />, 
+                variant: 'warning' as const, 
+                href: `/employees/${id}#salary` 
               },
               { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
               { 
