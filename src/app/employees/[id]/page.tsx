@@ -592,7 +592,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
    
 
       {/* Audit Trail Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
+      <div className="mt-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
           <FiBook className="mr-2" /> Audit Trail
         </h2>
