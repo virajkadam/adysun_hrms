@@ -63,13 +63,6 @@ export default function DashboardPage() {
       link: '/employees',
       color: 'bg-blue-50'
     },
-    {
-      title: 'Employments',
-      count: employmentCount,
-      icon: <FiBriefcase className="w-8 h-8 text-green-500" />,
-      link: '/employments',
-      color: 'bg-green-50'
-    }
   ];
 
   return (
@@ -151,13 +144,13 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-600 mt-1">Create a new employee record</p>
           </Link>
           
-          <Link
+          {/* <Link
             href="/employments/add"
             className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
           >
             <h3 className="font-medium text-gray-800">Add Employment</h3>
             <p className="text-sm text-gray-600 mt-1">Create a new employment record</p>
-          </Link>
+          </Link> */}
           
           <Link
             href="/dashboard/documents"
