@@ -209,12 +209,14 @@ export default function SalariesPage() {
           onRefresh={handleRefresh}
           actionButtons={[
             { 
-              label: employeeId ? `Add Salary for ${employeeName}` : 'Add Salary', 
+              label: 'Create', 
               icon: <FiPlus />, 
               variant: 'primary' as const, 
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
             }
           ]}
+          backButton={employeeId ? { href: '/employees' } : { href: '/dashboard' }}
+          headerClassName="px-6 pt-6 mb-0"
         />
 
         <div className="overflow-x-auto">

@@ -83,3 +83,14 @@ The user requires that only big/large API responses should be cached (like emplo
 The user prefers that when navigating from Employee Details page to Add Employment page, the employee ID should be passed as a query parameter (?employeeId=id) and the employment add page should pre-select the employee and completely hide the employee selection section. The employee selection should only be shown when no employee is pre-selected from the URL parameter. After successfully adding employment, navigation should go back to the Employee Details page when employee was pre-selected, otherwise to the employments list.
 
 ---
+
+The user requires that back buttons in TableHeader should always be present with the default "Back" label, not custom labels. The back button should always be shown in the left position of the three-column layout (Left: back button, Center: title, Right: action buttons).
+
+---
+
+The user requires that action buttons in TableHeader should always use simple, consistent labels like "Create" instead of custom text. Action buttons should not use dynamic text like "Add Salary for [employeeName]" or context-specific labels.
+
+---
+
+
+In the UI design, the TableHeader component should always include a back button and should not use hardcoded text like 'Back to Employees', ensuring consistent back navigation across views.
