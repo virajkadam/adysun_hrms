@@ -100,3 +100,7 @@ In the UI design, the TableHeader component should always include a back button 
 The user requires that all save buttons should use green color with success class for consistent styling across the application.
 
 ---
+
+The user prefers using terminal commands for faster file and folder creation to improve development speed. The preferred method is: 1) Ask user what type of file they need (create, edit, list, details/view), 2) Create directories with `mkdir -p path/to/folders`, 3) Copy existing similar files with `cp source/file.tsx destination/file.tsx` based on the file type pattern, 4) Then refactor the copied files for specific context. This approach ensures consistent folder structure, follows established patterns for each file type (create forms, edit forms, list pages, detail pages), and reduces manual file creation time while maintaining established UI patterns and logical methods. This method guarantees UI and minimal/common consistency across the entire project by reusing proven patterns and established components.
+
+---
