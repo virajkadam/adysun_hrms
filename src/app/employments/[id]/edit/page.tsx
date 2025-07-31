@@ -190,7 +190,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
           }}
           actionButtons={[
             {
-              label: 'Save Changes',
+              label: 'Save',
               icon: <FiSave />,
               variant: 'success',
               onClick: () => handleSubmit(onSubmit)()
@@ -734,7 +734,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2 disabled:opacity-50"
             >
               <FiSave />
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? 'Saving...' : 'Save'}
             </button>
           </div>
         </div>

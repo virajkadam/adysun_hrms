@@ -102,7 +102,7 @@ export default function EditEmployeePage({ params }: PageParams) {
           }}
           actionButtons={[
             {
-              label: isSubmitting ? 'Saving...' : 'Save Changes',
+              label: isSubmitting ? 'Saving...' : 'Save',
               icon: <FiSave />,
               variant: 'success',
               onClick: handleSubmit(onSubmit),
@@ -493,7 +493,7 @@ export default function EditEmployeePage({ params }: PageParams) {
             onClick={handleSubmit(onSubmit)}
           >
             <FiSave />
-            {isSubmitting ? 'Saving...' : 'Save Changes'}
+            {isSubmitting ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

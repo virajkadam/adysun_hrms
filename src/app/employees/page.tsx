@@ -235,7 +235,7 @@ export default function EmployeesPage() {
               label: 'Create',
               href: '/employees/add',
               icon: <FiPlus />,
-              variant: 'primary'
+              variant: 'success' as const,
             }
           ]}
           headerClassName="px-6 pt-6 mb-0"

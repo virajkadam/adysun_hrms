@@ -234,7 +234,7 @@ export default function SalariesPage() {
             { 
               label: 'Create', 
               icon: <FiPlus />, 
-              variant: 'primary' as const, 
+              variant: 'success' as const, 
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
             }
           ]}

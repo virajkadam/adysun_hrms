@@ -95,7 +95,7 @@ export default function EditEmployeePageContent({ params }: PageParams) {
               disabled={isSubmitting}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2 disabled:bg-blue-400"
             >
-              <FiSave size={16} /> {isSubmitting ? 'Saving...' : 'Save Changes'}
+              <FiSave size={16} /> {isSubmitting ? 'Saving...' : 'Save'}
             </button>
           </div>
         </form>
