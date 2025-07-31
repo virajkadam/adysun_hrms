@@ -73,12 +73,12 @@ export default function DashboardPage() {
   ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout showBreadcrumb={false}>
       <Toaster position="top-center" />
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-slate-700">Welcome back, {currentAdmin.name}!</p>
+          <p className="text-slate-700">Welcome back, {currentAdmin.name}.</p>
         </div>
         <button
           onClick={handleRefresh}

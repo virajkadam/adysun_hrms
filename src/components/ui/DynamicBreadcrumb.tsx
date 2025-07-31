@@ -34,7 +34,7 @@ const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({
 }) => {
   const pathname = usePathname();
 
-  // Don't show breadcrumb on dashboard route (root path)
+  // Don't show breadcrumb on dashboard route
   if (!show || !pathname || pathname === '/dashboard') return null;
 
   const generateBreadcrumbs = (path: string): BreadcrumbItem[] => {
