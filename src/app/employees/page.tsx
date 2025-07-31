@@ -11,6 +11,7 @@ import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
+import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
@@ -173,7 +174,12 @@ export default function EmployeesPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Employees', isCurrent: true }
+      ]}
+    >
       <Toaster position="top-center" />
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">

@@ -183,7 +183,12 @@ export default function EmploymentsPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Employments', isCurrent: true }
+      ]}
+    >
       <Toaster position="top-center" />
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">

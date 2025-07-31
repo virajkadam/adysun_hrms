@@ -77,7 +77,13 @@ export default function EmployeeViewPage({ params }: PageParams) {
 
   if (isLoading) {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        breadcrumbItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Employees', href: '/employees' },
+          { label: 'Loading...', isCurrent: true }
+        ]}
+      >
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Skeleton for TableHeader */}
           <div className="space-y-6">
@@ -156,7 +162,13 @@ export default function EmployeeViewPage({ params }: PageParams) {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Employees', href: '/employees' },
+        { label: employee.name, isCurrent: true }
+      ]}
+    >
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
