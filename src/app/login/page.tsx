@@ -54,19 +54,19 @@ export default function LoginPage() {
       <Toaster position="top-center" />
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
+          {/* Logo and Company Name */}
+          <div className="flex items-center justify-center mb-4">
             <Image
               src="/adysun-logo.png"
               alt="Adysun Ventures Logo"
-              width={120}
-              height={60}
-              className="object-contain"
+              width={50}
+              height={50}
+              className="object-contain mr-3"
               priority
             />
+            <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">Admin Dashboard</h2>
           <p className="mt-2 text-gray-600">
             Enter your credentials to continue
           </p>
