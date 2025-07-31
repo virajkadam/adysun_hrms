@@ -10,6 +10,7 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
+import Pagination from '@/components/ui/Pagination';
 import { useSalaries, useDeleteSalary, useSalariesByEmployee } from '@/hooks/useSalaries';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
@@ -43,6 +44,8 @@ export default function SalariesPage() {
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [employeeName, setEmployeeName] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   
   const searchParams = useSearchParams();
   const employeeId = searchParams?.get('employeeId') || null;
@@ -142,6 +145,27 @@ export default function SalariesPage() {
     
     return matchesSearch && matchesFilter && matchesEmployeeId;
   });
+
+  // Pagination logic
+  const totalItems = filteredSalaries.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedSalaries = filteredSalaries.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterValue, employeeId]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
 
   const activeSalaries = salaries.filter(salary => salary.status === 'paid').length;
   const inactiveSalaries = salaries.filter(salary => salary.status === 'draft').length;
@@ -246,7 +270,7 @@ export default function SalariesPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredSalaries.map((salary) => (
+              {paginatedSalaries.map((salary) => (
                 <tr key={salary.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <EmployeeNameDisplay employeeId={salary.employeeId} />
@@ -342,6 +366,18 @@ export default function SalariesPage() {
             </div>
           )}
         </div>
+        
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
     </DashboardLayout>
   );

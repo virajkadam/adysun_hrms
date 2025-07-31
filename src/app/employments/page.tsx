@@ -11,6 +11,7 @@ import { ActionButton } from '@/components/ui/ActionButton';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
+import Pagination from '@/components/ui/Pagination';
 import { useEmployments, useDeleteEmployment } from '@/hooks/useEmployments';
 import { useEmployees } from '@/hooks/useEmployees';
 
@@ -21,6 +22,8 @@ export default function EmploymentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   // Use Tanstack Query for employment data
   const {
@@ -101,6 +104,27 @@ export default function EmploymentsPage() {
     
     return matchesSearch && matchesFilter && matchesEmployeeFilter;
   });
+
+  // Pagination logic
+  const totalItems = filteredEmployments.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedEmployments = filteredEmployments.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterValue, employeeIdFilter]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
 
   const total = filteredEmployments.length;
   const active = filteredEmployments.filter(e => e.contractType === 'full-time').length;
@@ -276,7 +300,7 @@ export default function EmploymentsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredEmployments.map((employment) => (
+                {paginatedEmployments.map((employment) => (
                   <tr key={employment.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -372,6 +396,18 @@ export default function EmploymentsPage() {
               </tbody>
             </table>
           </div>
+        )}
+        
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         )}
       </div>
     </DashboardLayout>
