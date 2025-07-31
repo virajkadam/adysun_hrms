@@ -53,6 +53,7 @@ export default function LoginPage() {
       <Toaster position="top-center" />
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
           <h1 className="text-3xl font-bold text-gray-900">Admin Login</h1>
           <p className="mt-2 text-gray-600">
             Enter your credentials to continue
