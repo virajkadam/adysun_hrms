@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -15,6 +16,7 @@ type LoginFormValues = {
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
   const { signInWithCredentials } = useAuth();
@@ -47,6 +49,10 @@ export default function LoginPage() {
       toast.error(error.message || 'Login failed', { id: 'login' });
       setIsLoading(false);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -111,19 +117,31 @@ export default function LoginPage() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              {...register('password', { 
-                required: 'Password is required',
-                minLength: {
-                  value: 4,
-                  message: 'Password must be at least 4 characters'
-                }
-              })}
-              className="py-3 px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"
-              placeholder="Enter password"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                {...register('password', { 
+                  required: 'Password is required',
+                  minLength: {
+                    value: 4,
+                    message: 'Password must be at least 4 characters'
+                  }
+                })}
+                className="py-3 px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black pr-10"
+                placeholder="Enter password"
+              />
+              <span
+                onClick={togglePasswordVisibility}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+              >
+                {showPassword ? (
+                  <FiEyeOff className="h-5 w-5 text-gray-500" />
+                ) : (
+                  <FiEye className="h-5 w-5 text-gray-500" />
+                )}
+              </span>
+            </div>
             {errors.password && (
               <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>
             )}
