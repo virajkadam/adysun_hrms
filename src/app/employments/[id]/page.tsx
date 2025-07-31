@@ -197,7 +197,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           showFilter={false}
           headerClassName="px-6 py-6"
           backButton={{
-            href: "/employments",
+            href: employment?.employeeId ? `/employees/${employment.employeeId}` : "/employments",
             label: 'Back'
           }}
           actionButtons={
