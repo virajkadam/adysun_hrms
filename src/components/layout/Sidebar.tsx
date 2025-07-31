@@ -2,32 +2,21 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiLogOut } from 'react-icons/fi';
-import { useAuth } from '@/context/AuthContext';
+import { usePathname } from 'next/navigation';
+import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile } from 'react-icons/fi';
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useAuth();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      // After successful logout, navigate to the login page
-      router.push('/login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
   // Function to determine if a menu item is active
   const isActive = (path: string) => {
+    if (!pathname) return false;
+    
     if (path === '/dashboard') {
       // Only consider dashboard active if we're exactly on the dashboard path
       return pathname === '/dashboard';
@@ -113,17 +102,6 @@ const Sidebar = () => {
               ))}
             </ul>
           </nav>
-          
-          {/* Logout button at bottom of sidebar */}
-          <div className="mt-auto pt-4 border-t border-gray-700">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 p-3 rounded-md transition-colors text-white hover:bg-gray-700 w-full cursor-pointer"
-            >
-              <FiLogOut className="w-5 h-5" />
-              <span>Logout</span>
-            </button>
-          </div>
         </div>
       </div>
     </>
