@@ -198,7 +198,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
                     isRefreshing 
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                      : 'bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700'
+                      : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
                   }`}
                   aria-label="Refresh data"
                 >

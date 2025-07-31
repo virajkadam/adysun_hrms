@@ -319,7 +319,7 @@ export default function EmployeesPage() {
                           />
                           <ActionButton
                             icon={<FiBriefcase className="w-5 h-5" />}
-                            title="View"
+                            title="View Employments Details"
                             colorClass="bg-green-100 text-green-600 hover:text-green-900"
                             href={`/employees/${employee.id}#employments`}
                           />
