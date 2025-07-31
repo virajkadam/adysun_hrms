@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import TableHeader from '@/components/ui/TableHeader';
 import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSalary, useUpdateSalary } from '@/hooks/useSalaries';
@@ -128,8 +129,8 @@ export default function EditSalaryPage({ params }: PageParams) {
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(8)].map((_, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[...Array(6)].map((_, i) => (
                 <div key={i} className="h-12 bg-gray-200 rounded"></div>
               ))}
             </div>
@@ -167,67 +168,43 @@ export default function EditSalaryPage({ params }: PageParams) {
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="px-6 py-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Link 
-                href={employeeId 
-                  ? `/salaries?employeeId=${employeeId}` 
-                  : `/salaries/${params.id}`
-                } 
-                className="mr-4"
-              >
-                <FiArrowLeft className="w-5 h-5 text-gray-600" />
-              </Link>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                {employeeId 
-                  ? `Edit ${employeeName}'s Salary`
-                  : 'Edit Salary'
-                }
-              </h1>
-            </div>
-          </div>
-        </div>
+        <TableHeader
+          title={employeeId 
+            ? `Edit ${employeeName}'s Salary`
+            : 'Edit Salary'
+          }
+          total={0}
+          active={0}
+          inactive={0}
+          searchValue=""
+          onSearchChange={() => {}}
+          searchPlaceholder=""
+          showStats={false}
+          showSearch={false}
+          showFilter={false}
+          headerClassName="px-6 py-6"
+          backButton={{ 
+            href: employeeId 
+              ? `/salaries?employeeId=${employeeId}` 
+              : `/salaries/${params.id}`
+          }}
+          actionButtons={[
+            {
+              label: 'Save',
+              icon: <FiSave />,
+              variant: 'primary',
+              onClick: handleSubmit(onSubmit),
+              disabled: isLoading
+            }
+          ]}
+        />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Employee ID */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Employee ID *
-              </label>
-              <input
-                type="text"
-                {...register('employeeId', { required: 'Employee ID is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter employee ID"
-                disabled={!!employeeId} // Disable if employeeId is provided in URL
-              />
-              {errors.employeeId && (
-                <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
-              )}
-            </div>
-
-            {/* Employment ID */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Employment ID *
-              </label>
-              <input
-                type="text"
-                {...register('employmentId', { required: 'Employment ID is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter employment ID"
-              />
-              {errors.employmentId && (
-                <p className="mt-1 text-sm text-red-600">{errors.employmentId.message}</p>
-              )}
-            </div>
-
+        <form onSubmit={handleSubmit(onSubmit)} className="px-6 pb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Month */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Month *
+                Month
               </label>
               <select
                 {...register('month', { required: 'Month is required' })}
@@ -255,7 +232,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Year */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Year *
+                Year
               </label>
               <input
                 type="number"
@@ -271,7 +248,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Basic Salary */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Basic Salary *
+                Basic Salary
               </label>
               <input
                 type="number"
@@ -287,7 +264,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Total Salary */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Total Salary *
+                Total Salary
               </label>
               <input
                 type="number"
@@ -303,7 +280,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Net Salary */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Net Salary *
+                Net Salary
               </label>
               <input
                 type="number"
@@ -319,7 +296,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Status */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status *
+                Status
               </label>
               <select
                 {...register('status', { required: 'Status is required' })}
@@ -337,7 +314,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Payment Frequency */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Payment Frequency *
+                Payment Frequency
               </label>
               <select
                 {...register('paymentFrequency', { required: 'Payment frequency is required' })}
@@ -353,7 +330,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             </div>
           </div>
 
-          <div className="mt-8 flex justify-end space-x-4">
+          <div className="mt-8 flex justify-between py-3">
             <Link
               href={employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${params.id}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -366,7 +343,7 @@ export default function EditSalaryPage({ params }: PageParams) {
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <FiSave className="w-4 h-4" />
-              {isLoading ? 'Updating...' : 'Update Salary'}
+              Save
             </button>
           </div>
         </form>
