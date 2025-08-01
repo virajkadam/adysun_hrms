@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { FiUser, FiCalendar, FiLogOut } from 'react-icons/fi';
+import { FiUser, FiCalendar, FiLogOut, FiFileText } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 
@@ -69,6 +69,13 @@ export default function EmployeeDashboardPage() {
       icon: <FiCalendar className="w-8 h-8 text-green-500" />,
       link: '/employee/leaves',
       color: 'bg-green-50'
+    },
+    {
+      title: 'Documents',
+      description: 'Access your HR documents',
+      icon: <FiFileText className="w-8 h-8 text-orange-500" />,
+      link: '/employee/documents',
+      color: 'bg-orange-50'
     },
   ];
 

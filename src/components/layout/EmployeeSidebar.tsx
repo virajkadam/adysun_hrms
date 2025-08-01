@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiUser, FiCalendar, FiClock, FiMenu, FiX, FiHome } from 'react-icons/fi';
+import { FiUser, FiCalendar, FiClock, FiMenu, FiX, FiHome, FiFileText } from 'react-icons/fi';
 
 const EmployeeSidebar = () => {
   const pathname = usePathname();
@@ -41,6 +41,11 @@ const EmployeeSidebar = () => {
       path: '/employee/leaves',
       name: 'Leaves',
       icon: <FiCalendar className="w-5 h-5" />
+    },
+    {
+      path: '/employee/documents',
+      name: 'Documents',
+      icon: <FiFileText className="w-5 h-5" />
     },
     {
       path: '/employee/profile',
