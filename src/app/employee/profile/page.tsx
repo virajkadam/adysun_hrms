@@ -95,18 +95,18 @@ export default function EmployeeProfilePage() {
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Basic Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
+                                <div>
                   <p className="text-sm text-gray-600">Name</p>
-                  <p className="font-medium">{employee.name}</p>
-          </div>
-                <div>
+                  <p className="font-medium text-gray-900">{employee.name}</p>
+                </div>
+                                <div>
                   <p className="text-sm text-gray-600">Date of Birth</p>
-                  <p className="font-medium">{employee.dateOfBirth ? formatDateToDayMonYear(employee.dateOfBirth) : 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.dateOfBirth ? formatDateToDayMonYear(employee.dateOfBirth) : 'Not specified'}</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">Employee ID</p>
-                  <p className="font-medium">{employee.employeeId || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.employeeId || 'Not specified'}</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">Status</p>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -119,8 +119,8 @@ export default function EmployeeProfilePage() {
           </div>
                 <div>
                   <p className="text-sm text-gray-600">Home Town</p>
-                  <p className="font-medium">{employee.homeTown || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.homeTown || 'Not specified'}</p>
+                </div>
           </div>
         </div>
         
@@ -128,22 +128,22 @@ export default function EmployeeProfilePage() {
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Contact Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
+                                <div>
                   <p className="text-sm text-gray-600">Mobile No.</p>
-                  <p className="font-medium">{employee.phone}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.phone}</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">Email ID</p>
-                  <p className="font-medium">{employee.email}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.email}</p>
+                </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-gray-600">Current Address</p>
-                  <p className="font-medium">{employee.currentAddress || 'Not specified'}</p>
-        </div>
+                  <p className="font-medium text-gray-900">{employee.currentAddress || 'Not specified'}</p>
+                </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-gray-600">Permanent Address</p>
-                  <p className="font-medium">{employee.permanentAddress || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.permanentAddress || 'Not specified'}</p>
+                </div>
           </div>
         </div>
         
@@ -151,22 +151,22 @@ export default function EmployeeProfilePage() {
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Bank Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
+                                <div>
                   <p className="text-sm text-gray-600">Bank Name</p>
-                  <p className="font-medium">{employee.bankName || 'Not specified'}</p>
+                  <p className="font-medium text-gray-900">{employee.bankName || 'Not specified'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Account No.</p>
-                  <p className="font-medium">{employee.accountNo || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.accountNo || 'Not specified'}</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">IFSC Code</p>
-                  <p className="font-medium">{employee.ifscCode || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.ifscCode || 'Not specified'}</p>
+                </div>
                 <div>
                   <p className="text-sm text-gray-600">Account Holder Name</p>
-                  <p className="font-medium">{employee.accountHolderName || 'Not specified'}</p>
-          </div>
+                  <p className="font-medium text-gray-900">{employee.accountHolderName || 'Not specified'}</p>
+                </div>
           </div>
         </div>
       </div>
@@ -180,34 +180,34 @@ export default function EmployeeProfilePage() {
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Higher Education</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
+                                    <div>
                     <p className="text-sm text-gray-600">Degree</p>
-                    <p className="font-medium">{employee.graduation.degree || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.degree || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Branch</p>
-                    <p className="font-medium">{employee.graduation.branch || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.branch || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">College Name</p>
-                    <p className="font-medium">{employee.graduation.collegeName || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.collegeName || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">University Name</p>
-                    <p className="font-medium">{employee.graduation.universityName || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.universityName || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
-                    <p className="font-medium">{employee.graduation.passingYear || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.passingYear || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
-                    <p className="font-medium">{employee.graduation.marks || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.marks || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
-                    <p className="font-medium">{employee.graduation.grade || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.graduation.grade || 'Not specified'}</p>
+                  </div>
           </div>
           </div>
         )}
@@ -217,30 +217,30 @@ export default function EmployeeProfilePage() {
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
+                                    <div>
                     <p className="text-sm text-gray-600">School</p>
-                    <p className="font-medium">{employee.twelthStandard.school || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.school || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Branch</p>
-                    <p className="font-medium">{employee.twelthStandard.branch || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.branch || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Board</p>
-                    <p className="font-medium">{employee.twelthStandard.board || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.board || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
-                    <p className="font-medium">{employee.twelthStandard.passingYear || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.passingYear || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
-                    <p className="font-medium">{employee.twelthStandard.marks || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.marks || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
-                    <p className="font-medium">{employee.twelthStandard.grade || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.twelthStandard.grade || 'Not specified'}</p>
+                  </div>
           </div>
           </div>
         )}
@@ -250,30 +250,30 @@ export default function EmployeeProfilePage() {
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
+                                    <div>
                     <p className="text-sm text-gray-600">School</p>
-                    <p className="font-medium">{employee.tenthStandard.school || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.school || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Board</p>
-                    <p className="font-medium">{employee.tenthStandard.board || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.board || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
-                    <p className="font-medium">{employee.tenthStandard.passingYear || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.passingYear || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
-                    <p className="font-medium">{employee.tenthStandard.marks || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.marks || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
-                    <p className="font-medium">{employee.tenthStandard.grade || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.grade || 'Not specified'}</p>
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Medium</p>
-                    <p className="font-medium">{employee.tenthStandard.medium || 'Not specified'}</p>
-            </div>
+                    <p className="font-medium text-gray-900">{employee.tenthStandard.medium || 'Not specified'}</p>
+                  </div>
           </div>
           </div>
         )}
