@@ -148,7 +148,6 @@ export default function LeavesPage({ params }: { params: Promise<{ id: string }>
           { label: 'Dashboard', href: '/dashboard' },
           { label: 'Employees', href: '/employees' },
           { label: employee.name, href: `/employees/${employment.employeeId}` },
-          { label: 'Employments', href: `/employments?employeeId=${employment.employeeId}` },
           { label: employment.jobTitle || 'Employment Details', href: `/employments/${id}` },
           { label: 'Leaves', isCurrent: true }
         ] : [

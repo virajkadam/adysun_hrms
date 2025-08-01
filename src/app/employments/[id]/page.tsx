@@ -172,7 +172,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           { label: 'Dashboard', href: '/dashboard' },
           { label: 'Employees', href: '/employees' },
           { label: employee.name, href: `/employees/${employment.employeeId}` },
-          { label: 'Employments', href: `/employments?employeeId=${employment.employeeId}` },
           { label: employment.jobTitle || 'Employment Details', isCurrent: true }
         ] : [
           { label: 'Dashboard', href: '/dashboard' },
