@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiCheck, FiX, FiLogIn, FiLogOut, FiUser } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -17,11 +17,23 @@ interface AttendanceRecord {
   totalHours: number;
 }
 
+interface TodayAttendance {
+  isCheckedIn: boolean;
+  checkInTime?: string;
+  checkOutTime?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+}
+
 export default function EmployeeAttendancePage() {
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [todayAttendance, setTodayAttendance] = useState<TodayAttendance>({
+    isCheckedIn: false
+  });
+  const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -94,6 +106,80 @@ export default function EmployeeAttendancePage() {
     fetchAttendanceData();
   }, [currentUserData, router, currentMonth, currentYear]);
 
+  // Check today's attendance status
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const todayRecord = attendanceRecords.find(record => record.date === today);
+    
+    if (todayRecord) {
+      setTodayAttendance({
+        isCheckedIn: true,
+        checkInTime: todayRecord.checkIn,
+        checkInDate: todayRecord.date,
+        checkOutTime: todayRecord.checkOut || undefined,
+        checkOutDate: todayRecord.checkOut ? todayRecord.date : undefined
+      });
+    }
+  }, [attendanceRecords]);
+
+  const handleCheckIn = async () => {
+    try {
+      setIsMarkingAttendance(true);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const now = new Date();
+      const currentTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      const currentDate = now.toISOString().split('T')[0];
+      
+      setTodayAttendance({
+        isCheckedIn: true,
+        checkInTime: currentTime,
+        checkInDate: currentDate
+      });
+      
+      toast.success('Check-in successful!');
+    } catch (error) {
+      toast.error('Check-in failed. Please try again.');
+    } finally {
+      setIsMarkingAttendance(false);
+    }
+  };
+
+  const handleCheckOut = async () => {
+    try {
+      setIsMarkingAttendance(true);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const now = new Date();
+      const currentTime = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      const currentDate = now.toISOString().split('T')[0];
+      
+      setTodayAttendance(prev => ({
+        ...prev,
+        checkOutTime: currentTime,
+        checkOutDate: currentDate
+      }));
+      
+      toast.success('Check-out successful!');
+    } catch (error) {
+      toast.error('Check-out failed. Please try again.');
+    } finally {
+      setIsMarkingAttendance(false);
+    }
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'present':
@@ -162,15 +248,120 @@ export default function EmployeeAttendancePage() {
   }
 
   return (
-    <EmployeeLayout>
+    <EmployeeLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/employee-dashboard' },
+        { label: 'Attendance', isCurrent: true }
+      ]}
+    >
       <Toaster position="top-center" />
       
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      {/* Attendance Marking Section */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+        <div className="px-6 py-6 border-b border-gray-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Attendance Marks</h2>
+          <p className="text-gray-600">Mark your daily attendance</p>
+        </div>
+        
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Employee Info */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="flex items-center mb-3">
+                <FiUser className="w-5 h-5 text-gray-600 mr-2" />
+                <h3 className="font-semibold text-gray-800">Employee Information</h3>
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <p className="text-sm text-gray-600">Name</p>
+                  <p className="font-medium text-gray-900">{currentUserData?.name || 'Employee'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Today's Date</p>
+                  <p className="font-medium text-gray-900">{new Date().toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Current Time</p>
+                  <p className="font-medium text-gray-900">{new Date().toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true 
+                  })}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Attendance Actions */}
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center mb-3">
+                <FiClock className="w-5 h-5 text-blue-600 mr-2" />
+                <h3 className="font-semibold text-gray-800">Attendance Actions</h3>
+              </div>
+              
+              {!todayAttendance.isCheckedIn ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">You haven't checked in today</p>
+                  <button
+                    onClick={handleCheckIn}
+                    disabled={isMarkingAttendance}
+                    className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    <FiLogIn className="w-5 h-5 mr-2" />
+                    {isMarkingAttendance ? 'Checking In...' : 'Check In'}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="bg-green-100 p-3 rounded-md">
+                    <div className="flex items-center mb-2">
+                      <FiLogIn className="w-4 h-4 text-green-600 mr-2" />
+                      <span className="text-sm font-medium text-green-800">Checked In</span>
+                    </div>
+                    <p className="text-sm text-green-700">
+                      Time: {todayAttendance.checkInTime} | Date: {todayAttendance.checkInDate}
+                    </p>
+                  </div>
+                  
+                  {!todayAttendance.checkOutTime ? (
+                    <button
+                      onClick={handleCheckOut}
+                      disabled={isMarkingAttendance}
+                      className="w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    >
+                      <FiLogOut className="w-5 h-5 mr-2" />
+                      {isMarkingAttendance ? 'Checking Out...' : 'Check Out'}
+                    </button>
+                  ) : (
+                    <div className="bg-red-100 p-3 rounded-md">
+                      <div className="flex items-center mb-2">
+                        <FiLogOut className="w-4 h-4 text-red-600 mr-2" />
+                        <span className="text-sm font-medium text-red-800">Checked Out</span>
+                      </div>
+                      <p className="text-sm text-red-700">
+                        Time: {todayAttendance.checkOutTime} | Date: {todayAttendance.checkOutDate}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Attendance Records Section */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="px-6 py-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">My Attendance</h1>
-              <p className="text-slate-700">View your attendance records</p>
+              <h1 className="text-2xl font-bold text-gray-800">Attendance Records</h1>
+              <p className="text-slate-700">View your attendance history</p>
             </div>
             <div className="flex items-center space-x-4">
               <button
@@ -190,7 +381,7 @@ export default function EmployeeAttendancePage() {
               </button>
             </div>
           </div>
-              </div>
+        </div>
 
         <div className="p-6">
           {/* Attendance Summary */}
