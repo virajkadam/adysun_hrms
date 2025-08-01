@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiPlus, FiEdit, FiChevronLeft, FiFilter } from 'react-icons/fi';
+import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -24,6 +24,15 @@ interface FilterOption {
   label: string;
 }
 
+interface AttendanceData {
+  isCheckedIn: boolean;
+  checkInTime?: string;
+  checkOutTime?: string;
+  checkInDate?: string;
+  checkOutDate?: string;
+  employeeName?: string;
+}
+
 interface TableHeaderProps {
   title?: string;
   total: number;
@@ -45,6 +54,12 @@ interface TableHeaderProps {
   filterOptions?: FilterOption[];
   showFilter?: boolean;
   headerClassName?: string;
+  // Attendance marking props
+  showAttendanceMarking?: boolean;
+  attendanceData?: AttendanceData;
+  onCheckIn?: () => void;
+  onCheckOut?: () => void;
+  isMarkingAttendance?: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -72,6 +87,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   ],
   showFilter = false,
   headerClassName = 'px-6 pt-6 mb-0',
+  showAttendanceMarking = false,
+  attendanceData,
+  onCheckIn,
+  onCheckOut,
+  isMarkingAttendance = false,
 }) => {
   const getButtonClasses = (variant: string = 'primary') => {
     const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
@@ -134,6 +154,44 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
           {/* Right Side - Action Buttons */}
           <div className="flex items-center gap-3">
+            {/* Attendance Marking Buttons */}
+            {showAttendanceMarking && attendanceData && (
+              <>
+                {!attendanceData.isCheckedIn ? (
+                  <button
+                    onClick={onCheckIn}
+                    disabled={isMarkingAttendance}
+                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors duration-200"
+                  >
+                    <FiLogIn className="w-4 h-4" />
+                    {isMarkingAttendance ? 'Checking In...' : 'Check In'}
+                  </button>
+                ) : (
+                  <>
+                    <div className="px-3 py-2 bg-green-100 text-green-800 rounded-md text-sm font-medium">
+                      ✓ Checked In
+                    </div>
+                    {!attendanceData.checkOutTime && (
+                      <button
+                        onClick={onCheckOut}
+                        disabled={isMarkingAttendance}
+                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors duration-200"
+                      >
+                        <FiLogOut className="w-4 h-4" />
+                        {isMarkingAttendance ? 'Checking Out...' : 'Check Out'}
+                      </button>
+                    )}
+                    {attendanceData.checkOutTime && (
+                      <div className="px-3 py-2 bg-red-100 text-red-800 rounded-md text-sm font-medium">
+                        ✓ Checked Out
+                      </div>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            
+            {/* Regular Action Buttons */}
             {actionButtons.map((button, index) => {
               const buttonContent = (
                 <>
@@ -241,6 +299,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

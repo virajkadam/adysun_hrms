@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiClock, FiCheck, FiX, FiLogIn, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -256,104 +256,7 @@ export default function EmployeeAttendancePage() {
     >
       <Toaster position="top-center" />
       
-      {/* Attendance Marking Section */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
-        <div className="px-6 py-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Attendance Marks</h2>
-          <p className="text-gray-600">Mark your daily attendance</p>
-              </div>
-        
-        <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Employee Info */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center mb-3">
-                <FiUser className="w-5 h-5 text-gray-600 mr-2" />
-                <h3 className="font-semibold text-gray-800">Employee Information</h3>
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <p className="text-sm text-gray-600">Name</p>
-                  <p className="font-medium text-gray-900">{currentUserData?.name || 'Employee'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Today's Date</p>
-                  <p className="font-medium text-gray-900">{new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Current Time</p>
-                  <p className="font-medium text-gray-900">{new Date().toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true 
-                  })}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Attendance Actions */}
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center mb-3">
-                <FiClock className="w-5 h-5 text-blue-600 mr-2" />
-                <h3 className="font-semibold text-gray-800">Attendance Actions</h3>
-          </div>
-
-              {!todayAttendance.isCheckedIn ? (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-600">You haven&apos;t checked in today</p>
-                  <button
-                    onClick={handleCheckIn}
-                    disabled={isMarkingAttendance}
-                    className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    <FiLogIn className="w-5 h-5 mr-2" />
-                    {isMarkingAttendance ? 'Checking In...' : 'Check In'}
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="bg-green-100 p-3 rounded-md">
-                    <div className="flex items-center mb-2">
-                      <FiLogIn className="w-4 h-4 text-green-600 mr-2" />
-                      <span className="text-sm font-medium text-green-800">Checked In</span>
-              </div>
-                    <p className="text-sm text-green-700">
-                      Time: {todayAttendance.checkInTime} | Date: {todayAttendance.checkInDate}
-                    </p>
-                  </div>
-                  
-                  {!todayAttendance.checkOutTime ? (
-                    <button
-                      onClick={handleCheckOut}
-                      disabled={isMarkingAttendance}
-                      className="w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                    >
-                      <FiLogOut className="w-5 h-5 mr-2" />
-                      {isMarkingAttendance ? 'Checking Out...' : 'Check Out'}
-                    </button>
-                  ) : (
-                    <div className="bg-red-100 p-3 rounded-md">
-                      <div className="flex items-center mb-2">
-                        <FiLogOut className="w-4 h-4 text-red-600 mr-2" />
-                        <span className="text-sm font-medium text-red-800">Checked Out</span>
-                      </div>
-                      <p className="text-sm text-red-700">
-                        Time: {todayAttendance.checkOutTime} | Date: {todayAttendance.checkOutDate}
-                      </p>
-                </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      
 
             {/* Attendance Records Section */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -368,29 +271,19 @@ export default function EmployeeAttendancePage() {
           showStats={true}
           backButton={{ href: '/employee-dashboard' }}
           headerClassName="px-6 pt-6 mb-0"
+          showAttendanceMarking={true}
+          attendanceData={{
+            isCheckedIn: todayAttendance.isCheckedIn,
+            checkInTime: todayAttendance.checkInTime,
+            checkOutTime: todayAttendance.checkOutTime,
+            checkInDate: todayAttendance.checkInDate,
+            checkOutDate: todayAttendance.checkOutDate,
+            employeeName: currentUserData?.name
+          }}
+          onCheckIn={handleCheckIn}
+          onCheckOut={handleCheckOut}
+          isMarkingAttendance={isMarkingAttendance}
         />
-        
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => handleMonthChange('prev')}
-                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              >
-                ←
-              </button>
-              <span className="text-lg font-semibold text-gray-800">
-                {getMonthName(currentMonth)} {currentYear}
-              </span>
-              <button
-                onClick={() => handleMonthChange('next')}
-                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              >
-                →
-              </button>
-            </div>
-          </div>
-        </div>
 
         <div className="p-6">
 
