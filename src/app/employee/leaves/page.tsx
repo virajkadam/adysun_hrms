@@ -157,7 +157,7 @@ export default function EmployeeLeavesPage() {
     <EmployeeLayout>
       <Toaster position="top-center" />
       
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="px-6 py-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div>
@@ -172,7 +172,7 @@ export default function EmployeeLeavesPage() {
               <span>Request Leave</span>
             </button>
           </div>
-        </div>
+              </div>
 
         <div className="p-6">
           {/* Leave Summary */}
@@ -184,11 +184,11 @@ export default function EmployeeLeavesPage() {
                   <p className="text-2xl font-bold text-green-600">
                     {leaveRecords.filter(record => record.status === 'approved').length}
                   </p>
-                </div>
+              </div>
                 <FiCheck className="w-8 h-8 text-green-500" />
               </div>
             </div>
-            
+
             <div className="bg-yellow-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
@@ -196,11 +196,11 @@ export default function EmployeeLeavesPage() {
                   <p className="text-2xl font-bold text-yellow-600">
                     {leaveRecords.filter(record => record.status === 'pending').length}
                   </p>
-                </div>
-                <FiClock className="w-8 h-8 text-yellow-500" />
               </div>
+                <FiClock className="w-8 h-8 text-yellow-500" />
             </div>
-            
+          </div>
+
             <div className="bg-red-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
@@ -211,7 +211,7 @@ export default function EmployeeLeavesPage() {
                 </div>
                 <FiX className="w-8 h-8 text-red-500" />
               </div>
-            </div>
+                  </div>
             
             <div className="bg-blue-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">

@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { FiArrowLeft, FiEdit, FiUser, FiBook, FiDollarSign } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { Employee } from '@/types';
-import { formatDateToDayMonYear, formatDateToDayMonYearWithTime } from '@/utils/documentUtils';
+import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
 import { getEmployee } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
@@ -32,9 +30,9 @@ export default function EmployeeProfilePage() {
         setIsLoading(true);
         const employeeData = await getEmployee(currentUserData.id);
         setEmployee(employeeData);
-      } catch (error: any) {
+        } catch (error) {
         console.error('Error fetching employee data:', error);
-        setError(error.message || 'Failed to load profile data');
+        setError(error instanceof Error ? error.message : 'Failed to load profile data');
         toast.error('Failed to load profile data');
       } finally {
         setIsLoading(false);
@@ -87,16 +85,7 @@ export default function EmployeeProfilePage() {
             href: '/employee-dashboard',
             label: 'Back'
           }}
-          actionButtons={[
-            {
-              label: 'Edit Profile',
-              icon: <FiEdit />,
-              variant: 'success',
-              onClick: () => {
-                toast.info('Edit profile feature coming soon!');
-              }
-            }
-          ]}
+          actionButtons={[]}
         />
 
         <div className="p-6">
@@ -105,63 +94,63 @@ export default function EmployeeProfilePage() {
             <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-blue-500 pl-2">Personal Details</h2>
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Basic Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Name</p>
                   <p className="font-medium">{employee.name}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Date of Birth</p>
                   <p className="font-medium">{employee.dateOfBirth ? formatDateToDayMonYear(employee.dateOfBirth) : 'Not specified'}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Employee ID</p>
                   <p className="font-medium">{employee.employeeId || 'Not specified'}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Status</p>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    employee.status === 'active' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
+                employee.status === 'active'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
                   }`}>
-                    {employee.status}
-                  </span>
-                </div>
+              {employee.status}
+            </span>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Home Town</p>
                   <p className="font-medium">{employee.homeTown || 'Not specified'}</p>
-                </div>
-              </div>
-            </div>
-
+          </div>
+          </div>
+        </div>
+        
             {/* Contact Information */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Mobile No.</p>
                   <p className="font-medium">{employee.phone}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Email ID</p>
                   <p className="font-medium">{employee.email}</p>
-                </div>
+          </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-gray-600">Current Address</p>
                   <p className="font-medium">{employee.currentAddress || 'Not specified'}</p>
-                </div>
+        </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-gray-600">Permanent Address</p>
                   <p className="font-medium">{employee.permanentAddress || 'Not specified'}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Bank Details */}
+          </div>
+          </div>
+        </div>
+        
+        {/* Bank Details */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Bank Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Bank Name</p>
                   <p className="font-medium">{employee.bankName || 'Not specified'}</p>
@@ -169,125 +158,125 @@ export default function EmployeeProfilePage() {
                 <div>
                   <p className="text-sm text-gray-600">Account No.</p>
                   <p className="font-medium">{employee.accountNo || 'Not specified'}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">IFSC Code</p>
                   <p className="font-medium">{employee.ifscCode || 'Not specified'}</p>
-                </div>
+          </div>
                 <div>
                   <p className="text-sm text-gray-600">Account Holder Name</p>
                   <p className="font-medium">{employee.accountHolderName || 'Not specified'}</p>
-                </div>
-              </div>
-            </div>
           </div>
-
-          {/* Educational Details Section */}
+          </div>
+        </div>
+      </div>
+      
+      {/* Educational Details Section */}
           <div className="bg-gray-100 p-4 rounded-lg">
             <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-blue-500 pl-2">Educational Details</h2>
-            
-            {/* Higher Education */}
+        
+        {/* Higher Education */}
             {employee.graduation && (
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Higher Education</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Degree</p>
                     <p className="font-medium">{employee.graduation.degree || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Branch</p>
                     <p className="font-medium">{employee.graduation.branch || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">College Name</p>
                     <p className="font-medium">{employee.graduation.collegeName || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">University Name</p>
                     <p className="font-medium">{employee.graduation.universityName || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
                     <p className="font-medium">{employee.graduation.passingYear || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
                     <p className="font-medium">{employee.graduation.marks || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
                     <p className="font-medium">{employee.graduation.grade || 'Not specified'}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 12th Standard */}
+            </div>
+          </div>
+          </div>
+        )}
+        
+        {/* 12th Standard */}
             {employee.twelthStandard && (
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">School</p>
                     <p className="font-medium">{employee.twelthStandard.school || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Branch</p>
                     <p className="font-medium">{employee.twelthStandard.branch || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Board</p>
                     <p className="font-medium">{employee.twelthStandard.board || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
                     <p className="font-medium">{employee.twelthStandard.passingYear || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
                     <p className="font-medium">{employee.twelthStandard.marks || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
                     <p className="font-medium">{employee.twelthStandard.grade || 'Not specified'}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 10th Standard */}
+            </div>
+          </div>
+          </div>
+        )}
+        
+        {/* 10th Standard */}
             {employee.tenthStandard && (
               <div className="bg-white p-4 rounded-lg mb-4">
                 <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">School</p>
                     <p className="font-medium">{employee.tenthStandard.school || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Board</p>
                     <p className="font-medium">{employee.tenthStandard.board || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Passing Year</p>
                     <p className="font-medium">{employee.tenthStandard.passingYear || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Marks</p>
                     <p className="font-medium">{employee.tenthStandard.marks || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Grade</p>
                     <p className="font-medium">{employee.tenthStandard.grade || 'Not specified'}</p>
-                  </div>
+            </div>
                   <div>
                     <p className="text-sm text-gray-600">Medium</p>
                     <p className="font-medium">{employee.tenthStandard.medium || 'Not specified'}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            </div>
+          </div>
+          </div>
+        )}
           </div>
         </div>
       </div>

@@ -165,7 +165,7 @@ export default function EmployeeAttendancePage() {
     <EmployeeLayout>
       <Toaster position="top-center" />
       
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="px-6 py-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div>
@@ -190,7 +190,7 @@ export default function EmployeeAttendancePage() {
               </button>
             </div>
           </div>
-        </div>
+              </div>
 
         <div className="p-6">
           {/* Attendance Summary */}
@@ -202,11 +202,11 @@ export default function EmployeeAttendancePage() {
                   <p className="text-2xl font-bold text-green-600">
                     {attendanceRecords.filter(record => record.status === 'present').length}
                   </p>
-                </div>
+              </div>
                 <FiCheck className="w-8 h-8 text-green-500" />
               </div>
             </div>
-            
+
             <div className="bg-red-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
@@ -214,11 +214,11 @@ export default function EmployeeAttendancePage() {
                   <p className="text-2xl font-bold text-red-600">
                     {attendanceRecords.filter(record => record.status === 'absent').length}
                   </p>
-                </div>
-                <FiX className="w-8 h-8 text-red-500" />
               </div>
+                <FiX className="w-8 h-8 text-red-500" />
             </div>
-            
+          </div>
+
             <div className="bg-yellow-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">
                 <div>
@@ -229,7 +229,7 @@ export default function EmployeeAttendancePage() {
                 </div>
                 <FiClock className="w-8 h-8 text-yellow-500" />
               </div>
-            </div>
+                  </div>
             
             <div className="bg-blue-50 p-4 rounded-lg">
               <div className="flex items-center justify-between">
