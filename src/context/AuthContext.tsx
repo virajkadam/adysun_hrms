@@ -13,7 +13,7 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { checkAdminByPhone, createAdminSession } from '../utils/firebaseUtils';
+import { checkAdminByPhone, createAdminSession, checkUserByPhone } from '../utils/firebaseUtils';
 
 // Extend Window interface to include recaptchaVerifier
 declare global {
@@ -31,11 +31,29 @@ type AdminUser = {
   active: boolean;
   createdAt: any;
   isAdmin: boolean;
+  userType: 'admin';
 };
+
+type EmployeeUser = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  status: 'active' | 'inactive';
+  createdAt: any;
+  isEmployee: boolean;
+  isAdmin: boolean;
+  userType: 'employee';
+};
+
+type CurrentUser = AdminUser | EmployeeUser | null;
 
 type AuthContextType = {
   currentUser: User | null;
   currentAdmin: AdminUser | null;
+  currentEmployee: EmployeeUser | null;
+  currentUserData: CurrentUser;
   loading: boolean;
   signInWithPhone: (phoneNumber: string) => Promise<any>;
   signInWithCredentials: (phoneNumber: string, password: string) => Promise<any>;
@@ -56,6 +74,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentAdmin, setCurrentAdmin] = useState<AdminUser | null>(null);
+  const [currentEmployee, setCurrentEmployee] = useState<EmployeeUser | null>(null);
+  const [currentUserData, setCurrentUserData] = useState<CurrentUser>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,44 +92,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('🔍 Debug: Input phoneNumber:', phoneNumber);
       console.log('🔍 Debug: Input password:', password);
       
-      // Check if the user is an admin with matching credentials
-      const adminData = await checkAdminByPhone(phoneNumber);
+      // Use the common authentication function
+      const userData = await checkUserByPhone(phoneNumber);
       
-      console.log('🔍 Debug: Admin data from DB:', adminData);
+      console.log('🔍 Debug: User data from DB:', userData);
       
-      if (adminData && adminData.active) {
-        console.log('🔍 Debug: Admin found and active');
-        console.log('🔍 Debug: DB password:', adminData.pass);
-        console.log('🔍 Debug: Input password:', password);
-        console.log('🔍 Debug: Passwords match?', adminData.pass === password);
-        
-        // For now, we'll do a simple password check
-        // In production, you should hash passwords and compare hashes
-        if (adminData.pass === password) {
-          console.log('✅ Password match successful!');
-          
-          // For Mobile + Password, we'll use custom authentication
-          console.log('📱 Using Mobile + Password authentication (custom approach)');
-          console.log('🔐 Creating custom authentication session...');
+      if (!userData) {
+        console.log('❌ No user found');
+        throw new Error('User not found');
+      }
+      
+      if (userData.userType === 'admin') {
+        // Admin authentication
+        if (userData.active && userData.pass === password) {
+          console.log('✅ Admin password match successful!');
           
           // Create a custom session for the admin
-          const sessionId = await createAdminSession(adminData.id, adminData);
+          const sessionId = await createAdminSession(userData.id, userData);
           console.log('✅ Custom authentication session created:', sessionId);
-          console.log('🎉 Admin authenticated with Mobile + Password!');
           
           // Store session ID in localStorage for persistence
           localStorage.setItem('adminSessionId', sessionId);
-          localStorage.setItem('adminData', JSON.stringify(adminData));
+          localStorage.setItem('adminData', JSON.stringify(userData));
           
-          setCurrentAdmin(adminData);
-          return { admin: adminData };
+          setCurrentAdmin(userData);
+          setCurrentEmployee(null);
+          setCurrentUserData(userData);
+          return { admin: userData, userType: 'admin' };
         } else {
-          console.log('❌ Password mismatch!');
-          throw new Error('Invalid password');
+          console.log('❌ Admin password mismatch or inactive!');
+          throw new Error('Invalid password or inactive account');
+        }
+      } else if (userData.userType === 'employee') {
+        // Employee authentication
+        if (userData.status === 'active' && userData.password === password) {
+          console.log('✅ Employee password match successful!');
+          
+          // Store employee data in localStorage for persistence
+          localStorage.setItem('employeeSessionId', userData.id);
+          localStorage.setItem('employeeData', JSON.stringify(userData));
+          
+          setCurrentEmployee(userData);
+          setCurrentAdmin(null);
+          setCurrentUserData(userData);
+          return { employee: userData, userType: 'employee' };
+        } else {
+          console.log('❌ Employee password mismatch or inactive!');
+          throw new Error('Invalid password or inactive account');
         }
       } else {
-        console.log('❌ Admin not found or inactive');
-        throw new Error('Admin not found or inactive');
+        console.log('❌ Unknown user type');
+        throw new Error('Invalid user type');
       }
     } catch (error) {
       console.error('Error during credential sign in:', error);
@@ -165,30 +198,52 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (verificationId === 'dev-bypass-verification-id') {
         console.log('Using development bypass for admin verification');
         // Check if the user is an admin using the phone number from the login form
-        const adminData = await checkAdminByPhone('8806431723');
+        const userData = await checkUserByPhone('8806431723');
         
-        if (adminData && adminData.active) {
-          setCurrentAdmin(adminData);
-          return { user: null, admin: adminData };
+        if (userData) {
+          if (userData.userType === 'admin') {
+            setCurrentAdmin(userData);
+            setCurrentEmployee(null);
+            setCurrentUserData(userData);
+            return { user: null, admin: userData, userType: 'admin' };
+          } else if (userData.userType === 'employee') {
+            setCurrentEmployee(userData);
+            setCurrentAdmin(null);
+            setCurrentUserData(userData);
+            return { user: null, employee: userData, userType: 'employee' };
+          }
         } else {
           setCurrentAdmin(null);
-          return { user: null, admin: null };
+          setCurrentEmployee(null);
+          setCurrentUserData(null);
+          return { user: null, admin: null, employee: null };
         }
       }
 
       const credential = PhoneAuthProvider.credential(verificationId, otp);
       const result = await signInWithCredential(auth, credential);
       
-      // Check if the user is an admin
-      const adminData = await checkAdminByPhone(result.user.phoneNumber || '');
+      // Check if the user is an admin or employee
+      const userData = await checkUserByPhone(result.user.phoneNumber || '');
       
-      if (adminData && adminData.active) {
-        setCurrentAdmin(adminData);
-        return { user: result.user, admin: adminData };
+      if (userData) {
+        if (userData.userType === 'admin') {
+          setCurrentAdmin(userData);
+          setCurrentEmployee(null);
+          setCurrentUserData(userData);
+          return { user: result.user, admin: userData, userType: 'admin' };
+        } else if (userData.userType === 'employee') {
+          setCurrentEmployee(userData);
+          setCurrentAdmin(null);
+          setCurrentUserData(userData);
+          return { user: result.user, employee: userData, userType: 'employee' };
+        }
       } else {
-        // User is authenticated but not an admin
+        // User is authenticated but not found in admin or employee collections
         setCurrentAdmin(null);
-        return { user: result.user, admin: null };
+        setCurrentEmployee(null);
+        setCurrentUserData(null);
+        return { user: result.user, admin: null, employee: null };
       }
     } catch (error) {
       console.error('Error during OTP verification:', error);
@@ -198,12 +253,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setCurrentAdmin(null);
+    setCurrentEmployee(null);
+    setCurrentUserData(null);
+    // Clear localStorage
+    localStorage.removeItem('adminSessionId');
+    localStorage.removeItem('adminData');
+    localStorage.removeItem('employeeSessionId');
+    localStorage.removeItem('employeeData');
     return signOut(auth);
   };
 
   const value = {
     currentUser,
     currentAdmin,
+    currentEmployee,
+    currentUserData,
     loading,
     signInWithPhone,
     signInWithCredentials,

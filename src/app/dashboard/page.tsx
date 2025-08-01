@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useDashboardStatsOptimized } from '@/hooks/useDashboard';
 
 export default function DashboardPage() {
-  const { currentAdmin } = useAuth();
+  const { currentAdmin, currentUserData } = useAuth();
   const router = useRouter();
   
   // Use Tanstack Query for dashboard stats
@@ -24,12 +24,24 @@ export default function DashboardPage() {
   } = useDashboardStatsOptimized();
 
   useEffect(() => {
-    // Check if user is admin
-    if (!currentAdmin) {
+    // Check if user is authenticated
+    if (!currentUserData) {
       router.push('/login');
       return;
     }
-  }, [currentAdmin, router]);
+    
+    // If user is employee, redirect to employee dashboard
+    if (currentUserData.userType === 'employee') {
+      router.push('/employee-dashboard');
+      return;
+    }
+    
+    // If user is not admin, redirect to login
+    if (currentUserData.userType !== 'admin' || !currentAdmin) {
+      router.push('/login');
+      return;
+    }
+  }, [currentAdmin, currentUserData, router]);
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
@@ -51,7 +63,7 @@ export default function DashboardPage() {
   }, [isError, error]);
 
   // If not admin, don't render dashboard
-  if (!currentAdmin) {
+  if (!currentAdmin || currentUserData?.userType !== 'admin') {
     return null;
   }
 
@@ -70,7 +82,7 @@ export default function DashboardPage() {
       <Toaster position="top-center" />
       <div className="mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
           <p className="text-slate-700">Welcome back, {currentAdmin.name}.</p>
         </div>
         <button

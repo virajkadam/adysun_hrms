@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, updateEmployee, getAdminDataForAudit } from '@/utils/firebaseUtils';
+import { getEmployee, updateEmployee, getAdminDataForAudit, checkUserByPhone } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
@@ -54,10 +54,19 @@ export default function EditEmployeePage({ params }: PageParams) {
       setError(null);
       toast.loading('Updating employee...', { id: 'updateEmployee' });
 
+      // Check if phone number is already registered with another user
+      const formattedPhoneNumber = `+91${data.phone}`;
+      const existingUser = await checkUserByPhone(formattedPhoneNumber);
+      
+      if (existingUser && existingUser.id !== id) {
+        const userType = existingUser.userType === 'admin' ? 'admin' : 'employee';
+        throw new Error(`Phone number is already registered with an ${userType}`);
+      }
+
       await updateEmployee(id, data);
       toast.success('Employee updated successfully!', { id: 'updateEmployee' });
       router.push(`/employees/${id}`);
-    } catch (error: ApiError) {
+    } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to update employee';
       setError(errorMessage);
       toast.error(errorMessage, { id: 'updateEmployee' });
@@ -188,6 +197,52 @@ export default function EditEmployeePage({ params }: PageParams) {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
                   <input type="text" placeholder="Enter permanent address" {...register('permanentAddress')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                </div>
+              </div>
+            </div>
+
+            {/* Password Section */}
+            <div className="bg-white p-4 rounded-lg mb-4">
+              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500">*</span> Password
+                  </label>
+                  <input 
+                    type="password" 
+                    placeholder="Enter password" 
+                    {...register('password', { 
+                      required: 'Password is required',
+                      minLength: {
+                        value: 4,
+                        message: 'Password must be at least 4 characters'
+                      }
+                    })} 
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" 
+                  />
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Confirm Password
+                  </label>
+                  <input 
+                    type="password" 
+                    placeholder="Confirm password" 
+                    {...register('confirmPassword', {
+                      validate: (value) => {
+                        const password = watch('password');
+                        return value === password || 'Passwords do not match';
+                      }
+                    })} 
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" 
+                  />
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
+                  )}
                 </div>
               </div>
             </div>

@@ -36,9 +36,12 @@ export default function LoginPage() {
       
       const result = await signInWithCredentials(formattedPhoneNumber, data.password);
       
-      if (result.admin && result.admin.active) {
-        toast.success('Login successful!', { id: 'login' });
+      if (result.userType === 'admin' && result.admin && result.admin.active) {
+        toast.success('Admin login successful!', { id: 'login' });
         router.push('/dashboard');
+      } else if (result.userType === 'employee' && result.employee && result.employee.status === 'active') {
+        toast.success('Employee login successful!', { id: 'login' });
+        router.push('/employee-dashboard'); // You'll need to create this route
       } else {
         setError('Invalid credentials or access denied.');
         toast.error('Invalid credentials or access denied.', { id: 'login' });
@@ -72,7 +75,7 @@ export default function LoginPage() {
             />
             <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
           </div>
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">Admin Dashboard</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">Login Portal</h2>
           <p className="mt-2 text-gray-600">
             Enter your credentials to continue
           </p>

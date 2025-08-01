@@ -14,6 +14,9 @@ export interface Employee {
   currentAddress?: string;
   permanentAddress?: string;
   
+  // Login Credentials
+  password?: string;
+  
   // Identification Documents
   aadharCard?: string;
   drivingLicense?: string;

@@ -23,7 +23,8 @@ export const checkAdminByPhone = async (phoneNumber: string) => {
         pass: adminData.password || '', // Changed from 'pass' to 'password'
         active: adminData.active || false,
         createdAt: adminData.createdAt,
-        isAdmin: true 
+        isAdmin: true,
+        userType: 'admin' as const
       };
     }
     
@@ -551,6 +552,120 @@ export const getSalariesByEmployee = async (employeeId: string) => {
     return sortedSalaries;
   } catch (error) {
     console.error('❌ Error getting salaries by employee:', error);
+    throw error;
+  }
+}; 
+
+// Employee authentication functions
+export const checkEmployeeByPhone = async (phoneNumber: string) => {
+  try {
+    // Remove +91 prefix if present and clean the phone number
+    const cleanPhone = phoneNumber.replace(/^\+91/, '');
+    
+    const q = query(collection(db, 'employees'), where('phone', '==', cleanPhone));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const employeeDoc = querySnapshot.docs[0];
+      const employeeData = employeeDoc.data();
+      return { 
+        id: employeeDoc.id, 
+        name: employeeData.name || '',
+        email: employeeData.email || '',
+        phone: employeeData.phone || '',
+        password: employeeData.password || '', // Assuming employees have password field
+        status: employeeData.status || 'inactive',
+        createdAt: employeeData.createdAt,
+        isEmployee: true,
+        isAdmin: false,
+        userType: 'employee' as const
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error checking employee by phone:', error);
+    throw error;
+  }
+};
+
+// Function to update employee password
+export const updateEmployeePassword = async (employeeId: string, newPassword: string) => {
+  try {
+    const employeeRef = doc(db, 'employees', employeeId);
+    await updateDoc(employeeRef, {
+      password: newPassword,
+      updatedAt: new Date().toISOString()
+    });
+    console.log('✅ Employee password updated successfully');
+    return true;
+  } catch (error) {
+    console.error('Error updating employee password:', error);
+    throw error;
+  }
+};
+
+// Function to add password field to existing employees (for migration)
+export const addPasswordToEmployees = async () => {
+  try {
+    console.log('🔄 Starting password migration for employees...');
+    
+    const querySnapshot = await getDocs(collection(db, 'employees'));
+    const updatePromises = [];
+    
+    querySnapshot.forEach((doc) => {
+      const employeeData = doc.data();
+      
+      // If employee doesn't have a password field, add a default one
+      if (!employeeData.password) {
+        const defaultPassword = '1234'; // Default password - employees should change this
+        updatePromises.push(
+          updateDoc(doc.ref, {
+            password: defaultPassword,
+            updatedAt: new Date().toISOString()
+          })
+        );
+        console.log(`📝 Adding default password to employee: ${employeeData.name}`);
+      }
+    });
+    
+    if (updatePromises.length > 0) {
+      await Promise.all(updatePromises);
+      console.log(`✅ Successfully updated ${updatePromises.length} employees with default passwords`);
+    } else {
+      console.log('ℹ️ All employees already have passwords');
+    }
+    
+    return updatePromises.length;
+  } catch (error) {
+    console.error('Error adding passwords to employees:', error);
+    throw error;
+  }
+};
+
+// Common authentication function that checks both admin and employee
+export const checkUserByPhone = async (phoneNumber: string) => {
+  try {
+    console.log('🔍 Checking user by phone:', phoneNumber);
+    
+    // First check if it's an admin
+    const adminData = await checkAdminByPhone(phoneNumber);
+    if (adminData && adminData.active) {
+      console.log('✅ Found active admin');
+      return { ...adminData, userType: 'admin' as const };
+    }
+    
+    // Then check if it's an employee
+    const employeeData = await checkEmployeeByPhone(phoneNumber);
+    if (employeeData && employeeData.status === 'active') {
+      console.log('✅ Found active employee');
+      return { ...employeeData, userType: 'employee' as const };
+    }
+    
+    console.log('❌ No active user found');
+    return null;
+  } catch (error) {
+    console.error('Error checking user by phone:', error);
     throw error;
   }
 }; 
