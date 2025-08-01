@@ -69,7 +69,12 @@ export default function EmployeeProfilePage() {
   }
 
   return (
-    <EmployeeLayout>
+    <EmployeeLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/employee-dashboard' },
+        { label: 'My Profile', isCurrent: true }
+      ]}
+    >
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">

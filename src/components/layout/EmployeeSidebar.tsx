@@ -33,11 +33,6 @@ const EmployeeSidebar = () => {
       icon: <FiHome className="w-5 h-5" />
     },
     {
-      path: '/employee/profile',
-      name: 'My Profile',
-      icon: <FiUser className="w-5 h-5" />
-    },
-    {
       path: '/employee/attendance',
       name: 'Attendance',
       icon: <FiClock className="w-5 h-5" />
@@ -46,6 +41,11 @@ const EmployeeSidebar = () => {
       path: '/employee/leaves',
       name: 'Leaves',
       icon: <FiCalendar className="w-5 h-5" />
+    },
+    {
+      path: '/employee/profile',
+      name: 'My Profile',
+      icon: <FiUser className="w-5 h-5" />
     },
   ];
 
