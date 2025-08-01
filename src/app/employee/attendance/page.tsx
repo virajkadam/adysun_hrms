@@ -7,6 +7,7 @@ import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import TableHeader from '@/components/ui/TableHeader';
 
 interface AttendanceRecord {
   id: string;
@@ -95,8 +96,7 @@ export default function EmployeeAttendancePage() {
         ];
         
         setAttendanceRecords(mockData);
-      } catch (error: any) {
-        console.error('Error fetching attendance data:', error);
+      } catch {
         toast.error('Failed to load attendance data');
       } finally {
         setIsLoading(false);
@@ -144,7 +144,7 @@ export default function EmployeeAttendancePage() {
       });
       
       toast.success('Check-in successful!');
-    } catch (error) {
+    } catch {
       toast.error('Check-in failed. Please try again.');
     } finally {
       setIsMarkingAttendance(false);
@@ -173,7 +173,7 @@ export default function EmployeeAttendancePage() {
       }));
       
       toast.success('Check-out successful!');
-    } catch (error) {
+    } catch {
       toast.error('Check-out failed. Please try again.');
     } finally {
       setIsMarkingAttendance(false);
@@ -261,7 +261,7 @@ export default function EmployeeAttendancePage() {
         <div className="px-6 py-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-800 mb-2">Attendance Marks</h2>
           <p className="text-gray-600">Mark your daily attendance</p>
-        </div>
+              </div>
         
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -302,11 +302,11 @@ export default function EmployeeAttendancePage() {
               <div className="flex items-center mb-3">
                 <FiClock className="w-5 h-5 text-blue-600 mr-2" />
                 <h3 className="font-semibold text-gray-800">Attendance Actions</h3>
-              </div>
-              
+          </div>
+
               {!todayAttendance.isCheckedIn ? (
                 <div className="space-y-3">
-                  <p className="text-sm text-gray-600">You haven't checked in today</p>
+                  <p className="text-sm text-gray-600">You haven&apos;t checked in today</p>
                   <button
                     onClick={handleCheckIn}
                     disabled={isMarkingAttendance}
@@ -322,7 +322,7 @@ export default function EmployeeAttendancePage() {
                     <div className="flex items-center mb-2">
                       <FiLogIn className="w-4 h-4 text-green-600 mr-2" />
                       <span className="text-sm font-medium text-green-800">Checked In</span>
-                    </div>
+              </div>
                     <p className="text-sm text-green-700">
                       Time: {todayAttendance.checkInTime} | Date: {todayAttendance.checkInDate}
                     </p>
@@ -346,7 +346,7 @@ export default function EmployeeAttendancePage() {
                       <p className="text-sm text-red-700">
                         Time: {todayAttendance.checkOutTime} | Date: {todayAttendance.checkOutDate}
                       </p>
-                    </div>
+                </div>
                   )}
                 </div>
               )}
@@ -355,18 +355,27 @@ export default function EmployeeAttendancePage() {
         </div>
       </div>
 
-      {/* Attendance Records Section */}
+            {/* Attendance Records Section */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="px-6 py-6 border-b border-gray-200">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">Attendance Records</h1>
-              <p className="text-slate-700">View your attendance history</p>
-            </div>
+        <TableHeader
+          title="Attendance Records"
+          total={attendanceRecords.length}
+          active={attendanceRecords.filter(record => record.status === 'present').length}
+          inactive={attendanceRecords.filter(record => record.status === 'absent').length}
+          searchValue=""
+          onSearchChange={() => {}}
+          showSearch={false}
+          showStats={true}
+          backButton={{ href: '/employee-dashboard' }}
+          headerClassName="px-6 pt-6 mb-0"
+        />
+        
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => handleMonthChange('prev')}
-                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
+                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               >
                 ←
               </button>
@@ -375,7 +384,7 @@ export default function EmployeeAttendancePage() {
               </span>
               <button
                 onClick={() => handleMonthChange('next')}
-                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200"
+                className="p-2 rounded-md bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               >
                 →
               </button>
@@ -384,114 +393,66 @@ export default function EmployeeAttendancePage() {
         </div>
 
         <div className="p-6">
-          {/* Attendance Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-green-50 p-4 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Present Days</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {attendanceRecords.filter(record => record.status === 'present').length}
-                  </p>
-              </div>
-                <FiCheck className="w-8 h-8 text-green-500" />
-              </div>
-            </div>
-
-            <div className="bg-red-50 p-4 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Absent Days</p>
-                  <p className="text-2xl font-bold text-red-600">
-                    {attendanceRecords.filter(record => record.status === 'absent').length}
-                  </p>
-              </div>
-                <FiX className="w-8 h-8 text-red-500" />
-            </div>
-          </div>
-
-            <div className="bg-yellow-50 p-4 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Late Days</p>
-                  <p className="text-2xl font-bold text-yellow-600">
-                    {attendanceRecords.filter(record => record.status === 'late').length}
-                  </p>
-                </div>
-                <FiClock className="w-8 h-8 text-yellow-500" />
-              </div>
-                  </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Hours</p>
-                  <p className="text-2xl font-bold text-blue-600">
-                    {attendanceRecords.reduce((total, record) => total + record.totalHours, 0)}
-                  </p>
-                </div>
-                <FiCalendar className="w-8 h-8 text-blue-500" />
-              </div>
-            </div>
-          </div>
 
           {/* Attendance Records Table */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Check In
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Check Out
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total Hours
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {attendanceRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {formatDateToDayMonYear(record.date)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {record.checkIn}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {record.checkOut}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-2">
-                        {getStatusIcon(record.status)}
-                        <span className={getStatusBadge(record.status)}>
-                          {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {record.totalHours} hrs
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {attendanceRecords.length === 0 && (
-            <div className="text-center py-8">
+          {attendanceRecords.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
               <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500">No attendance records found for this month.</p>
             </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Check In
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Check Out
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Total Hours
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {attendanceRecords.map((record) => (
+                    <tr key={record.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {formatDateToDayMonYear(record.date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {record.checkIn}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {record.checkOut}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          {getStatusIcon(record.status)}
+                          <span className={getStatusBadge(record.status)}>
+                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {record.totalHours} hrs
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
+
+
         </div>
       </div>
     </EmployeeLayout>
