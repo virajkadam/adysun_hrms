@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FiUser, FiEdit, FiTrash2, FiArrowLeft, FiBriefcase, FiDollarSign, FiBook } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -12,6 +12,7 @@ import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
 import { getAdminNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { useQueryClient } from '@tanstack/react-query';
 
 type PageParams = {
   params: Promise<{ id: string }>;
@@ -23,6 +24,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const [updatedByAdmin, setUpdatedByAdmin] = useState<string>('');
   
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { id } = use(params);
   
   // Add safety check for id
@@ -54,7 +57,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const {
     data: employments = [],
     isLoading: employmentsLoading,
-    isError: employmentsError
+    isError: employmentsError,
+    refetch: refetchEmployments
   } = useEmploymentsByEmployee(id);
 
   // Ensure employments is always an array
@@ -106,6 +110,18 @@ export default function EmployeeViewPage({ params }: PageParams) {
   const cancelDelete = () => {
     setDeleteConfirm(false);
   };
+
+  // Check for employment creation success and invalidate cache
+  useEffect(() => {
+    const employmentCreated = searchParams?.get('employmentCreated');
+    if (employmentCreated === 'true') {
+      // Invalidate employments cache for this employee
+      queryClient.invalidateQueries({ queryKey: ['employments', 'employee', id] });
+      // Also refetch to get fresh data
+      refetchEmployments();
+      toast.success('Employment created successfully!');
+    }
+  }, [searchParams, queryClient, id, refetchEmployments]);
 
   // Fetch admin names for audit trail
   useEffect(() => {

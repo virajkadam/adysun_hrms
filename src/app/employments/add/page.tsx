@@ -143,7 +143,7 @@ export default function AddEmploymentPage() {
       
       // Navigate back to employee details if employee was pre-selected, otherwise to employments list
       if (preSelectedEmployee) {
-        router.push(`/employees/${preSelectedEmployee.id}`);
+        router.push(`/employees/${preSelectedEmployee.id}?employmentCreated=true`);
       } else {
         router.push('/employments');
       }
