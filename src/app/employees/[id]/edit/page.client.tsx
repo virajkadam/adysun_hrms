@@ -8,14 +8,13 @@ import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, updateEmployee } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
+import { use } from 'react';
 
 // Define API error type
 type ApiError = Error | unknown;
 
 type PageParams = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 export default function EditEmployeePageContent({ params }: PageParams) {
@@ -24,7 +23,7 @@ export default function EditEmployeePageContent({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
-  const id = params.id;
+  const { id } = use(params);
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm<Omit<Employee, 'id'>>();
 

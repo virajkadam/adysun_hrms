@@ -12,11 +12,10 @@ import { useSalary, useDeleteSalary } from '@/hooks/useSalaries';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
+import { use } from 'react';
 
 type PageParams = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 export default function SalaryViewPage({ params }: PageParams) {
@@ -27,7 +26,7 @@ export default function SalaryViewPage({ params }: PageParams) {
   const searchParams = useSearchParams();
   const employeeId = searchParams?.get('employeeId');
   
-  const id = params.id;
+  const { id } = use(params);
 
   // Use Tanstack Query for salary data
   const { data: salary, isLoading, isError } = useSalary(id);

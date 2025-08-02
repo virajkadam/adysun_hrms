@@ -124,3 +124,20 @@ export const useOptimisticEmployeeUpdate = () => {
     },
   });
 }; 
+
+// Add these new hooks for employee self-access
+export const useEmployeeSelf = (id: string) => {
+  return useQuery({
+    queryKey: queryKeys.employees.self(id),
+    queryFn: () => getEmployeeSelf(id),
+    enabled: !!id,
+  });
+};
+
+export const useEmployeeSelfEmployment = (id: string) => {
+  return useQuery({
+    queryKey: queryKeys.employees.selfEmployment(id),
+    queryFn: () => getEmployeeSelfEmployment(id),
+    enabled: !!id,
+  });
+}; 

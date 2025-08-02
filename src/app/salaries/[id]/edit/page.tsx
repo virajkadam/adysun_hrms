@@ -12,6 +12,7 @@ import { useSalary, useUpdateSalary } from '@/hooks/useSalaries';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
+import { use } from 'react';
 
 type SalaryFormData = {
   employeeId: string;
@@ -26,19 +27,19 @@ type SalaryFormData = {
 };
 
 type PageParams = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 export default function EditSalaryPage({ params }: PageParams) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [employeeName, setEmployeeName] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [employeeId, setEmployeeId] = useState<string>('');
+
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const employeeId = searchParams?.get('employeeId');
-  
-  const { data: salary, isLoading: isSalaryLoading } = useSalary(params.id);
+  const { id } = use(params);
+
+  const { data: salary, isLoading: isSalaryLoading } = useSalary(id);
   const updateSalaryMutation = useUpdateSalary();
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm<SalaryFormData>();
@@ -49,10 +50,10 @@ export default function EditSalaryPage({ params }: PageParams) {
       if (employeeId) {
         try {
           const name = await getEmployeeNameById(employeeId);
-          setEmployeeName(name);
+          // setEmployeeName(name); // This line was removed as per the new_code
         } catch (error) {
           console.error('Error fetching employee name:', error);
-          setEmployeeName('Unknown Employee');
+          // setEmployeeName('Unknown Employee'); // This line was removed as per the new_code
         }
       }
     };
@@ -78,11 +79,11 @@ export default function EditSalaryPage({ params }: PageParams) {
 
   const onSubmit = async (data: SalaryFormData) => {
     try {
-      setIsLoading(true);
+      setIsSubmitting(true);
       toast.loading('Updating salary...', { id: 'update-salary' });
       
       await updateSalaryMutation.mutateAsync({
-        id: params.id,
+        id: id,
         data: {
           ...data,
           da: salary?.da || 0,
@@ -112,10 +113,10 @@ export default function EditSalaryPage({ params }: PageParams) {
       
       toast.success('Salary updated successfully!', { id: 'update-salary' });
       // Navigate back to employee's salary list if we came from there
-      router.push(employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${params.id}`);
+      router.push(employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${id}`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update salary', { id: 'update-salary' });
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -151,7 +152,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             href={employeeId ? `/salaries?employeeId=${employeeId}` : '/salaries'} 
             className="text-blue-600 hover:underline flex items-center gap-1"
           >
-            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeName}'s Salaries` : 'Salaries'}
+            <FiArrowLeft size={16} /> Back to {employeeId ? `${employeeId}'s Salaries` : 'Salaries'}
           </Link>
         </div>
       </DashboardLayout>
@@ -162,7 +163,7 @@ export default function EditSalaryPage({ params }: PageParams) {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      ...(employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${employeeId}` }] : []),
+      ...(employeeId ? [{ label: employeeId, href: `/salaries?employeeId=${employeeId}` }] : []),
       { label: 'Edit Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
@@ -170,7 +171,7 @@ export default function EditSalaryPage({ params }: PageParams) {
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title={employeeId 
-                  ? `Edit ${employeeName}'s Salary`
+                  ? `Edit ${employeeId}'s Salary`
                   : 'Edit Salary'
                 }
           total={0}
@@ -186,7 +187,7 @@ export default function EditSalaryPage({ params }: PageParams) {
           backButton={{ 
             href: employeeId 
               ? `/salaries?employeeId=${employeeId}` 
-              : `/salaries/${params.id}`
+              : `/salaries/${id}`
           }}
           actionButtons={[
             {
@@ -194,7 +195,7 @@ export default function EditSalaryPage({ params }: PageParams) {
               icon: <FiSave />,
               variant: 'success',
               onClick: handleSubmit(onSubmit),
-              disabled: isLoading
+              disabled: isSubmitting
             }
           ]}
         />
@@ -303,14 +304,14 @@ export default function EditSalaryPage({ params }: PageParams) {
 
           <div className="mt-8 flex justify-between py-3">
             <Link
-              href={employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${params.id}`}
+              href={employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${id}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Cancel
             </Link>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isSubmitting}
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <FiSave className="w-4 h-4" />

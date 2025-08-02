@@ -107,7 +107,14 @@ export const validateAdminSession = async (sessionId: string) => {
 export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
   try {
     console.log('🚀 Starting employee creation process...');
-    console.log('📋 Employee data to save:', employeeData);
+    
+    // Ensure password field is always present
+    const employeeDataWithPassword = {
+      ...employeeData,
+      password: employeeData.password || '1234', // Default password if not provided
+    };
+    
+    console.log('📋 Employee data to save:', employeeDataWithPassword);
     
     // Check for custom admin session
     const sessionId = localStorage.getItem('adminSessionId');
@@ -127,15 +134,15 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
     console.log('✅ Custom authentication session found');
     console.log('🔐 === FIRESTORE WRITE ATTEMPT ===');
     console.log('📁 Collection: employees');
-    console.log('📄 Document data:', JSON.stringify(employeeData, null, 2));
+    console.log('📄 Document data:', JSON.stringify(employeeDataWithPassword, null, 2));
     
-    const docRef = await addDoc(collection(db, 'employees'), employeeData);
+    const docRef = await addDoc(collection(db, 'employees'), employeeDataWithPassword);
     
     console.log('✅ === SUCCESS ===');
     console.log('🆔 New Employee ID:', docRef.id);
     console.log('📁 Document created in Firestore successfully!');
     
-    return { id: docRef.id, ...employeeData };
+    return { id: docRef.id, ...employeeDataWithPassword };
   } catch (error: any) {
     console.log('❌ === ERROR ===');
     console.log('🚨 Error type:', error.constructor.name);
@@ -162,11 +169,23 @@ export const updateEmployee = async (id: string, employeeData: Partial<Employee>
     const { getAuditFields } = useAuditTrail();
     const auditFields = getAuditFields();
     
-    // Add audit fields to update data
+    // Ensure password field is preserved if not being updated
     const updateDataWithAudit = {
       ...employeeData,
       ...auditFields,
     };
+    
+    // If password is not being updated, ensure it's not removed
+    if (!employeeData.password) {
+      // Get current employee data to preserve existing password
+      const currentEmployee = await getEmployee(id);
+      if (currentEmployee && currentEmployee.password) {
+        updateDataWithAudit.password = currentEmployee.password;
+      } else {
+        // Set default password if none exists
+        updateDataWithAudit.password = '1234';
+      }
+    }
     
     console.log('📋 Employee update data with audit:', updateDataWithAudit);
     
@@ -227,14 +246,37 @@ export const getEmployees = async () => {
   }
 };
 
+// Update getEmployee function to include admin session validation
 export const getEmployee = async (id: string) => {
   try {
+    console.log('🔍 Fetching employee with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching employee ID:', id);
+    
     const docRef = doc(db, 'employees', id);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
+      console.log('✅ Employee found successfully');
       return { id: docSnap.id, ...docSnap.data() } as Employee;
     } else {
+      console.log('❌ Employee not found in database');
       throw new Error('Employee not found');
     }
   } catch (error) {
@@ -639,6 +681,89 @@ export const addPasswordToEmployees = async () => {
     return updatePromises.length;
   } catch (error) {
     console.error('Error adding passwords to employees:', error);
+    throw error;
+  }
+};
+
+// Function for employee to access their own data
+export const getEmployeeSelf = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee self data...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    console.log('🔐 === EMPLOYEE SESSION CHECK ===');
+    console.log('🔑 Employee Session ID:', employeeSessionId);
+    console.log('👤 Employee Data:', employeeData ? '✅ Found' : '❌ Not found');
+    
+    if (!employeeSessionId || !employeeData) {
+      console.log('❌ CRITICAL: No employee session found!');
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      console.log('❌ SECURITY: Employee trying to access other employee data!');
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated');
+    console.log('📁 Fetching employee ID:', employeeId);
+    
+    const docRef = doc(db, 'employees', employeeId);
+    const docSnap = await getDoc(docRef);
+    
+    if (docSnap.exists()) {
+      console.log('✅ Employee self data found successfully');
+      return { id: docSnap.id, ...docSnap.data() } as Employee;
+    } else {
+      console.log('❌ Employee not found in database');
+      throw new Error('Employee not found');
+    }
+  } catch (error) {
+    console.error('Error getting employee self data:', error);
+    throw error;
+  }
+};
+
+// Function for employee to access their own employment data
+export const getEmployeeSelfEmployment = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee self employment data...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for employment data');
+    
+    const q = query(collection(db, 'employments'), where('employeeId', '==', employeeId));
+    const querySnapshot = await getDocs(q);
+    const employments: Employment[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      employments.push({ id: doc.id, ...doc.data() } as Employment);
+    });
+    
+    console.log('✅ Employee employment data found:', employments.length);
+    return employments;
+  } catch (error) {
+    console.error('Error getting employee self employment data:', error);
     throw error;
   }
 };

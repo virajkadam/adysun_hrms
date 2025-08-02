@@ -13,6 +13,8 @@ export const queryKeys = {
     list: (filters?: string) => [...queryKeys.employees.lists(), { filters: filters || 'all' }] as const,
     details: () => [...queryKeys.employees.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.employees.details(), id] as const,
+    self: (id: string) => [...queryKeys.employees.all, 'self', id] as const,
+    selfEmployment: (id: string) => [...queryKeys.employees.all, 'self', 'employment', id] as const,
   },
   
   // Employment keys

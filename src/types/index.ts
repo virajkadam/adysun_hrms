@@ -14,8 +14,8 @@ export interface Employee {
   currentAddress?: string;
   permanentAddress?: string;
   
-  // Login Credentials
-  password?: string;
+  // Login Credentials - Make password required
+  password: string; // Changed from optional to required
   
   // Identification Documents
   aadharCard?: string;
