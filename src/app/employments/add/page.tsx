@@ -244,49 +244,12 @@ export default function AddEmploymentPage() {
       ) : (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Employee Selection - Only show when no employee is pre-selected */}
-            {!preSelectedEmployee && (
-              <div className="mb-6">
-                <div className="w-full md:w-1/2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Employee
-                  </label>
-                  <select
-                    {...register('employeeId', { required: 'Employee is required' })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  >
-                    <option value="">Select Employee</option>
-                    {employees.map((employee) => (
-                      <option key={employee.id} value={employee.id}>
-                        {employee.name} {employee.employeeId ? `- ${employee.employeeId}` : ''}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.employeeId && (
-                    <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Pre-selected employee display */}
-            {preSelectedEmployee && (
-              <div className="mb-6">
-                <div className="w-full md:w-1/2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Employee
-                  </label>
-                  <div className="w-full p-2 border rounded-md bg-gray-50 text-gray-700">
-                    {preSelectedEmployee.name} {preSelectedEmployee.employeeId ? `- ${preSelectedEmployee.employeeId}` : ''}
-                  </div>
-                  <input
-                    type="hidden"
-                    {...register('employeeId', { required: 'Employee is required' })}
-                    value={preSelectedEmployee.id}
-                  />
-                </div>
-              </div>
-            )}
+            {/* Hidden employee field - always required */}
+            <input
+              type="hidden"
+              {...register('employeeId', { required: 'Employee is required' })}
+              value={preSelectedEmployee?.id || ''}
+            />
 
             {/* Employment Information Section */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
