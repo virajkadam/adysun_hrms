@@ -186,12 +186,24 @@ export default function AddEmploymentPage() {
   }
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Employees', href: '/employees' },
+        ...(preSelectedEmployee ? [
+          { label: preSelectedEmployee.name, href: `/employees/${preSelectedEmployee.id}` },
+          { label: 'Add Employment', isCurrent: true }
+        ] : [
+          { label: 'Employments', href: '/employments' },
+          { label: 'Add Employment', isCurrent: true }
+        ])
+      ]}
+    >
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={preSelectedEmployee ? `Add Employment for ${preSelectedEmployee.name}` : "Add New Employment"}
+          title="Add New Employment"
           total={0}
           active={0}
           inactive={0}
