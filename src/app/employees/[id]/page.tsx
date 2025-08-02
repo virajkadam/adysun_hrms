@@ -222,7 +222,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
           onSearchChange={() => {}}
           showSearch={false}
           showStats={false}
-          backButton={{ href: '/employees', label: 'Back to Employees' }}
+          backButton={{ href: '/employees', label: 'Back' }}
           actionButtons={[
             ...(employments.length > 0 ? [
               { 
