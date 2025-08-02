@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiDollarSign } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Salary } from '@/types';
@@ -47,6 +48,7 @@ export default function SalariesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   
+  const router = useRouter();
   const searchParams = useSearchParams();
   const employeeId = searchParams?.get('employeeId') || null;
 
@@ -235,7 +237,7 @@ export default function SalariesPage() {
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
             }
           ]}
-          backButton={employeeId ? { href: '/employees' } : { href: '/dashboard' }}
+          backButton={{ onClick: () => router.back() }}
           headerClassName="px-6 pt-6 pb-6"
         />
 

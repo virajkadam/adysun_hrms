@@ -27,6 +27,14 @@ const Sidebar = () => {
       return pathname.includes('/documents') || pathname.includes('/doc_pages');
     }
     
+    if (path === '/employees') {
+      // For employees, consider employee-related paths and salary-related paths to be active
+      return pathname === '/employees' || 
+             pathname.startsWith('/employees/') || 
+             pathname.startsWith('/salaries') ||
+             pathname.startsWith('/employments');
+    }
+    
     // For other paths, use the original logic
     return pathname === path || pathname.startsWith(path + '/');
   };
