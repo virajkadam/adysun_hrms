@@ -16,6 +16,7 @@ import { useSalaries, useDeleteSalary, useSalariesByEmployee } from '@/hooks/use
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 import { useSearchParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 // Component to handle employee name display with proper Firebase integration
 const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
@@ -51,6 +52,7 @@ export default function SalariesPage() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const employeeId = searchParams?.get('employeeId') || null;
 
   // Use appropriate query based on whether we have an employeeId
@@ -126,6 +128,18 @@ export default function SalariesPage() {
       toast.loading('Deleting salary...', { id: 'delete-salary' });
       await deleteSalaryMutation.mutateAsync(id);
       setDeleteConfirm(null);
+      
+      // Invalidate and refetch data after successful deletion
+      if (employeeId) {
+        // Invalidate employee-specific salaries cache
+        queryClient.invalidateQueries({ queryKey: ['salaries', 'employee', employeeId] });
+        await refetchEmployeeSalaries();
+      } else {
+        // Invalidate all salaries cache
+        queryClient.invalidateQueries({ queryKey: ['salaries'] });
+        await refetchAllSalaries();
+      }
+      
       toast.success('Salary deleted successfully', { id: 'delete-salary' });
     } catch (error) {
       console.error('Error deleting salary:', error);
@@ -309,7 +323,7 @@ export default function SalariesPage() {
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center space-x-3">
+                      <div className="flex items-center space-x-3">
                         <ActionButton
                           icon={<FiEye className="w-5 h-5" />}
                           title="View Salary Details"
