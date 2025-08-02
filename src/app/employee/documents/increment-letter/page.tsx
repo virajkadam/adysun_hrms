@@ -57,8 +57,44 @@ export default function EmployeeIncrementLetterPage() {
           { label: 'Increment Letter', isCurrent: true }
         ]}
       >
-        <div className="flex justify-center items-center h-64">
-          <p>Employee data not found</p>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
+            <p className="text-gray-600 mt-2">Your salary increment letter</p>
+          </div>
+          
+          <div className="p-6">
+            <div className="text-center py-12">
+              <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Increment Letter Available</h3>
+              <p className="text-gray-500 mb-4">
+                Your increment letter is not available at the moment. This could be because:
+              </p>
+              <ul className="text-sm text-gray-500 space-y-1 mb-6">
+                <li>• Your employment details are still being processed</li>
+                <li>• No salary increment has been approved yet</li>
+                <li>• Your profile information needs to be updated</li>
+              </ul>
+              <div className="flex justify-center space-x-4">
+                <button
+                  onClick={() => window.history.back()}
+                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </EmployeeLayout>
     );
