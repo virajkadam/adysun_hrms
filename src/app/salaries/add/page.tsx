@@ -123,17 +123,14 @@ export default function AddSalaryPage() {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      ...(employeeId ? [{ label: employeeName, href: `/salaries?employeeId=${employeeId}` }] : []),
+      ...(employeeId ? [{ label: employeeName || 'Loading...', href: `/salaries?employeeId=${employeeId}` }] : []),
       { label: 'Add Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={employeeId 
-                  ? `Add Salary for ${employeeName || 'Loading...'}`
-                  : 'Add New Salary'
-                }
+          title="Add New Salary"
           total={0}
           active={0}
           inactive={0}
@@ -191,12 +188,20 @@ export default function AddSalaryPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Year
               </label>
-              <input
-                type="number"
+              <select
                 {...register('year', { required: 'Year is required' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter year"
-              />
+              >
+                <option value="">Select Year</option>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const year = new Date().getFullYear() - 2 + i;
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
               {errors.year && (
                 <p className="mt-1 text-sm text-red-600">{errors.year.message}</p>
               )}

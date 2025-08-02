@@ -35,6 +35,7 @@ export default function EditSalaryPage({ params }: PageParams) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
+  const [employeeName, setEmployeeName] = useState<string>('');
 
   const router = useRouter();
   const { id } = use(params);
@@ -50,10 +51,10 @@ export default function EditSalaryPage({ params }: PageParams) {
       if (employeeId) {
         try {
           const name = await getEmployeeNameById(employeeId);
-          // setEmployeeName(name); // This line was removed as per the new_code
+          setEmployeeName(name);
         } catch (error) {
           console.error('Error fetching employee name:', error);
-          // setEmployeeName('Unknown Employee'); // This line was removed as per the new_code
+          setEmployeeName('Unknown Employee');
         }
       }
     };
@@ -63,6 +64,11 @@ export default function EditSalaryPage({ params }: PageParams) {
 
   useEffect(() => {
     if (salary) {
+      // Set employeeId from salary data
+      if (salary.employeeId) {
+        setEmployeeId(salary.employeeId);
+      }
+      
       reset({
         employeeId: salary.employeeId || employeeId || '',
         employmentId: salary.employmentId || '',
@@ -163,17 +169,14 @@ export default function EditSalaryPage({ params }: PageParams) {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      ...(employeeId ? [{ label: employeeId, href: `/salaries?employeeId=${employeeId}` }] : []),
+      ...(employeeId ? [{ label: employeeName || 'Loading...', href: `/salaries?employeeId=${employeeId}` }] : []),
       { label: 'Edit Salary', isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={employeeId 
-                  ? `Edit ${employeeId}'s Salary`
-                  : 'Edit Salary'
-                }
+          title="Edit Salary"
           total={0}
           active={0}
           inactive={0}
@@ -235,12 +238,20 @@ export default function EditSalaryPage({ params }: PageParams) {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Year
               </label>
-              <input
-                type="number"
+              <select
                 {...register('year', { required: 'Year is required' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter year"
-              />
+              >
+                <option value="">Select Year</option>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const year = new Date().getFullYear() - 2 + i;
+                  return (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  );
+                })}
+              </select>
               {errors.year && (
                 <p className="mt-1 text-sm text-red-600">{errors.year.message}</p>
               )}
