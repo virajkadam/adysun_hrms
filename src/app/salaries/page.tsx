@@ -218,19 +218,11 @@ export default function SalariesPage() {
           total={filteredSalaries.length}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
-          searchPlaceholder="Search"
-          showStats={filteredSalaries.length > 0}
-          showSearch={filteredSalaries.length > 0}
-          // showFilter={filteredSalaries.length > 0}
-          filterOptions={[
-            { value: 'all', label: 'All' },
-            { value: 'draft', label: 'Draft' },
-            { value: 'issued', label: 'Issued' },
-            { value: 'paid', label: 'Paid' }
-          ]}
-          filterValue={filterValue}
-          onFilterChange={setFilterValue}
-          showSecondFilter={filteredSalaries.length > 0}
+          searchPlaceholder="Search salaries..."
+          showStats={false}
+          showSearch={true}
+          showFilter={false}
+          showSecondFilter={true}
           secondFilterValue={monthFilter}
           onSecondFilterChange={setMonthFilter}
           secondFilterOptions={[
@@ -248,11 +240,11 @@ export default function SalariesPage() {
             { value: '11', label: 'November' },
             { value: '12', label: 'December' }
           ]}
-          onRefresh={filteredSalaries.length > 0 ? handleRefresh : undefined}
+          onRefresh={handleRefresh}
           isRefreshing={isLoading}
           actionButtons={[
             { 
-              label: 'Create', 
+              label: 'Add Salary', 
               icon: <FiPlus />, 
               variant: 'success' as const, 
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
@@ -271,12 +263,6 @@ export default function SalariesPage() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Period
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Basic Salary
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total Salary
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Net Salary
@@ -298,13 +284,7 @@ export default function SalariesPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {getMonthName(salary.month)} {salary.year}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ₹{salary.basicSalary?.toLocaleString() || '0'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ₹{salary.totalSalary?.toLocaleString() || '0'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     ₹{salary.netSalary?.toLocaleString() || '0'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -358,30 +338,17 @@ export default function SalariesPage() {
           </table>
           
           {filteredSalaries.length === 0 && !isLoading && (
-            <div className="text-center py-12">
-              <FiDollarSign className="mx-auto h-12 w-12 text-gray-400" />
+            <div className="text-center py-8">
+              <FiDollarSign className="mx-auto h-8 w-8 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
-                {employeeId ? 'No salary records found for this employee' : 'No salaries found'}
+                {employeeId ? 'No salary records found' : 'No salaries found'}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                {searchTerm || filterValue !== 'all' 
-                  ? 'Try adjusting your search or filter criteria.'
-                  : employeeId 
-                    ? 'Get started by adding a salary record for this employee.'
-                    : 'Get started by creating a new salary record.'
+                {searchTerm || monthFilter !== 'all' 
+                  ? 'Try adjusting your search or month filter.'
+                  : 'Get started by adding a salary record.'
                 }
               </p>
-              {!searchTerm && filterValue === 'all' && (
-                <div className="mt-6">
-                  <Link
-                    href={employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'}
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <FiPlus className="-ml-1 mr-2 h-4 w-4" />
-                    Add Salary
-                  </Link>
-                </div>
-              )}
             </div>
           )}
         </div>
