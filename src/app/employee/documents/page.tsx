@@ -13,12 +13,12 @@ const documents = [
     path: '/employee/documents/offer-letter', 
     icon: <FiFileText size={24} /> 
   },
-  { 
-    title: 'Increment Letter', 
-    description: 'View and download your increment letter',
-    path: '/employee/documents/increment-letter', 
-    icon: <FiFileText size={24} /> 
-  },
+  // { 
+  //   title: 'Increment Letter', 
+  //   description: 'View and download your increment letter',
+  //   path: '/employee/documents/increment-letter', 
+  //   icon: <FiFileText size={24} /> 
+  // },
   { 
     title: 'Salary Slips', 
     description: 'View and download monthly salary slips',

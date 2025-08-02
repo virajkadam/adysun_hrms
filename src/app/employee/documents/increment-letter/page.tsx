@@ -140,7 +140,7 @@ export default function EmployeeIncrementLetterPage() {
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
               <p className="text-gray-600 mt-2">View and download your increment letter</p>
             </div>
             <button
@@ -205,15 +205,15 @@ export default function EmployeeIncrementLetterPage() {
                   }`}>
                     {incrementLetter.status}
                   </span>
-                </div>
+            </div>
                 <div>
                   <p className="text-sm text-gray-600">Reason</p>
                   <p className="font-medium text-gray-900">{incrementLetter.reason || 'Performance based increment'}</p>
-                </div>
+              </div>
               </div>
             </div>
           </div>
-
+          
           <div className="bg-green-50 p-4 rounded-lg">
             <h3 className="text-sm font-medium text-green-900 mb-2">Congratulations!</h3>
             <p className="text-sm text-green-700">
