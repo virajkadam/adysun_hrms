@@ -1083,3 +1083,47 @@ export const getEmployeeSalarySlips = async (employeeId: string) => {
     throw error;
   }
 }; 
+
+// Employee-specific salary fetching function
+export const getEmployeeSalaries = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee salary data...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for salary data');
+    console.log('🔍 Fetching salaries for employee:', employeeId);
+    
+    const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
+    console.log('📝 Query created with filter:', { employeeId });
+    
+    const querySnapshot = await getDocs(q);
+    console.log('📊 Query results count:', querySnapshot.size);
+    
+    const salaries: any[] = [];
+    querySnapshot.forEach((doc) => {
+      const salary = { id: doc.id, ...doc.data() } as any;
+      salaries.push(salary);
+      console.log('💰 Found salary:', { id: doc.id, basicSalary: salary.basicSalary, employeeId: salary.employeeId });
+    });
+    
+    console.log('✅ Employee salary data found:', salaries.length);
+    return salaries;
+  } catch (error) {
+    console.error('Error getting employee salary data:', error);
+    throw error;
+  }
+}; 

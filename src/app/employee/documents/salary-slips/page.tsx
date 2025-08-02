@@ -3,27 +3,126 @@
 import React, { useState } from 'react';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployeeSelf } from '@/utils/firebaseUtils';
+import { getEmployeeSelf, getEmployeeSalaries } from '@/utils/firebaseUtils';
 import { useEffect } from 'react';
-import { Employee } from '@/types';
+import { Employee, Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
-import { FiDownload, FiCalendar } from 'react-icons/fi';
+import { FiDownload, FiCalendar, FiDollarSign } from 'react-icons/fi';
+
+interface SalarySlip {
+  id: string;
+  employeeId: string;
+  basicSalary: number;
+  allowances: number;
+  deductions: number;
+  netSalary: number;
+  month: string;
+  year: number;
+  status: 'pending' | 'paid' | 'cancelled';
+  issueDate?: string;
+  documentUrl?: string;
+}
 
 export default function EmployeeSalarySlipsPage() {
-  const { currentUserData } = useAuth();
+  const { currentUserData, currentEmployee } = useAuth();
   const [employee, setEmployee] = useState<Employee | null>(null);
+  const [salarySlips, setSalarySlips] = useState<SalarySlip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState<string>('');
 
+  // Get the current employee ID from the authentication hook
+  const getCurrentEmployeeId = () => {
+    // Priority: currentEmployee.id > currentUserData.id
+    return currentEmployee?.id || currentUserData?.id;
+  };
+
   useEffect(() => {
     const fetchEmployeeData = async () => {
-      if (!currentUserData) return;
+      const employeeId = getCurrentEmployeeId();
+      
+      console.log('🔍 Current employee ID:', employeeId);
+      console.log('🔍 Current user data:', currentUserData);
+      console.log('🔍 Current employee data:', currentEmployee);
+      
+      // Debug localStorage data
+      const employeeSessionId = localStorage.getItem('employeeSessionId');
+      const employeeData = localStorage.getItem('employeeData');
+      console.log('🔍 localStorage employeeSessionId:', employeeSessionId);
+      console.log('🔍 localStorage employeeData:', employeeData);
+      
+      if (!employeeId) {
+        console.error('No employee ID found in authentication context');
+        console.error('This means the employee is not properly logged in');
+        toast.error('Employee authentication required');
+        return;
+      }
       
       try {
         setIsLoading(true);
-        // Use getEmployeeSelf for employee self-access with security checks
-        const employeeData = await getEmployeeSelf(currentUserData.id);
+        
+        // Fetch employee data using employee self-access function
+        const employeeData = await getEmployeeSelf(employeeId);
         setEmployee(employeeData);
+        
+        // Fetch salary records for the current employee from salaries collection
+        const salaryData = await getEmployeeSalaries(employeeId);
+        
+        console.log('📊 Raw salary data received:', salaryData);
+        
+        // Transform salary data to salary slip format
+        const transformedSalarySlips: SalarySlip[] = salaryData.map((salary: any) => {
+          console.log('🔄 Processing salary record:', salary);
+          
+          // Extract month and year from various possible fields
+          let month = '';
+          let year = new Date().getFullYear();
+          
+          // Try different date fields that might exist in the salary data
+          if (salary.issueDate) {
+            const date = new Date(salary.issueDate);
+            month = date.toISOString().slice(0, 7);
+            year = date.getFullYear();
+          } else if (salary.month && salary.year) {
+            // If month and year are separate fields
+            const monthNum = parseInt(salary.month);
+            year = parseInt(salary.year);
+            const date = new Date(year, monthNum - 1, 1); // month is 0-indexed
+            month = date.toISOString().slice(0, 7);
+          } else if (salary.createdAt) {
+            // Use creation date as fallback
+            const date = new Date(salary.createdAt);
+            month = date.toISOString().slice(0, 7);
+            year = date.getFullYear();
+          } else {
+            // Default to current month if no date info
+            const now = new Date();
+            month = now.toISOString().slice(0, 7);
+            year = now.getFullYear();
+          }
+          
+          console.log('📅 Extracted month/year:', { month, year, originalData: { issueDate: salary.issueDate, month: salary.month, year: salary.year, createdAt: salary.createdAt } });
+          
+          const transformed = {
+            id: salary.id,
+            employeeId: salary.employeeId,
+            basicSalary: parseFloat(salary.basicSalary) || 0,
+            allowances: (parseFloat(salary.da) || 0) + (parseFloat(salary.hra) || 0) + (parseFloat(salary.lta) || 0) + (parseFloat(salary.educationAllowance) || 0) + (parseFloat(salary.additionalAllowance) || 0),
+            deductions: (parseFloat(salary.employerPF) || 0) + (parseFloat(salary.gratuity) || 0) + (parseFloat(salary.healthInsurance) || 0) + (parseFloat(salary.lossOfPay) || 0),
+            netSalary: parseFloat(salary.basicSalary) || 0,
+            month: month,
+            year: year,
+            status: salary.status || 'paid',
+            issueDate: salary.issueDate,
+            documentUrl: salary.documentUrl
+          };
+          
+          console.log('✅ Transformed salary slip:', transformed);
+          return transformed;
+        });
+        
+        console.log('📋 Final transformed salary slips:', transformedSalarySlips);
+        setSalarySlips(transformedSalarySlips);
+        
       } catch (error) {
         console.error('Error fetching employee data:', error);
         toast.error('Failed to load employee data');
@@ -33,7 +132,7 @@ export default function EmployeeSalarySlipsPage() {
     };
 
     fetchEmployeeData();
-  }, [currentUserData]);
+  }, [currentUserData, currentEmployee]);
 
   // Generate last 12 months for salary slips
   const generateMonths = () => {
@@ -59,19 +158,47 @@ export default function EmployeeSalarySlipsPage() {
 
   const months = generateMonths();
 
+  // Debug: Show what months are being generated
+  console.log('📅 Generated months for display:', months.map(m => ({ label: m.label, value: m.value })));
+  console.log('💰 Available salary slips:', salarySlips.map(s => ({ id: s.id, month: s.month, year: s.year })));
+
   const handleDownload = (month: string) => {
-    // This would typically generate and download the payslip PDF
-    // For now, we'll just show a toast message
-    const monthLabel = months.find(m => m.value === month)?.label || month;
-    toast.success(`Downloading payslip for ${monthLabel}`);
+    // Find the salary slip for the selected month
+    const salarySlip = salarySlips.find(slip => slip.month === month);
     
-    // Simulate download
-    setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = '#';
-      link.download = `payslip-${month}.pdf`;
-      link.click();
-    }, 1000);
+    if (salarySlip) {
+      // If we have actual salary slip data, use it
+      const monthLabel = months.find(m => m.value === month)?.label || month;
+      toast.success(`Downloading payslip for ${monthLabel}`);
+      
+      // Simulate download with actual data
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.download = `payslip-${month}-${getCurrentEmployeeId()}.pdf`;
+        link.click();
+      }, 1000);
+    } else {
+      // Fallback for months without salary slips
+      const monthLabel = months.find(m => m.value === month)?.label || month;
+      toast.success(`Downloading payslip for ${monthLabel}`);
+      
+      // Simulate download
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.download = `payslip-${month}.pdf`;
+        link.click();
+      }, 1000);
+    }
+  };
+
+  const getSalaryDetails = (month: string) => {
+    const salarySlip = salarySlips.find(slip => slip.month === month);
+    console.log('🔍 Looking for salary slip for month:', month);
+    console.log('🔍 Available salary slip months:', salarySlips.map(s => s.month));
+    console.log('🔍 Found salary slip:', salarySlip);
+    return salarySlip;
   };
 
   if (isLoading) {
@@ -169,11 +296,11 @@ export default function EmployeeSalarySlipsPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Employee ID</p>
-                  <p className="font-medium text-gray-900">{employee.employeeId || 'Not specified'}</p>
+                  <p className="font-medium text-gray-900">{getCurrentEmployeeId()}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Department</p>
-                  <p className="font-medium text-gray-900">General</p>
+                  <p className="font-medium text-gray-900">{employee.department || 'General'}</p>
                 </div>
               </div>
             </div>
@@ -182,23 +309,67 @@ export default function EmployeeSalarySlipsPage() {
           <div>
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Available Salary Slips</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {months.map((month, index) => (
-                <div key={month.value} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <FiCalendar className="text-gray-500 mr-2" />
-                      <span className="font-medium text-gray-800">{month.label}</span>
+              {months.map((month, index) => {
+                // Check if we have actual salary slip data for this month
+                const salaryDetails = getSalaryDetails(month.value);
+                const hasSalarySlip = !!salaryDetails;
+                
+                return (
+                  <div key={month.value} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center">
+                        <FiCalendar className="text-gray-500 mr-2" />
+                        <span className="font-medium text-gray-800">{month.label}</span>
+                      </div>
+                      <button
+                        onClick={() => handleDownload(month.value)}
+                        className={`flex items-center px-3 py-1 text-sm rounded-md transition-colors ${
+                          hasSalarySlip 
+                            ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                            : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                        }`}
+                        disabled={!hasSalarySlip}
+                      >
+                        <FiDownload className="mr-1" size={14} />
+                        {hasSalarySlip ? 'Download' : 'Not Available'}
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleDownload(month.value)}
-                      className="flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
-                    >
-                      <FiDownload className="mr-1" size={14} />
-                      Download
-                    </button>
+                    
+                    {hasSalarySlip && salaryDetails && (
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Basic Salary:</span>
+                          <span className="font-medium">₹{salaryDetails.basicSalary.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Allowances:</span>
+                          <span className="font-medium text-green-600">+₹{salaryDetails.allowances.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Deductions:</span>
+                          <span className="font-medium text-red-600">-₹{salaryDetails.deductions.toLocaleString()}</span>
+                        </div>
+                        <div className="border-t pt-2">
+                          <div className="flex justify-between text-sm font-semibold">
+                            <span>Net Salary:</span>
+                            <span className="text-blue-600">₹{salaryDetails.netSalary.toLocaleString()}</span>
+                          </div>
+                        </div>
+                        <div className="text-xs text-green-600 flex items-center">
+                          <FiDollarSign className="mr-1" />
+                          ✓ Salary slip available
+                        </div>
+                      </div>
+                    )}
+                    
+                    {!hasSalarySlip && (
+                      <div className="text-xs text-gray-500">
+                        No salary data available for this month
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

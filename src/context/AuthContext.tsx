@@ -78,10 +78,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUserData, setCurrentUserData] = useState<CurrentUser>(null);
   const [loading, setLoading] = useState(true);
 
+  // Restore sessions from localStorage on component mount
+  useEffect(() => {
+    const restoreSessions = () => {
+      try {
+        // Check for admin session
+        const adminSessionId = localStorage.getItem('adminSessionId');
+        const adminData = localStorage.getItem('adminData');
+        
+        if (adminSessionId && adminData) {
+          console.log('🔍 Restoring admin session from localStorage');
+          const adminUser = JSON.parse(adminData);
+          setCurrentAdmin(adminUser);
+          setCurrentEmployee(null);
+          setCurrentUserData(adminUser);
+          console.log('✅ Admin session restored');
+        }
+        
+        // Check for employee session
+        const employeeSessionId = localStorage.getItem('employeeSessionId');
+        const employeeData = localStorage.getItem('employeeData');
+        
+        if (employeeSessionId && employeeData) {
+          console.log('🔍 Restoring employee session from localStorage');
+          const employeeUser = JSON.parse(employeeData);
+          setCurrentEmployee(employeeUser);
+          setCurrentAdmin(null);
+          setCurrentUserData(employeeUser);
+          console.log('✅ Employee session restored');
+        }
+      } catch (error) {
+        console.error('Error restoring sessions:', error);
+        // Clear invalid sessions
+        localStorage.removeItem('adminSessionId');
+        localStorage.removeItem('adminData');
+        localStorage.removeItem('employeeSessionId');
+        localStorage.removeItem('employeeData');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    restoreSessions();
+  }, []);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      setLoading(false);
+      // Don't set loading to false here as we handle it in session restoration
     });
 
     return unsubscribe;
