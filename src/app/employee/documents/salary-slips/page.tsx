@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployee } from '@/utils/firebaseUtils';
+import { getEmployeeSelf } from '@/utils/firebaseUtils';
 import { useEffect } from 'react';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -21,7 +21,8 @@ export default function EmployeeSalarySlipsPage() {
       
       try {
         setIsLoading(true);
-        const employeeData = await getEmployee(currentUserData.id);
+        // Use getEmployeeSelf for employee self-access with security checks
+        const employeeData = await getEmployeeSelf(currentUserData.id);
         setEmployee(employeeData);
       } catch (error) {
         console.error('Error fetching employee data:', error);

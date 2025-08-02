@@ -929,3 +929,157 @@ export const checkUserByPhone = async (phoneNumber: string) => {
     throw error;
   }
 }; 
+
+// Employee-specific data access functions
+export const getEmployeeAttendance = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee attendance data...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for attendance data');
+    
+    const q = query(collection(db, 'attendance'), where('employeeId', '==', employeeId));
+    const querySnapshot = await getDocs(q);
+    const attendanceRecords: any[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      attendanceRecords.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log('✅ Employee attendance data found:', attendanceRecords.length);
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error getting employee attendance data:', error);
+    throw error;
+  }
+};
+
+export const getEmployeeLeaves = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee leave data...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for leave data');
+    
+    const q = query(collection(db, 'leaves'), where('employeeId', '==', employeeId));
+    const querySnapshot = await getDocs(q);
+    const leaveRecords: any[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      leaveRecords.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log('✅ Employee leave data found:', leaveRecords.length);
+    return leaveRecords;
+  } catch (error) {
+    console.error('Error getting employee leave data:', error);
+    throw error;
+  }
+};
+
+export const getEmployeeDocument = async (employeeId: string, documentType: string) => {
+  try {
+    console.log('🔍 Fetching employee document:', documentType);
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for document access');
+    
+    const q = query(
+      collection(db, 'employee_documents'), 
+      where('employeeId', '==', employeeId),
+      where('documentType', '==', documentType)
+    );
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const docData = querySnapshot.docs[0].data();
+      console.log('✅ Employee document found:', documentType);
+      return { id: querySnapshot.docs[0].id, ...docData };
+    } else {
+      console.log('❌ Employee document not found:', documentType);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting employee document:', error);
+    throw error;
+  }
+};
+
+export const getEmployeeSalarySlips = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching employee salary slips...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for salary slips');
+    
+    const q = query(collection(db, 'salary_slips'), where('employeeId', '==', employeeId));
+    const querySnapshot = await getDocs(q);
+    const salarySlips: any[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      salarySlips.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log('✅ Employee salary slips found:', salarySlips.length);
+    return salarySlips;
+  } catch (error) {
+    console.error('Error getting employee salary slips:', error);
+    throw error;
+  }
+}; 

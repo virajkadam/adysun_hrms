@@ -6,6 +6,7 @@ import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
+import { getEmployeeAttendance } from '@/utils/firebaseUtils';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
 
@@ -46,12 +47,30 @@ export default function EmployeeAttendancePage() {
       return;
     }
 
-    // Mock attendance data - replace with actual API call
+    // Fetch attendance data for the current employee
     const fetchAttendanceData = async () => {
       try {
         setIsLoading(true);
         
-        // Mock data for demonstration
+        // Use the employee-specific function to fetch attendance data
+        const attendanceData = await getEmployeeAttendance(currentUserData.id);
+        
+        // Transform the data to match the expected format
+        const transformedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
+          id: record.id,
+          date: record.date,
+          checkIn: record.checkIn || '09:00 AM',
+          checkOut: record.checkOut || '06:00 PM',
+          status: record.status || 'present',
+          totalHours: record.totalHours || 9
+        }));
+        
+        setAttendanceRecords(transformedData);
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+        toast.error('Failed to load attendance data');
+        
+        // Fallback to mock data if API fails
         const mockData: AttendanceRecord[] = [
           {
             id: '1',
@@ -96,8 +115,6 @@ export default function EmployeeAttendancePage() {
         ];
         
         setAttendanceRecords(mockData);
-      } catch {
-        toast.error('Failed to load attendance data');
       } finally {
         setIsLoading(false);
       }

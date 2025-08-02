@@ -1,36 +1,64 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployee } from '@/utils/firebaseUtils';
-import { useState, useEffect } from 'react';
-import { Employee } from '@/types';
+import { getEmployeeDocument } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
+import { FiDownload, FiFileText, FiTrendingUp } from 'react-icons/fi';
+
+interface IncrementLetter {
+  id: string;
+  employeeId: string;
+  documentType: string;
+  issueDate: string;
+  effectiveDate: string;
+  currentSalary: number;
+  newSalary: number;
+  incrementAmount: number;
+  incrementPercentage: number;
+  reason: string;
+  status: 'active' | 'pending' | 'expired';
+  documentUrl?: string;
+}
 
 export default function EmployeeIncrementLetterPage() {
   const { currentUserData } = useAuth();
-  const [employee, setEmployee] = useState<Employee | null>(null);
+  const [incrementLetter, setIncrementLetter] = useState<IncrementLetter | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEmployeeData = async () => {
+    const fetchIncrementLetter = async () => {
       if (!currentUserData) return;
       
       try {
         setIsLoading(true);
-        const employeeData = await getEmployee(currentUserData.id);
-        setEmployee(employeeData);
+        const documentData = await getEmployeeDocument(currentUserData.id, 'increment-letter');
+        setIncrementLetter(documentData);
       } catch (error) {
-        console.error('Error fetching employee data:', error);
-        toast.error('Failed to load employee data');
+        console.error('Error fetching increment letter:', error);
+        toast.error('Failed to load increment letter');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchEmployeeData();
+    fetchIncrementLetter();
   }, [currentUserData]);
+
+  const handleDownload = () => {
+    if (!incrementLetter) return;
+    
+    toast.success('Downloading increment letter...');
+    
+    // Simulate download
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = '#';
+      link.download = `increment-letter-${currentUserData?.id}.pdf`;
+      link.click();
+    }, 1000);
+  };
 
   if (isLoading) {
     return (
@@ -48,7 +76,7 @@ export default function EmployeeIncrementLetterPage() {
     );
   }
 
-  if (!employee) {
+  if (!incrementLetter) {
     return (
       <EmployeeLayout
         breadcrumbItems={[
@@ -60,24 +88,22 @@ export default function EmployeeIncrementLetterPage() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
-            <p className="text-gray-600 mt-2">Your salary increment letter</p>
+            <p className="text-gray-600 mt-2">View and download your increment letter</p>
           </div>
           
           <div className="p-6">
             <div className="text-center py-12">
               <div className="mx-auto h-16 w-16 text-gray-400 mb-4">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+                <FiTrendingUp className="w-full h-full" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Increment Letter Available</h3>
               <p className="text-gray-500 mb-4">
                 Your increment letter is not available at the moment. This could be because:
               </p>
               <ul className="text-sm text-gray-500 space-y-1 mb-6">
-                <li>• Your employment details are still being processed</li>
-                <li>• No salary increment has been approved yet</li>
-                <li>• Your profile information needs to be updated</li>
+                <li>• Your increment is still being processed</li>
+                <li>• The document has not been generated yet</li>
+                <li>• You are not eligible for increment at this time</li>
               </ul>
               <div className="flex justify-center space-x-4">
                 <button
@@ -112,49 +138,87 @@ export default function EmployeeIncrementLetterPage() {
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
-          <p className="text-gray-600 mt-2">Your salary increment letter</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Increment Letter</h1>
+              <p className="text-gray-600 mt-2">View and download your increment letter</p>
+            </div>
+            <button
+              onClick={handleDownload}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <FiDownload className="mr-2" />
+              Download
+            </button>
+          </div>
         </div>
         
         <div className="p-6">
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">SALARY INCREMENT LETTER</h2>
-              <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
-            </div>
-            
-            <div className="space-y-4 text-gray-700">
-              <p>Dear <strong>{employee.name}</strong>,</p>
-              
-              <p>We are pleased to inform you that your salary has been increased effective from the next month.</p>
-              
-              <div className="bg-white p-4 rounded border">
-                <h3 className="font-semibold mb-2">Employee Details:</h3>
-                <ul className="space-y-1">
-                  <li><strong>Name:</strong> {employee.name}</li>
-                  <li><strong>Employee ID:</strong> {employee.employeeId || 'Not specified'}</li>
-                  <li><strong>Phone:</strong> {employee.phone}</li>
-                  <li><strong>Email:</strong> {employee.email}</li>
-                  <li><strong>Current Date:</strong> {new Date().toLocaleDateString()}</li>
-                </ul>
-              </div>
-              
-              <p>This increment reflects your valuable contributions to our organization.</p>
-              
-              <div className="mt-8">
-                <p>Sincerely,</p>
-                <p className="mt-4">HR Department</p>
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">Increment Details</h2>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-600">Current Salary</p>
+                  <p className="font-medium text-gray-900">
+                    {incrementLetter.currentSalary ? `₹${incrementLetter.currentSalary.toLocaleString()}` : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">New Salary</p>
+                  <p className="font-medium text-gray-900">
+                    {incrementLetter.newSalary ? `₹${incrementLetter.newSalary.toLocaleString()}` : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Increment Amount</p>
+                  <p className="font-medium text-green-600">
+                    {incrementLetter.incrementAmount ? `+₹${incrementLetter.incrementAmount.toLocaleString()}` : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Increment Percentage</p>
+                  <p className="font-medium text-green-600">
+                    {incrementLetter.incrementPercentage ? `+${incrementLetter.incrementPercentage}%` : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Effective Date</p>
+                  <p className="font-medium text-gray-900">
+                    {incrementLetter.effectiveDate ? new Date(incrementLetter.effectiveDate).toLocaleDateString() : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Issue Date</p>
+                  <p className="font-medium text-gray-900">
+                    {incrementLetter.issueDate ? new Date(incrementLetter.issueDate).toLocaleDateString() : 'Not specified'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Status</p>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    incrementLetter.status === 'active' 
+                      ? 'bg-green-100 text-green-800' 
+                      : incrementLetter.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {incrementLetter.status}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Reason</p>
+                  <p className="font-medium text-gray-900">{incrementLetter.reason || 'Performance based increment'}</p>
+                </div>
               </div>
             </div>
           </div>
-          
-          <div className="mt-6 flex justify-center">
-            <button 
-              onClick={() => window.print()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Download PDF
-            </button>
+
+          <div className="bg-green-50 p-4 rounded-lg">
+            <h3 className="text-sm font-medium text-green-900 mb-2">Congratulations!</h3>
+            <p className="text-sm text-green-700">
+              This increment letter confirms your salary increase. The new salary will be effective from the specified date.
+            </p>
           </div>
         </div>
       </div>

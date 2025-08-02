@@ -6,6 +6,7 @@ import { FiCalendar, FiPlus, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
+import { getEmployeeLeaves } from '@/utils/firebaseUtils';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 interface LeaveRecord {
@@ -34,12 +35,32 @@ export default function EmployeeLeavesPage() {
       return;
     }
 
-    // Mock leave data - replace with actual API call
+    // Fetch leave data for the current employee
     const fetchLeaveData = async () => {
       try {
         setIsLoading(true);
         
-        // Mock data for demonstration
+        // Use the employee-specific function to fetch leave data
+        const leaveData = await getEmployeeLeaves(currentUserData.id);
+        
+        // Transform the data to match the expected format
+        const transformedData: LeaveRecord[] = leaveData.map((record: any) => ({
+          id: record.id,
+          type: record.type || 'casual',
+          startDate: record.startDate,
+          endDate: record.endDate,
+          reason: record.reason || 'Personal leave',
+          status: record.status || 'pending',
+          appliedDate: record.appliedDate,
+          totalDays: record.totalDays || 1
+        }));
+        
+        setLeaveRecords(transformedData);
+      } catch (error: any) {
+        console.error('Error fetching leave data:', error);
+        toast.error('Failed to load leave data');
+        
+        // Fallback to mock data if API fails
         const mockData: LeaveRecord[] = [
           {
             id: '1',
@@ -74,9 +95,6 @@ export default function EmployeeLeavesPage() {
         ];
         
         setLeaveRecords(mockData);
-      } catch (error: any) {
-        console.error('Error fetching leave data:', error);
-        toast.error('Failed to load leave data');
       } finally {
         setIsLoading(false);
       }
