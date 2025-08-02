@@ -288,47 +288,46 @@ export default function SalariesPage() {
                     {getStatusBadge(salary.status)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex items-center space-x-2">
-                      <ActionButton
-                        icon={<FiEye className="w-4 h-4" />}
-                        title="View Details"
-                        colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
-                        href={`/salaries/${salary.id}${employeeId ? `?employeeId=${employeeId}` : ''}`}
-                      />
-                      <ActionButton
-                        icon={<FiEdit className="w-4 h-4" />}
-                        title="Edit Salary"
-                        colorClass="bg-yellow-100 text-yellow-600 hover:text-yellow-900"
-                        href={`/salaries/${salary.id}/edit${employeeId ? `?employeeId=${employeeId}` : ''}`}
-                      />
-                      {deleteConfirm === salary.id ? (
-                        <>
-                          <button
-                            onClick={() => confirmDelete(salary.id)}
-                            disabled={deleteSalaryMutation.isPending}
-                            className="w-8 h-8 bg-red-100 text-red-600 hover:text-red-900 rounded-md p-1 flex items-center justify-center disabled:opacity-50"
-                            title="Confirm Delete"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={cancelDelete}
-                            disabled={deleteSalaryMutation.isPending}
-                            className="w-8 h-8 bg-gray-100 text-gray-600 hover:text-gray-900 rounded-md p-1 flex items-center justify-center disabled:opacity-50"
-                            title="Cancel Delete"
-                          >
-                            ×
-                          </button>
-                        </>
-                      ) : (
+                    {deleteConfirm === salary.id ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <button
+                          onClick={() => confirmDelete(salary.id)}
+                          className="text-red-600 hover:text-red-900"
+                          disabled={deleteSalaryMutation.isPending}
+                        >
+                          {deleteSalaryMutation.isPending ? 'Deleting...' : 'Confirm'}
+                        </button>
+                        <button
+                          onClick={cancelDelete}
+                          className="text-gray-600 hover:text-gray-900"
+                          disabled={deleteSalaryMutation.isPending}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center space-x-3">
                         <ActionButton
-                          icon={<FiTrash2 className="w-4 h-4" />}
+                          icon={<FiEye className="w-5 h-5" />}
+                          title="View Salary Details"
+                          colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
+                          href={`/salaries/${salary.id}${employeeId ? `?employeeId=${employeeId}` : ''}`}
+                        />
+                        <ActionButton
+                          icon={<FiEdit className="w-5 h-5" />}
+                          title="Edit Salary"
+                          colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
+                          href={`/salaries/${salary.id}/edit${employeeId ? `?employeeId=${employeeId}` : ''}`}
+                        />
+                        <ActionButton
+                          icon={<FiTrash2 className="w-5 h-5" />}
                           title="Delete Salary"
                           colorClass="bg-red-100 text-red-600 hover:text-red-900"
                           onClick={() => handleDeleteClick(salary.id)}
+                          as="button"
                         />
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}
