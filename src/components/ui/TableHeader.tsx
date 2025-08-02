@@ -35,7 +35,7 @@ interface AttendanceData {
 
 interface TableHeaderProps {
   title?: string;
-  total: number;
+  total?: number;
   active?: number;
   inactive?: number;
   searchValue: string;
@@ -249,7 +249,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center">
           {showStats ? (
             <div className="flex items-center gap-6 text-sm text-gray-600">
-              <span>Total: <span className="font-medium">{total}</span></span>
+              {typeof total === 'number' && (
+                <span>Total: <span className="font-medium">{total}</span></span>
+              )}
               {typeof active === 'number' && (
                 <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
               )}

@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { Employee, Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { FiDownload, FiCalendar, FiDollarSign } from 'react-icons/fi';
+import TableHeader from '@/components/ui/TableHeader';
 
 interface SalarySlip {
   id: string;
@@ -280,11 +281,16 @@ export default function EmployeeSalarySlipsPage() {
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-800">Salary Slips</h1>
-          <p className="text-gray-600 mt-2">Download your monthly salary slips</p>
-        </div>
-        
+        <TableHeader
+          title="Salary Slips"
+          searchValue=""
+          onSearchChange={() => {}}
+          showSearch={false}
+          showStats={true}
+          backButton={{ href: '/employee/documents', label: 'Back' }}
+          headerClassName="px-6 pt-6 pb-4"
+        />
+
         <div className="p-6">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Employee Information</h2>
