@@ -532,6 +532,17 @@ export const addSalary = async (salaryData: Omit<Salary, 'id'>) => {
   try {
     const adminData = getAdminDataForAudit();
     
+    // Validate that employeeId is provided
+    if (!salaryData.employeeId) {
+      throw new Error('Employee ID is required to create a salary record');
+    }
+    
+    // Verify employee exists
+    const employeeDoc = await getDoc(doc(db, 'employees', salaryData.employeeId));
+    if (!employeeDoc.exists()) {
+      throw new Error('Employee not found. Please select a valid employee.');
+    }
+    
     const salaryWithAudit = {
       ...salaryData,
       createdAt: new Date().toISOString(),
@@ -541,7 +552,7 @@ export const addSalary = async (salaryData: Omit<Salary, 'id'>) => {
     };
     
     const docRef = await addDoc(collection(db, 'salaries'), salaryWithAudit);
-    console.log('✅ Salary added successfully:', docRef.id);
+    console.log('✅ Salary added successfully for employee:', salaryData.employeeId, 'Salary ID:', docRef.id);
     return docRef.id;
   } catch (error) {
     console.error('Error adding salary:', error);
@@ -552,6 +563,14 @@ export const addSalary = async (salaryData: Omit<Salary, 'id'>) => {
 export const updateSalary = async (id: string, salaryData: Partial<Salary>) => {
   try {
     const adminData = getAdminDataForAudit();
+    
+    // If employeeId is being updated, validate the employee exists
+    if (salaryData.employeeId) {
+      const employeeDoc = await getDoc(doc(db, 'employees', salaryData.employeeId));
+      if (!employeeDoc.exists()) {
+        throw new Error('Employee not found. Please select a valid employee.');
+      }
+    }
     
     const salaryWithAudit = {
       ...salaryData,
@@ -570,6 +589,13 @@ export const updateSalary = async (id: string, salaryData: Partial<Salary>) => {
 
 export const deleteSalary = async (id: string) => {
   try {
+    // Get salary data before deletion for logging
+    const salaryDoc = await getDoc(doc(db, 'salaries', id));
+    if (salaryDoc.exists()) {
+      const salaryData = salaryDoc.data() as Salary;
+      console.log('🗑️ Deleting salary for employee:', salaryData.employeeId, 'Salary ID:', id);
+    }
+    
     await deleteDoc(doc(db, 'salaries', id));
     console.log('✅ Salary deleted successfully:', id);
   } catch (error) {

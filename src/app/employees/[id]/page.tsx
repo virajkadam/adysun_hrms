@@ -263,6 +263,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 icon: <FiDollarSign />, 
                 variant: 'warning' as const, 
                 href: `/salaries?employeeId=${id}` 
+              },
+              { 
+                label: 'Create Salary', 
+                icon: <FiDollarSign />, 
+                variant: 'success' as const, 
+                href: `/salaries/add?employeeId=${id}` 
               }
             ] : [
               { 
@@ -270,6 +276,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
                 href: `/employments/add?employeeId=${id}` 
+              },
+              { 
+                label: 'Create Salary', 
+                icon: <FiDollarSign />, 
+                variant: 'success' as const, 
+                href: `/salaries/add?employeeId=${id}` 
               }
             ]),
             { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },

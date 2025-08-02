@@ -34,9 +34,24 @@ export const useCreateSalary = () => {
   
   return useMutation({
     mutationFn: addSalary,
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       // Invalidate all salary lists
       queryClient.invalidateQueries({ queryKey: queryKeys.salaries.lists() });
+      
+      // If salary is created for a specific employee, invalidate employee-specific cache
+      if (variables.employeeId) {
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.salaries.byEmployee(variables.employeeId) 
+        });
+      }
+      
+      // Invalidate employee cache to refresh employee data
+      queryClient.invalidateQueries({ queryKey: queryKeys.employees.lists() });
+      if (variables.employeeId) {
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.employees.detail(variables.employeeId) 
+        });
+      }
     },
     onError: (error) => {
       console.error('Error creating salary:', error);
@@ -50,11 +65,26 @@ export const useUpdateSalary = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Salary> }) =>
       updateSalary(id, data),
-    onSuccess: (_, { id }) => {
+    onSuccess: (_, { id, data }) => {
       // Invalidate specific salary detail
       queryClient.invalidateQueries({ queryKey: queryKeys.salaries.detail(id) });
       // Invalidate all salary lists
       queryClient.invalidateQueries({ queryKey: queryKeys.salaries.lists() });
+      
+      // If salary is updated for a specific employee, invalidate employee-specific cache
+      if (data.employeeId) {
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.salaries.byEmployee(data.employeeId) 
+        });
+      }
+      
+      // Invalidate employee cache to refresh employee data
+      queryClient.invalidateQueries({ queryKey: queryKeys.employees.lists() });
+      if (data.employeeId) {
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.employees.detail(data.employeeId) 
+        });
+      }
     },
     onError: (error) => {
       console.error('Error updating salary:', error);
@@ -67,9 +97,24 @@ export const useDeleteSalary = () => {
   
   return useMutation({
     mutationFn: deleteSalary,
-    onSuccess: () => {
+    onSuccess: (_, deletedSalaryId) => {
       // Invalidate all salary lists
       queryClient.invalidateQueries({ queryKey: queryKeys.salaries.lists() });
+      
+      // Get the deleted salary to invalidate employee-specific cache
+      const deletedSalary = queryClient.getQueryData(queryKeys.salaries.detail(deletedSalaryId));
+      if (deletedSalary && (deletedSalary as Salary).employeeId) {
+        const employeeId = (deletedSalary as Salary).employeeId;
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.salaries.byEmployee(employeeId) 
+        });
+        
+        // Invalidate employee cache to refresh employee data
+        queryClient.invalidateQueries({ queryKey: queryKeys.employees.lists() });
+        queryClient.invalidateQueries({ 
+          queryKey: queryKeys.employees.detail(employeeId) 
+        });
+      }
     },
     onError: (error) => {
       console.error('Error deleting salary:', error);
