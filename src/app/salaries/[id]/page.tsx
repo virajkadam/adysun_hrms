@@ -123,16 +123,15 @@ export default function SalaryViewPage({ params }: PageParams) {
   return (
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Employee', href: '/employees' },
-      { label: employeeName, href: `/employees/${salary.employeeId}` },
-      { label: 'Salaries', href: `/salaries?employeeId=${salary.employeeId}` },
+      { label: 'Salaries', href: '/salaries' },
+      { label: employeeName, employeeId: salary.employeeId, href: `/salaries?employeeId=${salary.employeeId}` },
       { label: `${getMonthShort(salary.month)} - ${salary.year}`, isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={`${employeeName}'s Salary Details - ${getMonthName(salary.month)} ${salary.year}`}
+          title="Salary Details"
           total={0}
           active={0}
           inactive={0}

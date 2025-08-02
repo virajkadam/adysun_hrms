@@ -7,6 +7,7 @@ interface BreadcrumbItem {
   label: string;
   href?: string;
   isCurrent?: boolean;
+  employeeId?: string; // For dynamic employee name resolution
 }
 
 interface DashboardLayoutProps {

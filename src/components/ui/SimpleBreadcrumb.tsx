@@ -3,11 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getEmployeeNameById } from '@/utils/firebaseUtils';
 
 interface BreadcrumbItem {
   label: string;
   href?: string;
   isCurrent?: boolean;
+  employeeId?: string; // For dynamic employee name resolution
 }
 
 interface SimpleBreadcrumbProps {
@@ -21,12 +24,52 @@ const SimpleBreadcrumb: React.FC<SimpleBreadcrumbProps> = ({
   className = '',
   separator = <ChevronRight className="h-4 w-4 text-gray-400" />
 }) => {
-  if (!items || items.length === 0) return null;
+  // Get unique employee IDs that need resolution
+  const employeeIds = items
+    .filter(item => item.employeeId)
+    .map(item => item.employeeId!)
+    .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
+
+  // Fetch employee names with React Query caching
+  const employeeNames = useQuery({
+    queryKey: ['employee-names', employeeIds],
+    queryFn: async () => {
+      const names: Record<string, string> = {};
+      await Promise.all(
+        employeeIds.map(async (id) => {
+          try {
+            const name = await getEmployeeNameById(id);
+            names[id] = name;
+          } catch (error) {
+            console.error('Error fetching employee name:', error);
+            names[id] = 'Unknown Employee';
+          }
+        })
+      );
+      return names;
+    },
+    enabled: employeeIds.length > 0,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+
+  // Resolve items with employee names
+  const resolvedItems = items.map(item => {
+    if (item.employeeId && employeeNames.data) {
+      return {
+        ...item,
+        label: employeeNames.data[item.employeeId as keyof typeof employeeNames.data] || 'Loading...'
+      };
+    }
+    return item;
+  });
+
+  if (!resolvedItems || resolvedItems.length === 0) return null;
 
   return (
     <nav aria-label="breadcrumb" className={`text-sm text-gray-600 ${className}`}>
       <ol className="flex items-center space-x-2">
-        {items.map((item, index) => (
+        {resolvedItems.map((item, index) => (
           <React.Fragment key={index}>
             <li className="flex items-center">
               {item.isCurrent ? (
@@ -46,7 +89,7 @@ const SimpleBreadcrumb: React.FC<SimpleBreadcrumbProps> = ({
                 </span>
               )}
             </li>
-            {index < items.length - 1 && (
+            {index < resolvedItems.length - 1 && (
               <li className="flex items-center">
                 {separator}
               </li>
