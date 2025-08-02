@@ -365,12 +365,34 @@ export const getEmployments = async () => {
 
 export const getEmployment = async (id: string) => {
   try {
+    console.log('🔍 Fetching employment with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching employment ID:', id);
+    
     const docRef = doc(db, 'employments', id);
     const docSnap = await getDoc(docRef);
     
     if (docSnap.exists()) {
+      console.log('✅ Employment found successfully');
       return { id: docSnap.id, ...docSnap.data() } as Employment;
     } else {
+      console.log('❌ Employment not found in database');
       throw new Error('Employment not found');
     }
   } catch (error) {
@@ -381,12 +403,34 @@ export const getEmployment = async (id: string) => {
 
 export const getEmploymentsByEmployee = async (employeeId: string) => {
   try {
+    console.log('🔍 Fetching employments by employee with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching employments for employee ID:', employeeId);
+    
     const q = query(collection(db, 'employments'), where('employeeId', '==', employeeId));
     const querySnapshot = await getDocs(q);
     const employments: Employment[] = [];
     querySnapshot.forEach((doc) => {
       employments.push({ id: doc.id, ...doc.data() } as Employment);
     });
+    
+    console.log('✅ Employments fetched successfully:', employments.length, 'records');
     return employments;
   } catch (error) {
     console.error('Error getting employments by employee:', error);
@@ -536,16 +580,40 @@ export const deleteSalary = async (id: string) => {
 
 export const getSalaries = async () => {
   try {
+    console.log('🔍 Fetching salaries with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching from collection: salaries');
+    
     const querySnapshot = await getDocs(collection(db, 'salaries'));
     const salaries: Salary[] = [];
     querySnapshot.forEach((doc) => {
       salaries.push({ id: doc.id, ...doc.data() } as Salary);
     });
-    return salaries.sort((a, b) => {
+    
+    const sortedSalaries = salaries.sort((a, b) => {
       // Sort by year descending, then by month descending
       if (a.year !== b.year) return b.year - a.year;
       return b.month - a.month;
     });
+    
+    console.log('✅ Successfully fetched salaries:', sortedSalaries.length);
+    return sortedSalaries;
   } catch (error) {
     console.error('Error getting salaries:', error);
     throw error;
@@ -554,12 +622,34 @@ export const getSalaries = async () => {
 
 export const getSalary = async (id: string) => {
   try {
+    console.log('🔍 Fetching salary with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
+    console.log('📁 Fetching salary ID:', id);
+    
     const salaryDoc = await getDoc(doc(db, 'salaries', id));
     
     if (salaryDoc.exists()) {
+      console.log('✅ Salary found successfully');
       return { id: salaryDoc.id, ...salaryDoc.data() } as Salary;
     }
     
+    console.log('❌ Salary not found in database');
     throw new Error('Salary not found');
   } catch (error) {
     console.error('Error getting salary:', error);
@@ -569,6 +659,24 @@ export const getSalary = async (id: string) => {
 
 export const getSalariesByEmployee = async (employeeId: string) => {
   try {
+    console.log('🔍 Fetching salaries for employee with custom authentication...');
+    
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
+    console.log('🔑 Session ID:', sessionId);
+    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
+    
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      console.log('💡 This means custom authentication failed');
+      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    console.log('✅ Custom authentication session found');
     console.log('🔍 Fetching salaries for employee:', employeeId);
     
     const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));

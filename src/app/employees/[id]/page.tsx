@@ -57,6 +57,17 @@ export default function EmployeeViewPage({ params }: PageParams) {
     isError: employmentsError
   } = useEmploymentsByEmployee(id);
 
+  // Ensure employments is always an array
+  const safeEmployments = Array.isArray(employments) ? employments : [];
+
+  // Debug logging for deployed environment
+  console.log('🔍 Employee ID:', id);
+  console.log('🔍 Employee data:', employee);
+  console.log('🔍 Employments data:', employments);
+  console.log('🔍 Safe employments:', safeEmployments);
+  console.log('🔍 Employments loading:', employmentsLoading);
+  console.log('🔍 Employments error:', employmentsError);
+
   // Use mutation for delete operation
   const deleteEmployeeMutation = useDeleteEmployee();
 
@@ -121,7 +132,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
     fetchAdminNames();
   }, [employee]);
 
-  if (isLoading) {
+  if (isLoading || employmentsLoading) {
     return (
       <DashboardLayout
         breadcrumbItems={[
@@ -224,12 +235,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
           showStats={false}
           backButton={{ href: '/employees', label: 'Back' }}
           actionButtons={[
-            ...(employments.length > 0 ? [
+            ...(safeEmployments && safeEmployments.length > 0 && safeEmployments[0] ? [
               { 
                 label: 'View Employment', 
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
-                href: `/employments/${employments[0].id}` 
+                href: `/employments/${safeEmployments[0].id}` 
               },
               { 
                 label: 'View Salary', 
