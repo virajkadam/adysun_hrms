@@ -24,7 +24,7 @@ export default function AdminUtilsPage() {
       
       const updatedCount = await addPasswordToEmployees();
       
-      toast.success(`Successfully updated ${updatedCount} employees with default passwords (1234)`, { id: 'migration' });
+      toast.success(`Successfully updated ${updatedCount} employees with default passwords (last 5 digits of mobile + @#$$)`, { id: 'migration' });
     } catch (error) {
       console.error('Migration error:', error);
       toast.error('Failed to add passwords to employees', { id: 'migration' });
@@ -45,7 +45,7 @@ export default function AdminUtilsPage() {
             <div className="border border-gray-200 rounded-lg p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Employee Password Migration</h2>
               <p className="text-gray-600 mb-4">
-                This utility will add a default password (1234) to all employees who don't have a password field.
+                This utility will add a default password (last 5 digits of mobile + @#$$) to all employees who don't have a password field.
                 This is required for the new employee login system.
               </p>
               <button
@@ -61,7 +61,8 @@ export default function AdminUtilsPage() {
               <h2 className="text-lg font-semibold text-gray-800 mb-4">Instructions</h2>
               <div className="text-gray-600 space-y-2">
                 <p>• Run the password migration to enable employee login</p>
-                <p>• Default password for all employees will be: <strong>1234</strong></p>
+                <p>• Default password for all employees will be: <strong>last 5 digits of mobile + @#$$</strong></p>
+                <p>• Example: If mobile is 8308377308, password will be 37308@#$$</p>
                 <p>• Employees should change their password after first login</p>
                 <p>• Only employees with status "active" can login</p>
               </div>

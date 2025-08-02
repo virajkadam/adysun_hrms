@@ -108,3 +108,11 @@ The user prefers using terminal commands for faster file and folder creation to 
 The user requires that breadcrumbs should be implemented using the established pattern: pass `breadcrumbItems` prop to layout components (DashboardLayout/EmployeeLayout) with an array of objects containing `label`, `href` (optional), and `isCurrent` (boolean). The layout components automatically render SimpleBreadcrumb with proper styling and navigation. Breadcrumb items should follow the navigation hierarchy: Dashboard → Section → Current Page, with the current page marked with `isCurrent: true`.
 
 ---
+
+The user requires that all password fields should include eye icons for toggling password visibility. This includes: 1) Import FiEye and FiEyeOff icons from react-icons/fi, 2) Add state variables showPassword and showConfirmPassword (boolean), 3) Wrap password inputs in relative div containers, 4) Add type={showPassword ? 'text' : 'password'} to inputs, 5) Add pr-10 padding to input className for icon space, 6) Add button with absolute positioning for eye icon toggle, 7) Update form types to include confirmPassword field for validation. This applies to login pages, add employee forms, and edit employee forms to provide consistent password visibility toggling across the application.
+
+---
+
+The user requires that the default password pattern for employees should be: "last 5 digits of employee mobile number + @#$$". This pattern should be used in: 1) Add employee form (when password field is empty - password field is optional), 2) Admin utils password migration function, 3) All placeholder texts and instructions. Example: If employee mobile is 8308377308, default password should be "37308@#$$". This provides a more secure and memorable default password pattern compared to the previous "1234" pattern. Password fields should be marked as optional with "(Optional)" in labels. Only one password field is needed - no confirm password field required.
+
+---

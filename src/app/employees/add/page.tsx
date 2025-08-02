@@ -16,13 +16,12 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 // Define API error type
 type ApiError = Error | unknown;
 
-type EmployeeFormData = Omit<Employee, 'id'> & { confirmPassword?: string };
+type EmployeeFormData = Omit<Employee, 'id'>;
 
 export default function AddEmployeePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
 
@@ -54,7 +53,7 @@ export default function AddEmployeePage() {
       const employeeDataWithAudit = {
         ...data,
         status: 'active' as const, // Always set to active for new employees
-        password: data.password || '1234', // Set default password if not provided
+        password: data.password || `${data.phone.slice(-5)}@#$$`, // New pattern: last 5 digits + @#$$
         createdAt: currentTimestamp,
         createdBy: adminId,
         updatedAt: currentTimestamp,
@@ -309,18 +308,17 @@ export default function AddEmployeePage() {
 
             {/* Password Section */}
             <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials (Optional)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Password
+                    Password (Optional)
                   </label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter password (default: 1234)"
+                      placeholder="Enter password"
                       {...register('password', {
-                        required: 'Password is required',
                         minLength: {
                           value: 4,
                           message: 'Password must be at least 4 characters'
@@ -338,34 +336,6 @@ export default function AddEmployeePage() {
                   </div>
                   {errors.password && (
                     <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="Confirm password"
-                      {...register('confirmPassword', {
-                        validate: (value) => {
-                          const password = watch('password');
-                          return value === password || 'Passwords do not match';
-                        }
-                      })}
-                      className="w-full p-2 pr-10 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                    >
-                      {showConfirmPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
                   )}
                 </div>
               </div>

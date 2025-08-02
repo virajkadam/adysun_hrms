@@ -653,21 +653,22 @@ export const addPasswordToEmployees = async () => {
     console.log('🔄 Starting password migration for employees...');
     
     const querySnapshot = await getDocs(collection(db, 'employees'));
-    const updatePromises = [];
+    const updatePromises: Promise<any>[] = [];
     
     querySnapshot.forEach((doc) => {
       const employeeData = doc.data();
       
       // If employee doesn't have a password field, add a default one
       if (!employeeData.password) {
-        const defaultPassword = '1234'; // Default password - employees should change this
+        // New pattern: last 5 digits of mobile + @#$$
+        const defaultPassword = `${employeeData.phone.slice(-5)}@#$$`;
         updatePromises.push(
           updateDoc(doc.ref, {
             password: defaultPassword,
             updatedAt: new Date().toISOString()
           })
         );
-        console.log(`📝 Adding default password to employee: ${employeeData.name}`);
+        console.log(`📝 Adding default password to employee: ${employeeData.name} (${defaultPassword})`);
       }
     });
     
