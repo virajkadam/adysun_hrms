@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiHome } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiHome, FiUser } from 'react-icons/fi';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -52,7 +52,11 @@ const Sidebar = () => {
       name: 'Documents',
       icon: <FiFile className="w-5 h-5" />
     },
-    
+    {
+      path: '/profile',
+      name: 'My Profile',
+      icon: <FiUser className="w-5 h-5" />
+    }
   ];
 
   return (
