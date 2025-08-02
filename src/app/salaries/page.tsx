@@ -209,17 +209,14 @@ export default function SalariesPage() {
       
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={employeeId 
-            ? `${employeeName || 'Loading...'}'s Salary Records`
-            : "Salary Management"
-          }
+          title="Salary Management"
           total={filteredSalaries.length}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
           searchPlaceholder="Search"
-          showStats={true}
-          showSearch={true}
-          showFilter={true}
+          showStats={filteredSalaries.length > 0}
+          showSearch={filteredSalaries.length > 0}
+          showFilter={filteredSalaries.length > 0}
           filterOptions={[
             { value: 'all', label: 'All' },
             { value: 'draft', label: 'Draft' },
@@ -228,7 +225,7 @@ export default function SalariesPage() {
           ]}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
-          onRefresh={handleRefresh}
+          onRefresh={filteredSalaries.length > 0 ? handleRefresh : undefined}
           isRefreshing={isLoading}
           actionButtons={[
             { 
@@ -239,7 +236,7 @@ export default function SalariesPage() {
             }
           ]}
           backButton={employeeId ? { href: '/employees' } : { href: '/dashboard' }}
-          headerClassName="px-6 pt-6 mb-0"
+          headerClassName="px-6 pt-6 pb-6"
         />
 
         <div className="overflow-x-auto">

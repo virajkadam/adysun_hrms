@@ -18,6 +18,12 @@
 - **Icons**: Use react-icons/fi library consistently
 - **Navigation**: Use query parameters for pre-selecting data in forms
 
+### Conditional Header Elements
+- **No Records**: Hide stats, search, filter, and refresh when no data exists
+- **Show Elements**: Only display header controls when `filteredData.length > 0`
+- **Maintain Actions**: Always show action buttons (Create, Edit, Delete) regardless of data state
+- **Consistent Margins**: Use `px-6 pt-6 pb-6` className for uniform spacing across all TableHeader components
+
 ## Layout Consistency Rules
 
 ### Spacing Standards

@@ -113,6 +113,14 @@ The user requires that all password fields should include eye icons for toggling
 
 ---
 
+The user requires that TableHeader components should conditionally show header elements based on data state: 1) Hide stats, search, filter, and refresh when no records exist (`filteredData.length === 0`), 2) Only show header controls when data exists (`filteredData.length > 0`), 3) Always maintain action buttons (Create, Edit, Delete) regardless of data state, 4) Use consistent margin pattern `px-6 pt-6 pb-6` for all TableHeader components to maintain uniform spacing across the application. This ensures cleaner empty states and better user experience by reducing visual clutter when no data is available.
+
+---
+
+The user prefers that employee names should be displayed in breadcrumb navigation rather than in page headers. When navigating to add/edit pages for specific employees, the breadcrumb should show the employee name as a clickable link, while the header title should remain generic (e.g., "Add New Employment" instead of "Add Employment for John Doe"). This provides better navigation context while keeping headers focused on the current action.
+
+---
+
 The user requires that the default password pattern for employees should be: "last 5 digits of employee mobile number + @#$$". This pattern should be used in: 1) Add employee form (when password field is empty - password field is optional), 2) Admin utils password migration function, 3) All placeholder texts and instructions. Example: If employee mobile is 8308377308, default password should be "37308@#$$". This provides a more secure and memorable default password pattern compared to the previous "1234" pattern. Password fields should be marked as optional with "(Optional)" in labels. Only one password field is needed - no confirm password field required.
 
 ---
