@@ -53,6 +53,12 @@ interface TableHeaderProps {
   onFilterChange?: (value: string) => void;
   filterOptions?: FilterOption[];
   showFilter?: boolean;
+  // Second filter props
+  secondFilterValue?: string;
+  onSecondFilterChange?: (value: string) => void;
+  secondFilterOptions?: FilterOption[];
+  showSecondFilter?: boolean;
+  secondFilterLabel?: string;
   headerClassName?: string;
   // Attendance marking props
   showAttendanceMarking?: boolean;
@@ -86,6 +92,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     { value: 'inactive', label: 'Inactive' }
   ],
   showFilter = false,
+  // Second filter props
+  secondFilterValue = 'all',
+  onSecondFilterChange,
+  secondFilterOptions = [],
+  showSecondFilter = false,
+  secondFilterLabel = 'Filter',
   headerClassName = 'px-6 pt-6 pb-6',
   showAttendanceMarking = false,
   attendanceData,
@@ -233,7 +245,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       )}
 
       {/* Stats and Search Section */}
-      {(showStats || showSearch || showFilter) && (
+      {(showStats || showSearch || showFilter || showSecondFilter) && (
         <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center">
           {showStats ? (
             <div className="flex items-center gap-6 text-sm text-gray-600">
@@ -276,6 +288,24 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   {filterOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiFilter className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+            )}
+            {showSecondFilter && onSecondFilterChange && (
+              <div className="relative">
+                <select
+                  value={secondFilterValue}
+                  onChange={(e) => onSecondFilterChange(e.target.value)}
+                  className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {secondFilterOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>

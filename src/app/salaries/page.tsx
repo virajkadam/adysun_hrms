@@ -43,6 +43,7 @@ const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
 export default function SalariesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
+  const [monthFilter, setMonthFilter] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [employeeName, setEmployeeName] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -143,9 +144,11 @@ export default function SalariesPage() {
     
     const matchesFilter = filterValue === 'all' || salary.status === filterValue;
     
+    const matchesMonth = monthFilter === 'all' || salary.month === parseInt(monthFilter);
+    
     const matchesEmployeeId = employeeId ? salary.employeeId === employeeId : true;
     
-    return matchesSearch && matchesFilter && matchesEmployeeId;
+    return matchesSearch && matchesFilter && matchesMonth && matchesEmployeeId;
   });
 
   // Pagination logic
@@ -158,7 +161,7 @@ export default function SalariesPage() {
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterValue, employeeId]);
+  }, [searchTerm, filterValue, monthFilter, employeeId]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -218,7 +221,7 @@ export default function SalariesPage() {
           searchPlaceholder="Search"
           showStats={filteredSalaries.length > 0}
           showSearch={filteredSalaries.length > 0}
-          showFilter={filteredSalaries.length > 0}
+          // showFilter={filteredSalaries.length > 0}
           filterOptions={[
             { value: 'all', label: 'All' },
             { value: 'draft', label: 'Draft' },
@@ -227,6 +230,24 @@ export default function SalariesPage() {
           ]}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
+          showSecondFilter={filteredSalaries.length > 0}
+          secondFilterValue={monthFilter}
+          onSecondFilterChange={setMonthFilter}
+          secondFilterOptions={[
+            { value: 'all', label: 'All Months' },
+            { value: '1', label: 'January' },
+            { value: '2', label: 'February' },
+            { value: '3', label: 'March' },
+            { value: '4', label: 'April' },
+            { value: '5', label: 'May' },
+            { value: '6', label: 'June' },
+            { value: '7', label: 'July' },
+            { value: '8', label: 'August' },
+            { value: '9', label: 'September' },
+            { value: '10', label: 'October' },
+            { value: '11', label: 'November' },
+            { value: '12', label: 'December' }
+          ]}
           onRefresh={filteredSalaries.length > 0 ? handleRefresh : undefined}
           isRefreshing={isLoading}
           actionButtons={[
