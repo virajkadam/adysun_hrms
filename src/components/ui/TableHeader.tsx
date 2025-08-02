@@ -86,7 +86,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     { value: 'inactive', label: 'Inactive' }
   ],
   showFilter = false,
-  headerClassName = 'px-6 pt-6 mb-0',
+  headerClassName = 'px-6 pt-6 pb-6',
   showAttendanceMarking = false,
   attendanceData,
   onCheckIn,

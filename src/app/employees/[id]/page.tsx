@@ -237,7 +237,14 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 variant: 'warning' as const, 
                 href: `/salaries?employeeId=${id}` 
               }
-            ] : []),
+            ] : [
+              { 
+                label: 'Create Employment', 
+                icon: <FiBriefcase />, 
+                variant: 'success' as const, 
+                href: `/employments/add?employeeId=${id}` 
+              }
+            ]),
             { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
             { 
               label: 'Delete', 
