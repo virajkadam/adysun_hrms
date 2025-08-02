@@ -117,7 +117,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Page Title and Action Buttons */}
       {(title || actionButtons.length > 0 || backButton) && (
         <div className={`flex justify-between items-center ${headerClassName}`}>
@@ -234,7 +234,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
       {/* Stats and Search Section */}
       {(showStats || showSearch || showFilter) && (
-        <div className="px-6 py-6 border-b border-gray-200 flex justify-between items-center">
+        <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center">
           {showStats ? (
             <div className="flex items-center gap-6 text-sm text-gray-600">
               <span>Total: <span className="font-medium">{total}</span></span>
