@@ -157,8 +157,7 @@ export default function EmployeeLeavesPage() {
   };
 
   const handleRequestLeave = () => {
-    setShowRequestForm(true);
-    toast.info('Leave request form coming soon!');
+    router.push('/employee/leaves/request');
   };
 
   if (isLoading) {
