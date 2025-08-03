@@ -6,6 +6,7 @@ import { FiCalendar, FiSave, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
+import { createEmployeeLeaveRequest } from '@/utils/firebaseUtils';
 import TableHeader from '@/components/ui/TableHeader';
 
 interface LeaveRequestForm {
@@ -74,17 +75,40 @@ export default function RequestLeavePage() {
       return;
     }
 
+    const totalDays = calculateTotalDays();
+    if (totalDays <= 0) {
+      toast.error('Please select valid dates');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       
-      // TODO: Implement actual leave request API call
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      console.log('📝 Submitting leave request:', {
+        employeeId: currentUserData.id,
+        type: formData.type,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        reason: formData.reason,
+        totalDays: totalDays
+      });
       
+      // Create leave request in Firebase
+      const leaveRequest = await createEmployeeLeaveRequest({
+        employeeId: currentUserData.id,
+        type: formData.type,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        reason: formData.reason.trim(),
+        totalDays: totalDays
+      });
+      
+      console.log('✅ Leave request created:', leaveRequest);
       toast.success('Leave request submitted successfully!');
       router.push('/employee/leaves');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting leave request:', error);
-      toast.error('Failed to submit leave request');
+      toast.error(error.message || 'Failed to submit leave request');
     } finally {
       setIsSubmitting(false);
     }

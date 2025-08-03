@@ -1127,3 +1127,59 @@ export const getEmployeeSalaries = async (employeeId: string) => {
     throw error;
   }
 }; 
+
+// Function to create leave request for employee
+export const createEmployeeLeaveRequest = async (leaveData: {
+  employeeId: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  totalDays: number;
+}) => {
+  try {
+    console.log('🔍 Creating employee leave request...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only create leave requests for themselves
+    if (currentEmployee.id !== leaveData.employeeId) {
+      throw new Error('Access denied. You can only create leave requests for yourself.');
+    }
+    
+    console.log('✅ Employee session validated for leave request');
+    
+    // Create leave request document
+    const leaveRequestData = {
+      employeeId: leaveData.employeeId,
+      type: leaveData.type,
+      startDate: leaveData.startDate,
+      endDate: leaveData.endDate,
+      reason: leaveData.reason,
+      totalDays: leaveData.totalDays,
+      status: 'pending',
+      appliedDate: new Date().toISOString().split('T')[0],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      approvedBy: null,
+      approvedAt: null,
+      comments: ''
+    };
+    
+    const docRef = await addDoc(collection(db, 'leaves'), leaveRequestData);
+    console.log('✅ Leave request created successfully:', docRef.id);
+    
+    return { id: docRef.id, ...leaveRequestData };
+  } catch (error) {
+    console.error('Error creating employee leave request:', error);
+    throw error;
+  }
+}; 

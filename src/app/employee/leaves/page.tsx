@@ -43,58 +43,33 @@ export default function EmployeeLeavesPage() {
         // Use the employee-specific function to fetch leave data
         const leaveData = await getEmployeeLeaves(currentUserData.id);
         
-        // Transform the data to match the expected format
-        const transformedData: LeaveRecord[] = leaveData.map((record: any) => ({
-          id: record.id,
-          type: record.type || 'casual',
-          startDate: record.startDate,
-          endDate: record.endDate,
-          reason: record.reason || 'Personal leave',
-          status: record.status || 'pending',
-          appliedDate: record.appliedDate,
-          totalDays: record.totalDays || 1
-        }));
+        console.log('📊 Raw leave data received:', leaveData);
         
+        // Transform the data to match the expected format
+        const transformedData: LeaveRecord[] = leaveData.map((record: any) => {
+          console.log('🔄 Processing leave record:', record);
+          
+          const transformed = {
+            id: record.id,
+            type: record.type || 'casual',
+            startDate: record.startDate,
+            endDate: record.endDate,
+            reason: record.reason || 'Personal leave',
+            status: record.status || 'pending',
+            appliedDate: record.appliedDate,
+            totalDays: record.totalDays || 1
+          };
+          
+          console.log('✅ Transformed leave record:', transformed);
+          return transformed;
+        });
+        
+        console.log('📋 Final transformed leave records:', transformedData);
         setLeaveRecords(transformedData);
       } catch (error: any) {
         console.error('Error fetching leave data:', error);
         toast.error('Failed to load leave data');
-        
-        // Fallback to mock data if API fails
-        const mockData: LeaveRecord[] = [
-          {
-            id: '1',
-            type: 'casual',
-            startDate: '2024-01-20',
-            endDate: '2024-01-20',
-            reason: 'Personal work',
-            status: 'approved',
-            appliedDate: '2024-01-15',
-            totalDays: 1
-          },
-          {
-            id: '2',
-            type: 'sick',
-            startDate: '2024-01-25',
-            endDate: '2024-01-26',
-            reason: 'Not feeling well',
-            status: 'pending',
-            appliedDate: '2024-01-22',
-            totalDays: 2
-          },
-          {
-            id: '3',
-            type: 'annual',
-            startDate: '2024-02-01',
-            endDate: '2024-02-03',
-            reason: 'Family vacation',
-            status: 'approved',
-            appliedDate: '2024-01-20',
-            totalDays: 3
-          }
-        ];
-        
-        setLeaveRecords(mockData);
+        setLeaveRecords([]); // Set empty array instead of mock data
       } finally {
         setIsLoading(false);
       }
