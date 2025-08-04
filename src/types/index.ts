@@ -167,11 +167,30 @@ export interface Employment {
   performanceRating?: string;
   effectiveDate?: string;
   
+  // NEW: Attendance Array
+  attendance?: AttendanceRecord[];
+  
   // Audit fields
   createdAt?: string;
   createdBy?: string;
   updatedAt?: string;
   updatedBy?: string;
+}
+
+// NEW: Simplified attendance record for employment array
+export interface AttendanceRecord {
+  date: string; // YYYY-MM-DD format
+  checkInTime?: string; // HH:MM:SS format
+  checkOutTime?: string; // HH:MM:SS format
+  checkInTimestamp?: any; // Firestore timestamp
+  checkOutTimestamp?: any; // Firestore timestamp
+  status: 'present' | 'absent' | 'late' | 'half-day';
+  totalHours?: number;
+  isLate?: boolean;
+  isEarlyCheckOut?: boolean;
+  checkInLocation?: string;
+  checkOutLocation?: string;
+  notes?: string;
 }
 
 // Salary Slip type

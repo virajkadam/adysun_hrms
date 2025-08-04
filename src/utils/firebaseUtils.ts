@@ -1133,16 +1133,20 @@ export const markAttendanceCheckIn = async (employeeId: string, employmentId: st
       hour12: false 
     });
     
+    // Get the employment document
+    const employmentRef = doc(db, 'employments', employmentId);
+    const employmentDoc = await getDoc(employmentRef);
+    
+    if (!employmentDoc.exists()) {
+      throw new Error('Employment record not found.');
+    }
+    
+    const employmentData = employmentDoc.data();
+    const existingAttendance = employmentData.attendance || [];
+    
     // Check if attendance already exists for today
-    const existingAttendanceQuery = query(
-      collection(db, 'attendance'),
-      where('employeeId', '==', employeeId),
-      where('date', '==', today)
-    );
-    
-    const existingAttendanceSnapshot = await getDocs(existingAttendanceQuery);
-    
-    if (!existingAttendanceSnapshot.empty) {
+    const todayAttendance = existingAttendance.find((att: any) => att.date === today);
+    if (todayAttendance) {
       throw new Error('Attendance already marked for today.');
     }
     
@@ -1150,9 +1154,7 @@ export const markAttendanceCheckIn = async (employeeId: string, employmentId: st
     const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 0);
     const status = isLate ? 'late' : 'present';
     
-    const attendanceData = {
-      employeeId,
-      employmentId,
+    const newAttendanceRecord = {
       date: today,
       checkInTime: currentTime,
       checkOutTime: null,
@@ -1164,17 +1166,20 @@ export const markAttendanceCheckIn = async (employeeId: string, employmentId: st
       isEarlyCheckOut: false,
       checkInLocation: null,
       checkOutLocation: null,
-      notes: '',
-      createdAt: now,
-      updatedAt: now,
-      createdBy: employeeId,
-      updatedBy: employeeId
+      notes: ''
     };
     
-    const docRef = await addDoc(collection(db, 'attendance'), attendanceData);
+    // Add new attendance record to employment document
+    const updatedAttendance = [...existingAttendance, newAttendanceRecord];
+    
+    await updateDoc(employmentRef, {
+      attendance: updatedAttendance,
+      updatedAt: now,
+      updatedBy: employeeId
+    });
     
     console.log('✅ Attendance check-in marked successfully');
-    return { id: docRef.id, ...attendanceData };
+    return { id: employmentId, ...newAttendanceRecord };
   } catch (error) {
     console.error('Error marking attendance check-in:', error);
     throw error;
@@ -1209,55 +1214,69 @@ export const markAttendanceCheckOut = async (employeeId: string) => {
       hour12: false 
     });
     
-    // Find today's attendance record
-    const attendanceQuery = query(
-      collection(db, 'attendance'),
-      where('employeeId', '==', employeeId),
-      where('date', '==', today)
+    // Find employment for this employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
     );
+    const employmentSnapshot = await getDocs(employmentQuery);
     
-    const attendanceSnapshot = await getDocs(attendanceQuery);
+    if (employmentSnapshot.empty) {
+      throw new Error('No employment record found for this employee.');
+    }
     
-    if (attendanceSnapshot.empty) {
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const existingAttendance = employmentData.attendance || [];
+    
+    // Find today's attendance record
+    const todayAttendanceIndex = existingAttendance.findIndex((att: any) => att.date === today);
+    
+    if (todayAttendanceIndex === -1) {
       throw new Error('No check-in record found for today. Please check-in first.');
     }
     
-    const attendanceDoc = attendanceSnapshot.docs[0];
-    const attendanceData = attendanceDoc.data();
+    const todayAttendance = existingAttendance[todayAttendanceIndex];
     
-    if (attendanceData.checkOutTime) {
+    if (todayAttendance.checkOutTime) {
       throw new Error('Already checked out for today.');
     }
     
     // Calculate total hours
-    const checkInTime = new Date(attendanceData.checkInTimestamp.toDate());
+    const checkInTime = new Date(todayAttendance.checkInTimestamp.toDate());
     const totalHours = (now.getTime() - checkInTime.getTime()) / (1000 * 60 * 60);
     
     // Determine if early check-out (assuming 6:00 PM is standard check-out time)
     const isEarlyCheckOut = now.getHours() < 18;
     
     // Update status based on total hours
-    let status = attendanceData.status;
+    let status = todayAttendance.status;
     if (totalHours < 4) {
       status = 'half-day';
     } else if (totalHours < 8) {
       status = 'present';
     }
     
-    const updateData = {
+    // Update the attendance record
+    const updatedAttendance = [...existingAttendance];
+    updatedAttendance[todayAttendanceIndex] = {
+      ...todayAttendance,
       checkOutTime: currentTime,
       checkOutTimestamp: now,
       totalHours: Math.round(totalHours * 100) / 100,
       isEarlyCheckOut,
-      status,
-      updatedAt: now,
-      updatedBy: employeeId
+      status
     };
     
-    await updateDoc(doc(db, 'attendance', attendanceDoc.id), updateData);
+    // Update the employment document
+    await updateDoc(doc(db, 'employments', employmentDoc.id), {
+      attendance: updatedAttendance,
+      updatedAt: now,
+      updatedBy: employeeId
+    });
     
     console.log('✅ Attendance check-out marked successfully');
-    return { id: attendanceDoc.id, ...attendanceData, ...updateData };
+    return { id: employmentDoc.id, ...updatedAttendance[todayAttendanceIndex] };
   } catch (error) {
     console.error('Error marking attendance check-out:', error);
     throw error;
@@ -1268,15 +1287,14 @@ export const getTodayAttendance = async (employeeId: string) => {
   try {
     const today = new Date().toISOString().split('T')[0];
     
-    const attendanceQuery = query(
-      collection(db, 'attendance'),
-      where('employeeId', '==', employeeId),
-      where('date', '==', today)
+    // Find employment for this employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
     );
+    const employmentSnapshot = await getDocs(employmentQuery);
     
-    const attendanceSnapshot = await getDocs(attendanceQuery);
-    
-    if (attendanceSnapshot.empty) {
+    if (employmentSnapshot.empty) {
       return {
         isCheckedIn: false,
         isCheckedOut: false,
@@ -1286,15 +1304,30 @@ export const getTodayAttendance = async (employeeId: string) => {
       };
     }
     
-    const attendanceData = attendanceSnapshot.docs[0].data();
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const attendance = employmentData.attendance || [];
+    
+    // Find today's attendance record
+    const todayAttendance = attendance.find((att: any) => att.date === today);
+    
+    if (!todayAttendance) {
+      return {
+        isCheckedIn: false,
+        isCheckedOut: false,
+        checkInTime: null,
+        checkOutTime: null,
+        status: null
+      };
+    }
     
     return {
       isCheckedIn: true,
-      isCheckedOut: !!attendanceData.checkOutTime,
-      checkInTime: attendanceData.checkInTime,
-      checkOutTime: attendanceData.checkOutTime,
-      status: attendanceData.status,
-      totalHours: attendanceData.totalHours
+      isCheckedOut: !!todayAttendance.checkOutTime,
+      checkInTime: todayAttendance.checkInTime,
+      checkOutTime: todayAttendance.checkOutTime,
+      status: todayAttendance.status,
+      totalHours: todayAttendance.totalHours
     };
   } catch (error) {
     console.error('Error getting today\'s attendance:', error);
@@ -1314,38 +1347,36 @@ export const getAllAttendance = async () => {
       throw new Error('No admin session found. Only admins can view all attendance records.');
     }
     
-    // Validate admin session
-    try {
-      const admin = JSON.parse(adminData);
-      if (!admin || !admin.id) {
-        throw new Error('Invalid admin session data.');
-      }
-      console.log('✅ Admin session validated - FULL ACCESS TO ALL ATTENDANCE');
-    } catch (error) {
-      console.error('❌ Invalid admin session data:', error);
-      throw new Error('Invalid admin session. Please log in again.');
-    }
+    console.log('✅ Admin session validated - FULL ACCESS TO ALL ATTENDANCE');
     
-    // Check if attendance collection exists
-    const collectionExists = await checkAttendanceCollection();
-    if (!collectionExists) {
-      console.log('⚠️ Attendance collection does not exist, returning empty array');
-      return [];
-    }
+    // Get all employments and extract attendance data
+    const employmentsQuery = query(collection(db, 'employments'));
+    const employmentsSnapshot = await getDocs(employmentsQuery);
     
-    const q = query(collection(db, 'attendance'), orderBy('date', 'desc'));
-    const querySnapshot = await getDocs(q);
-    const attendanceRecords: any[] = [];
+    const allAttendanceRecords: any[] = [];
     
-    querySnapshot.forEach((doc) => {
-      attendanceRecords.push({ id: doc.id, ...doc.data() });
+    employmentsSnapshot.forEach((employmentDoc) => {
+      const employmentData = employmentDoc.data();
+      const attendance = employmentData.attendance || [];
+      
+      // Add employment context to each attendance record
+      attendance.forEach((attRecord: any) => {
+        allAttendanceRecords.push({
+          id: `${employmentDoc.id}_${attRecord.date}`, // Create unique ID
+          employeeId: employmentData.employeeId,
+          employmentId: employmentDoc.id,
+          ...attRecord
+        });
+      });
     });
     
-    console.log('✅ All attendance records found:', attendanceRecords.length);
-    return attendanceRecords;
+    // Sort by date descending
+    allAttendanceRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    console.log('✅ All attendance records found:', allAttendanceRecords.length);
+    return allAttendanceRecords;
   } catch (error) {
     console.error('Error getting all attendance records:', error);
-    // Return empty array instead of throwing error for better UX
     console.log('⚠️ Returning empty attendance array due to error');
     return [];
   }
@@ -1371,68 +1402,32 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
     
     // First check if attendance collection exists
     const collectionExists = await checkAttendanceCollection();
+    
     if (!collectionExists) {
-      console.log('⚠️ Attendance collection does not exist, returning empty array');
-      return [];
-    }
-    
-    // Check for admin session first - ADMIN HAS FULL ACCESS
-    const adminSessionId = localStorage.getItem('adminSessionId');
-    const adminData = localStorage.getItem('adminData');
-    
-    // Check for employee session as fallback - EMPLOYEE RESTRICTED TO OWN DATA
-    const employeeSessionId = localStorage.getItem('employeeSessionId');
-    const employeeData = localStorage.getItem('employeeData');
-    
-    let isAdmin = false;
-    let isEmployee = false;
-    let currentUser = null;
-    
-    // Validate admin session - ADMIN CAN ACCESS ANY EMPLOYEE DATA
-    if (adminSessionId && adminData) {
-      try {
-        const admin = JSON.parse(adminData);
-        if (admin && admin.id) {
-          isAdmin = true;
-          currentUser = admin;
-          console.log('✅ Admin session validated - FULL ACCESS GRANTED');
-        }
-      } catch (error) {
-        console.log('❌ Invalid admin session data');
+      console.log('⚠️ Attendance collection does not exist, fetching from employment');
+      
+      // Get employment for this employee
+      const employmentQuery = query(
+        collection(db, 'employments'),
+        where('employeeId', '==', employeeId)
+      );
+      const employmentSnapshot = await getDocs(employmentQuery);
+      
+      if (employmentSnapshot.empty) {
+        console.log('✅ No employment found for employee, returning empty array');
+        return [];
       }
+      
+      const employmentDoc = employmentSnapshot.docs[0];
+      const employmentData = employmentDoc.data();
+      const attendance = employmentData.attendance || [];
+      
+      console.log('✅ Attendance records found in employment:', attendance.length);
+      return attendance;
     }
     
-    // Validate employee session - EMPLOYEE CAN ONLY ACCESS OWN DATA
-    if (!isAdmin && employeeSessionId && employeeData) {
-      try {
-        const employee = JSON.parse(employeeData);
-        if (employee && employee.id) {
-          // Employee can only access their own attendance
-          if (employee.id === employeeId) {
-            isEmployee = true;
-            currentUser = employee;
-            console.log('✅ Employee session validated - OWN DATA ACCESS ONLY');
-          } else {
-            throw new Error('Access denied. You can only view your own attendance.');
-          }
-        }
-      } catch (error) {
-        console.log('❌ Invalid employee session data');
-      }
-    }
-    
-    // If neither session is valid, throw error
-    if (!isAdmin && !isEmployee) {
-      throw new Error('No valid session found. Please log in as admin or employee first.');
-    }
-    
-    console.log('🔍 Querying attendance for employee:', employeeId);
-    
-    const q = query(
-      collection(db, 'attendance'), 
-      where('employeeId', '==', employeeId),
-      orderBy('date', 'desc')
-    );
+    // Fallback to old attendance collection if it exists
+    const q = query(collection(db, 'attendance'), where('employeeId', '==', employeeId));
     const querySnapshot = await getDocs(q);
     const attendanceRecords: any[] = [];
     
@@ -1440,13 +1435,11 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
       attendanceRecords.push({ id: doc.id, ...doc.data() });
     });
     
-    console.log('✅ Employee attendance records found:', attendanceRecords.length);
+    console.log('✅ Attendance records found:', attendanceRecords.length);
     return attendanceRecords;
   } catch (error) {
-    console.error('Error getting employee attendance:', error);
-    // Return empty array instead of throwing error for better UX
-    console.log('⚠️ Returning empty attendance array due to error');
-    return [];
+    console.error('Error getting attendance by employee:', error);
+    throw error;
   }
 }; 
 
