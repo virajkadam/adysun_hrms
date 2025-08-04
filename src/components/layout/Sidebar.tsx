@@ -63,11 +63,6 @@ const Sidebar = () => {
       name: 'Documents',
       icon: <FiFile className="w-5 h-5" />
     },
-    {
-      path: '/profile',
-      name: 'My Profile',
-      icon: <FiUser className="w-5 h-5" />
-    },
   ];
 
   // Add Enquiries link for admins only
@@ -78,6 +73,13 @@ const Sidebar = () => {
       icon: <FiMail className="w-5 h-5" />
     });
   }
+
+  // Add Profile at the end
+  menuItems.push({
+    path: '/profile',
+    name: 'My Profile',
+    icon: <FiUser className="w-5 h-5" />
+  });
 
   return (
     <>
