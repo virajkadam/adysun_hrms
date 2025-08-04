@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
 
 type LoginFormValues = {
   phone: string;
@@ -47,9 +48,10 @@ export default function LoginPage() {
         toast.error('Invalid credentials or access denied.', { id: 'login' });
         setIsLoading(false);
       }
-    } catch (error: any) {
-      setError(error.message || 'Login failed');
-      toast.error(error.message || 'Login failed', { id: 'login' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      setError(errorMessage);
+      toast.error(errorMessage, { id: 'login' });
       setIsLoading(false);
     }
   };
@@ -160,6 +162,19 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        {/* Enquiry Link */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600 mb-2">
+            Looking for job opportunities?
+          </p>
+          <Link
+            href="/enquiry/submit"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Job enquiry form
+          </Link>
+        </div>
       </div>
     </div>
   );
