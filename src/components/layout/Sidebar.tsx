@@ -56,16 +56,6 @@ const Sidebar = () => {
       icon: <FiUsers className="w-5 h-5" />
     },
     {
-      path: '/dashboard/attendance',
-      name: 'Attendance',
-      icon: <FiCalendar className="w-5 h-5" />
-    },
-    // {
-    //   path: '/employments',
-    //   name: 'Employments',
-    //   icon: <FiBriefcase className="w-5 h-5" />
-    // },
-    {
       path: '/dashboard/documents',
       name: 'Documents',
       icon: <FiFile className="w-5 h-5" />
