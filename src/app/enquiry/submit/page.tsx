@@ -167,7 +167,7 @@ export default function EnquirySubmitPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Name *
+                    <span className="text-red-500">*</span> Name
                   </label>
                   <input
                     type="text"
@@ -182,7 +182,7 @@ export default function EnquirySubmitPage() {
                 </div>
                 <div>
                   <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">
-                    Mobile *
+                    <span className="text-red-500">*</span> Mobile  
                   </label>
                   <input
                     type="tel"
@@ -361,7 +361,7 @@ export default function EnquirySubmitPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-4">
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                    Message *
+                    <span className="text-red-500">*</span> Message
                   </label>
                   <textarea
                     id="message"
