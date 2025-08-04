@@ -393,17 +393,6 @@ export default function LeavesPage({
                 </div>
               </div>
             )}
-
-            {/* Leave History Chart */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Leave History
-              </h2>
-              <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Leave History Chart Placeholder</p>
-              </div>
-            </div>
-
             {/* Recent Leave Requests */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-200">
