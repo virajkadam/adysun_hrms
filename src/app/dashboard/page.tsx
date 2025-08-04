@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FiUsers, FiBriefcase, FiRefreshCw, FiCalendar } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiRefreshCw, FiMail } from 'react-icons/fi';
 import { Toaster, toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -77,10 +77,10 @@ export default function DashboardPage() {
       color: 'bg-blue-50'
     },
     {
-      title: 'Attendance',
+      title: 'Enquiry',
       count: attendanceCount,
-      icon: <FiCalendar className="w-8 h-8 text-green-500" />,
-      link: '/dashboard/attendance',
+      icon: <FiMail className="w-8 h-8 text-green-500" />,
+      link: '/enquiry',
       color: 'bg-green-50'
     },
   ];
@@ -165,11 +165,11 @@ export default function DashboardPage() {
           </Link>
           
           <Link
-            href="/dashboard/attendance"
+            href="/enquiry"
             className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
           >
-            <h3 className="font-medium text-gray-800">Attendance</h3>
-            <p className="text-sm text-gray-600 mt-1">View and manage attendance records</p>
+            <h3 className="font-medium text-gray-800">Enquiry</h3>
+            <p className="text-sm text-gray-600 mt-1">View and manage enquiry records</p>
           </Link>
           
           <Link

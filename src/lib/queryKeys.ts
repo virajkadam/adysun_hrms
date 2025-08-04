@@ -64,4 +64,13 @@ export const queryKeys = {
     detail: (id: string) => [...queryKeys.admins.details(), id] as const,
     byPhone: (phone: string) => [...queryKeys.admins.all, 'byPhone', phone] as const,
   },
+  
+  // Enquiry keys
+  enquiries: {
+    all: ['enquiries'] as const,
+    lists: () => [...queryKeys.enquiries.all, 'list'] as const,
+    list: (filters?: string) => [...queryKeys.enquiries.lists(), { filters: filters || 'all' }] as const,
+    details: () => [...queryKeys.enquiries.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.enquiries.details(), id] as const,
+  },
 }; 

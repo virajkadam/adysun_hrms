@@ -9,6 +9,7 @@ import { ActionButton } from '@/components/ui/ActionButton';
 import { FiEye, FiTrash2 } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import Pagination from '@/components/ui/Pagination';
 
 interface Enquiry {
   id: string;
@@ -29,6 +30,8 @@ export default function EnquiryListPage() {
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   useEffect(() => {
     const fetchEnquiries = async () => {
@@ -65,6 +68,21 @@ export default function EnquiryListPage() {
     }
     return null;
   }
+
+  const totalItems = enquiries.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedEnquiries = enquiries.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
 
   return (
     <DashboardLayout
@@ -120,7 +138,7 @@ export default function EnquiryListPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {enquiries.map((enquiry) => (
+                {paginatedEnquiries.map((enquiry) => (
                   <tr key={enquiry.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
@@ -185,6 +203,16 @@ export default function EnquiryListPage() {
               </tbody>
             </table>
           </div>
+        )}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         )}
       </div>
     </DashboardLayout>
