@@ -7,7 +7,7 @@ import QueryProvider from "@/components/providers/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
+  title: "Adysun HRMS",
   description: "Employee Management System",
 };
 
