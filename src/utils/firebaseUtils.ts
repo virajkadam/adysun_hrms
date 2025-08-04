@@ -960,22 +960,54 @@ export const getEmployeeLeaves = async (employeeId: string) => {
   try {
     console.log('🔍 Fetching employee leave data...');
     
-    // Check for employee session
+    // Check for admin session first - ADMIN HAS FULL ACCESS
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    // Check for employee session as fallback - EMPLOYEE RESTRICTED TO OWN DATA
     const employeeSessionId = localStorage.getItem('employeeSessionId');
     const employeeData = localStorage.getItem('employeeData');
     
-    if (!employeeSessionId || !employeeData) {
-      throw new Error('No employee session found. Please log in as employee first.');
+    let isAdmin = false;
+    let isEmployee = false;
+    
+    // Validate admin session - ADMIN CAN ACCESS ANY EMPLOYEE DATA
+    if (adminSessionId && adminData) {
+      try {
+        const admin = JSON.parse(adminData);
+        if (admin && admin.id) {
+          isAdmin = true;
+          console.log('✅ Admin session validated - FULL ACCESS GRANTED');
+        }
+      } catch (error) {
+        console.log('❌ Invalid admin session data');
+      }
     }
     
-    const currentEmployee = JSON.parse(employeeData);
-    
-    // Security check: Employee can only access their own data
-    if (currentEmployee.id !== employeeId) {
-      throw new Error('Access denied. You can only view your own data.');
+    // Validate employee session - EMPLOYEE CAN ONLY ACCESS OWN DATA
+    if (!isAdmin && employeeSessionId && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee && employee.id) {
+          // Employee can only access their own leave data
+          if (employee.id === employeeId) {
+            isEmployee = true;
+            console.log('✅ Employee session validated - OWN DATA ACCESS ONLY');
+          } else {
+            throw new Error('Access denied. You can only view your own leave data.');
+          }
+        }
+      } catch (error) {
+        console.log('❌ Invalid employee session data');
+      }
     }
     
-    console.log('✅ Employee session validated for leave data');
+    // If neither session is valid, throw error
+    if (!isAdmin && !isEmployee) {
+      throw new Error('No valid session found. Please log in as admin or employee first.');
+    }
+    
+    console.log('✅ Session validated for leave data access');
     
     const q = query(collection(db, 'leaves'), where('employeeId', '==', employeeId));
     const querySnapshot = await getDocs(q);
@@ -1274,12 +1306,12 @@ export const getAllAttendance = async () => {
   try {
     console.log('🔍 Fetching all attendance records...');
     
-    // Check for admin session
+    // Check for admin session - ONLY ADMIN CAN ACCESS ALL ATTENDANCE
     const adminSessionId = localStorage.getItem('adminSessionId');
     const adminData = localStorage.getItem('adminData');
     
     if (!adminSessionId || !adminData) {
-      throw new Error('No admin session found. Please log in as admin first.');
+      throw new Error('No admin session found. Only admins can view all attendance records.');
     }
     
     // Validate admin session
@@ -1288,7 +1320,7 @@ export const getAllAttendance = async () => {
       if (!admin || !admin.id) {
         throw new Error('Invalid admin session data.');
       }
-      console.log('✅ Admin session validated for attendance access');
+      console.log('✅ Admin session validated - FULL ACCESS TO ALL ATTENDANCE');
     } catch (error) {
       console.error('❌ Invalid admin session data:', error);
       throw new Error('Invalid admin session. Please log in again.');
@@ -1344,11 +1376,11 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
       return [];
     }
     
-    // Check for admin session first
+    // Check for admin session first - ADMIN HAS FULL ACCESS
     const adminSessionId = localStorage.getItem('adminSessionId');
     const adminData = localStorage.getItem('adminData');
     
-    // Check for employee session as fallback
+    // Check for employee session as fallback - EMPLOYEE RESTRICTED TO OWN DATA
     const employeeSessionId = localStorage.getItem('employeeSessionId');
     const employeeData = localStorage.getItem('employeeData');
     
@@ -1356,21 +1388,21 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
     let isEmployee = false;
     let currentUser = null;
     
-    // Validate admin session
+    // Validate admin session - ADMIN CAN ACCESS ANY EMPLOYEE DATA
     if (adminSessionId && adminData) {
       try {
         const admin = JSON.parse(adminData);
         if (admin && admin.id) {
           isAdmin = true;
           currentUser = admin;
-          console.log('✅ Admin session validated');
+          console.log('✅ Admin session validated - FULL ACCESS GRANTED');
         }
       } catch (error) {
         console.log('❌ Invalid admin session data');
       }
     }
     
-    // Validate employee session if not admin
+    // Validate employee session - EMPLOYEE CAN ONLY ACCESS OWN DATA
     if (!isAdmin && employeeSessionId && employeeData) {
       try {
         const employee = JSON.parse(employeeData);
@@ -1379,7 +1411,7 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
           if (employee.id === employeeId) {
             isEmployee = true;
             currentUser = employee;
-            console.log('✅ Employee session validated for own attendance');
+            console.log('✅ Employee session validated - OWN DATA ACCESS ONLY');
           } else {
             throw new Error('Access denied. You can only view your own attendance.');
           }
@@ -1389,11 +1421,9 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
       }
     }
     
-    // For development/testing, allow access if no session is found
-    // This should be removed in production
+    // If neither session is valid, throw error
     if (!isAdmin && !isEmployee) {
-      console.log('⚠️ No valid session found, but allowing access for development');
-      console.log('🔧 This should be restricted in production');
+      throw new Error('No valid session found. Please log in as admin or employee first.');
     }
     
     console.log('🔍 Querying attendance for employee:', employeeId);
@@ -1425,22 +1455,54 @@ export const getEmployeeSalaries = async (employeeId: string) => {
   try {
     console.log('🔍 Fetching employee salary data...');
     
-    // Check for employee session
+    // Check for admin session first - ADMIN HAS FULL ACCESS
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    // Check for employee session as fallback - EMPLOYEE RESTRICTED TO OWN DATA
     const employeeSessionId = localStorage.getItem('employeeSessionId');
     const employeeData = localStorage.getItem('employeeData');
     
-    if (!employeeSessionId || !employeeData) {
-      throw new Error('No employee session found. Please log in as employee first.');
+    let isAdmin = false;
+    let isEmployee = false;
+    
+    // Validate admin session - ADMIN CAN ACCESS ANY EMPLOYEE DATA
+    if (adminSessionId && adminData) {
+      try {
+        const admin = JSON.parse(adminData);
+        if (admin && admin.id) {
+          isAdmin = true;
+          console.log('✅ Admin session validated - FULL ACCESS GRANTED');
+        }
+      } catch (error) {
+        console.log('❌ Invalid admin session data');
+      }
     }
     
-    const currentEmployee = JSON.parse(employeeData);
-    
-    // Security check: Employee can only access their own data
-    if (currentEmployee.id !== employeeId) {
-      throw new Error('Access denied. You can only view your own data.');
+    // Validate employee session - EMPLOYEE CAN ONLY ACCESS OWN DATA
+    if (!isAdmin && employeeSessionId && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee && employee.id) {
+          // Employee can only access their own salary data
+          if (employee.id === employeeId) {
+            isEmployee = true;
+            console.log('✅ Employee session validated - OWN DATA ACCESS ONLY');
+          } else {
+            throw new Error('Access denied. You can only view your own salary data.');
+          }
+        }
+      } catch (error) {
+        console.log('❌ Invalid employee session data');
+      }
     }
     
-    console.log('✅ Employee session validated for salary data');
+    // If neither session is valid, throw error
+    if (!isAdmin && !isEmployee) {
+      throw new Error('No valid session found. Please log in as admin or employee first.');
+    }
+    
+    console.log('✅ Session validated for salary data access');
     console.log('🔍 Fetching salaries for employee:', employeeId);
     
     const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
