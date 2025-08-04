@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { FiUsers, FiBriefcase, FiRefreshCw } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiRefreshCw, FiCalendar } from 'react-icons/fi';
 import { Toaster, toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const {
     employeeCount,
     employmentCount,
+    attendanceCount,
     isLoading,
     isError,
     error,
@@ -74,6 +75,13 @@ export default function DashboardPage() {
       icon: <FiUsers className="w-8 h-8 text-blue-500" />,
       link: '/employees',
       color: 'bg-blue-50'
+    },
+    {
+      title: 'Attendance',
+      count: attendanceCount,
+      icon: <FiCalendar className="w-8 h-8 text-green-500" />,
+      link: '/dashboard/attendance',
+      color: 'bg-green-50'
     },
   ];
 
@@ -156,13 +164,13 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-600 mt-1">Create a new employee record</p>
           </Link>
           
-          {/* <Link
-            href="/employments/add"
+          <Link
+            href="/dashboard/attendance"
             className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200"
           >
-            <h3 className="font-medium text-gray-800">Add Employment</h3>
-            <p className="text-sm text-gray-600 mt-1">Create a new employment record</p>
-          </Link> */}
+            <h3 className="font-medium text-gray-800">Attendance</h3>
+            <p className="text-sm text-gray-600 mt-1">View and manage attendance records</p>
+          </Link>
           
           <Link
             href="/dashboard/documents"

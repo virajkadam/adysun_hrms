@@ -6,9 +6,11 @@ import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployeeAttendance } from '@/utils/firebaseUtils';
+import { useAttendanceByEmployee, useTodayAttendance, useMarkAttendanceCheckIn, useMarkAttendanceCheckOut } from '@/hooks/useAttendance';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import TableHeader from '@/components/ui/TableHeader';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '@/firebase/config';
 
 interface AttendanceRecord {
   id: string;
@@ -21,24 +23,41 @@ interface AttendanceRecord {
 
 interface TodayAttendance {
   isCheckedIn: boolean;
+  isCheckedOut: boolean;
   checkInTime?: string;
   checkOutTime?: string;
-  checkInDate?: string;
-  checkOutDate?: string;
+  status?: string;
+  totalHours?: number;
 }
 
 export default function EmployeeAttendancePage() {
-  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [todayAttendance, setTodayAttendance] = useState<TodayAttendance>({
-    isCheckedIn: false
-  });
-  const [isMarkingAttendance, setIsMarkingAttendance] = useState(false);
   
   const router = useRouter();
   const { currentUserData } = useAuth();
+
+  // Use attendance hooks
+  const {
+    data: attendanceRecords = [],
+    isLoading: attendanceLoading,
+    isError: attendanceError,
+    error: attendanceErrorData
+  } = useAttendanceByEmployee(currentUserData?.id || '');
+
+  const {
+    data: todayAttendance = {
+      isCheckedIn: false,
+      isCheckedOut: false
+    },
+    isLoading: todayLoading,
+    isError: todayError,
+    error: todayErrorData
+  } = useTodayAttendance(currentUserData?.id || '');
+
+  // Attendance mutations
+  const checkInMutation = useMarkAttendanceCheckIn();
+  const checkOutMutation = useMarkAttendanceCheckOut();
 
   useEffect(() => {
     // Check if user is authenticated and is employee
@@ -46,154 +65,60 @@ export default function EmployeeAttendancePage() {
       router.push('/login');
       return;
     }
+  }, [currentUserData, router]);
 
-    // Fetch attendance data for the current employee
-    const fetchAttendanceData = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Use the employee-specific function to fetch attendance data
-        const attendanceData = await getEmployeeAttendance(currentUserData.id);
-        
-        // Transform the data to match the expected format
-        const transformedData: AttendanceRecord[] = attendanceData.map((record: any) => ({
-          id: record.id,
-          date: record.date,
-          checkIn: record.checkIn || '09:00 AM',
-          checkOut: record.checkOut || '06:00 PM',
-          status: record.status || 'present',
-          totalHours: record.totalHours || 9
-        }));
-        
-        setAttendanceRecords(transformedData);
-      } catch (error) {
-        console.error('Error fetching attendance data:', error);
-        toast.error('Failed to load attendance data');
-        
-        // Fallback to mock data if API fails
-        const mockData: AttendanceRecord[] = [
-          {
-            id: '1',
-            date: '2024-01-15',
-            checkIn: '09:00 AM',
-            checkOut: '06:00 PM',
-            status: 'present',
-            totalHours: 9
-          },
-          {
-            id: '2',
-            date: '2024-01-16',
-            checkIn: '09:15 AM',
-            checkOut: '06:00 PM',
-            status: 'late',
-            totalHours: 8.75
-          },
-          {
-            id: '3',
-            date: '2024-01-17',
-            checkIn: '09:00 AM',
-            checkOut: '03:00 PM',
-            status: 'half-day',
-            totalHours: 6
-          },
-          {
-            id: '4',
-            date: '2024-01-18',
-            checkIn: '09:00 AM',
-            checkOut: '06:00 PM',
-            status: 'present',
-            totalHours: 9
-          },
-          {
-            id: '5',
-            date: '2024-01-19',
-            checkIn: '09:00 AM',
-            checkOut: '06:00 PM',
-            status: 'present',
-            totalHours: 9
-          }
-        ];
-        
-        setAttendanceRecords(mockData);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchAttendanceData();
-  }, [currentUserData, router, currentMonth, currentYear]);
-
-  // Check today's attendance status
+  // Handle errors
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    const todayRecord = attendanceRecords.find(record => record.date === today);
-    
-    if (todayRecord) {
-      setTodayAttendance({
-        isCheckedIn: true,
-        checkInTime: todayRecord.checkIn,
-        checkInDate: todayRecord.date,
-        checkOutTime: todayRecord.checkOut || undefined,
-        checkOutDate: todayRecord.checkOut ? todayRecord.date : undefined
-      });
+    if (attendanceError && attendanceErrorData) {
+      console.error('Attendance data error:', attendanceErrorData);
+      toast.error('Failed to load attendance data');
     }
-  }, [attendanceRecords]);
+  }, [attendanceError, attendanceErrorData]);
+
+  useEffect(() => {
+    if (todayError && todayErrorData) {
+      console.error('Today attendance error:', todayErrorData);
+      toast.error('Failed to load today\'s attendance');
+    }
+  }, [todayError, todayErrorData]);
 
   const handleCheckIn = async () => {
     try {
-      setIsMarkingAttendance(true);
+      // Get employment ID for the employee
+      const employmentQuery = query(
+        collection(db, 'employments'),
+        where('employeeId', '==', currentUserData?.id)
+      );
+      const employmentSnapshot = await getDocs(employmentQuery);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (employmentSnapshot.empty) {
+        throw new Error('No employment record found for this employee.');
+      }
       
-      const now = new Date();
-      const currentTime = now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      });
-      const currentDate = now.toISOString().split('T')[0];
+      const employmentId = employmentSnapshot.docs[0].id;
       
-      setTodayAttendance({
-        isCheckedIn: true,
-        checkInTime: currentTime,
-        checkInDate: currentDate
+      // Mark attendance check-in
+      await checkInMutation.mutateAsync({ 
+        employeeId: currentUserData?.id || '', 
+        employmentId 
       });
       
       toast.success('Check-in successful!');
-    } catch {
-      toast.error('Check-in failed. Please try again.');
-    } finally {
-      setIsMarkingAttendance(false);
+    } catch (error) {
+      console.error('Check-in error:', error);
+      toast.error(error instanceof Error ? error.message : 'Check-in failed. Please try again.');
     }
   };
 
   const handleCheckOut = async () => {
     try {
-      setIsMarkingAttendance(true);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const now = new Date();
-      const currentTime = now.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        hour12: true 
-      });
-      const currentDate = now.toISOString().split('T')[0];
-      
-      setTodayAttendance(prev => ({
-        ...prev,
-        checkOutTime: currentTime,
-        checkOutDate: currentDate
-      }));
+      // Mark attendance check-out
+      await checkOutMutation.mutateAsync(currentUserData?.id || '');
       
       toast.success('Check-out successful!');
-    } catch {
-      toast.error('Check-out failed. Please try again.');
-    } finally {
-      setIsMarkingAttendance(false);
+    } catch (error) {
+      console.error('Check-out error:', error);
+      toast.error(error instanceof Error ? error.message : 'Check-out failed. Please try again.');
     }
   };
 
@@ -254,6 +179,18 @@ export default function EmployeeAttendancePage() {
     }
   };
 
+  // Transform attendance data to match expected format
+  const transformedAttendanceRecords: AttendanceRecord[] = attendanceRecords.map((record: any) => ({
+    id: record.id,
+    date: record.date,
+    checkIn: record.checkInTime || '09:00 AM',
+    checkOut: record.checkOutTime || '06:00 PM',
+    status: record.status || 'present',
+    totalHours: record.totalHours || 9
+  }));
+
+  const isLoading = attendanceLoading || todayLoading;
+
   if (isLoading) {
     return (
       <EmployeeLayout>
@@ -273,15 +210,13 @@ export default function EmployeeAttendancePage() {
     >
       <Toaster position="top-center" />
       
-      
-
-            {/* Attendance Records Section */}
+      {/* Attendance Records Section */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Attendance Records"
-          total={attendanceRecords.length}
-          active={attendanceRecords.filter(record => record.status === 'present').length}
-          inactive={attendanceRecords.filter(record => record.status === 'absent').length}
+          total={transformedAttendanceRecords.length}
+          active={transformedAttendanceRecords.filter(record => record.status === 'present').length}
+          inactive={transformedAttendanceRecords.filter(record => record.status === 'absent').length}
           searchValue=""
           onSearchChange={() => {}}
           showSearch={false}
@@ -293,19 +228,39 @@ export default function EmployeeAttendancePage() {
             isCheckedIn: todayAttendance.isCheckedIn,
             checkInTime: todayAttendance.checkInTime,
             checkOutTime: todayAttendance.checkOutTime,
-            checkInDate: todayAttendance.checkInDate,
-            checkOutDate: todayAttendance.checkOutDate,
+            checkInDate: todayAttendance.isCheckedIn ? new Date().toISOString().split('T')[0] : undefined,
+            checkOutDate: todayAttendance.isCheckedOut ? new Date().toISOString().split('T')[0] : undefined,
             employeeName: currentUserData?.name
           }}
           onCheckIn={handleCheckIn}
           onCheckOut={handleCheckOut}
-          isMarkingAttendance={isMarkingAttendance}
+          isMarkingAttendance={checkInMutation.isPending || checkOutMutation.isPending}
         />
 
         <div className="p-6">
+          {/* Month Navigation */}
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => handleMonthChange('prev')}
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
+                ←
+              </button>
+              <h2 className="text-lg font-semibold">
+                {getMonthName(currentMonth)} {currentYear}
+              </h2>
+              <button
+                onClick={() => handleMonthChange('next')}
+                className="p-2 rounded-md hover:bg-gray-100"
+              >
+                →
+              </button>
+            </div>
+          </div>
 
           {/* Attendance Records Table */}
-          {attendanceRecords.length === 0 ? (
+          {transformedAttendanceRecords.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500">No attendance records found for this month.</p>
@@ -333,7 +288,7 @@ export default function EmployeeAttendancePage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {attendanceRecords.map((record) => (
+                  {transformedAttendanceRecords.map((record) => (
                     <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {formatDateToDayMonYear(record.date)}
@@ -361,8 +316,6 @@ export default function EmployeeAttendancePage() {
               </table>
             </div>
           )}
-
-
         </div>
       </div>
     </EmployeeLayout>

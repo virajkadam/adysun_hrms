@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { getEmployees, getEmployments } from '@/utils/firebaseUtils';
+import { getEmployees, getEmployments, getAllAttendance } from '@/utils/firebaseUtils';
 import { queryKeys } from '@/lib/queryKeys';
 
 // Dashboard stats type
 export interface DashboardStats {
   employeeCount: number;
   employmentCount: number;
+  attendanceCount: number;
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
@@ -14,7 +15,7 @@ export interface DashboardStats {
 
 /**
  * Custom hook for fetching dashboard statistics
- * Combines employee and employment data with intelligent caching
+ * Combines employee, employment, and attendance data with intelligent caching
  */
 export const useDashboardStats = (): DashboardStats => {
   // Fetch employees
@@ -43,22 +44,37 @@ export const useDashboardStats = (): DashboardStats => {
     refetchOnWindowFocus: false,
   });
 
+  // Fetch attendance
+  const {
+    data: attendanceRecords = [],
+    isLoading: attendanceLoading,
+    isError: attendanceError,
+    error: attendanceErrorData,
+    refetch: refetchAttendance
+  } = useQuery({
+    queryKey: queryKeys.attendance.lists(),
+    queryFn: getAllAttendance,
+    refetchOnWindowFocus: false,
+  });
+
   // Combined loading state
-  const isLoading = employeesLoading || employmentsLoading;
+  const isLoading = employeesLoading || employmentsLoading || attendanceLoading;
   
   // Combined error state
-  const isError = employeesError || employmentsError;
-  const error = employeesErrorData || employmentsErrorData;
+  const isError = employeesError || employmentsError || attendanceError;
+  const error = employeesErrorData || employmentsErrorData || attendanceErrorData;
 
   // Combined refetch function
   const refetch = () => {
     refetchEmployees();
     refetchEmployments();
+    refetchAttendance();
   };
 
   return {
     employeeCount: employees.length,
     employmentCount: employments.length,
+    attendanceCount: attendanceRecords.length,
     isLoading,
     isError,
     error,
@@ -99,18 +115,34 @@ export const useDashboardStatsOptimized = (): DashboardStats => {
     notifyOnChangeProps: ['data', 'error'],
   });
 
-  const isLoading = employeesLoading || employmentsLoading;
-  const isError = employeesError || employmentsError;
-  const error = employeesErrorData || employmentsErrorData;
+  const {
+    data: attendanceRecords = [],
+    isLoading: attendanceLoading,
+    isError: attendanceError,
+    error: attendanceErrorData,
+    refetch: refetchAttendance
+  } = useQuery({
+    queryKey: queryKeys.attendance.lists(),
+    queryFn: getAllAttendance,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    notifyOnChangeProps: ['data', 'error'],
+  });
+
+  const isLoading = employeesLoading || employmentsLoading || attendanceLoading;
+  const isError = employeesError || employmentsError || attendanceError;
+  const error = employeesErrorData || employmentsErrorData || attendanceErrorData;
 
   const refetch = () => {
     refetchEmployees();
     refetchEmployments();
+    refetchAttendance();
   };
 
   return {
     employeeCount: employees.length,
     employmentCount: employments.length,
+    attendanceCount: attendanceRecords.length,
     isLoading,
     isError,
     error,

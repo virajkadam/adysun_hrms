@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiHome, FiUser } from 'react-icons/fi';
+import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiHome, FiUser, FiCalendar } from 'react-icons/fi';
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -25,6 +25,11 @@ const Sidebar = () => {
     if (path === '/dashboard/documents') {
       // For documents, consider any document-related path to be active
       return pathname.includes('/documents') || pathname.includes('/doc_pages');
+    }
+    
+    if (path === '/dashboard/attendance') {
+      // For attendance, consider attendance-related paths to be active
+      return pathname.includes('/attendance');
     }
     
     if (path === '/employees') {
@@ -49,6 +54,11 @@ const Sidebar = () => {
       path: '/employees',
       name: 'Employees',
       icon: <FiUsers className="w-5 h-5" />
+    },
+    {
+      path: '/dashboard/attendance',
+      name: 'Attendance',
+      icon: <FiCalendar className="w-5 h-5" />
     },
     // {
     //   path: '/employments',

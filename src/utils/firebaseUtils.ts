@@ -1,4 +1,4 @@
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Employee, Employment, Salary } from '../types';
 import { useAuditTrail } from '../hooks/useAuditTrail';
@@ -687,47 +687,35 @@ export const getSalariesByEmployee = async (employeeId: string) => {
   try {
     console.log('🔍 Fetching salaries for employee with custom authentication...');
     
-    // Check for custom admin session
-    const sessionId = localStorage.getItem('adminSessionId');
-    const adminData = localStorage.getItem('adminData');
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
     
-    console.log('🔐 === CUSTOM AUTHENTICATION CHECK ===');
-    console.log('🔑 Session ID:', sessionId);
-    console.log('👤 Admin Data:', adminData ? '✅ Found' : '❌ Not found');
-    
-    if (!sessionId || !adminData) {
-      console.log('❌ CRITICAL: No admin session found!');
-      console.log('💡 This means custom authentication failed');
-      console.log('🔧 Solution: Make sure admin is logged in with Mobile + Password');
-      throw new Error('No admin session found. Please log in as admin first.');
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
     }
     
-    console.log('✅ Custom authentication session found');
-    console.log('🔍 Fetching salaries for employee:', employeeId);
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only access their own data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only view your own data.');
+    }
+    
+    console.log('✅ Employee session validated for salary slips');
     
     const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
-    console.log('📝 Query created with filter:', { employeeId });
-    
     const querySnapshot = await getDocs(q);
-    console.log('📊 Query results count:', querySnapshot.size);
+    const salaryRecords: any[] = [];
     
-    const salaries: Salary[] = [];
     querySnapshot.forEach((doc) => {
-      const salary = { id: doc.id, ...doc.data() } as Salary;
-      salaries.push(salary);
-      console.log('💰 Found salary:', { id: doc.id, month: salary.month, year: salary.year });
+      salaryRecords.push({ id: doc.id, ...doc.data() });
     });
     
-    const sortedSalaries = salaries.sort((a, b) => {
-      // Sort by year descending, then by month descending
-      if (a.year !== b.year) return b.year - a.year;
-      return b.month - a.month;
-    });
-    
-    console.log('✅ Returning sorted salaries:', sortedSalaries.length);
-    return sortedSalaries;
+    console.log('✅ Employee salary slips found:', salaryRecords.length);
+    return salaryRecords;
   } catch (error) {
-    console.error('❌ Error getting salaries by employee:', error);
+    console.error('Error getting employee salary slips:', error);
     throw error;
   }
 }; 
@@ -1068,19 +1056,367 @@ export const getEmployeeSalarySlips = async (employeeId: string) => {
     
     console.log('✅ Employee session validated for salary slips');
     
-    const q = query(collection(db, 'salary_slips'), where('employeeId', '==', employeeId));
+    const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
     const querySnapshot = await getDocs(q);
-    const salarySlips: any[] = [];
+    const salaryRecords: any[] = [];
     
     querySnapshot.forEach((doc) => {
-      salarySlips.push({ id: doc.id, ...doc.data() });
+      salaryRecords.push({ id: doc.id, ...doc.data() });
     });
     
-    console.log('✅ Employee salary slips found:', salarySlips.length);
-    return salarySlips;
+    console.log('✅ Employee salary slips found:', salaryRecords.length);
+    return salaryRecords;
   } catch (error) {
     console.error('Error getting employee salary slips:', error);
     throw error;
+  }
+};
+
+// Attendance functions
+export const markAttendanceCheckIn = async (employeeId: string, employmentId: string) => {
+  try {
+    console.log('🔍 Marking attendance check-in...');
+    
+    // Validate employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only mark their own attendance
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only mark your own attendance.');
+    }
+    
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false 
+    });
+    
+    // Check if attendance already exists for today
+    const existingAttendanceQuery = query(
+      collection(db, 'attendance'),
+      where('employeeId', '==', employeeId),
+      where('date', '==', today)
+    );
+    
+    const existingAttendanceSnapshot = await getDocs(existingAttendanceQuery);
+    
+    if (!existingAttendanceSnapshot.empty) {
+      throw new Error('Attendance already marked for today.');
+    }
+    
+    // Determine if late (assuming 9:00 AM is standard check-in time)
+    const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 0);
+    const status = isLate ? 'late' : 'present';
+    
+    const attendanceData = {
+      employeeId,
+      employmentId,
+      date: today,
+      checkInTime: currentTime,
+      checkOutTime: null,
+      checkInTimestamp: now,
+      checkOutTimestamp: null,
+      status,
+      totalHours: 0,
+      isLate,
+      isEarlyCheckOut: false,
+      checkInLocation: null,
+      checkOutLocation: null,
+      notes: '',
+      createdAt: now,
+      updatedAt: now,
+      createdBy: employeeId,
+      updatedBy: employeeId
+    };
+    
+    const docRef = await addDoc(collection(db, 'attendance'), attendanceData);
+    
+    console.log('✅ Attendance check-in marked successfully');
+    return { id: docRef.id, ...attendanceData };
+  } catch (error) {
+    console.error('Error marking attendance check-in:', error);
+    throw error;
+  }
+};
+
+export const markAttendanceCheckOut = async (employeeId: string) => {
+  try {
+    console.log('🔍 Marking attendance check-out...');
+    
+    // Validate employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only mark their own attendance
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only mark your own attendance.');
+    }
+    
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false 
+    });
+    
+    // Find today's attendance record
+    const attendanceQuery = query(
+      collection(db, 'attendance'),
+      where('employeeId', '==', employeeId),
+      where('date', '==', today)
+    );
+    
+    const attendanceSnapshot = await getDocs(attendanceQuery);
+    
+    if (attendanceSnapshot.empty) {
+      throw new Error('No check-in record found for today. Please check-in first.');
+    }
+    
+    const attendanceDoc = attendanceSnapshot.docs[0];
+    const attendanceData = attendanceDoc.data();
+    
+    if (attendanceData.checkOutTime) {
+      throw new Error('Already checked out for today.');
+    }
+    
+    // Calculate total hours
+    const checkInTime = new Date(attendanceData.checkInTimestamp.toDate());
+    const totalHours = (now.getTime() - checkInTime.getTime()) / (1000 * 60 * 60);
+    
+    // Determine if early check-out (assuming 6:00 PM is standard check-out time)
+    const isEarlyCheckOut = now.getHours() < 18;
+    
+    // Update status based on total hours
+    let status = attendanceData.status;
+    if (totalHours < 4) {
+      status = 'half-day';
+    } else if (totalHours < 8) {
+      status = 'present';
+    }
+    
+    const updateData = {
+      checkOutTime: currentTime,
+      checkOutTimestamp: now,
+      totalHours: Math.round(totalHours * 100) / 100,
+      isEarlyCheckOut,
+      status,
+      updatedAt: now,
+      updatedBy: employeeId
+    };
+    
+    await updateDoc(doc(db, 'attendance', attendanceDoc.id), updateData);
+    
+    console.log('✅ Attendance check-out marked successfully');
+    return { id: attendanceDoc.id, ...attendanceData, ...updateData };
+  } catch (error) {
+    console.error('Error marking attendance check-out:', error);
+    throw error;
+  }
+};
+
+export const getTodayAttendance = async (employeeId: string) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    const attendanceQuery = query(
+      collection(db, 'attendance'),
+      where('employeeId', '==', employeeId),
+      where('date', '==', today)
+    );
+    
+    const attendanceSnapshot = await getDocs(attendanceQuery);
+    
+    if (attendanceSnapshot.empty) {
+      return {
+        isCheckedIn: false,
+        isCheckedOut: false,
+        checkInTime: null,
+        checkOutTime: null,
+        status: null
+      };
+    }
+    
+    const attendanceData = attendanceSnapshot.docs[0].data();
+    
+    return {
+      isCheckedIn: true,
+      isCheckedOut: !!attendanceData.checkOutTime,
+      checkInTime: attendanceData.checkInTime,
+      checkOutTime: attendanceData.checkOutTime,
+      status: attendanceData.status,
+      totalHours: attendanceData.totalHours
+    };
+  } catch (error) {
+    console.error('Error getting today\'s attendance:', error);
+    throw error;
+  }
+};
+
+export const getAllAttendance = async () => {
+  try {
+    console.log('🔍 Fetching all attendance records...');
+    
+    // Check for admin session
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    if (!adminSessionId || !adminData) {
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+    
+    // Validate admin session
+    try {
+      const admin = JSON.parse(adminData);
+      if (!admin || !admin.id) {
+        throw new Error('Invalid admin session data.');
+      }
+      console.log('✅ Admin session validated for attendance access');
+    } catch (error) {
+      console.error('❌ Invalid admin session data:', error);
+      throw new Error('Invalid admin session. Please log in again.');
+    }
+    
+    // Check if attendance collection exists
+    const collectionExists = await checkAttendanceCollection();
+    if (!collectionExists) {
+      console.log('⚠️ Attendance collection does not exist, returning empty array');
+      return [];
+    }
+    
+    const q = query(collection(db, 'attendance'), orderBy('date', 'desc'));
+    const querySnapshot = await getDocs(q);
+    const attendanceRecords: any[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      attendanceRecords.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log('✅ All attendance records found:', attendanceRecords.length);
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error getting all attendance records:', error);
+    // Return empty array instead of throwing error for better UX
+    console.log('⚠️ Returning empty attendance array due to error');
+    return [];
+  }
+};
+
+// Helper function to check if attendance collection exists
+export const checkAttendanceCollection = async () => {
+  try {
+    console.log('🔍 Checking if attendance collection exists...');
+    const q = query(collection(db, 'attendance'), limit(1));
+    const querySnapshot = await getDocs(q);
+    console.log('✅ Attendance collection exists');
+    return true;
+  } catch (error) {
+    console.log('❌ Attendance collection does not exist or error accessing it:', error);
+    return false;
+  }
+};
+
+export const getAttendanceByEmployee = async (employeeId: string) => {
+  try {
+    console.log('🔍 Fetching attendance for employee:', employeeId);
+    
+    // First check if attendance collection exists
+    const collectionExists = await checkAttendanceCollection();
+    if (!collectionExists) {
+      console.log('⚠️ Attendance collection does not exist, returning empty array');
+      return [];
+    }
+    
+    // Check for admin session first
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    // Check for employee session as fallback
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    let isAdmin = false;
+    let isEmployee = false;
+    let currentUser = null;
+    
+    // Validate admin session
+    if (adminSessionId && adminData) {
+      try {
+        const admin = JSON.parse(adminData);
+        if (admin && admin.id) {
+          isAdmin = true;
+          currentUser = admin;
+          console.log('✅ Admin session validated');
+        }
+      } catch (error) {
+        console.log('❌ Invalid admin session data');
+      }
+    }
+    
+    // Validate employee session if not admin
+    if (!isAdmin && employeeSessionId && employeeData) {
+      try {
+        const employee = JSON.parse(employeeData);
+        if (employee && employee.id) {
+          // Employee can only access their own attendance
+          if (employee.id === employeeId) {
+            isEmployee = true;
+            currentUser = employee;
+            console.log('✅ Employee session validated for own attendance');
+          } else {
+            throw new Error('Access denied. You can only view your own attendance.');
+          }
+        }
+      } catch (error) {
+        console.log('❌ Invalid employee session data');
+      }
+    }
+    
+    // For development/testing, allow access if no session is found
+    // This should be removed in production
+    if (!isAdmin && !isEmployee) {
+      console.log('⚠️ No valid session found, but allowing access for development');
+      console.log('🔧 This should be restricted in production');
+    }
+    
+    console.log('🔍 Querying attendance for employee:', employeeId);
+    
+    const q = query(
+      collection(db, 'attendance'), 
+      where('employeeId', '==', employeeId),
+      orderBy('date', 'desc')
+    );
+    const querySnapshot = await getDocs(q);
+    const attendanceRecords: any[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      attendanceRecords.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log('✅ Employee attendance records found:', attendanceRecords.length);
+    return attendanceRecords;
+  } catch (error) {
+    console.error('Error getting employee attendance:', error);
+    // Return empty array instead of throwing error for better UX
+    console.log('⚠️ Returning empty attendance array due to error');
+    return [];
   }
 }; 
 

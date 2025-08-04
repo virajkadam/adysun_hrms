@@ -298,4 +298,37 @@ export interface Salary {
   createdBy?: string;
   updatedAt?: string;
   updatedBy?: string;
+}
+
+// Attendance type
+export interface Attendance {
+  id: string;
+  employeeId: string;
+  employmentId: string;
+  
+  // Attendance Details
+  date: string; // YYYY-MM-DD format
+  checkInTime?: string; // HH:MM:SS format
+  checkOutTime?: string; // HH:MM:SS format
+  checkInTimestamp?: any; // Firestore timestamp
+  checkOutTimestamp?: any; // Firestore timestamp
+  
+  // Status and Calculations
+  status: 'present' | 'absent' | 'late' | 'half-day';
+  totalHours?: number;
+  isLate?: boolean;
+  isEarlyCheckOut?: boolean;
+  
+  // Location (Optional)
+  checkInLocation?: string;
+  checkOutLocation?: string;
+  
+  // Notes
+  notes?: string;
+  
+  // Audit fields
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
 } 

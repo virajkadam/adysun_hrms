@@ -37,6 +37,17 @@ export const queryKeys = {
     byEmployee: (employeeId: string) => [...queryKeys.salaries.all, 'byEmployee', employeeId] as const,
   },
   
+  // Attendance keys
+  attendance: {
+    all: ['attendance'] as const,
+    lists: () => [...queryKeys.attendance.all, 'list'] as const,
+    list: (filters?: string) => [...queryKeys.attendance.lists(), { filters: filters || 'all' }] as const,
+    details: () => [...queryKeys.attendance.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.attendance.details(), id] as const,
+    byEmployee: (employeeId: string) => [...queryKeys.attendance.all, 'byEmployee', employeeId] as const,
+    today: (employeeId: string) => [...queryKeys.attendance.all, 'today', employeeId] as const,
+  },
+  
   // Company keys
   companies: {
     all: ['companies'] as const,

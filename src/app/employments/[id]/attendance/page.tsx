@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployment } from '@/hooks/useEmployments';
 import { useEmployee } from '@/hooks/useEmployees';
+import { useAttendanceByEmployee } from '@/hooks/useAttendance';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function AttendancePage({ params }: { params: Promise<{ id: string }> }) {
@@ -31,6 +32,14 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
     isError: employeeError
   } = useEmployee(employment?.employeeId || '');
 
+  // Use Tanstack Query for attendance data
+  const {
+    data: attendanceRecords = [],
+    isLoading: attendanceLoading,
+    isError: attendanceError,
+    error: attendanceErrorData
+  } = useAttendanceByEmployee(employment?.employeeId || '');
+
   // Handle error states
   if (isError && error) {
     console.error('Employment data error:', error);
@@ -42,6 +51,12 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
     toast.error('Failed to load employee data');
   }
 
+  if (attendanceError && attendanceErrorData) {
+    console.error('Attendance data error:', attendanceErrorData);
+    // Don't show error toast for attendance, just log it
+    // This allows the page to render even if attendance data fails
+  }
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -49,7 +64,52 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
     }).format(amount);
   };
 
-  if (isLoading) {
+  // Calculate attendance statistics
+  const calculateAttendanceStats = () => {
+    if (!attendanceRecords || attendanceRecords.length === 0) {
+      return {
+        totalDays: 0,
+        presentDays: 0,
+        absentDays: 0,
+        lateDays: 0,
+        attendanceRate: 0
+      };
+    }
+
+    const totalDays = attendanceRecords.length;
+    const presentDays = attendanceRecords.filter((record: any) => record.status === 'present').length;
+    const absentDays = attendanceRecords.filter((record: any) => record.status === 'absent').length;
+    const lateDays = attendanceRecords.filter((record: any) => record.status === 'late').length;
+    const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+
+    return {
+      totalDays,
+      presentDays,
+      absentDays,
+      lateDays,
+      attendanceRate
+    };
+  };
+
+  const attendanceStats = calculateAttendanceStats();
+
+  const getStatusBadge = (status: string) => {
+    const baseClasses = "inline-flex px-2 py-1 text-xs font-semibold rounded-full";
+    switch (status) {
+      case 'present':
+        return `${baseClasses} bg-green-100 text-green-800`;
+      case 'absent':
+        return `${baseClasses} bg-red-100 text-red-800`;
+      case 'late':
+        return `${baseClasses} bg-yellow-100 text-yellow-800`;
+      case 'half-day':
+        return `${baseClasses} bg-orange-100 text-orange-800`;
+      default:
+        return `${baseClasses} bg-gray-100 text-gray-800`;
+    }
+  };
+
+  if (isLoading || employeeLoading) {
     return (
       <DashboardLayout
         breadcrumbItems={[
@@ -143,7 +203,7 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
 
   return (
     <DashboardLayout
-              breadcrumbItems={
+      breadcrumbItems={
         employee && employment ? [
           { label: 'Dashboard', href: '/dashboard' },
           { label: 'Employees', href: '/employees' },
@@ -162,13 +222,13 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Attendance Details"
-          total={0}
-          active={0}
-          inactive={0}
+          total={attendanceStats.totalDays}
+          active={attendanceStats.presentDays}
+          inactive={attendanceStats.absentDays}
           searchValue=""
           onSearchChange={() => {}}
           searchPlaceholder=""
-          showStats={false}
+          showStats={true}
           showSearch={false}
           showFilter={false}
           headerClassName="px-6 py-6"
@@ -178,7 +238,7 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
           }}
         />
 
-      {employee && (
+        {employee && (
           <div className="px-6 pb-6">
             {/* Employee Summary */}
             <div className="bg-white p-4 rounded-lg mb-6 border border-gray-200">
@@ -210,22 +270,22 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
             {/* Attendance Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-lg shadow p-5">
-                <p className="text-lg font-medium text-gray-900">85%</p>
+                <p className="text-lg font-medium text-gray-900">{attendanceStats.attendanceRate}%</p>
                 <p className="text-sm text-gray-500">Attendance Rate</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-5">
-                <p className="text-lg font-medium text-gray-900">17/20</p>
+                <p className="text-lg font-medium text-gray-900">{attendanceStats.presentDays}/{attendanceStats.totalDays}</p>
                 <p className="text-sm text-gray-500">Present Days</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-5">
-                <p className="text-lg font-medium text-gray-900">3</p>
+                <p className="text-lg font-medium text-gray-900">{attendanceStats.absentDays}</p>
                 <p className="text-sm text-gray-500">Absent Days</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-5">
-                <p className="text-lg font-medium text-gray-900">2</p>
+                <p className="text-lg font-medium text-gray-900">{attendanceStats.lateDays}</p>
                 <p className="text-sm text-gray-500">Late Days</p>
               </div>
             </div>
@@ -243,53 +303,68 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-800">Recent Attendance Records</h2>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check Out</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-15</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Present</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">09:00 AM</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">06:00 PM</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">9 hours</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-14</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Late</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">09:30 AM</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">06:00 PM</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8.5 hours</td>
-                    </tr>
-                    <tr>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-13</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Absent</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0 hours</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              
+              {attendanceLoading ? (
+                <div className="p-6">
+                  <div className="animate-pulse space-y-4">
+                    {[...Array(3)].map((_, index) => (
+                      <div key={index} className="flex space-x-4">
+                        <div className="bg-gray-200 h-4 w-24 rounded"></div>
+                        <div className="bg-gray-200 h-4 w-20 rounded"></div>
+                        <div className="bg-gray-200 h-4 w-20 rounded"></div>
+                        <div className="bg-gray-200 h-4 w-20 rounded"></div>
+                        <div className="bg-gray-200 h-4 w-16 rounded"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : attendanceRecords.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">No attendance records found for this employee.</p>
+                  <p className="text-sm text-gray-400 mt-2">Attendance records will appear here once the employee starts marking their attendance.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check In</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Check Out</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {attendanceRecords.map((record: any) => (
+                        <tr key={record.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {formatDateToDayMonYear(record.date)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={getStatusBadge(record.status)}>
+                              {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {record.checkInTime || '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {record.checkOutTime || '-'}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {record.totalHours ? `${record.totalHours} hours` : '-'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
-      )}
-
-
+        )}
       </div>
     </DashboardLayout>
   );
