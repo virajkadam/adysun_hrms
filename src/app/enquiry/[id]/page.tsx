@@ -10,6 +10,12 @@ import TableHeader from '@/components/ui/TableHeader';
 interface Enquiry {
   id: string;
   name?: string;
+  mobile?: string;
+  pan?: string;
+  passoutYear?: string;
+  technology?: string;
+  role?: string;
+  totalWorkExperience?: string;
   message: string;
   createdAt?: { seconds: number; nanoseconds: number } | string;
 }
@@ -63,26 +69,58 @@ export default function EnquiryViewPage() {
             <div className="text-red-500">{error}</div>
           ) : enquiry ? (
             <div className="space-y-4">
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Name</div>
-                <div className="text-lg font-semibold text-gray-900">{enquiry.name || 'Anonymous'}</div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Message</div>
-                <div className="text-base text-gray-800 whitespace-pre-line bg-gray-50 rounded p-3 border border-gray-100">
-                  {enquiry.message}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Name</div>
+                  <div className="text-lg font-semibold text-gray-900">{enquiry.name || 'Anonymous'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Mobile</div>
+                  <div className="text-sm text-gray-700">{enquiry.mobile || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">PAN Number</div>
+                  <div className="text-sm text-gray-700">{enquiry.pan || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Passout Year</div>
+                  <div className="text-sm text-gray-700">{enquiry.passoutYear || '-'}</div>
                 </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-500 mb-1">Submitted On</div>
-                <div className="text-sm text-gray-700">
-                  {enquiry.createdAt
-                    ? formatDateToDayMonYear(
-                        typeof enquiry.createdAt === "string"
-                          ? enquiry.createdAt
-                          : new Date(enquiry.createdAt.seconds * 1000)
-                      )
-                    : "-"}
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Technology</div>
+                  <div className="text-sm text-gray-700">{enquiry.technology || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Role</div>
+                  <div className="text-sm text-gray-700">{enquiry.role || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Total Work Experience</div>
+                  <div className="text-sm text-gray-700">{enquiry.totalWorkExperience || '-'}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 mb-1">Submitted On</div>
+                  <div className="text-sm text-gray-700">
+                    {enquiry.createdAt
+                      ? formatDateToDayMonYear(
+                          typeof enquiry.createdAt === "string"
+                            ? enquiry.createdAt
+                            : new Date(enquiry.createdAt.seconds * 1000)
+                        )
+                      : "-"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-4">
+                  <div className="text-xs text-gray-500 mb-1">Message</div>
+                  <div className="text-base text-gray-800 whitespace-pre-line bg-gray-50 rounded p-3 border border-gray-100">
+                    {enquiry.message}
+                  </div>
                 </div>
               </div>
             </div>

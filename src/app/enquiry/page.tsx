@@ -7,15 +7,25 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import TableHeader from '@/components/ui/TableHeader';
 import { ActionButton } from '@/components/ui/ActionButton';
 import { FiEye, FiTrash2 } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface Enquiry {
   id: string;
   name?: string;
+  mobile?: string;
+  pan?: string;
+  passoutYear?: string;
+  technology?: string;
+  role?: string;
+  totalWorkExperience?: string;
   message: string;
   createdAt?: { seconds: number; nanoseconds: number } | string;
 }
 
 export default function EnquiryListPage() {
+  const { currentAdmin, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +50,21 @@ export default function EnquiryListPage() {
     };
     fetchEnquiries();
   }, []);
+
+  if (authLoading) {
+    return (
+      <DashboardLayout>
+        <div className="p-8 text-center text-gray-500">Checking permissions...</div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!currentAdmin) {
+    if (typeof window !== 'undefined') {
+      router.replace('/login');
+    }
+    return null;
+  }
 
   return (
     <DashboardLayout
@@ -75,7 +100,16 @@ export default function EnquiryListPage() {
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Message
+                    Mobile
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Technology
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Experience
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Date
@@ -90,12 +124,27 @@ export default function EnquiryListPage() {
                   <tr key={enquiry.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">
-                        {enquiry.name ? enquiry.name : "Anonymous"}
+                        {enquiry.name || "Anonymous"}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate">
-                        {enquiry.message}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {enquiry.mobile || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {enquiry.technology || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {enquiry.role || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {enquiry.totalWorkExperience || "-"}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
