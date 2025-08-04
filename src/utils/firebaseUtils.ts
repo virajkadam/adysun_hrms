@@ -1300,7 +1300,8 @@ export const getTodayAttendance = async (employeeId: string) => {
         isCheckedOut: false,
         checkInTime: null,
         checkOutTime: null,
-        status: null
+        status: null,
+        totalHours: 0
       };
     }
     
@@ -1317,7 +1318,8 @@ export const getTodayAttendance = async (employeeId: string) => {
         isCheckedOut: false,
         checkInTime: null,
         checkOutTime: null,
-        status: null
+        status: null,
+        totalHours: 0
       };
     }
     
@@ -1327,7 +1329,7 @@ export const getTodayAttendance = async (employeeId: string) => {
       checkInTime: todayAttendance.checkInTime,
       checkOutTime: todayAttendance.checkOutTime,
       status: todayAttendance.status,
-      totalHours: todayAttendance.totalHours
+      totalHours: todayAttendance.totalHours || 0
     };
   } catch (error) {
     console.error('Error getting today\'s attendance:', error);
@@ -1365,13 +1367,16 @@ export const getAllAttendance = async () => {
           id: `${employmentDoc.id}_${attRecord.date}`, // Create unique ID
           employeeId: employmentData.employeeId,
           employmentId: employmentDoc.id,
+          employeeName: employmentData.employeeName || 'Unknown Employee',
+          jobTitle: employmentData.jobTitle || 'Unknown Position',
+          department: employmentData.department || 'Unknown Department',
           ...attRecord
         });
       });
     });
     
-    // Sort by date descending
-    allAttendanceRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    // Sort by date descending (most recent first)
+    allAttendanceRecords.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
     console.log('✅ All attendance records found:', allAttendanceRecords.length);
     return allAttendanceRecords;
@@ -1400,43 +1405,35 @@ export const getAttendanceByEmployee = async (employeeId: string) => {
   try {
     console.log('🔍 Fetching attendance for employee:', employeeId);
     
-    // First check if attendance collection exists
-    const collectionExists = await checkAttendanceCollection();
+    // Get employment for this employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
     
-    if (!collectionExists) {
-      console.log('⚠️ Attendance collection does not exist, fetching from employment');
-      
-      // Get employment for this employee
-      const employmentQuery = query(
-        collection(db, 'employments'),
-        where('employeeId', '==', employeeId)
-      );
-      const employmentSnapshot = await getDocs(employmentQuery);
-      
-      if (employmentSnapshot.empty) {
-        console.log('✅ No employment found for employee, returning empty array');
-        return [];
-      }
-      
-      const employmentDoc = employmentSnapshot.docs[0];
-      const employmentData = employmentDoc.data();
-      const attendance = employmentData.attendance || [];
-      
-      console.log('✅ Attendance records found in employment:', attendance.length);
-      return attendance;
+    if (employmentSnapshot.empty) {
+      console.log('✅ No employment found for employee, returning empty array');
+      return [];
     }
     
-    // Fallback to old attendance collection if it exists
-    const q = query(collection(db, 'attendance'), where('employeeId', '==', employeeId));
-    const querySnapshot = await getDocs(q);
-    const attendanceRecords: any[] = [];
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const attendance = employmentData.attendance || [];
     
-    querySnapshot.forEach((doc) => {
-      attendanceRecords.push({ id: doc.id, ...doc.data() });
-    });
+    // Add employment context to each attendance record
+    const attendanceWithContext = attendance.map((attRecord: any) => ({
+      id: `${employmentDoc.id}_${attRecord.date}`, // Create unique ID
+      employeeId: employmentData.employeeId,
+      employmentId: employmentDoc.id,
+      ...attRecord
+    }));
     
-    console.log('✅ Attendance records found:', attendanceRecords.length);
-    return attendanceRecords;
+    // Sort by date descending (most recent first)
+    attendanceWithContext.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    console.log('✅ Attendance records found in employment:', attendanceWithContext.length);
+    return attendanceWithContext;
   } catch (error) {
     console.error('Error getting attendance by employee:', error);
     throw error;
