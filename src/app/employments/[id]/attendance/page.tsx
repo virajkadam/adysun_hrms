@@ -8,6 +8,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import Pagination from '@/components/ui/Pagination';
 import { useEmployment } from '@/hooks/useEmployments';
 import { useEmployee } from '@/hooks/useEmployees';
 import { useAttendanceByEmployee } from '@/hooks/useAttendance';
@@ -16,6 +17,10 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 export default function AttendancePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { id } = use(params);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   // Use Tanstack Query for employment data
   const {
@@ -92,6 +97,24 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
   };
 
   const attendanceStats = calculateAttendanceStats();
+
+  // Pagination calculations
+  const totalItems = attendanceRecords.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedRecords = attendanceRecords.slice(startIndex, endIndex);
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Handle page size change
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   const getStatusBadge = (status: string) => {
     const baseClasses = "inline-flex px-2 py-1 text-xs font-semibold rounded-full";
@@ -290,14 +313,6 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            {/* Monthly Attendance Chart */}
-            <div className="bg-white rounded-lg shadow p-6 mb-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Monthly Attendance</h2>
-              <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Attendance Chart Placeholder</p>
-              </div>
-            </div>
-
             {/* Recent Attendance Records */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-200">
@@ -337,7 +352,7 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {attendanceRecords.map((record: any) => (
+                      {paginatedRecords.map((record: any) => (
                         <tr key={record.id} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {formatDateToDayMonYear(record.date)}
@@ -361,6 +376,18 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
                     </tbody>
                   </table>
                 </div>
+              )}
+
+              {/* Pagination */}
+              {attendanceRecords.length > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  pageSize={pageSize}
+                  totalItems={totalItems}
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                />
               )}
             </div>
           </div>
