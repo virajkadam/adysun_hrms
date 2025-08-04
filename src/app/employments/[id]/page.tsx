@@ -36,6 +36,81 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
   // Use mutation for delete operation
   const deleteEmploymentMutation = useDeleteEmployment();
 
+  // Calculate real attendance statistics
+  const calculateAttendanceStats = () => {
+    if (!employment?.attendance || employment.attendance.length === 0) {
+      return {
+        totalDays: 0,
+        presentDays: 0,
+        absentDays: 0,
+        lateDays: 0,
+        halfDayDays: 0,
+        attendanceRate: 0,
+        totalHours: 0,
+        averageHours: 0
+      };
+    }
+
+    const attendance = employment.attendance;
+    const totalDays = attendance.length;
+    const presentDays = attendance.filter((record: any) => record.status === 'present').length;
+    const absentDays = attendance.filter((record: any) => record.status === 'absent').length;
+    const lateDays = attendance.filter((record: any) => record.status === 'late').length;
+    const halfDayDays = attendance.filter((record: any) => record.status === 'half-day').length;
+    
+    const totalHours = attendance.reduce((sum: number, record: any) => sum + (record.totalHours || 0), 0);
+    const averageHours = totalDays > 0 ? totalHours / totalDays : 0;
+    
+    const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+
+    return {
+      totalDays,
+      presentDays,
+      absentDays,
+      lateDays,
+      halfDayDays,
+      attendanceRate,
+      totalHours,
+      averageHours
+    };
+  };
+
+  const attendanceStats = calculateAttendanceStats();
+
+  // Calculate current month attendance
+  const calculateCurrentMonthStats = () => {
+    if (!employment?.attendance || employment.attendance.length === 0) {
+      return {
+        currentMonthDays: 0,
+        currentMonthPresent: 0,
+        currentMonthRate: 0
+      };
+    }
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    const currentMonthAttendance = employment.attendance.filter((record: any) => {
+      const recordDate = new Date(record.date);
+      return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+    });
+
+    const currentMonthDays = currentMonthAttendance.length;
+    const currentMonthPresent = currentMonthAttendance.filter((record: any) => 
+      record.status === 'present' || record.status === 'late'
+    ).length;
+    const currentMonthRate = currentMonthDays > 0 ? Math.round((currentMonthPresent / currentMonthDays) * 100) : 0;
+
+    return {
+      currentMonthDays,
+      currentMonthPresent,
+      currentMonthRate
+    };
+  };
+
+  const currentMonthStats = calculateCurrentMonthStats();
+
   // Handle error states
   if (isError && error) {
     console.error('Employment data error:', error);
@@ -296,9 +371,18 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">85%</div>
-                  <p className="text-sm text-gray-600">Present Days: 17/20</p>
-                  <p className="text-sm text-gray-500">This Month</p>
+                  <div className="text-3xl font-bold text-blue-600 mb-2">{attendanceStats.attendanceRate}%</div>
+                  <p className="text-sm text-gray-600">
+                    Present Days: {attendanceStats.presentDays}/{attendanceStats.totalDays}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {currentMonthStats.currentMonthPresent}/{currentMonthStats.currentMonthDays} This Month
+                  </p>
+                  {attendanceStats.totalDays > 0 && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Avg: {attendanceStats.averageHours.toFixed(1)} hrs/day
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -317,12 +401,54 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-600 mb-2">12</div>
-                  <p className="text-sm text-gray-600">Days Remaining</p>
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    {employment?.totalLeaves || 0}
+                  </div>
+                  <p className="text-sm text-gray-600">Days Allocated</p>
                   <p className="text-sm text-gray-500">Annual Leave Balance</p>
+                  {attendanceStats.absentDays > 0 && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      Used: {attendanceStats.absentDays} days
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
+
+            {/* Detailed Attendance Summary */}
+            {attendanceStats.totalDays > 0 && (
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <FiCalendar className="mr-2" /> Attendance Summary
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-blue-600">{attendanceStats.totalDays}</p>
+                    <p className="text-sm text-gray-500">Total Days</p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-green-600">{attendanceStats.presentDays}</p>
+                    <p className="text-sm text-gray-500">Present</p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-yellow-600">{attendanceStats.lateDays}</p>
+                    <p className="text-sm text-gray-500">Late</p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-orange-600">{attendanceStats.halfDayDays}</p>
+                    <p className="text-sm text-gray-500">Half Day</p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-red-600">{attendanceStats.absentDays}</p>
+                    <p className="text-sm text-gray-500">Absent</p>
+                  </div>
+                  <div className="bg-white rounded-lg shadow p-4">
+                    <p className="text-2xl font-bold text-purple-600">{attendanceStats.totalHours.toFixed(1)}</p>
+                    <p className="text-sm text-gray-500">Total Hours</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
       )}
 
