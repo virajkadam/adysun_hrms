@@ -128,12 +128,6 @@ export default function ProfilePage() {
               href: '/profile/edit'
             },
             {
-              label: 'Change Password',
-              icon: <FiKey />,
-              variant: 'warning' as const,
-              href: '/profile/change-password'
-            },
-            {
               label: isLoggingOut ? 'Logging Out...' : 'Logout',
               icon: <FiLogOut />,
               variant: 'danger' as const,
@@ -172,165 +166,94 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Personal Information */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FiUser className="mr-2" /> Personal Information
-              </h2>
-              
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <FiUser className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Full Name</p>
-                    <p className="text-gray-900 font-medium">{user?.name}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <FiMail className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Email Address</p>
-                    <p className="text-gray-900 font-medium">{user?.email || 'Not provided'}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <FiPhone className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Phone Number</p>
-                    <p className="text-gray-900 font-medium">{getUserPhone()}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <FiCalendar className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Account Created</p>
-                    <p className="text-gray-900 font-medium">
-                      {getUserCreatedAt()}
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Full Name */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <FiUser className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Full Name</p>
+                  <p className="text-gray-900 font-medium">{user?.name}</p>
                 </div>
               </div>
             </div>
 
-            {/* Account Information */}
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FiShield className="mr-2" /> Account Information
-              </h2>
-              
-              <div className="space-y-4">
+            {/* Email Address */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <FiMail className="w-5 h-5 text-gray-400" />
                 <div>
-                  <p className="text-sm text-gray-500">User Type</p>
-                  <p className="text-gray-900 font-medium capitalize">
-                    {isAdmin ? 'Administrator' : 'Employee'}
+                  <p className="text-sm text-gray-500">Email Address</p>
+                  <p className="text-gray-900 font-medium">{user?.email || 'Not provided'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Number */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <FiPhone className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Phone Number</p>
+                  <p className="text-gray-900 font-medium">{getUserPhone()}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Account Created */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center space-x-3">
+                <FiCalendar className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Account Created</p>
+                  <p className="text-gray-900 font-medium">
+                    {getUserCreatedAt()}
                   </p>
                 </div>
+              </div>
+            </div>
 
-                <div>
-                  <p className="text-sm text-gray-500">User ID</p>
-                  <p className="text-gray-900 font-medium font-mono text-sm">{user?.id}</p>
-                </div>
 
-                <div>
-                  <p className="text-sm text-gray-500">Account Status</p>
-                  <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      isUserActive()
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {getUserStatus()}
-                  </span>
-                </div>
-
-                {isAdmin && (
-                  <div>
-                    <p className="text-sm text-gray-500">Admin Permissions</p>
-                    <p className="text-gray-900 font-medium">
-                      {currentAdmin?.isAdmin ? 'Full Access' : 'Limited Access'}
-                    </p>
-                  </div>
-                )}
-
-                {!isAdmin && (
-                  <div>
-                    <p className="text-sm text-gray-500">Employee Status</p>
-                    <p className="text-gray-900 font-medium capitalize">
-                      {currentEmployee?.status || 'Unknown'}
-                    </p>
-                  </div>
-                )}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div>
+                <p className="text-sm text-gray-500">Account Status</p>
+                <span
+                  className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                    isUserActive()
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {getUserStatus()}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Session Information */}
-          <div className="mt-6 bg-blue-50 rounded-lg p-6">
+          <div className="mt-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Session Information</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm text-gray-500">Login Time</p>
                 <p className="text-gray-900 font-medium">
                   {new Date().toLocaleString()}
                 </p>
               </div>
               
-              <div>
+              <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm text-gray-500">Session Duration</p>
                 <p className="text-gray-900 font-medium">
                   Active
                 </p>
               </div>
               
-              <div>
+              <div className="bg-blue-50 rounded-lg p-4">
                 <p className="text-sm text-gray-500">Last Activity</p>
                 <p className="text-gray-900 font-medium">
                   Just now
                 </p>
               </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <button
-                onClick={() => router.push('/profile/edit')}
-                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <FiEdit className="w-6 h-6 text-blue-600 mb-2" />
-                <p className="font-medium text-gray-900">Edit Profile</p>
-                <p className="text-sm text-gray-500">Update your information</p>
-              </button>
-
-              <button
-                onClick={() => router.push('/profile/change-password')}
-                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <FiKey className="w-6 h-6 text-amber-600 mb-2" />
-                <p className="font-medium text-gray-900">Change Password</p>
-                <p className="text-sm text-gray-500">Update your password</p>
-              </button>
-
-              <button
-                onClick={handleLogout}
-                disabled={isLoggingOut}
-                className="p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                <FiLogOut className="w-6 h-6 text-red-600 mb-2" />
-                <p className="font-medium text-gray-900">
-                  {isLoggingOut ? 'Logging Out...' : 'Logout'}
-                </p>
-                <p className="text-sm text-gray-500">Sign out of your account</p>
-              </button>
             </div>
           </div>
         </div>
