@@ -111,6 +111,44 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
 
   const currentMonthStats = calculateCurrentMonthStats();
 
+  // Calculate real leave statistics
+  const calculateLeaveStats = () => {
+    if (!employment?.leaves || employment.leaves.length === 0) {
+      return {
+        totalLeaves: 0,
+        pendingLeaves: 0,
+        approvedLeaves: 0,
+        rejectedLeaves: 0,
+        usedLeaves: 0,
+        remainingLeaves: employment?.totalLeaves || 0
+      };
+    }
+
+    const leaves = employment.leaves;
+    const totalLeaves = leaves.length;
+    const pendingLeaves = leaves.filter((leave: any) => leave.status === 'pending').length;
+    const approvedLeaves = leaves.filter((leave: any) => leave.status === 'approved').length;
+    const rejectedLeaves = leaves.filter((leave: any) => leave.status === 'rejected').length;
+    
+    const usedLeaves = leaves
+      .filter((leave: any) => leave.status === 'approved')
+      .reduce((sum: number, leave: any) => sum + (leave.totalDays || 0), 0);
+    
+    const allocatedLeaves = employment?.totalLeaves || 0;
+    const remainingLeaves = Math.max(0, allocatedLeaves - usedLeaves);
+
+    return {
+      totalLeaves,
+      pendingLeaves,
+      approvedLeaves,
+      rejectedLeaves,
+      usedLeaves,
+      remainingLeaves
+    };
+  };
+
+  const leaveStats = calculateLeaveStats();
+
   // Handle error states
   if (isError && error) {
     console.error('Employment data error:', error);
@@ -402,13 +440,15 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                 
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
-                    {employment?.totalLeaves || 0}
+                    {leaveStats.remainingLeaves}
                   </div>
-                  <p className="text-sm text-gray-600">Days Allocated</p>
-                  <p className="text-sm text-gray-500">Annual Leave Balance</p>
-                  {attendanceStats.absentDays > 0 && (
-                    <p className="text-xs text-gray-400 mt-1">
-                      Used: {attendanceStats.absentDays} days
+                  <p className="text-sm text-gray-600">Days Remaining</p>
+                  <p className="text-sm text-gray-500">
+                    {leaveStats.usedLeaves}/{employment?.totalLeaves || 0} Used
+                  </p>
+                  {leaveStats.pendingLeaves > 0 && (
+                    <p className="text-xs text-yellow-600 mt-1">
+                      {leaveStats.pendingLeaves} pending
                     </p>
                   )}
                 </div>

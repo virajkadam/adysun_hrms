@@ -1009,16 +1009,34 @@ export const getEmployeeLeaves = async (employeeId: string) => {
     
     console.log('✅ Session validated for leave data access');
     
-    const q = query(collection(db, 'leaves'), where('employeeId', '==', employeeId));
-    const querySnapshot = await getDocs(q);
-    const leaveRecords: any[] = [];
+    // Get employment for this employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
     
-    querySnapshot.forEach((doc) => {
-      leaveRecords.push({ id: doc.id, ...doc.data() });
-    });
+    if (employmentSnapshot.empty) {
+      console.log('✅ No employment found for employee, returning empty array');
+      return [];
+    }
     
-    console.log('✅ Employee leave data found:', leaveRecords.length);
-    return leaveRecords;
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const leaves = employmentData.leaves || [];
+    
+    // Add employment context to each leave record
+    const leavesWithContext = leaves.map((leaveRecord: any) => ({
+      ...leaveRecord,
+      employeeId: employmentData.employeeId,
+      employmentId: employmentDoc.id
+    }));
+    
+    // Sort by applied date descending (most recent first)
+    leavesWithContext.sort((a: any, b: any) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+    
+    console.log('✅ Employee leave data found in employment:', leavesWithContext.length);
+    return leavesWithContext;
   } catch (error) {
     console.error('Error getting employee leave data:', error);
     throw error;
@@ -1545,9 +1563,24 @@ export const createEmployeeLeaveRequest = async (leaveData: {
     
     console.log('✅ Employee session validated for leave request');
     
-    // Create leave request document
-    const leaveRequestData = {
-      employeeId: leaveData.employeeId,
+    // Find employment for this employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', leaveData.employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
+    
+    if (employmentSnapshot.empty) {
+      throw new Error('No employment record found for this employee.');
+    }
+    
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const existingLeaves = employmentData.leaves || [];
+    
+    // Create new leave record
+    const newLeaveRecord = {
+      id: `${employmentDoc.id}_${Date.now()}`, // Generate unique ID
       type: leaveData.type,
       startDate: leaveData.startDate,
       endDate: leaveData.endDate,
@@ -1555,19 +1588,82 @@ export const createEmployeeLeaveRequest = async (leaveData: {
       totalDays: leaveData.totalDays,
       status: 'pending',
       appliedDate: new Date().toISOString().split('T')[0],
-      createdAt: new Date(),
-      updatedAt: new Date(),
       approvedBy: null,
       approvedAt: null,
-      comments: ''
+      comments: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     
-    const docRef = await addDoc(collection(db, 'leaves'), leaveRequestData);
-    console.log('✅ Leave request created successfully:', docRef.id);
+    // Add new leave record to employment document
+    const updatedLeaves = [...existingLeaves, newLeaveRecord];
     
-    return { id: docRef.id, ...leaveRequestData };
+    await updateDoc(doc(db, 'employments', employmentDoc.id), {
+      leaves: updatedLeaves,
+      updatedAt: new Date().toISOString(),
+      updatedBy: leaveData.employeeId
+    });
+    
+    console.log('✅ Leave request created successfully in employment document');
+    return newLeaveRecord;
   } catch (error) {
     console.error('Error creating employee leave request:', error);
+    throw error;
+  }
+}; 
+
+// Function to approve/reject leave request
+export const updateLeaveRequest = async (employmentId: string, leaveId: string, status: 'approved' | 'rejected', approvedBy: string, comments?: string) => {
+  try {
+    console.log('🔍 Updating leave request...');
+    
+    // Check for admin session
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+    
+    if (!adminSessionId || !adminData) {
+      throw new Error('No admin session found. Only admins can approve/reject leave requests.');
+    }
+    
+    // Get employment document
+    const employmentRef = doc(db, 'employments', employmentId);
+    const employmentDoc = await getDoc(employmentRef);
+    
+    if (!employmentDoc.exists()) {
+      throw new Error('Employment record not found.');
+    }
+    
+    const employmentData = employmentDoc.data();
+    const existingLeaves = employmentData.leaves || [];
+    
+    // Find and update the specific leave record
+    const leaveIndex = existingLeaves.findIndex((leave: any) => leave.id === leaveId);
+    
+    if (leaveIndex === -1) {
+      throw new Error('Leave request not found.');
+    }
+    
+    const updatedLeaves = [...existingLeaves];
+    updatedLeaves[leaveIndex] = {
+      ...updatedLeaves[leaveIndex],
+      status,
+      approvedBy,
+      approvedAt: new Date().toISOString().split('T')[0],
+      comments: comments || updatedLeaves[leaveIndex].comments,
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Update the employment document
+    await updateDoc(employmentRef, {
+      leaves: updatedLeaves,
+      updatedAt: new Date().toISOString(),
+      updatedBy: approvedBy // Assuming updatedBy is the admin who approved/rejected
+    });
+    
+    console.log('✅ Leave request updated successfully');
+    return updatedLeaves[leaveIndex];
+  } catch (error) {
+    console.error('Error updating leave request:', error);
     throw error;
   }
 }; 

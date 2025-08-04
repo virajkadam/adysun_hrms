@@ -170,6 +170,9 @@ export interface Employment {
   // NEW: Attendance Array
   attendance?: AttendanceRecord[];
   
+  // NEW: Leaves Array
+  leaves?: LeaveRecord[];
+  
   // Audit fields
   createdAt?: string;
   createdBy?: string;
@@ -191,6 +194,23 @@ export interface AttendanceRecord {
   checkInLocation?: string;
   checkOutLocation?: string;
   notes?: string;
+}
+
+// NEW: Leave record for employment array
+export interface LeaveRecord {
+  id?: string; // Generated ID for the leave record
+  type: 'annual' | 'sick' | 'casual' | 'maternity' | 'paternity' | 'other';
+  startDate: string; // YYYY-MM-DD format
+  endDate: string; // YYYY-MM-DD format
+  reason: string;
+  totalDays: number;
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
+  appliedDate: string; // YYYY-MM-DD format
+  approvedBy?: string; // Admin/Manager ID who approved
+  approvedAt?: string; // YYYY-MM-DD format
+  comments?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Salary Slip type
