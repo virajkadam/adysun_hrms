@@ -4,10 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiUsers, FiBriefcase, FiFileText, FiMenu, FiX, FiFile, FiHome, FiUser, FiCalendar } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContext';
+import { FiMail } from 'react-icons/fi';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { currentAdmin } = useAuth();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -64,8 +67,17 @@ const Sidebar = () => {
       path: '/profile',
       name: 'My Profile',
       icon: <FiUser className="w-5 h-5" />
-    }
+    },
   ];
+
+  // Add Enquiries link for admins only
+  if (currentAdmin) {
+    menuItems.push({
+      path: '/enquiry',
+      name: 'Enquiries',
+      icon: <FiMail className="w-5 h-5" />
+    });
+  }
 
   return (
     <>
