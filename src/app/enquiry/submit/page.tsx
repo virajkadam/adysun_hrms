@@ -32,8 +32,12 @@ const EnquiryHeader = () => {
               priority
             />
             <div>
-              <h1 className="text-2xl font-extrabold text-gray-900 uppercase tracking-tight leading-none">ADYSUN VENTURES</h1>
-              <p className="text-lg text-gray-500 font-normal leading-tight -mt-1">Inspire. Imagine. Implement.</p>
+              <h1 className="text-2xl font-extrabold text-gray-900 uppercase tracking-tight leading-none">
+                ADYSUN VENTURES
+              </h1>
+              <p className="text-lg text-gray-500 font-normal leading-tight -mt-1">
+                Inspire. Imagine. Implement.
+              </p>
             </div>
           </div>
         </div>
@@ -47,45 +51,128 @@ const EnquiryFooter = () => {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Our Locations */}
           <div>
-            <div className="flex items-center mb-4">
-              <Image
-                src="/adysun-logo.png"
-                alt="Adysun Ventures Logo"
-                width={30}
-                height={30}
-                className="object-contain mr-2"
-              />
-              <span className="text-lg font-semibold">Adysun Ventures</span>
+            <h3 className="text-lg font-semibold mb-6 flex items-center text-orange-400">
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+              Our Locations
+            </h3>
+            
+            {/* Pune Office */}
+            <div className="mb-6">
+              <div className="flex items-start mb-3">
+                <svg className="w-4 h-4 mr-2 mt-1 text-orange-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="font-semibold text-sm">Pune Office (Head Office)</p>
+                  <p className="text-gray-300 text-sm">Adysun Ventures Pvt. Ltd.</p>
+                  <p className="text-gray-300 text-sm">Workplex, S no 47, Near Bhapkar Petrol Pump, Pune, Maharashtra - 411009</p>
+                </div>
+              </div>
+              <div className="flex space-x-2 ml-6">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  Google Maps
+                </button>
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.5 9a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z"/>
+                  </svg>
+                  Google Search
+                </button>
+              </div>
             </div>
-            <p className="text-gray-300 text-sm">
-              Empowering businesses with innovative HR solutions and exceptional talent management.
-            </p>
+
+            {/* Thane Office */}
+            <div>
+              <div className="flex items-start mb-3">
+                <svg className="w-4 h-4 mr-2 mt-1 text-orange-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="font-semibold text-sm">Thane Office (Mumbai Division)</p>
+                  <p className="text-gray-300 text-sm">Adysun Ventures Pvt. Ltd.</p>
+                  <p className="text-gray-300 text-sm">A2, 704, Kanchanpushp Society Kavesar, Thane West, Thane, Maharashtra - 400607</p>
+                </div>
+              </div>
+              <div className="flex space-x-2 ml-6">
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  Google Maps
+                </button>
+                <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.5 9a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z"/>
+                  </svg>
+                  Google Search
+                </button>
+              </div>
+            </div>
           </div>
+
+          {/* Contact Us */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
-            <div className="space-y-2 text-sm text-gray-300">
-              <p>📍 Mumbai, Maharashtra, India</p>
-              <p>📧 info@adysunventures.com</p>
-              <p>📞 +91 98765 43210</p>
+            <h3 className="text-lg font-semibold mb-6 flex items-center text-orange-400">
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+              Contact Us
+            </h3>
+
+            {/* Email Addresses */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <svg className="w-4 h-4 mr-2 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+                <span className="font-semibold text-sm">Email Addresses</span>
+              </div>
+              <div className="ml-6 space-y-2">
+                <p className="text-gray-300 text-sm">
+                  <span className="font-medium">General Inquiries:</span> info@adysunventures.com
+                </p>
+                <p className="text-gray-300 text-sm">
+                  <span className="font-medium">HR & Recruitment:</span> hr@adysunventures.com
+                </p>
+              </div>
+            </div>
+
+            {/* Contact Number */}
+            <div>
+              <div className="flex items-center mb-3">
+                <svg className="w-4 h-4 mr-2 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+                <span className="font-semibold text-sm">Contact Number</span>
+              </div>
+              <div className="ml-6 space-y-2">
+                <p className="text-gray-300 text-sm font-medium">+91 9579537523</p>
+                <div className="flex items-center text-gray-300 text-sm">
+                  <svg className="w-4 h-4 mr-2 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                  </svg>
+                  Mon-Sat 10:00 AM - 6:00 PM
+                </div>
+                <div className="flex items-center text-gray-300 text-sm">
+                  <svg className="w-4 h-4 mr-2 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  Closed on Sundays & National Holidays
+                </div>
+              </div>
             </div>
           </div>
-                     <div>
-             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-             <div className="space-y-2 text-sm">
-               <Link href="/" className="text-gray-300 hover:text-white transition-colors block">
-                 Home
-               </Link>
-               <Link href="/enquiry/submit" className="text-gray-300 hover:text-white transition-colors block">
-                 Submit Enquiry
-               </Link>
-               <Link href="/login" className="text-gray-300 hover:text-white transition-colors block">
-                 Employee Login
-               </Link>
-             </div>
-           </div>
         </div>
+        
         <div className="border-t border-gray-700 mt-8 pt-6 text-center">
           <p className="text-sm text-gray-400">
             © {new Date().getFullYear()} Adysun Ventures. All rights reserved.
@@ -114,39 +201,39 @@ export default function EnquirySubmitPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Clear previous errors
     setError(null);
     setMobileError(null);
-    
+
     // Validate required fields
     if (!formData.name.trim()) {
       setError("Name is required");
       return;
     }
-    
+
     if (!formData.mobile.trim()) {
       setError("Mobile number is required");
       return;
     }
-    
+
     if (!formData.message.trim()) {
       setError("Message is required");
       return;
     }
-    
+
     // Validate mobile number format
     if (formData.mobile.length !== 10) {
       setError("Mobile number must be exactly 10 digits");
       return;
     }
-    
+
     const firstDigit = parseInt(formData.mobile.charAt(0));
     if (firstDigit < 6 || firstDigit > 9) {
       setError("Mobile number must start with 6, 7, 8, or 9");
       return;
     }
-    
+
     // Validate mobile number contains only digits
     if (!/^\d{10}$/.test(formData.mobile)) {
       setError("Mobile number must contain only digits");
@@ -187,16 +274,20 @@ export default function EnquirySubmitPage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    
+
     setFormData({
       ...formData,
       [name]: value,
     });
 
     // Mobile number validation
-    if (name === 'mobile') {
+    if (name === "mobile") {
       if (value.length > 0) {
         const firstDigit = parseInt(value.charAt(0));
         if (firstDigit >= 1 && firstDigit <= 5) {
@@ -245,16 +336,24 @@ export default function EnquirySubmitPage() {
       <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl w-full">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit Your Enquiry</h1>
-            <p className="text-gray-600">Please fill out the form below and we&apos;ll get back to you soon.</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Submit Your Enquiry
+            </h1>
+            <p className="text-gray-600">
+              Please fill out the form below and we&apos;ll get back to you
+              soon.
+            </p>
           </div>
-          
+
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             <div className="px-6 py-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       <span className="text-red-500">*</span> Name
                     </label>
                     <input
@@ -269,8 +368,11 @@ export default function EnquirySubmitPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">
-                      <span className="text-red-500">*</span> Mobile  
+                    <label
+                      htmlFor="mobile"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      <span className="text-red-500">*</span> Mobile
                     </label>
                     <input
                       type="tel"
@@ -283,7 +385,7 @@ export default function EnquirySubmitPage() {
                       pattern="[6-9][0-9]{9}"
                       inputMode="numeric"
                       className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        mobileError ? 'border-red-500' : 'border-gray-300'
+                        mobileError ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter 10-digit mobile number"
                       title="Mobile number must start with 6, 7, 8, or 9"
@@ -293,7 +395,10 @@ export default function EnquirySubmitPage() {
                     )}
                   </div>
                   <div>
-                    <label htmlFor="pan" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="pan"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       PAN Number
                     </label>
                     <input
@@ -307,7 +412,10 @@ export default function EnquirySubmitPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="passoutYear" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="passoutYear"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Passout Year
                     </label>
                     <select
@@ -350,7 +458,10 @@ export default function EnquirySubmitPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
-                    <label htmlFor="technology" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="technology"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Technology
                     </label>
                     <select
@@ -388,7 +499,10 @@ export default function EnquirySubmitPage() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="role"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Role
                     </label>
                     <select
@@ -399,22 +513,38 @@ export default function EnquirySubmitPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Role</option>
-                      <option value="Frontend Developer">Frontend Developer</option>
-                      <option value="Backend Developer">Backend Developer</option>
-                      <option value="Full Stack Developer">Full Stack Developer</option>
+                      <option value="Frontend Developer">
+                        Frontend Developer
+                      </option>
+                      <option value="Backend Developer">
+                        Backend Developer
+                      </option>
+                      <option value="Full Stack Developer">
+                        Full Stack Developer
+                      </option>
                       <option value="Mobile Developer">Mobile Developer</option>
                       <option value="DevOps Engineer">DevOps Engineer</option>
                       <option value="Data Scientist">Data Scientist</option>
                       <option value="Data Engineer">Data Engineer</option>
-                      <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                      <option value="Machine Learning Engineer">
+                        Machine Learning Engineer
+                      </option>
                       <option value="UI/UX Designer">UI/UX Designer</option>
                       <option value="Product Manager">Product Manager</option>
                       <option value="Project Manager">Project Manager</option>
                       <option value="QA Engineer">QA Engineer</option>
-                      <option value="Software Architect">Software Architect</option>
-                      <option value="System Administrator">System Administrator</option>
-                      <option value="Database Administrator">Database Administrator</option>
-                      <option value="Security Engineer">Security Engineer</option>
+                      <option value="Software Architect">
+                        Software Architect
+                      </option>
+                      <option value="System Administrator">
+                        System Administrator
+                      </option>
+                      <option value="Database Administrator">
+                        Database Administrator
+                      </option>
+                      <option value="Security Engineer">
+                        Security Engineer
+                      </option>
                       <option value="Business Analyst">Business Analyst</option>
                       <option value="Technical Lead">Technical Lead</option>
                       <option value="Team Lead">Team Lead</option>
@@ -422,7 +552,10 @@ export default function EnquirySubmitPage() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="totalWorkExperience" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="totalWorkExperience"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Total Work Experience
                     </label>
                     <select
@@ -448,7 +581,10 @@ export default function EnquirySubmitPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="md:col-span-4">
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       <span className="text-red-500">*</span> Message
                     </label>
                     <textarea
@@ -487,4 +623,4 @@ export default function EnquirySubmitPage() {
       <EnquiryFooter />
     </div>
   );
-} 
+}
