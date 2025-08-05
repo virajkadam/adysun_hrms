@@ -215,7 +215,7 @@ export default function EnquirySubmitPage() {
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <EnquiryHeader />
         <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md w-full space-y-8">
+          <div className="max-w-2xs w-full space-y-8">
             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
               <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                 <h2 className="text-xl font-semibold text-green-800 mb-2">
