@@ -28,10 +28,83 @@ export default function EnquiryListPage() {
   const { currentAdmin, loading: authLoading } = useAuth();
   const router = useRouter();
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [filteredEnquiries, setFilteredEnquiries] = useState<Enquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  
+  // Filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [technologyFilter, setTechnologyFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [experienceFilter, setExperienceFilter] = useState("");
+
+  // Filter options from the candidate enquiry form
+  const technologyOptions = [
+    { value: "", label: "All Technologies" },
+    { value: "React", label: "React" },
+    { value: "Angular", label: "Angular" },
+    { value: "Vue.js", label: "Vue.js" },
+    { value: "Node.js", label: "Node.js" },
+    { value: "Python", label: "Python" },
+    { value: "Java", label: "Java" },
+    { value: "C#", label: "C#" },
+    { value: "PHP", label: "PHP" },
+    { value: "Ruby", label: "Ruby" },
+    { value: "Go", label: "Go" },
+    { value: "Swift", label: "Swift" },
+    { value: "Kotlin", label: "Kotlin" },
+    { value: "Flutter", label: "Flutter" },
+    { value: "React Native", label: "React Native" },
+    { value: "AWS", label: "AWS" },
+    { value: "Azure", label: "Azure" },
+    { value: "Google Cloud", label: "Google Cloud" },
+    { value: "Docker", label: "Docker" },
+    { value: "Kubernetes", label: "Kubernetes" },
+    { value: "MongoDB", label: "MongoDB" },
+    { value: "PostgreSQL", label: "PostgreSQL" },
+    { value: "MySQL", label: "MySQL" },
+    { value: "Redis", label: "Redis" },
+    { value: "Other", label: "Other" },
+  ];
+
+  const roleOptions = [
+    { value: "", label: "All Roles" },
+    { value: "Frontend Developer", label: "Frontend Developer" },
+    { value: "Backend Developer", label: "Backend Developer" },
+    { value: "Full Stack Developer", label: "Full Stack Developer" },
+    { value: "Mobile Developer", label: "Mobile Developer" },
+    { value: "DevOps Engineer", label: "DevOps Engineer" },
+    { value: "Data Scientist", label: "Data Scientist" },
+    { value: "Data Engineer", label: "Data Engineer" },
+    { value: "Machine Learning Engineer", label: "Machine Learning Engineer" },
+    { value: "UI/UX Designer", label: "UI/UX Designer" },
+    { value: "Product Manager", label: "Product Manager" },
+    { value: "Project Manager", label: "Project Manager" },
+    { value: "QA Engineer", label: "QA Engineer" },
+    { value: "Software Architect", label: "Software Architect" },
+    { value: "System Administrator", label: "System Administrator" },
+    { value: "Database Administrator", label: "Database Administrator" },
+    { value: "Security Engineer", label: "Security Engineer" },
+    { value: "Business Analyst", label: "Business Analyst" },
+    { value: "Technical Lead", label: "Technical Lead" },
+    { value: "Team Lead", label: "Team Lead" },
+    { value: "Other", label: "Other" },
+  ];
+
+  const experienceOptions = [
+    { value: "", label: "All Experience Levels" },
+    { value: "Fresher", label: "Fresher (0 years)" },
+    { value: "1 year", label: "1 year" },
+    { value: "2 years", label: "2 years" },
+    { value: "3 years", label: "3 years" },
+    { value: "4 years", label: "4 years" },
+    { value: "5 years", label: "5 years" },
+    { value: "6-8 years", label: "6-8 years" },
+    { value: "9-12 years", label: "9-12 years" },
+    { value: "13+ years", label: "13+ years" },
+  ];
 
   useEffect(() => {
     const fetchEnquiries = async () => {
@@ -45,6 +118,7 @@ export default function EnquiryListPage() {
           ...doc.data(),
         })) as Enquiry[];
         setEnquiries(data);
+        setFilteredEnquiries(data);
       } catch (err: unknown) {
         console.error("Error fetching enquiries:", err);
         setError("Failed to load enquiries");
@@ -54,6 +128,41 @@ export default function EnquiryListPage() {
     };
     fetchEnquiries();
   }, []);
+
+  // Filter enquiries based on search term and filters
+  useEffect(() => {
+    let filtered = enquiries;
+
+    // Search filter
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter((enquiry) =>
+        enquiry.name?.toLowerCase().includes(searchLower) ||
+        enquiry.mobile?.includes(searchTerm) ||
+        enquiry.technology?.toLowerCase().includes(searchLower) ||
+        enquiry.role?.toLowerCase().includes(searchLower) ||
+        enquiry.message?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Technology filter
+    if (technologyFilter) {
+      filtered = filtered.filter((enquiry) => enquiry.technology === technologyFilter);
+    }
+
+    // Role filter
+    if (roleFilter) {
+      filtered = filtered.filter((enquiry) => enquiry.role === roleFilter);
+    }
+
+    // Experience filter
+    if (experienceFilter) {
+      filtered = filtered.filter((enquiry) => enquiry.totalWorkExperience === experienceFilter);
+    }
+
+    setFilteredEnquiries(filtered);
+    setCurrentPage(1); // Reset to first page when filtering
+  }, [enquiries, searchTerm, technologyFilter, roleFilter, experienceFilter]);
 
   if (authLoading) {
     return (
@@ -70,11 +179,11 @@ export default function EnquiryListPage() {
     return null;
   }
 
-  const totalItems = enquiries.length;
+  const totalItems = filteredEnquiries.length;
   const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedEnquiries = enquiries.slice(startIndex, endIndex);
+  const paginatedEnquiries = filteredEnquiries.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -83,6 +192,17 @@ export default function EnquiryListPage() {
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize);
     setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setTechnologyFilter("");
+    setRoleFilter("");
+    setExperienceFilter("");
   };
 
   return (
@@ -100,18 +220,33 @@ export default function EnquiryListPage() {
           showSearch={true}
           showFilter={false}
           headerClassName="px-6 pt-6 mb-0"
-          searchValue=""
-          onSearchChange={() => {}}
+          searchValue={searchTerm}
+          onSearchChange={handleSearchChange}
           total={totalItems}
-          searchPlaceholder="Search enquiries..."
+          searchPlaceholder="Search enquiries by name, mobile, technology, role, or message..."
+          // Custom filters
+          showCustomFilters={true}
+          technologyFilterValue={technologyFilter}
+          onTechnologyFilterChange={setTechnologyFilter}
+          technologyFilterOptions={technologyOptions}
+          roleFilterValue={roleFilter}
+          onRoleFilterChange={setRoleFilter}
+          roleFilterOptions={roleOptions}
+          experienceFilterValue={experienceFilter}
+          onExperienceFilterChange={setExperienceFilter}
+          experienceFilterOptions={experienceOptions}
+          onClearFilters={clearFilters}
+          hasActiveFilters={!!(searchTerm || technologyFilter || roleFilter || experienceFilter)}
         />
         
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading...</div>
         ) : error ? (
           <div className="p-8 text-center text-red-500">{error}</div>
-        ) : enquiries.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">No enquiries found.</div>
+        ) : filteredEnquiries.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            {enquiries.length === 0 ? "No enquiries found." : "No enquiries match your filters."}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
