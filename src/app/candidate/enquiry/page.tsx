@@ -3,6 +3,7 @@ import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import Image from "next/image";
+import Link from "next/link";
 
 interface EnquiryFormData {
   name: string;
@@ -73,18 +74,22 @@ const EnquiryFooter = () => {
                 </div>
               </div>
               <div className="flex space-x-2 ml-6">
+                <Link href={"https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6"} target="_blank">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </svg>
                   Google Maps
                 </button>
+                </Link>
+                <Link href={"https://g.co/kgs/C5Fe6uz"} target="_blank">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.5 9a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z"/>
                   </svg>
                   Google Search
                 </button>
+                </Link>
               </div>
             </div>
 
@@ -101,18 +106,22 @@ const EnquiryFooter = () => {
                 </div>
               </div>
               <div className="flex space-x-2 ml-6">
+                <Link href={"https://maps.app.goo.gl/tziAu2cdmPzLm9ie9"} target="_blank">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </svg>
                   Google Maps
                 </button>
+                </Link>
+                <Link href={"https://g.co/kgs/C5Fe6uz"} target="_blank">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM6.5 9a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0z"/>
                   </svg>
                   Google Search
                 </button>
+                </Link>
               </div>
             </div>
           </div>
