@@ -45,7 +45,8 @@ export default function EnquiryListPage() {
           ...doc.data(),
         })) as Enquiry[];
         setEnquiries(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        console.error("Error fetching enquiries:", err);
         setError("Failed to load enquiries");
       } finally {
         setLoading(false);
@@ -95,12 +96,14 @@ export default function EnquiryListPage() {
         <TableHeader
           title="Enquiries"
           backButton={{ href: '/dashboard' }}
-          showStats={false}
-          showSearch={false}
+          showStats={true}
+          showSearch={true}
           showFilter={false}
           headerClassName="px-6 pt-6 mb-0"
           searchValue=""
           onSearchChange={() => {}}
+          total={totalItems}
+          searchPlaceholder="Search enquiries..."
         />
         
         {loading ? (
