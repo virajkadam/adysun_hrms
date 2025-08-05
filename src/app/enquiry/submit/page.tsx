@@ -32,8 +32,8 @@ const EnquiryHeader = () => {
               priority
             />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Adysun Ventures</h1>
-              <p className="text-sm text-gray-600">Human Resource Management System</p>
+              <h1 className="text-2xl font-extrabold text-gray-900 uppercase tracking-tight leading-none">ADYSUN VENTURES</h1>
+              <p className="text-lg text-gray-500 font-normal leading-tight -mt-1">Inspire. Imagine. Implement.</p>
             </div>
           </div>
         </div>
