@@ -232,7 +232,7 @@ export default function SalariesPage() {
           total={filteredSalaries.length}
           searchValue={searchTerm}
           onSearchChange={(e) => setSearchTerm(e.target.value)}
-          searchPlaceholder="Search salaries..."
+          searchPlaceholder="Search"
           showStats={false}
           showSearch={true}
           showFilter={false}

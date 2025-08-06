@@ -241,7 +241,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
 
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
-          title={`Employee Details - ${employee.name}`}
+          title={`Employee Details`}
           total={1}
           active={employee.isActive ? 1 : 0}
           inactive={employee.isActive ? 0 : 1}
@@ -264,12 +264,6 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 variant: 'warning' as const, 
                 href: `/salaries?employeeId=${id}` 
               },
-              { 
-                label: 'Create Salary', 
-                icon: <FiDollarSign />, 
-                variant: 'success' as const, 
-                href: `/salaries/add?employeeId=${id}` 
-              }
             ] : [
               { 
                 label: 'Create Employment', 
