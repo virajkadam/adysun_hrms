@@ -319,7 +319,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                     <select
                       value={technologyFilterValue}
                       onChange={(e) => onTechnologyFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-32"
                     >
                       {technologyFilterOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -338,7 +338,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                     <select
                       value={roleFilterValue}
                       onChange={(e) => onRoleFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-34"
                     >
                       {roleFilterOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -357,7 +357,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                     <select
                       value={experienceFilterValue}
                       onChange={(e) => onExperienceFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-32"
                     >
                       {experienceFilterOptions.map((option) => (
                         <option key={option.value} value={option.value}>

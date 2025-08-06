@@ -42,7 +42,7 @@ export default function EnquiryListPage() {
 
   // Filter options from the candidate enquiry form
   const technologyOptions = [
-    { value: "", label: "All Tech" },
+    { value: "", label: "All Tech." },
     { value: "React", label: "React" },
     { value: "Angular", label: "Angular" },
     { value: "Vue.js", label: "Vue.js" },
@@ -94,7 +94,7 @@ export default function EnquiryListPage() {
   ];
 
   const experienceOptions = [
-    { value: "", label: "All Experience" },
+    { value: "", label: "All Exp." },
     { value: "Fresher", label: "Fresher (0 years)" },
     { value: "1 year", label: "1 year" },
     { value: "2 years", label: "2 years" },
