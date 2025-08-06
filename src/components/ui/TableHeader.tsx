@@ -289,77 +289,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           ) : (
             <div className="flex-1"></div>
           )}
-          
-          {/* Custom Filters - Left Side */}
-          {showCustomFilters && (
-            <div className="flex items-center gap-4">
-              {technologyFilterOptions.length > 0 && onTechnologyFilterChange && (
-                <div className="relative">
-                  <select
-                    value={technologyFilterValue}
-                    onChange={(e) => onTechnologyFilterChange(e.target.value)}
-                    className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {technologyFilterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiFilter className="w-4 h-4 text-gray-500" />
-                  </div>
-                </div>
-              )}
-
-              {roleFilterOptions.length > 0 && onRoleFilterChange && (
-                <div className="relative">
-                  <select
-                    value={roleFilterValue}
-                    onChange={(e) => onRoleFilterChange(e.target.value)}
-                    className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {roleFilterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiFilter className="w-4 h-4 text-gray-500" />
-                  </div>
-                </div>
-              )}
-
-              {experienceFilterOptions.length > 0 && onExperienceFilterChange && (
-                <div className="relative">
-                  <select
-                    value={experienceFilterValue}
-                    onChange={(e) => onExperienceFilterChange(e.target.value)}
-                    className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {experienceFilterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FiFilter className="w-4 h-4 text-gray-500" />
-                  </div>
-                </div>
-              )}
-
-              {hasActiveFilters && onClearFilters && (
-                <button
-                  onClick={onClearFilters}
-                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
-                >
-                  Clear Filters
-                </button>
-              )}
-            </div>
-          )}
 
           {/* Search and Other Controls - Right Side */}
           <div className="flex items-center gap-4">
@@ -381,6 +310,78 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                 </button>
               </Tooltip>
             )}
+            
+            {/* Custom Filters - Now on the right side */}
+            {showCustomFilters && (
+              <>
+                {technologyFilterOptions.length > 0 && onTechnologyFilterChange && (
+                  <div className="relative">
+                    <select
+                      value={technologyFilterValue}
+                      onChange={(e) => onTechnologyFilterChange(e.target.value)}
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      {technologyFilterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiFilter className="w-4 h-4 text-gray-500" />
+                    </div>
+                  </div>
+                )}
+
+                {roleFilterOptions.length > 0 && onRoleFilterChange && (
+                  <div className="relative">
+                    <select
+                      value={roleFilterValue}
+                      onChange={(e) => onRoleFilterChange(e.target.value)}
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      {roleFilterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiFilter className="w-4 h-4 text-gray-500" />
+                    </div>
+                  </div>
+                )}
+
+                {experienceFilterOptions.length > 0 && onExperienceFilterChange && (
+                  <div className="relative">
+                    <select
+                      value={experienceFilterValue}
+                      onChange={(e) => onExperienceFilterChange(e.target.value)}
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      {experienceFilterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiFilter className="w-4 h-4 text-gray-500" />
+                    </div>
+                  </div>
+                )}
+
+                {hasActiveFilters && onClearFilters && (
+                  <button
+                    onClick={onClearFilters}
+                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </>
+            )}
+            
             {showFilter && onFilterChange && (
               <div className="relative">
                 <select
