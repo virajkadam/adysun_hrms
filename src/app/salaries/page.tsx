@@ -78,6 +78,14 @@ export default function SalariesPage() {
   const isError = employeeId ? isEmployeeSalariesError : isAllSalariesError;
   const error = employeeId ? employeeSalariesError : allSalariesError;
 
+  // Debug logging
+  console.log('🔍 Debug - Employee ID:', employeeId);
+  console.log('🔍 Debug - All Salaries Count:', allSalaries.length);
+  console.log('🔍 Debug - Employee Salaries Count:', employeeSalaries.length);
+  console.log('🔍 Debug - Final Salaries Count:', salaries.length);
+  console.log('🔍 Debug - Is Loading:', isLoading);
+  console.log('🔍 Debug - Is Error:', isError);
+
   // Fetch employee name when employeeId is available
   useEffect(() => {
     const fetchEmployeeName = async () => {
@@ -101,14 +109,23 @@ export default function SalariesPage() {
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
+      console.log('🔄 Manual refresh triggered...');
+      
+      // Force invalidate all salary queries
+      await queryClient.invalidateQueries({ queryKey: ['salaries'] });
+      await queryClient.invalidateQueries({ queryKey: ['salaries', 'list'] });
+      
       if (employeeId) {
+        await queryClient.invalidateQueries({ queryKey: ['salaries', 'byEmployee', employeeId] });
         await refetchEmployeeSalaries();
       } else {
         await refetchAllSalaries();
       }
+      
+      console.log('✅ Manual refresh completed');
       toast.success('Data refreshed successfully');
     } catch (error) {
-      console.error('Error refreshing salaries:', error);
+      console.error('❌ Error refreshing salaries:', error);
       toast.error('Failed to refresh data');
     }
   };

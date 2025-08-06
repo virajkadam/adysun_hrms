@@ -687,22 +687,16 @@ export const getSalariesByEmployee = async (employeeId: string) => {
   try {
     console.log('🔍 Fetching salaries for employee with custom authentication...');
     
-    // Check for employee session
-    const employeeSessionId = localStorage.getItem('employeeSessionId');
-    const employeeData = localStorage.getItem('employeeData');
+    // Check for admin session (since this is called from admin dashboard)
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
     
-    if (!employeeSessionId || !employeeData) {
-      throw new Error('No employee session found. Please log in as employee first.');
+    if (!adminSessionId || !adminData) {
+      throw new Error('No admin session found. Please log in as admin first.');
     }
     
-    const currentEmployee = JSON.parse(employeeData);
-    
-    // Security check: Employee can only access their own data
-    if (currentEmployee.id !== employeeId) {
-      throw new Error('Access denied. You can only view your own data.');
-    }
-    
-    console.log('✅ Employee session validated for salary slips');
+    const currentAdmin = JSON.parse(adminData);
+    console.log('✅ Admin session validated for employee salary slips');
     
     const q = query(collection(db, 'salaries'), where('employeeId', '==', employeeId));
     const querySnapshot = await getDocs(q);

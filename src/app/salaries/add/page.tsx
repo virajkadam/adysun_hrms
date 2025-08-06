@@ -9,6 +9,7 @@ import TableHeader from '@/components/ui/TableHeader';
 import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useCreateSalary } from '@/hooks/useSalaries';
+import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getEmployeeNameById, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 
@@ -33,6 +34,7 @@ export default function AddSalaryPage() {
   const employeeId = searchParams?.get('employeeId');
   
   const createSalaryMutation = useCreateSalary();
+  const queryClient = useQueryClient();
   
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<SalaryFormData>({
     defaultValues: {
@@ -106,6 +108,14 @@ export default function AddSalaryPage() {
       });
       
       toast.success('Salary created successfully!', { id: 'create-salary' });
+      
+      // Force invalidate and refetch all salary queries
+      await queryClient.invalidateQueries({ queryKey: ['salaries'] });
+      await queryClient.invalidateQueries({ queryKey: ['salaries', 'list'] });
+      
+      if (employeeId) {
+        await queryClient.invalidateQueries({ queryKey: ['salaries', 'byEmployee', employeeId] });
+      }
       
       // Navigate back to the appropriate page
       if (employeeId) {

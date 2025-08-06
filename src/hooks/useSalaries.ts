@@ -34,27 +34,33 @@ export const useCreateSalary = () => {
   
   return useMutation({
     mutationFn: addSalary,
-    onSuccess: (_, variables) => {
-      // Invalidate all salary lists
-      queryClient.invalidateQueries({ queryKey: queryKeys.salaries.lists() });
+    onSuccess: async (_, variables) => {
+      console.log('✅ Salary created successfully, invalidating cache...');
+      
+      // Invalidate all salary-related queries
+      await queryClient.invalidateQueries({ queryKey: queryKeys.salaries.all });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.salaries.lists() });
       
       // If salary is created for a specific employee, invalidate employee-specific cache
       if (variables.employeeId) {
-        queryClient.invalidateQueries({ 
+        await queryClient.invalidateQueries({ 
           queryKey: queryKeys.salaries.byEmployee(variables.employeeId) 
         });
+        console.log('✅ Invalidated employee-specific salary cache for:', variables.employeeId);
       }
       
       // Invalidate employee cache to refresh employee data
-      queryClient.invalidateQueries({ queryKey: queryKeys.employees.lists() });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.employees.lists() });
       if (variables.employeeId) {
-        queryClient.invalidateQueries({ 
+        await queryClient.invalidateQueries({ 
           queryKey: queryKeys.employees.detail(variables.employeeId) 
         });
       }
+      
+      console.log('✅ Cache invalidation completed');
     },
     onError: (error) => {
-      console.error('Error creating salary:', error);
+      console.error('❌ Error creating salary:', error);
     },
   });
 };
