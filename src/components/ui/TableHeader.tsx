@@ -272,7 +272,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
       {/* Stats and Search Section */}
       {(showStats || showSearch || showFilter || showSecondFilter || showCustomFilters) && (
-        <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center">
+        <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center mt-4">
           {showStats ? (
             <div className="flex items-center gap-6 text-sm text-gray-600">
               {typeof total === 'number' && (
