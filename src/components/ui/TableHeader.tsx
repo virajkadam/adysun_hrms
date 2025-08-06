@@ -314,6 +314,15 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             {/* Custom Filters - Now on the right side */}
             {showCustomFilters && (
               <>
+
+              {hasActiveFilters && onClearFilters && (
+                <button
+                  onClick={onClearFilters}
+                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                >
+                  Clear Filters
+                </button>
+              )}
                 {technologyFilterOptions.length > 0 && onTechnologyFilterChange && (
                   <div className="relative">
                     <select
@@ -369,15 +378,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                       <FiClock className="w-4 h-4 text-gray-500" />
                     </div>
                   </div>
-                )}
-
-                {hasActiveFilters && onClearFilters && (
-                  <button
-                    onClick={onClearFilters}
-                    className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
-                  >
-                    Clear Filters
-                  </button>
                 )}
               </>
             )}
