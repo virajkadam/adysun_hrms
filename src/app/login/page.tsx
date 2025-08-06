@@ -164,7 +164,7 @@ export default function LoginPage() {
         </form>
 
         {/* Enquiry Link */}
-        <div className="mt-6 text-center">
+        {/* <div className="mt-6 text-center">
           <p className="text-sm text-gray-600 mb-2">
             Looking for job opportunities?
           </p>
@@ -174,7 +174,7 @@ export default function LoginPage() {
           >
             Job enquiry form
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
