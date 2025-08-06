@@ -39,10 +39,18 @@ export default function LoginPage() {
       
       if (result.userType === 'admin' && result.admin && result.admin.active) {
         toast.success('Admin login successful!', { id: 'login' });
-        router.push('/dashboard');
+        
+        // Check for redirect parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirect') || '/dashboard';
+        router.push(redirectTo);
       } else if (result.userType === 'employee' && result.employee && result.employee.status === 'active') {
         toast.success('Employee login successful!', { id: 'login' });
-        router.push('/employee-dashboard'); // You'll need to create this route
+        
+        // Check for redirect parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectTo = urlParams.get('redirect') || '/employee-dashboard';
+        router.push(redirectTo);
       } else {
         setError('Invalid credentials or access denied.');
         toast.error('Invalid credentials or access denied.', { id: 'login' });

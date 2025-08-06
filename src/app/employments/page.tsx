@@ -131,8 +131,8 @@ export default function EmploymentsPage() {
   const inactive = filteredEmployments.filter(e => e.contractType === 'part-time').length;
 
   if (isLoading) {
-    return (
-      <DashboardLayout>
+      return (
+    <DashboardLayout allowedUserTypes={['admin']}>
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {/* Skeleton for TableHeader */}
           <div className="space-y-6">
@@ -208,6 +208,7 @@ export default function EmploymentsPage() {
 
   return (
     <DashboardLayout
+      allowedUserTypes={['admin']}
       breadcrumbItems={
         employeeIdFilter && filteredEmployeeName ? [
           { label: 'Dashboard', href: '/dashboard' },

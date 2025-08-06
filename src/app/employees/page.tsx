@@ -207,6 +207,7 @@ export default function EmployeesPage() {
 
   return (
     <DashboardLayout
+      allowedUserTypes={['admin']}
       breadcrumbItems={[
         { label: 'Dashboard', href: '/dashboard' },
         { label: 'Employees', isCurrent: true }

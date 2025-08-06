@@ -86,7 +86,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <DashboardLayout showBreadcrumb={false}>
+    <DashboardLayout allowedUserTypes={['admin']} showBreadcrumb={false}>
       <Toaster position="top-center" />
       <div className="mb-6 flex justify-between items-center">
         <div>

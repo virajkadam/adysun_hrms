@@ -159,6 +159,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem('adminSessionId', sessionId);
           localStorage.setItem('adminData', JSON.stringify(userData));
           
+          // Set cookie for server-side middleware
+          document.cookie = `adminSessionId=${sessionId}; path=/; max-age=86400; secure; samesite=strict`;
+          
           setCurrentAdmin(userData);
           setCurrentEmployee(null);
           setCurrentUserData(userData);
@@ -175,6 +178,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           // Store employee data in localStorage for persistence
           localStorage.setItem('employeeSessionId', userData.id);
           localStorage.setItem('employeeData', JSON.stringify(userData));
+          
+          // Set cookie for server-side middleware
+          document.cookie = `employeeSessionId=${userData.id}; path=/; max-age=86400; secure; samesite=strict`;
           
           setCurrentEmployee(userData);
           setCurrentAdmin(null);
@@ -299,11 +305,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setCurrentAdmin(null);
     setCurrentEmployee(null);
     setCurrentUserData(null);
+    
     // Clear localStorage
     localStorage.removeItem('adminSessionId');
     localStorage.removeItem('adminData');
     localStorage.removeItem('employeeSessionId');
     localStorage.removeItem('employeeData');
+    
+    // Clear cookies
+    document.cookie = 'adminSessionId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'employeeSessionId=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    
     return signOut(auth);
   };
 
