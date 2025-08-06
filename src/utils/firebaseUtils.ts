@@ -1698,3 +1698,64 @@ export const updateEnquiry = async (id: string, enquiryData: any) => {
 export const deleteEnquiry = async (id: string) => {
   await deleteDoc(doc(db, 'enquiries', id));
 }; 
+
+// PAN Card validation and uniqueness check functions
+export const validatePANFormat = (pan: string): boolean => {
+  // PAN format: 5 letters + 4 digits + 1 letter (e.g., ABCDE1234F)
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+  return panRegex.test(pan.toUpperCase());
+};
+
+export const checkPANExistsInEnquiries = async (pan: string): Promise<boolean> => {
+  try {
+    if (!pan || !validatePANFormat(pan)) {
+      return false;
+    }
+    
+    const q = query(
+      collection(db, 'enquiries'), 
+      where('pan', '==', pan.toUpperCase())
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking PAN in enquiries:', error);
+    return false;
+  }
+};
+
+export const checkPANExistsInEmployees = async (pan: string): Promise<boolean> => {
+  try {
+    if (!pan || !validatePANFormat(pan)) {
+      return false;
+    }
+    
+    const q = query(
+      collection(db, 'employees'), 
+      where('panCard', '==', pan.toUpperCase())
+    );
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking PAN in employees:', error);
+    return false;
+  }
+};
+
+export const checkPANExistsAnywhere = async (pan: string): Promise<boolean> => {
+  try {
+    if (!pan || !validatePANFormat(pan)) {
+      return false;
+    }
+    
+    const [existsInEnquiries, existsInEmployees] = await Promise.all([
+      checkPANExistsInEnquiries(pan),
+      checkPANExistsInEmployees(pan)
+    ]);
+    
+    return existsInEnquiries || existsInEmployees;
+  } catch (error) {
+    console.error('Error checking PAN uniqueness:', error);
+    return false;
+  }
+}; 

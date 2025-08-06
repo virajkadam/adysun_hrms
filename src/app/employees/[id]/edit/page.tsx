@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiSave, FiEye, FiEyeOff } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, updateEmployee, getAdminDataForAudit, checkUserByPhone } from '@/utils/firebaseUtils';
+import { getEmployee, updateEmployee, getAdminDataForAudit, checkUserByPhone, validatePANFormat, checkPANExistsAnywhere } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
@@ -65,7 +65,30 @@ export default function EditEmployeePage({ params }: PageParams) {
         throw new Error(`Phone number is already registered with an ${userType}`);
       }
 
-      await updateEmployee(id, data);
+      // Validate PAN card if provided
+      if (data.panCard && data.panCard.trim()) {
+        if (!validatePANFormat(data.panCard)) {
+          throw new Error('Please enter a valid PAN number (e.g., ABCDE1234F)');
+        }
+
+        // Check if PAN already exists with another user
+        const panExists = await checkPANExistsAnywhere(data.panCard.toUpperCase());
+        if (panExists) {
+          // Get the current employee's PAN to see if it's the same
+          const currentEmployee = await getEmployee(id);
+          if (currentEmployee.panCard !== data.panCard.toUpperCase()) {
+            throw new Error('This PAN number is already registered with another user. Please use a different PAN or contact support.');
+          }
+        }
+      }
+
+      // Normalize PAN to uppercase before updating
+      const updatedData = {
+        ...data,
+        panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
+      };
+      
+      await updateEmployee(id, updatedData);
       toast.success('Employee updated successfully!', { id: 'updateEmployee' });
       router.push(`/employees/${id}`);
     } catch (error: any) {

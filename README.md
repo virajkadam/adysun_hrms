@@ -88,6 +88,9 @@ npm start
 - Dashboard analytics
 - User authentication and authorization
 - Responsive design for all devices
+- **PAN Card validation and uniqueness checking**
+- **Real-time form validation**
+- **Cross-collection data integrity**
 
 ## Technologies Used
 
@@ -97,6 +100,16 @@ npm start
 - TypeScript
 - Tailwind CSS
 - React Hook Form
+
+## Recent Updates
+
+### PAN Card Validation System
+- **Format Validation**: Ensures PAN follows the correct pattern (ABCDE1234F)
+- **Uniqueness Checking**: Prevents duplicate PANs across enquiries and employees
+- **Real-time Feedback**: Shows validation errors as users type
+- **Cross-collection Integrity**: Maintains data consistency across the entire system
+
+For detailed implementation guide, see [PAN Validation Documentation](docs/pan-validation-guide.md).
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

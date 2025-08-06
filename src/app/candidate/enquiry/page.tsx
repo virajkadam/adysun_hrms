@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import { validatePANFormat, checkPANExistsAnywhere } from "@/utils/firebaseUtils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -264,6 +265,7 @@ export default function EnquirySubmitPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mobileError, setMobileError] = useState<string | null>(null);
+  const [panError, setPanError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,6 +273,7 @@ export default function EnquirySubmitPage() {
     // Clear previous errors
     setError(null);
     setMobileError(null);
+    setPanError(null);
 
     // Validate required fields
     if (!formData.name.trim()) {
@@ -306,13 +309,28 @@ export default function EnquirySubmitPage() {
       return;
     }
 
+    // Validate PAN card if provided
+    if (formData.pan.trim()) {
+      if (!validatePANFormat(formData.pan)) {
+        setError("Please enter a valid PAN number (e.g., ABCDE1234F)");
+        return;
+      }
+
+      // Check if PAN already exists
+      const panExists = await checkPANExistsAnywhere(formData.pan.toUpperCase());
+      if (panExists) {
+        setError("This PAN number is already registered. Please use a different PAN or contact support.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       await addDoc(collection(db, "enquiries"), {
         name: formData.name.trim(),
         mobile: formData.mobile.trim(),
-        pan: formData.pan.trim() || null,
+        pan: formData.pan.trim() ? formData.pan.trim().toUpperCase() : null,
         passoutYear: formData.passoutYear.trim() || null,
         technology: formData.technology.trim() || null,
         role: formData.role.trim() || null,
@@ -363,6 +381,19 @@ export default function EnquirySubmitPage() {
         }
       } else {
         setMobileError(null);
+      }
+    }
+
+    // PAN number validation
+    if (name === "pan") {
+      if (value.length > 0) {
+        if (!validatePANFormat(value)) {
+          setPanError("Please enter a valid PAN number (e.g., ABCDE1234F)");
+        } else {
+          setPanError(null);
+        }
+      } else {
+        setPanError(null);
       }
     }
   };
@@ -465,7 +496,7 @@ export default function EnquirySubmitPage() {
                       htmlFor="pan"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      PAN Number
+                      <span className="text-red-500">*</span> PAN Number
                     </label>
                     <input
                       type="text"
@@ -473,9 +504,16 @@ export default function EnquirySubmitPage() {
                       name="pan"
                       value={formData.pan}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Enter PAN number"
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        panError ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter PAN number (e.g., ABCDE1234F)"
+                      pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                      title="PAN number must be in format: ABCDE1234F"
                     />
+                    {panError && (
+                      <p className="mt-1 text-sm text-red-600">{panError}</p>
+                    )}
                   </div>
                   <div>
                     <label

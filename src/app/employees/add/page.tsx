@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployee } from '@/utils/firebaseUtils';
-import { getAdminDataForAudit, checkUserByPhone } from '@/utils/firebaseUtils';
+import { getAdminDataForAudit, checkUserByPhone, validatePANFormat, checkPANExistsAnywhere } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import { FiSave, FiX, FiPlus, FiEye, FiEyeOff } from 'react-icons/fi';
 import Link from 'next/link';
@@ -46,19 +46,33 @@ export default function AddEmployeePage() {
         throw new Error(`Phone number is already registered with an ${userType}`);
       }
 
+      // Validate PAN card if provided
+      if (data.panCard && data.panCard.trim()) {
+        if (!validatePANFormat(data.panCard)) {
+          throw new Error('Please enter a valid PAN number (e.g., ABCDE1234F)');
+        }
+
+        // Check if PAN already exists
+        const panExists = await checkPANExistsAnywhere(data.panCard.toUpperCase());
+        if (panExists) {
+          throw new Error('This PAN number is already registered. Please use a different PAN or contact support.');
+        }
+      }
+
       // Get admin data for audit fields
       const { adminId, currentTimestamp } = getAdminDataForAudit();
 
-      // Add audit fields to employee data and ensure status is active
-      const employeeDataWithAudit = {
-        ...data,
-        status: 'active' as const, // Always set to active for new employees
-        password: data.password || `${data.phone.slice(-5)}@#$$`, // New pattern: last 5 digits + @#$$
-        createdAt: currentTimestamp,
-        createdBy: adminId,
-        updatedAt: currentTimestamp,
-        updatedBy: adminId,
-      };
+              // Add audit fields to employee data and ensure status is active
+        const employeeDataWithAudit = {
+          ...data,
+          panCard: data.panCard ? data.panCard.toUpperCase() : undefined, // Normalize PAN to uppercase
+          status: 'active' as const, // Always set to active for new employees
+          password: data.password || `${data.phone.slice(-5)}@#$$`, // New pattern: last 5 digits + @#$$
+          createdAt: currentTimestamp,
+          createdBy: adminId,
+          updatedAt: currentTimestamp,
+          updatedBy: adminId,
+        };
 
       await addEmployee(employeeDataWithAudit);
       toast.success('Employee added successfully!', { id: 'add-employee' });
