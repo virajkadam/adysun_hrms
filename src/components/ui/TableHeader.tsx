@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut } from 'react-icons/fi';
+import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut, FiCpu, FiUsers, FiClock } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -328,7 +328,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                       ))}
                     </select>
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiFilter className="w-4 h-4 text-gray-500" />
+                      <FiCpu className="w-4 h-4 text-gray-500" />
                     </div>
                   </div>
                 )}
@@ -347,7 +347,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                       ))}
                     </select>
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiFilter className="w-4 h-4 text-gray-500" />
+                      <FiUsers className="w-4 h-4 text-gray-500" />
                     </div>
                   </div>
                 )}
@@ -366,7 +366,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                       ))}
                     </select>
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiFilter className="w-4 h-4 text-gray-500" />
+                      <FiClock className="w-4 h-4 text-gray-500" />
                     </div>
                   </div>
                 )}
