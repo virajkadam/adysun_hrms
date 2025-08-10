@@ -324,11 +324,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="text" placeholder="Enter PAN number" {...register('panCard', { pattern: { value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, message: 'Please enter a valid PAN number (e.g., ABCDE1234F)' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.panCard && (<p className="mt-1 text-sm text-red-600">{errors.panCard.message}</p>)}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Van No</label>
-                  <input type="text" placeholder="Enter van number" {...register('vanNo', { pattern: { value: /^[A-Z0-9]{2,10}$/i, message: 'Please enter a valid van number' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  {errors.vanNo && (<p className="mt-1 text-sm text-red-600">{errors.vanNo.message}</p>)}
-                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Voter ID

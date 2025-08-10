@@ -105,7 +105,6 @@
   // Employment Details
   "department": "string",           // Department name
   "position": "string",             // Job position
-  "vanNo": "string",                // Vehicle number
   
   // Authentication
   "password": "string",             // Encrypted password

@@ -22,7 +22,6 @@ export interface Employee {
   drivingLicense?: string;
   panCard?: string;
   voterID?: string;
-  vanNo?: string;
   
   // Bank Details
   bankName?: string;
