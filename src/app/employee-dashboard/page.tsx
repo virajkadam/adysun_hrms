@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { FiUser, FiCalendar, FiLogOut, FiFileText } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
+import { getEmployeeSelf } from '@/utils/firebaseUtils';
+import { Employee } from '@/types';
 
 export default function EmployeeDashboardPage() {
   const { currentEmployee, currentUserData, logout } = useAuth();
   const router = useRouter();
+  const [fullEmployeeData, setFullEmployeeData] = useState<Employee | null>(null);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     // Check if user is authenticated
@@ -29,6 +33,23 @@ export default function EmployeeDashboardPage() {
       router.push('/login');
       return;
     }
+
+    // Fetch complete employee data
+    const fetchEmployeeData = async () => {
+      try {
+        if (currentUserData.userType === 'employee') {
+          const employeeData = await getEmployeeSelf(currentUserData.id);
+          setFullEmployeeData(employeeData);
+        }
+      } catch (error) {
+        console.error('Error fetching employee data:', error);
+        toast.error('Failed to load employee data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployeeData();
   }, [currentUserData, router]);
 
   // If not employee, don't render dashboard
@@ -120,30 +141,44 @@ export default function EmployeeDashboardPage() {
       {/* Employee Information Section */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Employee Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p className="font-medium text-gray-900">{employee?.name}</p>
-            <p className="text-sm text-gray-600">Name</p>
+        {loading ? (
+          <div className="text-center py-4">
+            <p className="text-gray-500">Loading employee information...</p>
           </div>
-          <div>
-            <p className="font-medium text-gray-900">{employee?.email}</p>
-            <p className="text-sm text-gray-600">Email</p>
+        ) : fullEmployeeData ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.employeeId || 'Not Assigned'}</p>
+              <p className="text-sm text-gray-600">Employee ID</p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
+              <p className="text-sm text-gray-600">Name</p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.email}</p>
+              <p className="text-sm text-gray-600">Email</p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
+              <p className="text-sm text-gray-600">Phone</p>
+            </div>
+            <div>
+              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                fullEmployeeData.status === 'active' 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-red-100 text-red-800'
+              }`}>
+                {fullEmployeeData.status.toUpperCase()}
+              </span>
+              <p className="text-sm text-gray-600 mt-1">Status</p>
+            </div>
           </div>
-          <div>
-            <p className="font-medium text-gray-900">{employee?.phone}</p>
-            <p className="text-sm text-gray-600">Phone</p>
+        ) : (
+          <div className="text-center py-4">
+            <p className="text-red-500">Failed to load employee information</p>
           </div>
-          <div>
-            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-              employee?.status === 'active' 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-red-100 text-red-800'
-            }`}>
-              {employee?.status.toUpperCase()}
-            </span>
-            <p className="text-sm text-gray-600 mt-1">Status</p>
-          </div>
-        </div>
+        )}
       </div>
     </EmployeeLayout>
   );
