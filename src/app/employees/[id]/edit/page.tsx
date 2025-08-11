@@ -205,6 +205,24 @@ export default function EditEmployeePage({ params }: PageParams) {
                   <input type="text" placeholder="Enter home town" {...register('homeTown', { maxLength: { value: 50, message: 'Home town cannot exceed 50 characters' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.homeTown && (<p className="mt-1 text-sm text-red-600">{errors.homeTown.message}</p>)}
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500">*</span> Employee Type
+                  </label>
+                  <select
+                    {...register('employeeType', {
+                      required: 'Employee type is required'
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  >
+                    <option value="insider">Insider</option>
+                    <option value="outsider">Outsider</option>
+                  </select>
+                  {errors.employeeType && (
+                    <p className="mt-1 text-sm text-red-600">{errors.employeeType.message}</p>
+                  )}
+                </div>
               </div>
             </div>
 

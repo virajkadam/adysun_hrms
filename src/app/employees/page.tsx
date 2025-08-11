@@ -287,6 +287,9 @@ export default function EmployeesPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Employee Type
+                  </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -340,6 +343,17 @@ export default function EmployeesPage() {
                                 {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
                               </span>
                             )}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <span
+                        className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          (employee.employeeType || 'insider') === 'insider'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-orange-100 text-orange-800'
+                        }`}
+                      >
+                        {(employee.employeeType || 'insider').charAt(0).toUpperCase() + (employee.employeeType || 'insider').slice(1)}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {deleteConfirm === employee.id ? (
                         <div className="flex items-center justify-center space-x-2">

@@ -7,6 +7,7 @@ export interface Employee {
   employeeId?: string;
   isActive?: boolean;
   homeTown?: string;
+  employeeType: 'insider' | 'outsider'; // Insider/Outsider flag
   
   // Contact Information
   email: string;

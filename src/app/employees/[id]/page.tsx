@@ -346,6 +346,19 @@ export default function EmployeeViewPage({ params }: PageParams) {
               </div>
               
               <div className="bg-white rounded-lg shadow p-3">
+                <span
+                  className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    employee.employeeType === 'insider'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-orange-100 text-orange-800'
+                  }`}
+                >
+                  {employee.employeeType || 'insider'}
+                </span>
+                <p className="text-sm text-gray-500 mt-2">Employee Type</p>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow p-3">
                 <p className="text-lg font-medium text-gray-900">{employee.email || '-'}</p>
                 <p className="text-sm text-gray-500">Email</p>
               </div>
