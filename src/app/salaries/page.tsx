@@ -43,8 +43,8 @@ const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
 
 export default function SalariesPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterValue, setFilterValue] = useState('all');
   const [monthFilter, setMonthFilter] = useState('all');
+  const [yearFilter, setYearFilter] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [employeeName, setEmployeeName] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -173,13 +173,12 @@ export default function SalariesPage() {
       salary.employeeId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       salary.employmentId?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesFilter = filterValue === 'all' || salary.status === filterValue;
-    
     const matchesMonth = monthFilter === 'all' || salary.month === parseInt(monthFilter);
+    const matchesYear = yearFilter === 'all' || salary.year === parseInt(yearFilter);
     
     const matchesEmployeeId = employeeId ? salary.employeeId === employeeId : true;
     
-    return matchesSearch && matchesFilter && matchesMonth && matchesEmployeeId;
+    return matchesSearch && matchesMonth && matchesYear && matchesEmployeeId;
   });
 
   // Pagination logic
@@ -192,7 +191,7 @@ export default function SalariesPage() {
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, filterValue, monthFilter, employeeId]);
+  }, [searchTerm, monthFilter, yearFilter, employeeId]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -203,9 +202,6 @@ export default function SalariesPage() {
     setCurrentPage(1);
   };
 
-  const activeSalaries = salaries.filter(salary => salary.status === 'paid').length;
-  const inactiveSalaries = salaries.filter(salary => salary.status === 'draft').length;
-
   const getMonthName = (month: number) => {
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -214,18 +210,13 @@ export default function SalariesPage() {
     return months[month - 1] || 'Unknown';
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusClasses = {
-      draft: 'bg-gray-100 text-gray-800',
-      issued: 'bg-blue-100 text-blue-800',
-      paid: 'bg-green-100 text-green-800'
-    };
-    
-    return (
-      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusClasses[status as keyof typeof statusClasses] || 'bg-gray-100 text-gray-800'}`}>
-        {status}
-      </span>
-    );
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [{ value: 'all', label: 'All Years' }];
+    for (let year = currentYear; year >= currentYear - 10; year--) {
+      years.push({ value: year.toString(), label: year.toString() });
+    }
+    return years;
   };
 
   return (
@@ -252,11 +243,10 @@ export default function SalariesPage() {
           searchPlaceholder="Search"
           showStats={false}
           showSearch={true}
-          showFilter={false}
-          showSecondFilter={true}
-          secondFilterValue={monthFilter}
-          onSecondFilterChange={setMonthFilter}
-          secondFilterOptions={[
+          showFilter={true}
+          filterValue={monthFilter}
+          onFilterChange={setMonthFilter}
+          filterOptions={[
             { value: 'all', label: 'All Months' },
             { value: '1', label: 'January' },
             { value: '2', label: 'February' },
@@ -271,6 +261,10 @@ export default function SalariesPage() {
             { value: '11', label: 'November' },
             { value: '12', label: 'December' }
           ]}
+          showSecondFilter={true}
+          secondFilterValue={yearFilter}
+          onSecondFilterChange={setYearFilter}
+          secondFilterOptions={getYearOptions()}
           onRefresh={handleRefresh}
           isRefreshing={isLoading}
           actionButtons={[
@@ -296,10 +290,13 @@ export default function SalariesPage() {
                   Period
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Net Salary
+                  Basic Salary
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                  Inhand Salary
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Salary
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -316,10 +313,13 @@ export default function SalariesPage() {
                     {getMonthName(salary.month)} {salary.year}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{salary.netSalary?.toLocaleString() || '0'}
+                    ₹{salary.basicSalary?.toLocaleString() || '0'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusBadge(salary.status)}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    ₹{salary.inhandSalary?.toLocaleString() || '0'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    ₹{salary.totalSalary?.toLocaleString() || '0'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     {deleteConfirm === salary.id ? (
@@ -375,8 +375,8 @@ export default function SalariesPage() {
                 {employeeId ? 'No salary records found' : 'No salaries found'}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                {searchTerm || monthFilter !== 'all' 
-                  ? 'Try adjusting your search or month filter.'
+                {searchTerm || monthFilter !== 'all' || yearFilter !== 'all'
+                  ? 'Try adjusting your search, month, or year filter.'
                   : 'Get started by adding a salary record.'
                 }
               </p>
