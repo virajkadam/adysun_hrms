@@ -3,7 +3,7 @@
 import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiArrowLeft, FiEdit, FiTrash2, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -13,7 +13,6 @@ import { useEmployee } from '@/hooks/useEmployees';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
   
   const router = useRouter();
   const { id } = use(params);
@@ -32,9 +31,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     isLoading: employeeLoading,
     isError: employeeError
   } = useEmployee(employment?.employeeId || '');
-
-  // Use mutation for delete operation
-  const deleteEmploymentMutation = useDeleteEmployment();
 
   // Calculate real attendance statistics
   const calculateAttendanceStats = () => {
@@ -159,25 +155,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     console.error('Employee data error:', employeeError);
     toast.error('Failed to load employee data');
   }
-
-  const handleDeleteClick = () => {
-    setDeleteConfirm(true);
-  };
-
-  const confirmDelete = async () => {
-    try {
-      toast.loading('Deleting employment...', { id: 'delete-employment' });
-      await deleteEmploymentMutation.mutateAsync(id);
-      toast.success('Employment deleted successfully', { id: 'delete-employment' });
-      router.push('/employments');
-    } catch (error: any) {
-      toast.error('Failed to delete employment', { id: 'delete-employment' });
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteConfirm(false);
-  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -312,44 +289,14 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             href: employment?.employeeId ? `/employees/${employment.employeeId}` : "/employments",
             label: 'Back'
           }}
-          actionButtons={
-            deleteConfirm ? [
-              {
-                label: 'Edit',
-                icon: <FiEdit />,
-                variant: 'primary' as const,
-                href: `/employments/${id}/edit`
-              },
-              {
-                label: 'Confirm',
-                icon: <FiTrash2 />,
-                variant: 'danger' as const,
-                onClick: confirmDelete,
-                disabled: deleteEmploymentMutation.isPending
-              },
-              {
-                label: 'Cancel',
-                icon: <FiArrowLeft />,
-                variant: 'secondary' as const,
-                onClick: cancelDelete,
-                disabled: deleteEmploymentMutation.isPending
-              }
-            ] : [
-              {
-                label: 'Edit',
-                icon: <FiEdit />,
-                variant: 'primary' as const,
-                href: `/employments/${id}/edit`
-              },
-              {
-                label: 'Delete',
-                icon: <FiTrash2 />,
-                variant: 'danger' as const,
-                onClick: handleDeleteClick,
-                disabled: deleteEmploymentMutation.isPending
-              }
-            ]
-          }
+          actionButtons={[
+            {
+              label: 'Edit',
+              icon: <FiEdit />,
+              variant: 'primary' as const,
+              href: `/employments/${id}/edit`
+            }
+          ]}
         />
 
       {employee && (
