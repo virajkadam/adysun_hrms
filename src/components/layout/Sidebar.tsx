@@ -74,12 +74,12 @@ const Sidebar = () => {
     });
   }
 
-  // Add Profile at the end
-  menuItems.push({
-    path: '/profile',
-    name: 'My Profile',
-    icon: <FiUser className="w-5 h-5" />
-  });
+  // Remove Profile - now handled in header dropdown
+  // menuItems.push({
+  //   path: '/profile',
+  //   name: 'My Profile',
+  //   icon: <FiUser className="w-5 h-5" />
+  // });
 
   return (
     <>

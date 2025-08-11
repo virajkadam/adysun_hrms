@@ -47,11 +47,12 @@ const EmployeeSidebar = () => {
       name: 'Documents',
       icon: <FiFileText className="w-5 h-5" />
     },
-    {
-      path: '/employee/profile',
-      name: 'My Profile',
-      icon: <FiUser className="w-5 h-5" />
-    },
+    // Remove Profile - now handled in header dropdown
+    // {
+    //   path: '/employee/profile',
+    //   name: 'My Profile',
+    //   icon: <FiUser className="w-5 h-5" />
+    // },
   ];
 
   return (
