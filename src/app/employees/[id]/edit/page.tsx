@@ -25,6 +25,7 @@ export default function EditEmployeePage({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [educationType, setEducationType] = useState<'12th' | 'diploma'>('12th');
 
   const router = useRouter();
   const { id } = use(params);
@@ -39,6 +40,13 @@ export default function EditEmployeePage({ params }: PageParams) {
         // Reset form with all employee data except id and audit fields
         const { id: _, createdAt, createdBy, updatedAt, updatedBy, ...rest } = employeeData;
         reset(rest);
+        
+        // Set education type based on existing data
+        if (employeeData.diploma && Object.keys(employeeData.diploma).some(key => employeeData.diploma[key])) {
+          setEducationType('diploma');
+        } else {
+          setEducationType('12th');
+        }
       } catch (error: ApiError) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
         setError(errorMessage);
@@ -82,9 +90,15 @@ export default function EditEmployeePage({ params }: PageParams) {
         }
       }
 
-      // Normalize PAN to uppercase before updating
+      // Prepare education data based on selected type
+      const educationData = educationType === '12th' 
+        ? { twelthStandard: data.twelthStandard }
+        : { diploma: data.diploma };
+
+      // Normalize PAN to uppercase and include only selected education type
       const updatedData = {
         ...data,
+        ...educationData, // Only include the selected education type
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
       };
       
@@ -224,14 +238,14 @@ export default function EditEmployeePage({ params }: PageParams) {
                   </label>
                   <input type="text" placeholder="Enter department" {...register('department')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Current Address
                   </label>
                   <input type="text" placeholder="Enter current address" {...register('currentAddress', { required: 'Current address is required' })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.currentAddress && (<p className="mt-1 text-sm text-red-600">{errors.currentAddress.message}</p>)}
                 </div>
-                <div>
+                <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
                   <input type="text" placeholder="Enter permanent address" {...register('permanentAddress')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
@@ -241,7 +255,7 @@ export default function EditEmployeePage({ params }: PageParams) {
             {/* Password Section */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Password
@@ -426,112 +440,134 @@ export default function EditEmployeePage({ params }: PageParams) {
               </div>
             </div>
 
-            {/* 12th Standard */}
+            {/* 12th Standard or Diploma */}
             <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
-                  <input type="text" placeholder="Enter school name" {...register('twelthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input type="text" placeholder="Enter stream" {...register('twelthStandard.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                  <select {...register('twelthStandard.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
-                    <option value="">Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
-                    <option value="April">April</option>
-                    <option value="May">May</option>
-                    <option value="June">June</option>
-                    <option value="July">July</option>
-                    <option value="August">August</option>
-                    <option value="September">September</option>
-                    <option value="October">October</option>
-                    <option value="November">November</option>
-                    <option value="December">December</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
-                  <input type="text" placeholder="YYYY" {...register('twelthStandard.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  {errors.twelthStandard?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.twelthStandard.passingYear.message}</p>)}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
-                  <input type="text" placeholder="Enter full school name" {...register('twelthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
-                  <input type="text" placeholder="Enter board name" {...register('twelthStandard.board')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                  <input type="text" placeholder="Enter percentage" {...register('twelthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
-                  <input type="text" placeholder="Enter grade" {...register('twelthStandard.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-md font-medium text-gray-700 border-l-2 border-green-500 pl-2">12th or Diploma</h3>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-medium ${educationType === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>12th</span>
+                  <button
+                    type="button"
+                    onClick={() => setEducationType(educationType === '12th' ? 'diploma' : '12th')}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      educationType === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        educationType === 'diploma' ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                  <span className={`text-sm font-medium ${educationType === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>Diploma</span>
                 </div>
               </div>
-            </div>
 
-            {/* Other Education */}
-            <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Other Education</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Diploma</label>
-                  <input type="text" placeholder="Enter diploma name" {...register('otherEducation.diploma')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+              {/* 12th Standard */}
+              {educationType === '12th' && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
+                    <input type="text" placeholder="Enter school name" {...register('twelthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                    <input type="text" placeholder="Enter stream" {...register('twelthStandard.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                    <select {...register('twelthStandard.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
+                      <option value="">Select Month</option>
+                      <option value="January">January</option>
+                      <option value="February">February</option>
+                      <option value="March">March</option>
+                      <option value="April">April</option>
+                      <option value="May">May</option>
+                      <option value="June">June</option>
+                      <option value="July">July</option>
+                      <option value="August">August</option>
+                      <option value="September">September</option>
+                      <option value="October">October</option>
+                      <option value="November">November</option>
+                      <option value="December">December</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+                    <input type="text" placeholder="YYYY" {...register('twelthStandard.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                    {errors.twelthStandard?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.twelthStandard.passingYear.message}</p>)}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
+                    <input type="text" placeholder="Enter full school name" {...register('twelthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
+                    <input type="text" placeholder="Enter board name" {...register('twelthStandard.board')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
+                    <input type="text" placeholder="Enter percentage" {...register('twelthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                    <input type="text" placeholder="Enter grade" {...register('twelthStandard.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <input type="text" placeholder="Enter specialization" {...register('otherEducation.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+              )}
+
+              {/* Diploma */}
+              {educationType === 'diploma' && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Diploma Name</label>
+                    <input type="text" placeholder="Enter diploma name" {...register('diploma.name')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                    <input type="text" placeholder="Enter specialization/branch" {...register('diploma.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                    <select {...register('diploma.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
+                      <option value="">Select Month</option>
+                      <option value="January">January</option>
+                      <option value="February">February</option>
+                      <option value="March">March</option>
+                      <option value="April">April</option>
+                      <option value="May">May</option>
+                      <option value="June">June</option>
+                      <option value="July">July</option>
+                      <option value="August">August</option>
+                      <option value="September">September</option>
+                      <option value="October">October</option>
+                      <option value="November">November</option>
+                      <option value="December">December</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+                    <input type="text" placeholder="YYYY" {...register('diploma.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                    {errors.diploma?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.diploma.passingYear.message}</p>)}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
+                    <input type="text" placeholder="Enter college/institution name" {...register('diploma.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Institute</label>
+                    <input type="text" placeholder="Enter institute name" {...register('diploma.institute')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
+                    <input type="text" placeholder="Percentage" {...register('diploma.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                    <input type="text" placeholder="Enter grade" {...register('diploma.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                  <select {...register('otherEducation.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
-                    <option value="">Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
-                    <option value="April">April</option>
-                    <option value="May">May</option>
-                    <option value="June">June</option>
-                    <option value="July">July</option>
-                    <option value="August">August</option>
-                    <option value="September">September</option>
-                    <option value="October">October</option>
-                    <option value="November">November</option>
-                    <option value="December">December</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
-                  <input type="text" placeholder="YYYY" {...register('otherEducation.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  {errors.otherEducation?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.otherEducation.passingYear.message}</p>)}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-                  <input type="text" placeholder="Enter college name" {...register('otherEducation.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Institute</label>
-                  <input type="text" placeholder="Enter institute name" {...register('otherEducation.institute')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                  <input type="text" placeholder="Enter percentage" {...register('otherEducation.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
-                  <input type="text" placeholder="Enter grade" {...register('otherEducation.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-              </div>
+              )}
             </div>
 
             {/* 10th Standard */}
