@@ -282,7 +282,7 @@ export interface Company {
   };
 } 
 
-// Salary type
+// Update the Salary interface to reflect the new naming
 export interface Salary {
   id: string;
   employeeId: string;
@@ -290,8 +290,8 @@ export interface Salary {
   
   // Basic Salary Information
   basicSalary: number;
-  totalSalary: number;
-  netSalary: number;
+  inhandSalary: number; // Changed from totalSalary
+  totalSalary: number;  // Changed from netSalary
   
   // Allowances
   da?: number;
