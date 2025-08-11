@@ -59,6 +59,34 @@ export default function EmployeeAttendancePage() {
   const checkInMutation = useMarkAttendanceCheckIn();
   const checkOutMutation = useMarkAttendanceCheckOut();
 
+  // Helper function to convert 24-hour time to 12-hour format
+  const formatTimeTo12Hour = (timeString: string | undefined): string => {
+    if (!timeString) return '--';
+    
+    try {
+      // Handle different time formats
+      let time = timeString;
+      
+      // If it's already in 12-hour format, return as is
+      if (timeString.includes('AM') || timeString.includes('PM')) {
+        return timeString;
+      }
+      
+      // If it's in 24-hour format (HH:MM), convert to 12-hour
+      if (timeString.includes(':')) {
+        const [hours, minutes] = timeString.split(':');
+        const hour = parseInt(hours);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const displayHour = hour % 12 || 12;
+        return `${displayHour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+      }
+      
+      return timeString;
+    } catch (error) {
+      return timeString;
+    }
+  };
+
   useEffect(() => {
     // Check if user is authenticated and is employee
     if (!currentUserData || currentUserData.userType !== 'employee') {
@@ -179,12 +207,12 @@ export default function EmployeeAttendancePage() {
     }
   };
 
-  // Transform attendance data to match expected format
+  // Transform attendance data to match expected format with 12-hour time
   const transformedAttendanceRecords: AttendanceRecord[] = attendanceRecords.map((record: any) => ({
     id: record.id,
     date: record.date,
-    checkIn: record.checkInTime || '09:00 AM',
-    checkOut: record.checkOutTime || '06:00 PM',
+    checkIn: formatTimeTo12Hour(record.checkInTime) || '09:00 AM',
+    checkOut: formatTimeTo12Hour(record.checkOutTime) || '06:00 PM',
     status: record.status || 'present',
     totalHours: record.totalHours || 9
   }));
@@ -226,8 +254,8 @@ export default function EmployeeAttendancePage() {
           showAttendanceMarking={true}
           attendanceData={{
             isCheckedIn: todayAttendance.isCheckedIn,
-            checkInTime: todayAttendance.checkInTime,
-            checkOutTime: todayAttendance.checkOutTime,
+            checkInTime: todayAttendance.checkInTime || '',
+            checkOutTime: todayAttendance.checkOutTime || '',
             checkInDate: todayAttendance.isCheckedIn ? new Date().toISOString().split('T')[0] : undefined,
             checkOutDate: todayAttendance.isCheckedOut ? new Date().toISOString().split('T')[0] : undefined,
             employeeName: currentUserData?.name
