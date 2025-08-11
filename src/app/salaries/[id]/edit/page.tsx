@@ -20,8 +20,8 @@ type SalaryFormData = {
   month: number;
   year: number;
   basicSalary: number;
-  totalSalary: number;
-  netSalary: number;
+  inhandSalary: number; // Changed from totalSalary
+  totalSalary: number;  // Changed from netSalary
   status: 'draft' | 'issued' | 'paid';
   paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
 };
@@ -75,8 +75,8 @@ export default function EditSalaryPage({ params }: PageParams) {
         month: salary.month || 1,
         year: salary.year || new Date().getFullYear(),
         basicSalary: salary.basicSalary || 0,
-        totalSalary: salary.totalSalary || 0,
-        netSalary: salary.netSalary || 0,
+        inhandSalary: salary.inhandSalary || 0, // Changed from totalSalary
+        totalSalary: salary.totalSalary || 0,   // Changed from netSalary
         status: salary.status || 'draft',
         paymentFrequency: salary.paymentFrequency || 'monthly'
       });
@@ -261,7 +261,7 @@ export default function EditSalaryPage({ params }: PageParams) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-            {/* Basic Salary */}
+            {/* Basic Salary - No Change */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Basic Salary
@@ -277,7 +277,23 @@ export default function EditSalaryPage({ params }: PageParams) {
               )}
             </div>
 
-            {/* Total Salary */}
+            {/* Inhand Salary (formerly Total Salary) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Inhand Salary
+              </label>
+              <input
+                type="number"
+                {...register('inhandSalary', { required: 'Inhand salary is required' })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter inhand salary"
+              />
+              {errors.inhandSalary && (
+                <p className="mt-1 text-sm text-red-600">{errors.inhandSalary.message}</p>
+              )}
+            </div>
+
+            {/* Total Salary (formerly Net Salary) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Total Salary
@@ -290,22 +306,6 @@ export default function EditSalaryPage({ params }: PageParams) {
               />
               {errors.totalSalary && (
                 <p className="mt-1 text-sm text-red-600">{errors.totalSalary.message}</p>
-              )}
-            </div>
-
-            {/* Net Salary */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Net Salary
-              </label>
-              <input
-                type="number"
-                {...register('netSalary', { required: 'Net salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter net salary"
-              />
-              {errors.netSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.netSalary.message}</p>
               )}
             </div>
 
