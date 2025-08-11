@@ -282,54 +282,20 @@ export interface Company {
   };
 } 
 
-// Update the Salary interface to reflect the new naming
+// Simplify the Salary interface to only include essential fields
 export interface Salary {
   id: string;
   employeeId: string;
   employmentId: string;
   
-  // Basic Salary Information
+  // Essential Salary Information Only
   basicSalary: number;
-  inhandSalary: number; // Changed from totalSalary
-  totalSalary: number;  // Changed from netSalary
+  inhandSalary: number;
+  totalSalary: number;
   
-  // Allowances
-  da?: number;
-  hra?: number;
-  medicalAllowance?: number;
-  transportAllowance?: number;
-  specialAllowance?: number;
-  educationAllowance?: number;
-  lta?: number;
-  additionalAllowance?: number;
-  monthlyReimbursement?: number;
-  
-  // Deductions
-  pf?: number;
-  gratuity?: number;
-  healthInsurance?: number;
-  employerPF?: number;
-  statutoryBonus?: number;
-  
-  // Payment Details
-  paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
-  salaryCreditDate?: string;
-  paymentMode?: string;
-  
-  // Working Days
-  totalWorkingDays?: number;
-  paidDays?: number;
-  lossOfPay?: number;
-  
-  // Status and Period
+  // Period Information
   month: number;
   year: number;
-  status: 'draft' | 'issued' | 'paid';
-  
-  // Document
-  documentUrl?: string;
-  issueDate?: string;
-  paidDate?: string;
   
   // Audit fields
   createdAt?: string;

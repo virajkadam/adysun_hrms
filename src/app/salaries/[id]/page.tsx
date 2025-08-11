@@ -19,7 +19,6 @@ type PageParams = {
 };
 
 export default function SalaryViewPage({ params }: PageParams) {
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [employeeName, setEmployeeName] = useState<string>('Loading...');
   
   const router = useRouter();
@@ -27,11 +26,7 @@ export default function SalaryViewPage({ params }: PageParams) {
   const employeeId = searchParams?.get('employeeId');
   
   const { id } = use(params);
-
-  // Use Tanstack Query for salary data
   const { data: salary, isLoading, isError } = useSalary(id);
-
-  const deleteSalaryMutation = useDeleteSalary();
 
   // Fetch employee name from Firebase when salary is loaded
   useEffect(() => {
@@ -48,22 +43,6 @@ export default function SalaryViewPage({ params }: PageParams) {
     };
     fetchEmployeeName();
   }, [salary]);
-
-  const handleDeleteClick = () => setDeleteConfirm(true);
-  
-  const confirmDelete = async () => {
-    try {
-      toast.loading('Deleting salary...', { id: 'delete-salary' });
-      await deleteSalaryMutation.mutateAsync(id);
-      toast.success('Salary deleted successfully', { id: 'delete-salary' });
-      // Navigate back to employee's salary list if we came from there
-      router.push(salary?.employeeId ? `/salaries?employeeId=${salary.employeeId}` : '/salaries');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete salary', { id: 'delete-salary' });
-    }
-  };
-
-  const cancelDelete = () => setDeleteConfirm(false);
 
   const getMonthName = (month: number) => {
     const months = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -124,8 +103,8 @@ export default function SalaryViewPage({ params }: PageParams) {
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
       { label: 'Salaries', href: '/salaries' },
-      { label: employeeName, employeeId: salary.employeeId, href: `/salaries?employeeId=${salary.employeeId}` },
-      { label: `${getMonthShort(salary.month)} - ${salary.year}`, isCurrent: true }
+      { label: employeeName, employeeId: salary?.employeeId, href: `/salaries?employeeId=${salary?.employeeId}` },
+      { label: `${getMonthShort(salary?.month || 1)} - ${salary?.year || ''}`, isCurrent: true }
     ]}>
       <Toaster position="top-center" />
       
@@ -146,33 +125,21 @@ export default function SalaryViewPage({ params }: PageParams) {
             href: salary?.employeeId ? `/salaries?employeeId=${salary.employeeId}` : '/salaries', 
             label: 'Back' 
           }}
-          actionButtons={
-            deleteConfirm ? [
-              { 
-                label: 'Edit', 
-                icon: <FiEdit />, 
-                variant: 'primary' as const, 
-                href: `/salaries/${id}/edit?employeeId=${salary.employeeId}` 
-              },
-              { label: 'Confirm', icon: <FiTrash2 />, variant: 'danger' as const, onClick: confirmDelete },
-              { label: 'Cancel', icon: <FiArrowLeft />, variant: 'secondary' as const, onClick: cancelDelete }
-            ] : [
-              { 
-                label: 'Edit', 
-                icon: <FiEdit />, 
-                variant: 'primary' as const, 
-                href: `/salaries/${id}/edit?employeeId=${salary.employeeId}` 
-              },
-              { label: 'Delete', icon: <FiTrash2 />, variant: 'danger' as const, onClick: handleDeleteClick }
-            ]
-          }
+          actionButtons={[
+            { 
+              label: 'Edit', 
+              icon: <FiEdit />, 
+              variant: 'primary' as const, 
+              href: `/salaries/${id}/edit?employeeId=${salary?.employeeId}` 
+            }
+          ]}
         />
 
         <div className="px-6 pb-6">
-          {/* Basic Information */}
+          {/* Essential Salary Information Only */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Basic Information
+              <FiDollarSign className="mr-2" /> Salary Information
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -182,108 +149,44 @@ export default function SalaryViewPage({ params }: PageParams) {
               </div>
               
               <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">{getMonthName(salary.month)} {salary.year}</p>
+                <p className="text-lg font-medium text-gray-900">{getMonthName(salary?.month || 1)} {salary?.year}</p>
                 <p className="text-sm text-gray-500">Period</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.basicSalary?.toLocaleString() || '0'}</p>
+                <p className="text-lg font-medium text-gray-900">₹{salary?.basicSalary?.toLocaleString() || '0'}</p>
                 <p className="text-sm text-gray-500">Basic Salary</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.totalSalary?.toLocaleString() || '0'}</p>
+                <p className="text-lg font-medium text-gray-900">₹{salary?.inhandSalary?.toLocaleString() || '0'}</p>
+                <p className="text-sm text-gray-500">Inhand Salary</p>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow p-3">
+                <p className="text-lg font-medium text-gray-900">₹{salary?.totalSalary?.toLocaleString() || '0'}</p>
                 <p className="text-sm text-gray-500">Total Salary</p>
               </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.netSalary?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">Net Salary</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                  salary.status === 'paid' ? 'bg-green-100 text-green-800' :
-                  salary.status === 'issued' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {salary.status}
-                </span>
-                <p className="text-sm text-gray-500 mt-2">Status</p>
-              </div>
             </div>
           </div>
 
-          {/* Allowances */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Allowances
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.da?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">DA</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.hra?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">HRA</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.medicalAllowance?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">Medical Allowance</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.transportAllowance?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">Transport Allowance</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Deductions */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Deductions
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.pf?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">PF</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.gratuity?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">Gratuity</p>
-              </div>
-              
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">₹{salary.healthInsurance?.toLocaleString() || '0'}</p>
-                <p className="text-sm text-gray-500">Health Insurance</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Audit Trail */}
+          {/* Audit Trail - Keep only essential audit info */}
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <FiDollarSign className="mr-2" /> Audit Trail
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-3">
                 <p className="text-lg font-medium text-gray-900">
-                  {salary.createdAt ? formatDateToDayMonYearWithTime(salary.createdAt) : '-'}
+                  {salary?.createdAt ? formatDateToDayMonYearWithTime(salary.createdAt) : '-'}
                 </p>
                 <p className="text-sm text-gray-500">Created At</p>
               </div>
               
               <div className="p-3">
                 <p className="text-lg font-medium text-gray-900">
-                  {salary.updatedAt ? formatDateToDayMonYearWithTime(salary.updatedAt) : '-'}
+                  {salary?.updatedAt ? formatDateToDayMonYearWithTime(salary.updatedAt) : '-'}
                 </p>
                 <p className="text-sm text-gray-500">Updated At</p>
               </div>

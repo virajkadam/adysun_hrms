@@ -14,16 +14,15 @@ import { useSearchParams } from 'next/navigation';
 import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import { use } from 'react';
 
+// Simplify the SalaryFormData type
 type SalaryFormData = {
   employeeId: string;
   employmentId: string;
   month: number;
   year: number;
   basicSalary: number;
-  inhandSalary: number; // Changed from totalSalary
-  totalSalary: number;  // Changed from netSalary
-  status: 'draft' | 'issued' | 'paid';
-  paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
+  inhandSalary: number;
+  totalSalary: number;
 };
 
 type PageParams = {
@@ -62,9 +61,9 @@ export default function EditSalaryPage({ params }: PageParams) {
     fetchEmployeeName();
   }, [employeeId]);
 
+  // Simplify the form reset logic
   useEffect(() => {
     if (salary) {
-      // Set employeeId from salary data
       if (salary.employeeId) {
         setEmployeeId(salary.employeeId);
       }
@@ -75,14 +74,13 @@ export default function EditSalaryPage({ params }: PageParams) {
         month: salary.month || 1,
         year: salary.year || new Date().getFullYear(),
         basicSalary: salary.basicSalary || 0,
-        inhandSalary: salary.inhandSalary || 0, // Changed from totalSalary
-        totalSalary: salary.totalSalary || 0,   // Changed from netSalary
-        status: salary.status || 'draft',
-        paymentFrequency: salary.paymentFrequency || 'monthly'
+        inhandSalary: salary.inhandSalary || 0,
+        totalSalary: salary.totalSalary || 0
       });
     }
   }, [salary, reset, employeeId]);
 
+  // Simplify the onSubmit function
   const onSubmit = async (data: SalaryFormData) => {
     try {
       setIsSubmitting(true);
@@ -91,34 +89,11 @@ export default function EditSalaryPage({ params }: PageParams) {
       await updateSalaryMutation.mutateAsync({
         id: id,
         data: {
-          ...data,
-          da: salary?.da || 0,
-          hra: salary?.hra || 0,
-          medicalAllowance: salary?.medicalAllowance || 0,
-          transportAllowance: salary?.transportAllowance || 0,
-          pf: salary?.pf || 0,
-          gratuity: salary?.gratuity || 0,
-          healthInsurance: salary?.healthInsurance || 0,
-          employerPF: salary?.employerPF || 0,
-          statutoryBonus: salary?.statutoryBonus || 0,
-          specialAllowance: salary?.specialAllowance || 0,
-          educationAllowance: salary?.educationAllowance || 0,
-          lta: salary?.lta || 0,
-          additionalAllowance: salary?.additionalAllowance || 0,
-          monthlyReimbursement: salary?.monthlyReimbursement || 0,
-          totalWorkingDays: salary?.totalWorkingDays || 0,
-          paidDays: salary?.paidDays || 0,
-          lossOfPay: salary?.lossOfPay || 0,
-          paymentMode: salary?.paymentMode || '',
-          salaryCreditDate: salary?.salaryCreditDate || '',
-          documentUrl: salary?.documentUrl || '',
-          issueDate: salary?.issueDate || '',
-          paidDate: salary?.paidDate || ''
+          ...data
         }
       });
       
       toast.success('Salary updated successfully!', { id: 'update-salary' });
-      // Navigate back to employee's salary list if we came from there
       router.push(employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${id}`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update salary', { id: 'update-salary' });

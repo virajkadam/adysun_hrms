@@ -13,16 +13,37 @@ import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getEmployeeNameById, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
 
+// Simplify the Salary interface to only include essential fields
+export interface Salary {
+  id: string;
+  employeeId: string;
+  employmentId: string;
+  
+  // Essential Salary Information Only
+  basicSalary: number;
+  inhandSalary: number;
+  totalSalary: number;
+  
+  // Period Information
+  month: number;
+  year: number;
+  
+  // Audit fields
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
+}
+
+// Simplify the SalaryFormData type
 type SalaryFormData = {
   employeeId: string;
   employmentId: string;
   month: number;
   year: number;
   basicSalary: number;
-  inhandSalary: number; // Changed from totalSalary
-  totalSalary: number;  // Changed from netSalary
-  status: 'draft' | 'issued' | 'paid';
-  paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
+  inhandSalary: number;
+  totalSalary: number;
 };
 
 export default function AddSalaryPage() {
@@ -38,11 +59,9 @@ export default function AddSalaryPage() {
   
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<SalaryFormData>({
     defaultValues: {
-      status: 'draft',
-      paymentFrequency: 'monthly',
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
-      employeeId: employeeId || '' // Pre-fill employee ID if available
+      employeeId: employeeId || ''
     }
   });
 
@@ -78,37 +97,11 @@ export default function AddSalaryPage() {
       setIsLoading(true);
       toast.loading('Creating salary...', { id: 'create-salary' });
       
-      // Create salary record in Firestore with updated field names
+      // Create salary record with only essential fields
       const salaryId = await createSalaryMutation.mutateAsync({
         ...data,
         employeeId: employeeId || data.employeeId,
-        employmentId: employmentId || data.employmentId,
-        // Map the new field names to the database structure
-        basicSalary: data.basicSalary,
-        inhandSalary: data.inhandSalary, // This will be stored as inhandSalary
-        totalSalary: data.totalSalary,   // This will be stored as totalSalary
-        da: 0,
-        hra: 0,
-        medicalAllowance: 0,
-        transportAllowance: 0,
-        pf: 0,
-        gratuity: 0,
-        healthInsurance: 0,
-        employerPF: 0,
-        statutoryBonus: 0,
-        specialAllowance: 0,
-        educationAllowance: 0,
-        lta: 0,
-        additionalAllowance: 0,
-        monthlyReimbursement: 0,
-        totalWorkingDays: 0,
-        paidDays: 0,
-        lossOfPay: 0,
-        paymentMode: '',
-        salaryCreditDate: '',
-        documentUrl: '',
-        issueDate: '',
-        paidDate: ''
+        employmentId: employmentId || data.employmentId
       });
       
       toast.success('Salary created successfully!', { id: 'create-salary' });
@@ -129,6 +122,7 @@ export default function AddSalaryPage() {
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to create salary', { id: 'create-salary' });
+    } finally {
       setIsLoading(false);
     }
   };
