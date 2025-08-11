@@ -139,7 +139,7 @@ export default function EmployeeDashboardPage() {
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-red-100 text-red-800'
             }`}>
-              {employee?.status}
+              {employee?.status.toUpperCase()}
             </span>
             <p className="text-sm text-gray-600 mt-1">Status</p>
           </div>
