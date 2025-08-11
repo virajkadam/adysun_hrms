@@ -82,23 +82,6 @@ export default function EmployeeDashboardPage() {
   return (
     <EmployeeLayout showBreadcrumb={false}>
       <Toaster position="top-center" />
-      
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Employee Dashboard</h1>
-          <p className="text-slate-700">Welcome, {employee?.name}!</p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-600">Employee ID: {employee?.id}</span>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 flex items-center space-x-2"
-          >
-            <FiLogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
 
       {/* Welcome Banner */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 text-white mb-8">
@@ -106,20 +89,15 @@ export default function EmployeeDashboardPage() {
           <div>
             <h2 className="text-3xl font-bold mb-2">Welcome, {employee?.name}! 👋</h2>
             <p className="text-blue-100 text-lg">
-              You&apos;re successfully logged in to your employee portal. 
+              You&apos;re successfully logged in to your employee portal.  <br />
               Here you can access your profile, attendance, and leave management.
             </p>
-          </div>
-          <div className="hidden md:block">
-            <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <FiUser className="w-8 h-8 text-white" />
-            </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {cards.map((card, index) => (
           <div
             key={index}
