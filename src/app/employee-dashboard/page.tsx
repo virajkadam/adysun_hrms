@@ -122,19 +122,18 @@ export default function EmployeeDashboardPage() {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Employee Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
+            <p className="font-medium text-gray-900">{employee?.name}</p>
             <p className="text-sm text-gray-600">Name</p>
-            <p className="font-medium">{employee?.name}</p>
           </div>
           <div>
+            <p className="font-medium text-gray-900">{employee?.email}</p>
             <p className="text-sm text-gray-600">Email</p>
-            <p className="font-medium">{employee?.email}</p>
           </div>
           <div>
+            <p className="font-medium text-gray-900">{employee?.phone}</p>
             <p className="text-sm text-gray-600">Phone</p>
-            <p className="font-medium">{employee?.phone}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Status</p>
             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
               employee?.status === 'active' 
                 ? 'bg-green-100 text-green-800' 
@@ -142,6 +141,7 @@ export default function EmployeeDashboardPage() {
             }`}>
               {employee?.status}
             </span>
+            <p className="text-sm text-gray-600 mt-1">Status</p>
           </div>
         </div>
       </div>

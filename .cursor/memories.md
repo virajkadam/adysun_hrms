@@ -113,6 +113,10 @@ The user requires that all password fields should include eye icons for toggling
 
 ---
 
+The user requires that all form fields and information displays should follow the consistent pattern: **value above, label below**. This applies to: 1) Employee information cards, 2) Profile displays, 3) Form field layouts, 4) Dashboard information sections. Example structure: `<div><p className="font-medium text-gray-900">{value}</p><p className="text-sm text-gray-600">{label}</p></div>`. This ensures consistent visual hierarchy where the actual data (value) is more prominent and the descriptive text (label) is secondary, improving readability and user experience across all information displays in the application.
+
+---
+
 The user requires that TableHeader components should conditionally show header elements based on data state: 1) Hide stats, search, filter, and refresh when no records exist (`filteredData.length === 0`), 2) Only show header controls when data exists (`filteredData.length > 0`), 3) Always maintain action buttons (Create, Edit, Delete) regardless of data state, 4) Use consistent margin pattern `px-6 pt-6 pb-6` for all TableHeader components to maintain uniform spacing across the application. This ensures cleaner empty states and better user experience by reducing visual clutter when no data is available.
 
 ---
