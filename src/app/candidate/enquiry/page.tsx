@@ -10,6 +10,7 @@ interface EnquiryFormData {
   name: string;
   mobile: string;
   pan: string;
+  email: string;
   passoutYear: string;
   technology: string;
   role: string;
@@ -255,6 +256,7 @@ export default function EnquirySubmitPage() {
     name: "",
     mobile: "",
     pan: "",
+    email: "",
     passoutYear: "",
     technology: "",
     role: "",
@@ -266,6 +268,7 @@ export default function EnquirySubmitPage() {
   const [error, setError] = useState<string | null>(null);
   const [mobileError, setMobileError] = useState<string | null>(null);
   const [panError, setPanError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -274,6 +277,7 @@ export default function EnquirySubmitPage() {
     setError(null);
     setMobileError(null);
     setPanError(null);
+    setEmailError(null);
 
     // Validate required fields
     if (!formData.name.trim()) {
@@ -283,6 +287,11 @@ export default function EnquirySubmitPage() {
 
     if (!formData.mobile.trim()) {
       setError("Mobile number is required");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email address is required");
       return;
     }
 
@@ -309,6 +318,13 @@ export default function EnquirySubmitPage() {
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     // Validate PAN card if provided
     if (formData.pan.trim()) {
       if (!validatePANFormat(formData.pan)) {
@@ -331,6 +347,7 @@ export default function EnquirySubmitPage() {
         name: formData.name.trim(),
         mobile: formData.mobile.trim(),
         pan: formData.pan.trim() ? formData.pan.trim().toUpperCase() : null,
+        email: formData.email.trim(),
         passoutYear: formData.passoutYear.trim() || null,
         technology: formData.technology.trim() || null,
         role: formData.role.trim() || null,
@@ -344,6 +361,7 @@ export default function EnquirySubmitPage() {
         name: "",
         mobile: "",
         pan: "",
+        email: "",
         passoutYear: "",
         technology: "",
         role: "",
@@ -394,6 +412,20 @@ export default function EnquirySubmitPage() {
         }
       } else {
         setPanError(null);
+      }
+    }
+
+    // Email validation
+    if (name === "email") {
+      if (value.length > 0) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          setEmailError("Please enter a valid email address");
+        } else {
+          setEmailError(null);
+        }
+      } else {
+        setEmailError(null);
       }
     }
   };
@@ -517,6 +549,31 @@ export default function EnquirySubmitPage() {
                   </div>
                   <div>
                     <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      <span className="text-red-500">*</span> Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        emailError ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter your email address"
+                    />
+                    {emailError && (
+                      <p className="mt-1 text-sm text-red-600">{emailError}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label
                       htmlFor="passoutYear"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
@@ -558,9 +615,6 @@ export default function EnquirySubmitPage() {
                       <option value="Before 2000">Before 2000</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div>
                     <label
                       htmlFor="technology"
