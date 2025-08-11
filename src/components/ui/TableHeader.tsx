@@ -9,7 +9,7 @@ interface ActionButton {
   href?: string;
   onClick?: () => void;
   icon?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
   disabled?: boolean;
 }
 

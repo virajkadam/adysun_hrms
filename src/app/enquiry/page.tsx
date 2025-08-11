@@ -6,10 +6,11 @@ import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import TableHeader from '@/components/ui/TableHeader';
 import { ActionButton } from '@/components/ui/ActionButton';
-import { FiEye, FiTrash2 } from 'react-icons/fi';
+import { FiEye, FiTrash2, FiCopy } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/components/ui/Pagination';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface Enquiry {
   id: string;
@@ -237,6 +238,17 @@ export default function EnquiryListPage() {
           experienceFilterOptions={experienceOptions}
           onClearFilters={clearFilters}
           hasActiveFilters={!!(searchTerm || technologyFilter || roleFilter || experienceFilter)}
+          actionButtons={[
+            {
+              label: 'Copy Link',
+              icon: <FiCopy className="w-4 h-4" />,
+              variant: 'info' as const,
+              onClick: () => {
+                navigator.clipboard.writeText('https://employeedash.netlify.app/candidate/enquiry/');
+                toast.success('Enquiry form link copied!');
+              }
+            }
+          ]}
         />
         
         {loading ? (
@@ -353,6 +365,7 @@ export default function EnquiryListPage() {
           />
         )}
       </div>
+      <Toaster />
     </DashboardLayout>
   );
 }
