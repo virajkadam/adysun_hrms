@@ -3,6 +3,7 @@ import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { validatePANFormat, checkPANExistsAnywhere } from "@/utils/firebaseUtils";
+import { checkMobileExists, checkEmailExists } from "@/utils/firebaseUtils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -340,6 +341,20 @@ export default function EnquirySubmitPage() {
       }
     }
 
+    // Check if mobile already exists
+    const mobileExists = await checkMobileExists(formData.mobile.trim());
+    if (mobileExists) {
+      setError("This mobile number is already registered. Please use a different mobile number or contact support.");
+      return;
+    }
+
+    // Check if email already exists
+    const emailExists = await checkEmailExists(formData.email.trim());
+    if (emailExists) {
+      setError("This email address is already registered. Please use a different email or contact support.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -426,6 +441,44 @@ export default function EnquirySubmitPage() {
         }
       } else {
         setEmailError(null);
+      }
+    }
+
+    // Mobile uniqueness validation (debounced)
+    if (name === "mobile") {
+      if (value.length === 10 && /^[6-9]\d{9}$/.test(value)) {
+        // Check mobile uniqueness after a delay
+        setTimeout(async () => {
+          try {
+            const exists = await checkMobileExists(value);
+            if (exists) {
+              setMobileError("This mobile number is already registered");
+            } else {
+              setMobileError(null);
+            }
+          } catch (error) {
+            console.error('Error checking mobile uniqueness:', error);
+          }
+        }, 1000); // 1 second delay
+      }
+    }
+
+    // Email uniqueness validation (debounced)
+    if (name === "email") {
+      if (value.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        // Check email uniqueness after a delay
+        setTimeout(async () => {
+          try {
+            const exists = await checkEmailExists(value);
+            if (exists) {
+              setEmailError("This email address is already registered");
+            } else {
+              setEmailError(null);
+            }
+          } catch (error) {
+            console.error('Error checking email uniqueness:', error);
+          }
+        }, 1000); // 1 second delay
       }
     }
   };

@@ -1738,21 +1738,50 @@ export const checkPANExistsInEmployees = async (pan: string): Promise<boolean> =
 
 export const checkPANExistsAnywhere = async (pan: string): Promise<boolean> => {
   try {
-    if (!pan || !validatePANFormat(pan)) {
-      return false;
+    // Check in enquiries collection
+    const enquiryQuery = query(collection(db, 'enquiries'), where('pan', '==', pan));
+    const enquirySnapshot = await getDocs(enquiryQuery);
+    
+    if (!enquirySnapshot.empty) {
+      return true; // PAN exists in enquiries
     }
     
-    const [existsInEnquiries, existsInEmployees] = await Promise.all([
-      checkPANExistsInEnquiries(pan),
-      checkPANExistsInEmployees(pan)
-    ]);
+    // Check in employees collection
+    const employeeQuery = query(collection(db, 'employees'), where('panCard', '==', pan));
+    const employeeSnapshot = await getDocs(employeeQuery);
     
-    return existsInEnquiries || existsInEmployees;
+    if (!employeeSnapshot.empty) {
+      return true; // PAN exists in employees
+    }
+    
+    return false; // PAN doesn't exist anywhere
   } catch (error) {
-    console.error('Error checking PAN uniqueness:', error);
-    return false;
+    console.error('Error checking PAN existence:', error);
+    throw error;
   }
-}; 
+};
+
+export const checkMobileExists = async (mobile: string): Promise<boolean> => {
+  try {
+    const q = query(collection(db, 'enquiries'), where('mobile', '==', mobile));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking mobile existence:', error);
+    throw error;
+  }
+};
+
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  try {
+    const q = query(collection(db, 'enquiries'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking email existence:', error);
+    throw error;
+  }
+};
 
 // Check for existing salary entries to prevent duplicates
 export const checkExistingSalary = async (employeeId: string, month: number, year: number, excludeId?: string): Promise<boolean> => {
