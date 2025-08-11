@@ -278,7 +278,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 href: `/salaries/add?employeeId=${id}` 
               }
             ]),
-            { label: 'Edit', icon: <FiEdit />, variant: 'primary' as const, href: `/employees/${id}/edit` },
+            { label: 'Edit', icon: <FiEdit />, variant: 'orange' as const, href: `/employees/${id}/edit` },
             { 
               label: 'Delete', 
               icon: <FiTrash2 />, 
