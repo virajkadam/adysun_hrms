@@ -133,15 +133,17 @@ export default function RequestLeavePage() {
           title="Request Leave"
           showStats={false}
           showSearch={false}
+          searchValue=""
+          onSearchChange={() => {}}
           backButton={{ href: '/employee/leaves' }}
           headerClassName="px-6 py-6"
         />
 
         <div className="px-6 pb-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Leave Type Selection */}
+            {/* All Input Fields in Single Line */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-2">
+              <div>
                 <label htmlFor="leaveType" className="block text-sm font-medium text-gray-700 mb-2">
                   Leave Type
                 </label>
@@ -158,10 +160,7 @@ export default function RequestLeavePage() {
                   ))}
                 </select>
               </div>
-            </div>
-
-            {/* Date Selection */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              
               <div>
                 <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
                   From Date
