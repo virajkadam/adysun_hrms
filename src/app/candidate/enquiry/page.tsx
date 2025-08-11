@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { validatePANFormat, checkPANExistsAnywhere } from "@/utils/firebaseUtils";
@@ -270,6 +270,20 @@ export default function EnquirySubmitPage() {
   const [mobileError, setMobileError] = useState<string | null>(null);
   const [panError, setPanError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(5);
+
+  // Countdown effect for Instagram redirect
+  useEffect(() => {
+    if (success && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (success && countdown === 0) {
+      window.open('https://www.instagram.com/adysunventures/', '_blank');
+    }
+  }, [success, countdown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -372,6 +386,7 @@ export default function EnquirySubmitPage() {
       });
 
       setSuccess(true);
+      setCountdown(50);
       setFormData({
         name: "",
         mobile: "",
@@ -488,22 +503,37 @@ export default function EnquirySubmitPage() {
       <div className="min-h-screen bg-gray-50 flex flex-col">
         <EnquiryHeader />
         <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xs w-full space-y-8">
-            <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-green-800 mb-2">
-                  Enquiry Submitted Successfully!
+          <div className="max-w-md w-full">
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+              <div className="mb-6">
+                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                  <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  Enquiry Submitted!
                 </h2>
-                <p className="text-green-600 mb-4">
-                  Thank you for your enquiry. We will get back to you soon.
+                <p className="text-gray-600">
+                  Thank you for your enquiry. We'll get back to you soon.
+                </p>
+              </div>
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-sm text-blue-700">
+                  Redirecting to our Instagram page in <span className="font-semibold text-blue-900">{countdown}</span> seconds...
                 </p>
                 <button
-                  onClick={() => setSuccess(false)}
-                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                  onClick={() => window.open('https://www.instagram.com/adysunventures/', '_blank')}
+                  className="mt-3 w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                 >
-                  Submit Another Enquiry
+                  Go to Instagram Now
                 </button>
               </div>
+              
+              <p className="text-xs text-gray-500">
+                You'll be redirected to stay connected with us on social media.
+              </p>
             </div>
           </div>
         </div>
