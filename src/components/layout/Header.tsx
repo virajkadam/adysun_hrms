@@ -73,7 +73,12 @@ const Header = () => {
         
         {/* Center logo and company name - hidden on mobile, visible on desktop */}
         <div className="hidden lg:flex items-center justify-center flex-1">
-          <div className="flex items-center">
+          <a 
+            href="https://adysunventures.com/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+          >
             <Image
               src="/adysun-logo.png"
               alt="Adysun Ventures Logo"
@@ -83,7 +88,7 @@ const Header = () => {
               priority
             />
             <span className="text-xl font-semibold text-gray-800">Adysun Ventures</span>
-          </div>
+          </a>
         </div>
         
         {/* User dropdown on the right side */}
