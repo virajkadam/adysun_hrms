@@ -55,9 +55,9 @@ export interface Employee {
     grade?: string;
   };
   
-  // Other Education
-  otherEducation?: {
-    diploma?: string;
+  // Diploma
+  diploma?: {
+    name?: string;
     branch?: string;
     month?: string;
     passingYear?: string;

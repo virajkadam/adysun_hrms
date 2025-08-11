@@ -22,6 +22,7 @@ export default function AddEmployeePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [educationType, setEducationType] = useState<'12th' | 'diploma'>('12th');
 
   const router = useRouter();
 
@@ -636,9 +637,30 @@ export default function AddEmployeePage() {
               </div>
             </div>
 
-            {/* 12th Standard */}
+            {/* 12th Standard or Diploma */}
             <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">12th Standard</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-md font-medium text-gray-700 border-l-2 border-green-500 pl-2">
+                  {educationType === '12th' ? '12th Standard' : 'Diploma'}
+                </h3>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-medium ${educationType === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>12th</span>
+                  <button
+                    type="button"
+                    onClick={() => setEducationType(educationType === '12th' ? 'diploma' : '12th')}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                      educationType === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        educationType === 'diploma' ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                  <span className={`text-sm font-medium ${educationType === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>Diploma</span>
+                </div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -757,129 +779,6 @@ export default function AddEmployeePage() {
                 </div>
               </div>
             </div>
-
-            {/* Other Education */}
-            <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Other Education</h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Diploma
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter diploma name"
-                    {...register('otherEducation.diploma')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Branch
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter specialization/branch"
-                    {...register('otherEducation.branch')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Month
-                  </label>
-                  <select
-                    {...register('otherEducation.month')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  >
-                    <option value="">Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
-                    <option value="April">April</option>
-                    <option value="May">May</option>
-                    <option value="June">June</option>
-                    <option value="July">July</option>
-                    <option value="August">August</option>
-                    <option value="September">September</option>
-                    <option value="October">October</option>
-                    <option value="November">November</option>
-                    <option value="December">December</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Passing Year
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="YYYY"
-                    {...register('otherEducation.passingYear', {
-                      pattern: {
-                        value: /^(19|20)\d{2}$/,
-                        message: 'Enter a valid 4-digit year'
-                      }
-                    })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                  {errors.otherEducation?.passingYear && (
-                    <p className="mt-1 text-sm text-red-600">{errors.otherEducation.passingYear.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    College Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter college/institution name"
-                    {...register('otherEducation.collegeName')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Institute
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter institute name"
-                    {...register('otherEducation.institute')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Marks
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Percentage"
-                    {...register('otherEducation.marks')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Grade
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter grade"
-                    {...register('otherEducation.grade')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* 10th Standard */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
