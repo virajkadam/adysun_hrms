@@ -58,11 +58,6 @@ const Sidebar = () => {
       name: 'Employees',
       icon: <FiUsers className="w-5 h-5" />
     },
-    {
-      path: '/dashboard/documents',
-      name: 'Documents',
-      icon: <FiFile className="w-5 h-5" />
-    },
   ];
 
   // Add Enquiries link for admins only
@@ -71,6 +66,13 @@ const Sidebar = () => {
       path: '/enquiry',
       name: 'Enquiries',
       icon: <FiMail className="w-5 h-5" />
+    });
+    
+    // Add Documents below Enquiries
+    menuItems.push({
+      path: '/dashboard/documents',
+      name: 'Documents',
+      icon: <FiFile className="w-5 h-5" />
     });
   }
 
