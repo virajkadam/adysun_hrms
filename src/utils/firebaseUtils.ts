@@ -1753,3 +1753,28 @@ export const checkPANExistsAnywhere = async (pan: string): Promise<boolean> => {
     return false;
   }
 }; 
+
+// Check for existing salary entries to prevent duplicates
+export const checkExistingSalary = async (employeeId: string, month: number, year: number, excludeId?: string): Promise<boolean> => {
+  try {
+    const q = query(
+      collection(db, 'salaries'),
+      where('employeeId', '==', employeeId),
+      where('month', '==', month),
+      where('year', '==', year)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (excludeId) {
+      // For edit: exclude current salary from duplicate check
+      return querySnapshot.docs.some(doc => doc.id !== excludeId);
+    } else {
+      // For add: any existing entry is a duplicate
+      return !querySnapshot.empty;
+    }
+  } catch (error) {
+    console.error('Error checking existing salary:', error);
+    throw error;
+  }
+}; 

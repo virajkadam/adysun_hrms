@@ -6,12 +6,11 @@ import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import TableHeader from '@/components/ui/TableHeader';
-import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useCreateSalary } from '@/hooks/useSalaries';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { getEmployeeNameById, getEmploymentsByEmployee } from '@/utils/firebaseUtils';
+import { getEmployeeNameById, getEmploymentsByEmployee, checkExistingSalary } from '@/utils/firebaseUtils';
 
 // Simplify the Salary interface to only include essential fields
 export interface Salary {
@@ -94,6 +93,13 @@ export default function AddSalaryPage() {
 
   const onSubmit = async (data: SalaryFormData) => {
     try {
+      // Check for existing salary BEFORE showing loading toast
+      const exists = await checkExistingSalary(data.employeeId, data.month, data.year);
+      if (exists) {
+        toast.error(`Salary for ${getMonthName(data.month)} ${data.year} already exists for this employee.`);
+        return;
+      }
+
       setIsLoading(true);
       toast.loading('Creating salary...', { id: 'create-salary' });
       
@@ -125,6 +131,13 @@ export default function AddSalaryPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Add helper function
+  const getMonthName = (month: number) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                   'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[month - 1] || 'Unknown';
   };
 
   return (

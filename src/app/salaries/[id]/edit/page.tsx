@@ -11,7 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useSalary, useUpdateSalary } from '@/hooks/useSalaries';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { getEmployeeNameById } from '@/utils/firebaseUtils';
+import { getEmployeeNameById, checkExistingSalary } from '@/utils/firebaseUtils';
 import { use } from 'react';
 
 // Simplify the SalaryFormData type
@@ -35,6 +35,7 @@ export default function EditSalaryPage({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>('');
   const [employeeName, setEmployeeName] = useState<string>('');
+  const [hasPeriodChanges, setHasPeriodChanges] = useState(false);
 
   const router = useRouter();
   const { id } = use(params);
@@ -42,7 +43,23 @@ export default function EditSalaryPage({ params }: PageParams) {
   const { data: salary, isLoading: isSalaryLoading } = useSalary(id);
   const updateSalaryMutation = useUpdateSalary();
   
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<SalaryFormData>();
+  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<SalaryFormData>();
+
+  // Watch for form changes
+  const watchedValues = watch();
+  
+  // Check for changes whenever form values change
+  useEffect(() => {
+    if (salary) {
+      // Only track month/year changes (which could cause duplicates)
+      // Allow salary amount changes freely
+      const hasPeriodChanges = 
+        watchedValues.month !== salary.month ||
+        watchedValues.year !== salary.year;
+      
+      setHasPeriodChanges(hasPeriodChanges);
+    }
+  }, [watchedValues, salary]);
 
   // Fetch employee name when employeeId is available
   useEffect(() => {
@@ -83,6 +100,19 @@ export default function EditSalaryPage({ params }: PageParams) {
   // Simplify the onSubmit function
   const onSubmit = async (data: SalaryFormData) => {
     try {
+      // Only validate for duplicates if month/year changed (which could cause duplicates)
+      const hasPeriodChanges = 
+        data.month !== salary?.month ||
+        data.year !== salary?.year;
+
+      if (hasPeriodChanges) {
+        const exists = await checkExistingSalary(data.employeeId, data.month, data.year, id);
+        if (exists) {
+          toast.error(`Salary for ${getMonthName(data.month)} ${data.year} already exists for this employee.`);
+          return;
+        }
+      }
+
       setIsSubmitting(true);
       toast.loading('Updating salary...', { id: 'update-salary' });
       
@@ -94,11 +124,19 @@ export default function EditSalaryPage({ params }: PageParams) {
       });
       
       toast.success('Salary updated successfully!', { id: 'update-salary' });
+      // Navigate back to employee's salary list if we came from there
       router.push(employeeId ? `/salaries?employeeId=${employeeId}` : `/salaries/${id}`);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update salary', { id: 'update-salary' });
       setIsSubmitting(false);
     }
+  };
+
+  // Add helper function
+  const getMonthName = (month: number) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                   'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[month - 1] || 'Unknown';
   };
 
   if (isSalaryLoading) {
