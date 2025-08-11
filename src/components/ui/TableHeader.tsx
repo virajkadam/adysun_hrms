@@ -9,7 +9,7 @@ interface ActionButton {
   href?: string;
   onClick?: () => void;
   icon?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'orange';
   disabled?: boolean;
 }
 
@@ -145,6 +145,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         return `${baseClasses} bg-amber-600 text-white hover:bg-amber-700`;
       case 'danger':
         return `${baseClasses} bg-red-600 text-white hover:bg-red-700`;
+      case 'orange':
+        return `${baseClasses} bg-orange-400 text-white hover:bg-orange-500`;
       default:
         return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700`;
     }

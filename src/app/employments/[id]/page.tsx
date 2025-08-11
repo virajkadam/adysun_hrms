@@ -293,7 +293,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             {
               label: 'Edit',
               icon: <FiEdit />,
-              variant: 'primary' as const,
+              variant: 'orange' as const,
               href: `/employments/${id}/edit`
             }
           ]}
