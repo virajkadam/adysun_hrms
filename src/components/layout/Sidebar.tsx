@@ -113,7 +113,7 @@ const Sidebar = () => {
           <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
           <nav className="flex-grow">
             <ul className="space-y-2">
-              {menuItems.map((item) => (
+              {menuItems.map((item, index) => (
                 <li key={item.path}>
                   <Link
                     href={item.path}
@@ -126,6 +126,11 @@ const Sidebar = () => {
                     {item.icon}
                     <span>{item.name}</span>
                   </Link>
+                  
+                  {/* Add separator after Enquiries for admin users */}
+                  {currentAdmin && item.path === '/enquiry' && (
+                    <div className="my-2 border-t border-gray-600"></div>
+                  )}
                 </li>
               ))}
             </ul>
