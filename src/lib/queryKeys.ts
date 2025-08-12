@@ -73,4 +73,14 @@ export const queryKeys = {
     details: () => [...queryKeys.enquiries.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.enquiries.details(), id] as const,
   },
+  
+  // Leave keys
+  leaves: {
+    all: ['leaves'] as const,
+    lists: () => [...queryKeys.leaves.all, 'list'] as const,
+    list: (filters?: string) => [...queryKeys.leaves.lists(), { filters: filters || 'all' }] as const,
+    details: () => [...queryKeys.leaves.all, 'detail'] as const,
+    detail: (id: string) => [...queryKeys.leaves.details(), id] as const,
+    byEmployee: (employeeId: string) => [...queryKeys.leaves.all, 'byEmployee', employeeId] as const,
+  },
 }; 

@@ -6,10 +6,10 @@ import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile } from
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployeeLeaves, updateEmployeeLeaveEndDate } from '@/utils/firebaseUtils';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
+import { useEmployeeLeaves, useUpdateLeaveEndDate } from '@/hooks/useLeaves';
 
 interface LeaveRecord {
   id: string;
@@ -25,23 +25,9 @@ interface LeaveRecord {
   wasEdited?: boolean;
 }
 
-interface RawLeaveRecord {
-  id: string;
-  type?: LeaveRecord['type'];
-  startDate: string;
-  endDate: string;
-  reason?: string;
-  status?: LeaveRecord['status'];
-  appliedDate: string;
-  totalDays?: number;
-  employmentId?: string;
-  employeeId?: string;
-  wasEdited?: boolean;
-}
+
 
 export default function EmployeeLeavesPage() {
-  const [leaveRecords, setLeaveRecords] = useState<LeaveRecord[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedLeave, setSelectedLeave] = useState<LeaveRecord | null>(null);
   const [newEndDate, setNewEndDate] = useState<string>('');
@@ -49,60 +35,32 @@ export default function EmployeeLeavesPage() {
   const router = useRouter();
   const { currentUserData } = useAuth();
 
+  // Use TanStack Query hooks
+  const {
+    data: leaveRecords = [],
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useEmployeeLeaves(currentUserData?.id || '');
+
+  const updateLeaveMutation = useUpdateLeaveEndDate();
+
   useEffect(() => {
     // Check if user is authenticated and is employee
     if (!currentUserData || currentUserData.userType !== 'employee') {
       router.push('/login');
       return;
     }
-
-    // Fetch leave data for the current employee
-    const fetchLeaveData = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Use the employee-specific function to fetch leave data
-        const leaveData = await getEmployeeLeaves(currentUserData.id);
-        
-        console.log('📊 Raw leave data received:', leaveData);
-        console.log('📊 Number of leave records:', leaveData.length);
-        
-        // Transform the data to match the expected format
-        const transformedData: LeaveRecord[] = (leaveData as RawLeaveRecord[]).map((record) => {
-          console.log('🔄 Processing leave record:', record);
-          
-          const transformed: LeaveRecord = {
-            id: record.id,
-            type: (record.type as LeaveRecord['type']) || 'casual',
-            startDate: record.startDate,
-            endDate: record.endDate,
-            reason: record.reason || 'Personal leave',
-            status: (record.status as LeaveRecord['status']) || 'pending',
-            appliedDate: record.appliedDate,
-            totalDays: record.totalDays || 1,
-            employmentId: record.employmentId,
-            employeeId: record.employeeId,
-            wasEdited: record.wasEdited || false,
-          };
-          
-          console.log('✅ Transformed leave record:', transformed);
-          return transformed;
-        });
-        
-        console.log('📋 Final transformed leave records:', transformedData);
-        console.log('📋 Number of transformed records:', transformedData.length);
-        setLeaveRecords(transformedData);
-      } catch (error: unknown) {
-        console.error('Error fetching leave data:', error);
-        toast.error('Failed to load leave data');
-        setLeaveRecords([]); // Set empty array instead of mock data
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchLeaveData();
   }, [currentUserData, router]);
+
+  // Handle errors
+  useEffect(() => {
+    if (isError && error) {
+      console.error('Leave data error:', error);
+      toast.error('Failed to load leave data');
+    }
+  }, [isError, error]);
 
   const handleRequestLeave = () => {
     router.push('/employee/leaves/request');
@@ -115,22 +73,7 @@ export default function EmployeeLeavesPage() {
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
-      // Refetch leave data
-      const leaveData = await getEmployeeLeaves(currentUserData?.id || '');
-      const transformedData: LeaveRecord[] = (leaveData as RawLeaveRecord[]).map((record) => ({
-        id: record.id,
-        type: (record.type as LeaveRecord['type']) || 'casual',
-        startDate: record.startDate,
-        endDate: record.endDate,
-        reason: record.reason || 'Personal leave',
-        status: (record.status as LeaveRecord['status']) || 'pending',
-        appliedDate: record.appliedDate,
-        totalDays: record.totalDays || 1,
-        employmentId: record.employmentId,
-        employeeId: record.employeeId,
-        wasEdited: record.wasEdited || false,
-      }));
-      setLeaveRecords(transformedData);
+      await refetch();
       toast.success('Leave data refreshed successfully');
     } catch (error) {
       console.error('Error refreshing leave data:', error);
@@ -164,26 +107,12 @@ export default function EmployeeLeavesPage() {
         return;
       }
 
-      const updated = await updateEmployeeLeaveEndDate(
-        selectedLeave.employmentId,
-        selectedLeave.id,
-        currentUserData.id,
-        newEndDate
-      );
-
-      // Update local state
-      setLeaveRecords((prev) =>
-        prev.map((rec) =>
-          rec.id === selectedLeave.id
-            ? {
-                ...rec,
-                endDate: updated.endDate,
-                totalDays: updated.totalDays,
-                wasEdited: true,
-              }
-            : rec
-        )
-      );
+      await updateLeaveMutation.mutateAsync({
+        employmentId: selectedLeave.employmentId,
+        leaveId: selectedLeave.id,
+        employeeId: currentUserData.id,
+        newEndDate,
+      });
 
       toast.success('Leave updated');
       closeEditModal();
