@@ -245,6 +245,13 @@ export default function EditLeavePage({ params }: { params: Promise<{ id: string
                     </option>
                   ))}
                 </select>
+                {leaveData?.wasEdited && (
+                  <div className="mt-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      Edited
+                    </span>
+                  </div>
+                )}
               </div>
               
               <div>
@@ -255,10 +262,8 @@ export default function EditLeavePage({ params }: { params: Promise<{ id: string
                   type="date"
                   id="startDate"
                   value={formData.startDate}
-                  onChange={(e) => handleInputChange('startDate', e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
+                  disabled
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
                 />
               </div>
               

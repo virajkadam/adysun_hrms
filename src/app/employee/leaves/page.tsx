@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile, FiEdit2 } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -264,26 +264,59 @@ export default function EmployeeLeavesPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {leaveRecords.map((record) => (
                   <tr key={record.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center space-x-2">
-                        {getLeaveTypeIcon(record.type)}
-                        <span className={getLeaveTypeBadge(record.type)}>
-                          {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
-                        </span>
-                      </div>
-                    </td>
+                                         <td className="px-6 py-4 whitespace-nowrap">
+                       {/* Option 1: Status Badge Integration */}
+                       <div className="flex items-center space-x-2">
+                         {getLeaveTypeIcon(record.type)}
+                         <div className="flex items-center gap-1">
+                           <span className={getLeaveTypeBadge(record.type)}>
+                             {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
+                           </span>
+                           {record.wasEdited && (
+                             <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
+                               <FiEdit2 className="w-3 h-3 mr-1" />
+                               Modified
+                             </span>
+                           )}
+                         </div>
+                       </div>
+                       
+                       {/* Option 2: Subtle Visual Indicator (commented out) */}
+                       {/*
+                       <div className="flex items-center space-x-2">
+                         {getLeaveTypeIcon(record.type)}
+                         <span className={getLeaveTypeBadge(record.type)}>
+                           {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
+                         </span>
+                         {record.wasEdited && (
+                           <FiEdit2 className="w-3 h-3 text-purple-600" title="This leave has been modified" />
+                         )}
+                       </div>
+                       */}
+                       
+                       {/* Option 3: Enhanced Badge System (commented out) */}
+                       {/*
+                       <div className="flex flex-col space-y-1">
+                         <div className="flex items-center space-x-2">
+                           {getLeaveTypeIcon(record.type)}
+                           <span className={getLeaveTypeBadge(record.type)}>
+                             {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
+                           </span>
+                         </div>
+                         {record.wasEdited && (
+                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 w-fit">
+                             <FiEdit2 className="w-3 h-3 mr-1" />
+                             Modified
+                           </span>
+                         )}
+                       </div>
+                       */}
+                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDateToDayMonYear(record.startDate)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="flex items-center gap-2">
-                        <span>{formatDateToDayMonYear(record.endDate)}</span>
-                        {record.wasEdited && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
-                            Edited
-                          </span>
-                        )}
-                      </div>
+                      {formatDateToDayMonYear(record.endDate)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {record.totalDays} day{record.totalDays > 1 ? 's' : ''}
