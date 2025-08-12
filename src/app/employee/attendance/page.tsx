@@ -171,8 +171,10 @@ export default function EmployeeAttendancePage() {
   };
 
   const getTotalHoursClass = (hours: number) => {
-    if (hours >= 9) return 'text-red-600 font-semibold';
-    if (hours <= 7) return 'text-orange-400 font-semibold';
+    if (hours > 9) return 'text-blue-600 font-semibold';
+    if (hours > 7) return 'text-green-600 font-semibold';
+    if (hours > 5) return 'text-orange-600 font-semibold';
+    if (hours < 1) return 'text-red-600 font-semibold';
     return 'text-gray-900';
   };
 
