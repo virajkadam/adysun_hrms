@@ -343,6 +343,9 @@ export default function EmployeeLeavesPage() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="">
+          
 
           {/* Leave Records Table */}
           <div className="overflow-x-auto">
