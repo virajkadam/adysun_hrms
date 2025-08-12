@@ -17,7 +17,7 @@ const QueryProvider: React.FC<QueryProviderProps> = ({ children }) => {
       {children}
       <ReactQueryDevtools 
         initialIsOpen={false} 
-        position="bottom-right"
+        position="bottom"
         buttonPosition="bottom-right"
       />
     </QueryClientProvider>
