@@ -283,7 +283,7 @@ export default function EmployeeAttendancePage() {
             );
           })()}
 
-        <div className="p-6">
+        <div className="">
 
           {/* Attendance Records Table */}
           {transformedAttendanceRecords.length === 0 ? (
