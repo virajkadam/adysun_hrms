@@ -199,6 +199,9 @@ export default function EmployeeAttendancePage() {
     totalHours: record.totalHours || 9
   }));
 
+  const halfDayCount = transformedAttendanceRecords.filter(r => r.status === 'half-day').length;
+  const fullDayCount = transformedAttendanceRecords.filter(r => r.status === 'present' || r.status === 'late').length;
+
   const isLoading = attendanceLoading || todayLoading;
 
   if (isLoading) {
@@ -233,8 +236,12 @@ export default function EmployeeAttendancePage() {
           <TableHeader
           title="Attendance Records"
           total={transformedAttendanceRecords.length}
-          active={transformedAttendanceRecords.filter(record => record.status === 'present').length}
-          inactive={transformedAttendanceRecords.filter(record => record.status === 'absent').length}
+          dropdown={
+            <div className="flex items-center gap-4 text-sm">
+              <span className="text-green-700">Full Day: <span className="font-medium">{fullDayCount}</span></span>
+              <span className="text-orange-700">Half Day: <span className="font-medium">{halfDayCount}</span></span>
+            </div>
+          }
           searchValue=""
           onSearchChange={() => {}}
           showSearch={false}
