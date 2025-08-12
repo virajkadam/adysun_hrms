@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useAllAttendance } from '@/hooks/useAttendance';
 import { useEmployees } from '@/hooks/useEmployees';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import { formatDurationHours } from '@/lib/utils';
 import TableHeader from '@/components/ui/TableHeader';
 
 interface AttendanceRecord {
@@ -253,7 +254,7 @@ export default function AdminAttendancePage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {record.totalHours || 0} hrs
+                        {formatDurationHours(record.totalHours || 0, { showSecondsUnderOneHour: true })}
                       </td>
                     </tr>
                   ))}

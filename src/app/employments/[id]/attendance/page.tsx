@@ -13,6 +13,7 @@ import { useEmployment } from '@/hooks/useEmployments';
 import { useEmployee } from '@/hooks/useEmployees';
 import { useAttendanceByEmployee } from '@/hooks/useAttendance';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import { formatDurationHours } from '@/lib/utils';
 
 export default function AttendancePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -369,7 +370,7 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
                             {record.checkOutTime || '-'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {record.totalHours ? `${record.totalHours} hours` : '-'}
+                            {record.totalHours ? formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true }) : '-'}
                           </td>
                         </tr>
                       ))}

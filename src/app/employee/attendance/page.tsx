@@ -8,6 +8,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAttendanceByEmployee, useTodayAttendance, useMarkAttendanceCheckIn, useMarkAttendanceCheckOut } from '@/hooks/useAttendance';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import { formatDurationHours } from '@/lib/utils';
 import TableHeader from '@/components/ui/TableHeader';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/config';
@@ -21,14 +22,7 @@ interface AttendanceRecord {
   totalHours: number;
 }
 
-interface TodayAttendance {
-  isCheckedIn: boolean;
-  isCheckedOut: boolean;
-  checkInTime?: string;
-  checkOutTime?: string;
-  status?: string;
-  totalHours?: number;
-}
+// Note: Today attendance response may omit time fields when not checked in
 
 export default function EmployeeAttendancePage() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -64,9 +58,6 @@ export default function EmployeeAttendancePage() {
     if (!timeString) return '--';
     
     try {
-      // Handle different time formats
-      let time = timeString;
-      
       // If it's already in 12-hour format, return as is
       if (timeString.includes('AM') || timeString.includes('PM')) {
         return timeString;
@@ -82,7 +73,7 @@ export default function EmployeeAttendancePage() {
       }
       
       return timeString;
-    } catch (error) {
+    } catch {
       return timeString;
     }
   };
@@ -208,7 +199,16 @@ export default function EmployeeAttendancePage() {
   };
 
   // Transform attendance data to match expected format with 12-hour time
-  const transformedAttendanceRecords: AttendanceRecord[] = attendanceRecords.map((record: any) => ({
+  type RawAttendance = {
+    id: string;
+    date: string;
+    checkInTime?: string;
+    checkOutTime?: string;
+    status?: AttendanceRecord['status'];
+    totalHours?: number;
+  };
+
+  const transformedAttendanceRecords: AttendanceRecord[] = (attendanceRecords as RawAttendance[]).map((record) => ({
     id: record.id,
     date: record.date,
     checkIn: formatTimeTo12Hour(record.checkInTime) || '09:00 AM',
@@ -240,7 +240,15 @@ export default function EmployeeAttendancePage() {
       
       {/* Attendance Records Section */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <TableHeader
+          {/* Precompute safe times to satisfy TS when todayAttendance has minimal shape */}
+          {(() => {
+            type MaybeToday = { isCheckedIn: boolean; isCheckedOut: boolean; checkInTime?: string; checkOutTime?: string };
+            const t = todayAttendance as MaybeToday;
+            const checkInTimeStr = t.checkInTime || '';
+            const checkOutTimeStr = t.checkOutTime || '';
+
+            return (
+          <TableHeader
           title="Attendance Records"
           total={transformedAttendanceRecords.length}
           active={transformedAttendanceRecords.filter(record => record.status === 'present').length}
@@ -254,8 +262,8 @@ export default function EmployeeAttendancePage() {
           showAttendanceMarking={true}
           attendanceData={{
             isCheckedIn: todayAttendance.isCheckedIn,
-            checkInTime: todayAttendance.checkInTime || '',
-            checkOutTime: todayAttendance.checkOutTime || '',
+            checkInTime: checkInTimeStr,
+            checkOutTime: checkOutTimeStr,
             checkInDate: todayAttendance.isCheckedIn ? new Date().toISOString().split('T')[0] : undefined,
             checkOutDate: todayAttendance.isCheckedOut ? new Date().toISOString().split('T')[0] : undefined,
             employeeName: currentUserData?.name
@@ -263,29 +271,11 @@ export default function EmployeeAttendancePage() {
           onCheckIn={handleCheckIn}
           onCheckOut={handleCheckOut}
           isMarkingAttendance={checkInMutation.isPending || checkOutMutation.isPending}
-        />
+          />
+            );
+          })()}
 
         <div className="p-6">
-          {/* Month Navigation */}
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => handleMonthChange('prev')}
-                className="p-2 rounded-md hover:bg-gray-100"
-              >
-                ←
-              </button>
-              <h2 className="text-lg font-semibold">
-                {getMonthName(currentMonth)} {currentYear}
-              </h2>
-              <button
-                onClick={() => handleMonthChange('next')}
-                className="p-2 rounded-md hover:bg-gray-100"
-              >
-                →
-              </button>
-            </div>
-          </div>
 
           {/* Attendance Records Table */}
           {transformedAttendanceRecords.length === 0 ? (
@@ -336,7 +326,7 @@ export default function EmployeeAttendancePage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {record.totalHours} hrs
+                        {formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })}
                       </td>
                     </tr>
                   ))}
