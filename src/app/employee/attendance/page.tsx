@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
@@ -10,6 +10,7 @@ import { useAttendanceByEmployee, useTodayAttendance, useMarkAttendanceCheckIn, 
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { formatDurationHours } from '@/lib/utils';
 import TableHeader from '@/components/ui/TableHeader';
+import Pagination from '@/components/ui/Pagination';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 
@@ -25,6 +26,8 @@ interface AttendanceRecord {
 // Note: Today attendance response may omit time fields when not checked in
 
 export default function EmployeeAttendancePage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -202,6 +205,22 @@ export default function EmployeeAttendancePage() {
   const halfDayCount = transformedAttendanceRecords.filter(r => r.status === 'half-day').length;
   const fullDayCount = transformedAttendanceRecords.filter(r => r.status === 'present' || r.status === 'late').length;
 
+  // Pagination calculations
+  const totalItems = transformedAttendanceRecords.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedRecords = transformedAttendanceRecords.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
+
   const isLoading = attendanceLoading || todayLoading;
 
   if (isLoading) {
@@ -295,7 +314,7 @@ export default function EmployeeAttendancePage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {transformedAttendanceRecords.map((record) => (
+                  {paginatedRecords.map((record) => (
                     <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {formatDateToDayMonYear(record.date)}
@@ -324,6 +343,18 @@ export default function EmployeeAttendancePage() {
             </div>
           )}
         </div>
+        
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
     </EmployeeLayout>
   );

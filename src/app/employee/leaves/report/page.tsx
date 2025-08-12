@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
+import Pagination from '@/components/ui/Pagination';
 
 interface MonthlyLeaveData {
   month: string;
@@ -217,6 +218,8 @@ export default function LeaveReportPage() {
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -228,6 +231,22 @@ export default function LeaveReportPage() {
     const typeMatch = selectedType === 'all' || record.type === selectedType;
     return monthMatch && statusMatch && typeMatch;
   });
+
+  // Pagination calculations
+  const totalItems = filteredRecords.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const paginatedRecords = filteredRecords.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+  };
 
   const handleBack = () => {
     router.push('/employee/leaves');
@@ -489,7 +508,7 @@ export default function LeaveReportPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredRecords.map((record) => (
+                {paginatedRecords.map((record) => (
                   <tr key={record.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {record.month} {record.year}
@@ -536,6 +555,18 @@ export default function LeaveReportPage() {
             </div>
           )}
         </div>
+        
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        )}
       </div>
     </EmployeeLayout>
   );
