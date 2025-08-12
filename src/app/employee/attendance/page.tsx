@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FiCalendar, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
@@ -25,8 +25,6 @@ interface AttendanceRecord {
 // Note: Today attendance response may omit time fields when not checked in
 
 export default function EmployeeAttendancePage() {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -172,31 +170,13 @@ export default function EmployeeAttendancePage() {
     }
   };
 
-  const getMonthName = (month: number) => {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return months[month];
+  const getTotalHoursClass = (hours: number) => {
+    if (hours >= 9) return 'text-red-600 font-semibold';
+    if (hours <= 7) return 'text-orange-400 font-semibold';
+    return 'text-gray-900';
   };
 
-  const handleMonthChange = (direction: 'prev' | 'next') => {
-    if (direction === 'prev') {
-      if (currentMonth === 0) {
-        setCurrentMonth(11);
-        setCurrentYear(currentYear - 1);
-      } else {
-        setCurrentMonth(currentMonth - 1);
-      }
-    } else {
-      if (currentMonth === 11) {
-        setCurrentMonth(0);
-        setCurrentYear(currentYear + 1);
-      } else {
-        setCurrentMonth(currentMonth + 1);
-      }
-    }
-  };
+  // Month navigation removed; helpers deleted to satisfy lints
 
   // Transform attendance data to match expected format with 12-hour time
   type RawAttendance = {
@@ -325,7 +305,7 @@ export default function EmployeeAttendancePage() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className={`px-6 py-4 whitespace-nowrap text-sm ${getTotalHoursClass(record.totalHours)}`}>
                         {formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })}
                       </td>
                     </tr>
