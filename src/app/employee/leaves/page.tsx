@@ -28,10 +28,6 @@ interface LeaveRecord {
 
 
 export default function EmployeeLeavesPage() {
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedLeave, setSelectedLeave] = useState<LeaveRecord | null>(null);
-  const [newEndDate, setNewEndDate] = useState<string>('');
-  
   const router = useRouter();
   const { currentUserData } = useAuth();
 
@@ -44,7 +40,7 @@ export default function EmployeeLeavesPage() {
     refetch
   } = useEmployeeLeaves(currentUserData?.id || '');
 
-  const updateLeaveMutation = useUpdateLeaveEndDate();
+
 
   useEffect(() => {
     // Check if user is authenticated and is employee
@@ -81,46 +77,7 @@ export default function EmployeeLeavesPage() {
     }
   };
 
-  const openEditModal = (leave: LeaveRecord) => {
-    setSelectedLeave(leave);
-    setNewEndDate(leave.endDate);
-    setEditModalOpen(true);
-  };
 
-  const closeEditModal = () => {
-    setEditModalOpen(false);
-    setSelectedLeave(null);
-    setNewEndDate('');
-  };
-
-  const handleUpdateEndDate = async () => {
-    if (!selectedLeave || !currentUserData) return;
-    try {
-      // Basic validation: new end date should be >= start date
-      if (new Date(newEndDate) < new Date(selectedLeave.startDate)) {
-        toast.error('End date cannot be before start date');
-        return;
-      }
-
-      if (!selectedLeave.employmentId) {
-        toast.error('Employment context missing for this leave');
-        return;
-      }
-
-      await updateLeaveMutation.mutateAsync({
-        employmentId: selectedLeave.employmentId,
-        leaveId: selectedLeave.id,
-        employeeId: currentUserData.id,
-        newEndDate,
-      });
-
-      toast.success('Leave updated');
-      closeEditModal();
-    } catch (e) {
-      toast.error('Failed to update leave');
-      console.error(e);
-    }
-  };
 
   const getLeaveTypeIcon = (type: string) => {
     switch (type) {
@@ -351,7 +308,7 @@ export default function EmployeeLeavesPage() {
                           icon={<FiEdit className="w-5 h-5" />}
                           title="Edit"
                           colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
-                          onClick={() => openEditModal(record)}
+                          href={`/employee/leaves/${record.id}/edit`}
                         />
                       </div>
                     </td>
@@ -370,34 +327,7 @@ export default function EmployeeLeavesPage() {
         </div>
       </div>
 
-      {/* Edit End Date Modal */}
-      {editModalOpen && selectedLeave && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Leave End Date</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-                <input type="date" value={selectedLeave.startDate} disabled className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 text-gray-600" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-                <input
-                  type="date"
-                  value={newEndDate}
-                  min={selectedLeave.startDate}
-                  onChange={(e) => setNewEndDate(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <button onClick={closeEditModal} className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
-              <button onClick={handleUpdateEndDate} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Update</button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </EmployeeLayout>
   );
 } 

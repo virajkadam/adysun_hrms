@@ -1115,6 +1115,157 @@ export const updateEmployeeLeaveEndDate = async (
   }
 };
 
+// Get a specific leave by ID for editing
+export const getEmployeeLeaveById = async (employeeId: string, leaveId: string) => {
+  try {
+    console.log('🔍 Fetching specific leave by ID...');
+
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+
+    const currentEmployee = JSON.parse(employeeData);
+
+    // Security check: Employee can only access their own leave data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only access your own leave data.');
+    }
+
+    console.log('✅ Employee session validated for leave fetch');
+
+    // Get employment document for the employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
+
+    if (employmentSnapshot.empty) {
+      throw new Error('No employment record found for this employee.');
+    }
+
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const leaves = employmentData.leaves || [];
+
+    // Find the specific leave record
+    const leaveRecord = leaves.find((leave: any) => leave.id === leaveId);
+
+    if (!leaveRecord) {
+      throw new Error('Leave request not found.');
+    }
+
+    console.log('✅ Leave record found:', leaveRecord);
+    return {
+      ...leaveRecord,
+      employmentId: employmentDoc.id,
+      employeeId: employeeId,
+    };
+  } catch (error) {
+    console.error('Error fetching employee leave by ID:', error);
+    throw error;
+  }
+};
+
+// Update entire leave request (for editing)
+export const updateEmployeeLeaveRequest = async ({
+  leaveId,
+  employeeId,
+  type,
+  startDate,
+  endDate,
+  reason,
+  totalDays,
+}: {
+  leaveId: string;
+  employeeId: string;
+  type: string;
+  startDate: string;
+  endDate: string;
+  reason: string;
+  totalDays: number;
+}) => {
+  try {
+    console.log('🔍 Updating employee leave request...');
+
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+
+    const currentEmployee = JSON.parse(employeeData);
+
+    // Security check: Employee can only update their own leave data
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only update your own leave data.');
+    }
+
+    console.log('✅ Employee session validated for leave update');
+
+    // Get employment document for the employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
+
+    if (employmentSnapshot.empty) {
+      throw new Error('No employment record found for this employee.');
+    }
+
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const existingLeaves = employmentData.leaves || [];
+
+    // Find and update the specific leave record
+    const leaveIndex = existingLeaves.findIndex((leave: any) => leave.id === leaveId);
+
+    if (leaveIndex === -1) {
+      throw new Error('Leave request not found.');
+    }
+
+    const updatedLeaves = [...existingLeaves];
+    const oldLeave = updatedLeaves[leaveIndex];
+
+    // Check if leave can be edited (only pending leaves can be edited)
+    if (oldLeave.status !== 'pending') {
+      throw new Error('Only pending leave requests can be edited.');
+    }
+
+    updatedLeaves[leaveIndex] = {
+      ...oldLeave,
+      type,
+      startDate,
+      endDate,
+      reason,
+      totalDays,
+      wasEdited: true, // Flag to indicate it was edited
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId,
+    };
+
+    // Update the employment document
+    await updateDoc(doc(db, 'employments', employmentDoc.id), {
+      leaves: updatedLeaves,
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId,
+    });
+
+    console.log('✅ Leave request updated successfully in employment document');
+    return updatedLeaves[leaveIndex];
+  } catch (error) {
+    console.error('Error updating employee leave request:', error);
+    throw error;
+  }
+};
+
 export const getEmployeeDocument = async (employeeId: string, documentType: string) => {
   try {
     console.log('🔍 Fetching employee document:', documentType);
