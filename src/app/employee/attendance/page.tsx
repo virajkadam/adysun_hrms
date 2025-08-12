@@ -327,7 +327,7 @@ export default function EmployeeAttendancePage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          {getStatusIcon(record.status)}
+                          {/* {getStatusIcon(record.status)} */}
                           <span className={getStatusBadge(record.status)}>
                             {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
                           </span>

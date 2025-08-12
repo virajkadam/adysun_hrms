@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut, FiCpu, FiUsers, FiClock } from 'react-icons/fi';
+import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut, FiCpu, FiUsers, FiClock, FiCheck } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -208,8 +208,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   </button>
                 ) : (
                   <>
-                    <div className="px-3 py-2 bg-green-100 text-green-800 rounded-md text-sm font-medium">
-                      ✓ Checked In
+                    <div className="px-3 py-2 bg-green-100 text-green-800 rounded-md text-sm font-medium flex items-center gap-2">
+                      <FiCheck className="w-4 h-4" />
+                      Checked In
                     </div>
                     {!attendanceData.checkOutTime && (
                       <button
@@ -222,8 +223,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                       </button>
                     )}
                     {attendanceData.checkOutTime && (
-                      <div className="px-3 py-2 bg-red-100 text-red-800 rounded-md text-sm font-medium">
-                        ✓ Checked Out
+                      <div className="px-3 py-2 bg-red-100 text-red-800 rounded-md text-sm font-medium flex items-center gap-2">
+                        <FiCheck className="w-4 h-4" />
+                        Checked Out
                       </div>
                     )}
                   </>
