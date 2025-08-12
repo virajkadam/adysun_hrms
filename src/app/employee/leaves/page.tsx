@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -107,6 +107,10 @@ export default function EmployeeLeavesPage() {
   const handleRequestLeave = () => {
     router.push('/employee/leaves/request');
   };
+  
+  const handleLeavesReport= () => {
+    router.push('/employee/leaves/report')
+  }
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
@@ -273,11 +277,17 @@ export default function EmployeeLeavesPage() {
           backButton={{ href: '/employee-dashboard' }}
           actionButtons={[
             {
+              label: 'Leave Reports',
+              onClick: handleLeavesReport,
+              icon: <FiFile />,
+              variant: 'info' as const,
+            },
+            {
               label: 'Request Leave',
               onClick: handleRequestLeave,
               icon: <FiPlus />,
               variant: 'success' as const,
-            }
+            },
           ]}
           headerClassName="px-6 pt-6 mb-0"
         />
