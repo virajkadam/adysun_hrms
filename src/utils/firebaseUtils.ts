@@ -1037,6 +1037,84 @@ export const getEmployeeLeaves = async (employeeId: string) => {
   }
 };
 
+/**
+ * Update an existing leave's end date (employee self-service)
+ * - Only allows changing endDate
+ * - Recomputes totalDays
+ * - Marks the leave as edited for UI indication
+ */
+export const updateEmployeeLeaveEndDate = async (
+  employmentId: string,
+  leaveId: string,
+  employeeId: string,
+  newEndDate: string
+) => {
+  try {
+    console.log('🔧 Updating leave end date...', { employmentId, leaveId, employeeId, newEndDate });
+
+    // Validate employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+
+    const currentEmployee = JSON.parse(employeeData);
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only edit your own leave.');
+    }
+
+    // Load employment doc
+    const employmentRef = doc(db, 'employments', employmentId);
+    const employmentSnap = await getDoc(employmentRef);
+    if (!employmentSnap.exists()) {
+      throw new Error('Employment record not found.');
+    }
+
+    const employmentData = employmentSnap.data();
+    const leaves = (employmentData.leaves || []) as any[];
+    const index = leaves.findIndex((l: any) => l.id === leaveId);
+    if (index === -1) {
+      throw new Error('Leave record not found.');
+    }
+
+    const leave = leaves[index];
+
+    // Compute total days inclusive from startDate → newEndDate
+    const start = new Date(leave.startDate);
+    const end = new Date(newEndDate);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      throw new Error('Invalid date provided.');
+    }
+    const ONE_DAY = 1000 * 60 * 60 * 24;
+    const totalDays = Math.max(1, Math.floor((end.getTime() - start.getTime()) / ONE_DAY) + 1);
+
+    const updatedLeave = {
+      ...leave,
+      endDate: newEndDate,
+      totalDays,
+      wasEdited: true,
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId,
+    };
+
+    const updatedLeaves = [...leaves];
+    updatedLeaves[index] = updatedLeave;
+
+    await updateDoc(employmentRef, {
+      leaves: updatedLeaves,
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId,
+    });
+
+    console.log('✅ Leave end date updated successfully');
+    return updatedLeave;
+  } catch (error) {
+    console.error('Error updating leave end date:', error);
+    throw error;
+  }
+};
+
 export const getEmployeeDocument = async (employeeId: string, documentType: string) => {
   try {
     console.log('🔍 Fetching employee document:', documentType);

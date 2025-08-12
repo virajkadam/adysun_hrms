@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiPlus, FiClock, FiCheck, FiX } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployeeLeaves } from '@/utils/firebaseUtils';
+import { getEmployeeLeaves, updateEmployeeLeaveEndDate } from '@/utils/firebaseUtils';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
+import { ActionButton } from '@/components/ui/ActionButton';
+import TableHeader from '@/components/ui/TableHeader';
 
 interface LeaveRecord {
   id: string;
@@ -18,12 +20,31 @@ interface LeaveRecord {
   status: 'pending' | 'approved' | 'rejected';
   appliedDate: string;
   totalDays: number;
+  employmentId?: string;
+  employeeId?: string;
+  wasEdited?: boolean;
+}
+
+interface RawLeaveRecord {
+  id: string;
+  type?: LeaveRecord['type'];
+  startDate: string;
+  endDate: string;
+  reason?: string;
+  status?: LeaveRecord['status'];
+  appliedDate: string;
+  totalDays?: number;
+  employmentId?: string;
+  employeeId?: string;
+  wasEdited?: boolean;
 }
 
 export default function EmployeeLeavesPage() {
   const [leaveRecords, setLeaveRecords] = useState<LeaveRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedLeave, setSelectedLeave] = useState<LeaveRecord | null>(null);
+  const [newEndDate, setNewEndDate] = useState<string>('');
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -44,20 +65,24 @@ export default function EmployeeLeavesPage() {
         const leaveData = await getEmployeeLeaves(currentUserData.id);
         
         console.log('📊 Raw leave data received:', leaveData);
+        console.log('📊 Number of leave records:', leaveData.length);
         
         // Transform the data to match the expected format
-        const transformedData: LeaveRecord[] = leaveData.map((record: any) => {
+        const transformedData: LeaveRecord[] = (leaveData as RawLeaveRecord[]).map((record) => {
           console.log('🔄 Processing leave record:', record);
           
-          const transformed = {
+          const transformed: LeaveRecord = {
             id: record.id,
-            type: record.type || 'casual',
+            type: (record.type as LeaveRecord['type']) || 'casual',
             startDate: record.startDate,
             endDate: record.endDate,
             reason: record.reason || 'Personal leave',
-            status: record.status || 'pending',
+            status: (record.status as LeaveRecord['status']) || 'pending',
             appliedDate: record.appliedDate,
-            totalDays: record.totalDays || 1
+            totalDays: record.totalDays || 1,
+            employmentId: record.employmentId,
+            employeeId: record.employeeId,
+            wasEdited: record.wasEdited || false,
           };
           
           console.log('✅ Transformed leave record:', transformed);
@@ -65,8 +90,9 @@ export default function EmployeeLeavesPage() {
         });
         
         console.log('📋 Final transformed leave records:', transformedData);
+        console.log('📋 Number of transformed records:', transformedData.length);
         setLeaveRecords(transformedData);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error fetching leave data:', error);
         toast.error('Failed to load leave data');
         setLeaveRecords([]); // Set empty array instead of mock data
@@ -77,6 +103,91 @@ export default function EmployeeLeavesPage() {
 
     fetchLeaveData();
   }, [currentUserData, router]);
+
+  const handleRequestLeave = () => {
+    router.push('/employee/leaves/request');
+  };
+
+  // Handle refresh with toast feedback
+  const handleRefresh = async () => {
+    try {
+      // Refetch leave data
+      const leaveData = await getEmployeeLeaves(currentUserData?.id || '');
+      const transformedData: LeaveRecord[] = (leaveData as RawLeaveRecord[]).map((record) => ({
+        id: record.id,
+        type: (record.type as LeaveRecord['type']) || 'casual',
+        startDate: record.startDate,
+        endDate: record.endDate,
+        reason: record.reason || 'Personal leave',
+        status: (record.status as LeaveRecord['status']) || 'pending',
+        appliedDate: record.appliedDate,
+        totalDays: record.totalDays || 1,
+        employmentId: record.employmentId,
+        employeeId: record.employeeId,
+        wasEdited: record.wasEdited || false,
+      }));
+      setLeaveRecords(transformedData);
+      toast.success('Leave data refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing leave data:', error);
+      toast.error('Failed to refresh leave data');
+    }
+  };
+
+  const openEditModal = (leave: LeaveRecord) => {
+    setSelectedLeave(leave);
+    setNewEndDate(leave.endDate);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalOpen(false);
+    setSelectedLeave(null);
+    setNewEndDate('');
+  };
+
+  const handleUpdateEndDate = async () => {
+    if (!selectedLeave || !currentUserData) return;
+    try {
+      // Basic validation: new end date should be >= start date
+      if (new Date(newEndDate) < new Date(selectedLeave.startDate)) {
+        toast.error('End date cannot be before start date');
+        return;
+      }
+
+      if (!selectedLeave.employmentId) {
+        toast.error('Employment context missing for this leave');
+        return;
+      }
+
+      const updated = await updateEmployeeLeaveEndDate(
+        selectedLeave.employmentId,
+        selectedLeave.id,
+        currentUserData.id,
+        newEndDate
+      );
+
+      // Update local state
+      setLeaveRecords((prev) =>
+        prev.map((rec) =>
+          rec.id === selectedLeave.id
+            ? {
+                ...rec,
+                endDate: updated.endDate,
+                totalDays: updated.totalDays,
+                wasEdited: true,
+              }
+            : rec
+        )
+      );
+
+      toast.success('Leave updated');
+      closeEditModal();
+    } catch (e) {
+      toast.error('Failed to update leave');
+      console.error(e);
+    }
+  };
 
   const getLeaveTypeIcon = (type: string) => {
     switch (type) {
@@ -131,10 +242,6 @@ export default function EmployeeLeavesPage() {
     }
   };
 
-  const handleRequestLeave = () => {
-    router.push('/employee/leaves/request');
-  };
-
   if (isLoading) {
     return (
       <EmployeeLayout>
@@ -148,23 +255,32 @@ export default function EmployeeLeavesPage() {
   return (
     <EmployeeLayout>
       <Toaster position="top-center" />
-      
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="px-6 py-6 border-b border-gray-200">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">My Leaves</h1>
-              <p className="text-slate-700">View and manage your leave requests</p>
-            </div>
-            <button
-              onClick={handleRequestLeave}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center space-x-2"
-            >
-              <FiPlus className="w-4 h-4" />
-              <span>Request Leave</span>
-            </button>
-          </div>
-              </div>
+
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <TableHeader
+          title="My Leaves"
+          total={leaveRecords.length}
+          active={leaveRecords.filter(record => record.status === 'approved').length}
+          inactive={leaveRecords.filter(record => record.status === 'rejected').length}
+          searchValue=""
+          onSearchChange={() => {}}
+          searchPlaceholder="Search leaves"
+          searchAriaLabel="Search leaves"
+          onRefresh={handleRefresh}
+          isRefreshing={false}
+          showSearch={false}
+          showStats={false}
+          backButton={{ href: '/employee-dashboard' }}
+          actionButtons={[
+            {
+              label: 'Request Leave',
+              onClick: handleRequestLeave,
+              icon: <FiPlus />,
+              variant: 'success' as const,
+            }
+          ]}
+          headerClassName="px-6 pt-6 mb-0"
+        />
 
         <div className="p-6">
           {/* Leave Summary */}
@@ -241,6 +357,9 @@ export default function EmployeeLeavesPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Applied Date
                   </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -258,7 +377,14 @@ export default function EmployeeLeavesPage() {
                       {formatDateToDayMonYear(record.startDate)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDateToDayMonYear(record.endDate)}
+                      <div className="flex items-center gap-2">
+                        <span>{formatDateToDayMonYear(record.endDate)}</span>
+                        {record.wasEdited && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                            Edited
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {record.totalDays} day{record.totalDays > 1 ? 's' : ''}
@@ -270,6 +396,22 @@ export default function EmployeeLeavesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatDateToDayMonYear(record.appliedDate)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center justify-center space-x-3">
+                        <ActionButton
+                          icon={<FiEye className="w-5 h-5" />}
+                          title="View"
+                          colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
+                          href={`/employee/leaves/${record.id}`}
+                        />
+                        <ActionButton
+                          icon={<FiEdit className="w-5 h-5" />}
+                          title="Edit"
+                          colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
+                          onClick={() => openEditModal(record)}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -285,6 +427,35 @@ export default function EmployeeLeavesPage() {
           )}
         </div>
       </div>
+
+      {/* Edit End Date Modal */}
+      {editModalOpen && selectedLeave && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Leave End Date</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <input type="date" value={selectedLeave.startDate} disabled className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100 text-gray-600" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <input
+                  type="date"
+                  value={newEndDate}
+                  min={selectedLeave.startDate}
+                  onChange={(e) => setNewEndDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={closeEditModal} className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Cancel</button>
+              <button onClick={handleUpdateEndDate} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Update</button>
+            </div>
+          </div>
+        </div>
+      )}
     </EmployeeLayout>
   );
 } 
