@@ -267,15 +267,14 @@ export default function EmployeeLeavesPage() {
                                          <td className="px-6 py-4 whitespace-nowrap">
                        {/* Option 1: Status Badge Integration */}
                        <div className="flex items-center space-x-2">
-                         {getLeaveTypeIcon(record.type)}
+                         {/* {getLeaveTypeIcon(record.type)} */}
                          <div className="flex items-center gap-1">
                            <span className={getLeaveTypeBadge(record.type)}>
                              {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
                            </span>
                            {record.wasEdited && (
                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200">
-                               <FiEdit2 className="w-3 h-3 mr-1" />
-                               Modified
+                               <FiEdit2 className="w-3 h-3" />
                              </span>
                            )}
                          </div>
