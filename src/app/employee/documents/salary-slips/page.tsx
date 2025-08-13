@@ -302,7 +302,7 @@ export default function EmployeeSalarySlipsPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Employee ID</p>
-                  <p className="font-medium text-gray-900">{getCurrentEmployeeId()}</p>
+                  <p className="font-medium text-gray-900">{employee?.employeeId || 'Not Assigned'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Department</p>
