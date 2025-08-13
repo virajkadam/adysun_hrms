@@ -132,7 +132,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   hasActiveFilters = false,
 }) => {
   const getButtonClasses = (variant: string = 'primary') => {
-    const baseClasses = 'px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200';
+    const baseClasses = 'px-2 sm:px-4 py-2 rounded-md flex items-center justify-center gap-1 sm:gap-2 transition-colors duration-200 text-sm sm:text-base w-full sm:w-auto';
     
     switch (variant) {
       case 'primary':
@@ -193,7 +193,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           )}
 
           {/* Right Side - Action Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3 sm:flex-wrap sm:justify-end">
             {/* Attendance Marking Buttons */}
             {showAttendanceMarking && attendanceData && (
               <>

@@ -253,26 +253,26 @@ export default function EmployeeViewPage({ params }: PageParams) {
           actionButtons={[
             ...(safeEmployments && safeEmployments.length > 0 && safeEmployments[0] ? [
               { 
-                label: 'View Employment', 
+                label: 'Employment', 
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
                 href: `/employments/${safeEmployments[0].id}` 
               },
               { 
-                label: 'View Salary', 
+                label: 'Salary', 
                 icon: <FiDollarSign />, 
                 variant: 'warning' as const, 
                 href: `/salaries?employeeId=${id}` 
               },
             ] : [
               { 
-                label: 'Create Employment', 
+                label: 'Employment', 
                 icon: <FiBriefcase />, 
                 variant: 'success' as const, 
                 href: `/employments/add?employeeId=${id}` 
               },
               { 
-                label: 'Create Salary', 
+                label: 'Salary', 
                 icon: <FiDollarSign />, 
                 variant: 'success' as const, 
                 href: `/salaries/add?employeeId=${id}` 
