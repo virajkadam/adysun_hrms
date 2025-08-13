@@ -193,7 +193,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           )}
 
           {/* Right Side - Action Buttons */}
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3 sm:flex-wrap sm:justify-end">
+          <div className={`${actionButtons.length === 1 ? 'flex justify-end' : 'grid grid-cols-2 gap-2'} sm:flex sm:items-center sm:gap-3 sm:flex-wrap sm:justify-end`}>
             {/* Attendance Marking Buttons */}
             {showAttendanceMarking && attendanceData && (
               <>

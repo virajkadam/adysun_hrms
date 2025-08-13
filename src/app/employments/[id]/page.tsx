@@ -308,12 +308,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiUser className="mr-2" /> Employee Information
                   </h2>
-                  <Link
-                    href={`/employees/${employee.id}`}
-                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                  >
-                    <FiUser size={16} /> View Profile
-                  </Link>
                 </div>
                 
                 <div className="flex items-center">
@@ -325,7 +319,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                         className="h-16 w-16 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center">
+                      <div className="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center hidden sm:flex">
                         <span className="text-xl font-medium text-gray-600">
                           {employee.name.charAt(0)}
                         </span>
@@ -335,8 +329,10 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">{employee.name}</h3>
-                    <p className="text-sm text-gray-600">{employee.email} • {employee.phone}</p>
-                    <p className="text-sm text-gray-600">{employment.jobTitle || employee.position} • {employment.department || employee.department}</p>
+                    <p className="text-sm text-gray-600">{employee.email}</p>
+                    <p className="text-sm text-gray-600">{employee.phone}</p>
+                    <p className="text-sm text-gray-600">{employment.jobTitle || employee.position}</p>
+                    <p className="text-sm text-gray-600">{employment.department || employee.department}</p>
                   </div>
                 </div>
               </div>
