@@ -321,20 +321,6 @@ export default function LeaveReportPage() {
           showSearch={false}
           showStats={false}
           backButton={{ href: '/employee/leaves' }}
-          actionButtons={[
-            {
-              label: 'Export PDF',
-              onClick: handleExportPDF,
-              icon: <FiDownload />,
-              variant: 'info' as const,
-            },
-            {
-              label: 'Print',
-              onClick: handlePrint,
-              icon: <FiPrinter />,
-              variant: 'secondary' as const,
-            }
-          ]}
           headerClassName="px-6 pt-6 mb-0"
         />
 
