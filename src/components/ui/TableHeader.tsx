@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut, FiCpu, FiUsers, FiClock, FiCheck } from 'react-icons/fi';
+import { FiRefreshCw, FiChevronLeft, FiFilter, FiLogIn, FiLogOut, FiCpu, FiUsers, FiClock, FiCheck, FiX } from 'react-icons/fi';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
@@ -188,7 +188,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           {/* Center - Title */}
           {title && (
             <div className="flex-1 flex justify-center text-center">
-              <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">{title}</h1>
             </div>
           )}
 
@@ -275,167 +275,224 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
       {/* Stats and Search Section */}
       {(showStats || showSearch || showFilter || showSecondFilter || showCustomFilters) && (
-        <div className="px-6 pb-6 border-b border-gray-200 flex justify-between items-center mt-4">
-          {showStats ? (
-            <div className="flex items-center gap-6 text-sm text-gray-600">
-              {typeof total === 'number' && (
-                <span>Total: <span className="font-medium">{total}</span></span>
+        <div className="px-4 sm:px-6 pb-6 border-b border-gray-200">
+          {/* Mobile: Stack everything vertically, Desktop: Side by side */}
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mt-4">
+            {/* Stats Section */}
+            {showStats && (
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                {typeof total === 'number' && (
+                  <span className="bg-gray-100 px-3 py-1 rounded-full">Total: <span className="font-medium">{total}</span></span>
+                )}
+                {typeof active === 'number' && (
+                  <span className="bg-green-100 px-3 py-1 rounded-full text-green-700">Active: <span className="font-medium">{active}</span></span>
+                )}
+                {typeof inactive === 'number' && (
+                  <span className="bg-red-100 px-3 py-1 rounded-full text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
+                )}
+                {dropdown && <span>{dropdown}</span>}
+              </div>
+            )}
+
+            {/* Search and Controls Section */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
+              {/* Custom Filters - Mobile: Stack vertically, Desktop: Side by side */}
+              {showCustomFilters && (
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                  {/* Active Filters Display - Mobile Only */}
+                  {hasActiveFilters && onClearFilters && (
+                    <div className="sm:hidden w-full">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {technologyFilterValue && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                            Tech: {technologyFilterValue}
+                            <button
+                              onClick={() => onTechnologyFilterChange?.('')}
+                              className="ml-1 hover:bg-green-200 rounded-full p-0.5"
+                            >
+                              <FiX className="w-3 h-3" />
+                            </button>
+                          </span>
+                        )}
+                        {roleFilterValue && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">
+                            Role: {roleFilterValue}
+                            <button
+                              onClick={() => onRoleFilterChange?.('')}
+                              className="ml-1 hover:bg-purple-200 rounded-full p-0.5"
+                            >
+                              <FiX className="w-3 h-3" />
+                            </button>
+                          </span>
+                        )}
+                        {experienceFilterValue && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
+                            Exp: {experienceFilterValue}
+                            <button
+                              onClick={() => onExperienceFilterChange?.('')}
+                              className="ml-1 hover:bg-orange-200 rounded-full p-0.5"
+                            >
+                              <FiX className="w-3 h-3" />
+                            </button>
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={onClearFilters}
+                        className="w-full px-3 py-2 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded-md hover:bg-red-50 transition-colors"
+                      >
+                        Clear All Filters
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Filter Dropdowns */}
+                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    {technologyFilterOptions.length > 0 && onTechnologyFilterChange && (
+                      <div className="relative w-full sm:w-32">
+                        <select
+                          value={technologyFilterValue}
+                          onChange={(e) => onTechnologyFilterChange(e.target.value)}
+                          className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+                        >
+                          {technologyFilterOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiCpu className="w-4 h-4 text-gray-500" />
+                        </div>
+                      </div>
+                    )}
+
+                    {roleFilterOptions.length > 0 && onRoleFilterChange && (
+                      <div className="relative w-full sm:w-36">
+                        <select
+                          value={roleFilterValue}
+                          onChange={(e) => onRoleFilterChange(e.target.value)}
+                          className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+                        >
+                          {roleFilterOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiUsers className="w-4 h-4 text-gray-500" />
+                        </div>
+                      </div>
+                    )}
+
+                    {experienceFilterOptions.length > 0 && onExperienceFilterChange && (
+                      <div className="relative w-full sm:w-32">
+                        <select
+                          value={experienceFilterValue}
+                          onChange={(e) => onExperienceFilterChange(e.target.value)}
+                          className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full"
+                        >
+                          {experienceFilterOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiClock className="w-4 h-4 text-gray-500" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Desktop Clear Filters Button */}
+                  {hasActiveFilters && onClearFilters && (
+                    <button
+                      onClick={onClearFilters}
+                      className="hidden sm:block px-3 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+                </div>
               )}
-              {typeof active === 'number' && (
-                <span className="text-green-700">Active: <span className="font-medium">{active}</span></span>
-              )}
-              {typeof inactive === 'number' && (
-                <span className="text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
-              )}
-              {dropdown && <span>{dropdown}</span>}
+              
+              {/* Other Controls */}
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                {onRefresh && (
+                  <Tooltip content="Refresh" position="top" color="blue">
+                    <button
+                      onClick={onRefresh}
+                      disabled={isRefreshing}
+                      className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
+                        isRefreshing 
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                          : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
+                      }`}
+                      aria-label="Refresh data"
+                    >
+                      <FiRefreshCw 
+                        className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
+                      />
+                    </button>
+                  </Tooltip>
+                )}
+                
+                {showFilter && onFilterChange && (
+                  <div className="relative w-full sm:w-auto">
+                    <select
+                      value={filterValue}
+                      onChange={(e) => onFilterChange(e.target.value)}
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-auto"
+                    >
+                      {filterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiFilter className="w-4 h-4 text-gray-500" />
+                    </div>
+                  </div>
+                )}
+                
+                {showSecondFilter && onSecondFilterChange && (
+                  <div className="relative w-full sm:w-auto">
+                    <select
+                      value={secondFilterValue}
+                      onChange={(e) => onSecondFilterChange(e.target.value)}
+                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-auto"
+                    >
+                      {secondFilterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiFilter className="w-4 h-4 text-gray-500" />
+                    </div>
+                  </div>
+                )}
+                
+                {/* Search Bar - Full width on mobile */}
+                {showSearch && (
+                  <div className="w-full sm:w-64">
+                    <SearchBar
+                      value={searchValue}
+                      onChange={onSearchChange}
+                      placeholder={searchPlaceholder}
+                      ariaLabel={searchAriaLabel}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
-            <div className="flex-1"></div>
-          )}
-
-          {/* Search and Other Controls - Right Side */}
-          <div className="flex items-center gap-4">
-            {onRefresh && (
-              <Tooltip content="Refresh" position="top" color="blue">
-                <button
-                  onClick={onRefresh}
-                  disabled={isRefreshing}
-                  className={`border border-gray-300 p-2 rounded-md transition-all duration-200 ${
-                    isRefreshing 
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                      : 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
-                  }`}
-                  aria-label="Refresh data"
-                >
-                  <FiRefreshCw 
-                    className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 
-                  />
-                </button>
-              </Tooltip>
-            )}
-            
-            {/* Custom Filters - Now on the right side */}
-            {showCustomFilters && (
-              <>
-
-              {hasActiveFilters && onClearFilters && (
-                <button
-                  onClick={onClearFilters}
-                  className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
-                >
-                  Clear Filters
-                </button>
-              )}
-                {technologyFilterOptions.length > 0 && onTechnologyFilterChange && (
-                  <div className="relative">
-                    <select
-                      value={technologyFilterValue}
-                      onChange={(e) => onTechnologyFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-32"
-                    >
-                      {technologyFilterOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiCpu className="w-4 h-4 text-gray-500" />
-                    </div>
-                  </div>
-                )}
-
-                {roleFilterOptions.length > 0 && onRoleFilterChange && (
-                  <div className="relative">
-                    <select
-                      value={roleFilterValue}
-                      onChange={(e) => onRoleFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-34"
-                    >
-                      {roleFilterOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiUsers className="w-4 h-4 text-gray-500" />
-                    </div>
-                  </div>
-                )}
-
-                {experienceFilterOptions.length > 0 && onExperienceFilterChange && (
-                  <div className="relative">
-                    <select
-                      value={experienceFilterValue}
-                      onChange={(e) => onExperienceFilterChange(e.target.value)}
-                      className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-32"
-                    >
-                      {experienceFilterOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <FiClock className="w-4 h-4 text-gray-500" />
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-            
-            {showFilter && onFilterChange && (
-              <div className="relative">
-                <select
-                  value={filterValue}
-                  onChange={(e) => onFilterChange(e.target.value)}
-                  className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {filterOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiFilter className="w-4 h-4 text-gray-500" />
-                </div>
-              </div>
-            )}
-            {showSecondFilter && onSecondFilterChange && (
-              <div className="relative">
-                <select
-                  value={secondFilterValue}
-                  onChange={(e) => onSecondFilterChange(e.target.value)}
-                  className="appearance-none border border-gray-300 rounded-md pl-10 pr-8 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  {secondFilterOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiFilter className="w-4 h-4 text-gray-500" />
-                </div>
-              </div>
-            )}
-            {showSearch && (
-              <div className="w-64">
-                <SearchBar
-                  value={searchValue}
-                  onChange={onSearchChange}
-                  placeholder={searchPlaceholder}
-                  ariaLabel={searchAriaLabel}
-                />
-              </div>
-            )}
           </div>
         </div>
       )}
-
-      {/* Custom Filters Section - REMOVED */}
     </div>
   );
 };

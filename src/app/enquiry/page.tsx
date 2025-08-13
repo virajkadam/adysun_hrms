@@ -263,115 +263,197 @@ export default function EnquiryListPage() {
             {enquiries.length === 0 ? "No enquiries found." : "No enquiries match your filters."}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Mobile
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    PAN
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Technology
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Experience
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              <div className="p-4 space-y-4">
                 {paginatedEnquiries.map((enquiry) => (
-                  <tr key={enquiry.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {enquiry.name || "Anonymous"}
+                  <div key={enquiry.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                          {enquiry.name || "Anonymous"}
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-2">{enquiry.technology || "No tech specified"}</p>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.mobile || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.email || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.pan || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.technology || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.role || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.totalWorkExperience || "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {enquiry.createdAt
-                          ? formatDateToDayMonYear(
-                              typeof enquiry.createdAt === "string"
-                                ? enquiry.createdAt
-                                : new Date(
-                                    enquiry.createdAt.seconds * 1000
-                                  )
-                            )
-                          : "-"}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center justify-center space-x-3">
+                      <div className="flex space-x-2">
                         <ActionButton
-                          icon={<FiEye className="w-5 h-5" />}
-                          title="View Enquiry Details"
+                          icon={<FiEye className="w-4 h-4" />}
+                          title="View Details"
                           colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                           href={`/enquiry/${enquiry.id}`}
                         />
                         <ActionButton
-                          icon={<FiTrash2 className="w-5 h-5" />}
+                          icon={<FiTrash2 className="w-4 h-4" />}
                           title="Delete"
                           colorClass="bg-red-100 text-red-600 hover:text-red-900"
                           onClick={() => {
-                            // TODO: Implement delete functionality
                             console.log('Delete enquiry:', enquiry.id);
                           }}
                           as="button"
                         />
                       </div>
-                    </td>
-                  </tr>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-gray-500">Mobile:</span>
+                        <p className="text-gray-900">{enquiry.mobile || "-"}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Email:</span>
+                        <p className="text-gray-900">{enquiry.email || "-"}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">PAN:</span>
+                        <p className="text-gray-900">{enquiry.pan || "-"}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Role:</span>
+                        <p className="text-gray-900">{enquiry.role || "-"}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Experience:</span>
+                        <p className="text-gray-900">{enquiry.totalWorkExperience || "-"}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Date:</span>
+                        <p className="text-gray-900">
+                          {enquiry.createdAt
+                            ? formatDateToDayMonYear(
+                                typeof enquiry.createdAt === "string"
+                                  ? enquiry.createdAt
+                                  : new Date(
+                                      enquiry.createdAt.seconds * 1000
+                                    )
+                              )
+                            : "-"}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {enquiry.message && (
+                      <div className="mt-3 pt-3 border-t border-gray-100">
+                        <span className="text-gray-500 text-sm">Message:</span>
+                        <p className="text-gray-900 text-sm mt-1 line-clamp-2">{enquiry.message}</p>
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Mobile
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      PAN
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Technology
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Experience
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {paginatedEnquiries.map((enquiry) => (
+                    <tr key={enquiry.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {enquiry.name || "Anonymous"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.mobile || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.email || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.pan || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.technology || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.role || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.totalWorkExperience || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {enquiry.createdAt
+                            ? formatDateToDayMonYear(
+                                typeof enquiry.createdAt === "string"
+                                  ? enquiry.createdAt
+                                  : new Date(
+                                      enquiry.createdAt.seconds * 1000
+                                    )
+                              )
+                            : "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center justify-center space-x-3">
+                          <ActionButton
+                            icon={<FiEye className="w-5 h-5" />}
+                            title="View Enquiry Details"
+                            colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
+                            href={`/enquiry/${enquiry.id}`}
+                          />
+                          <ActionButton
+                            icon={<FiTrash2 className="w-5 h-5" />}
+                            title="Delete"
+                            colorClass="bg-red-100 text-red-600 hover:text-red-900"
+                            onClick={() => {
+                              // TODO: Implement delete functionality
+                              console.log('Delete enquiry:', enquiry.id);
+                            }}
+                            as="button"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
         {totalItems > 0 && (
           <Pagination
