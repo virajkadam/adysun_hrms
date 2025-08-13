@@ -343,27 +343,15 @@ export default function EmployeeSalarySlipsPage() {
                     
                     {hasSalarySlip && salaryDetails && (
                       <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Basic Salary:</span>
+                        <div className="flex text-gray-600 justify-between text-sm">
+                          <span className="">Basic Salary:</span>
                           <span className="font-medium">₹{salaryDetails.basicSalary.toLocaleString()}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Allowances:</span>
-                          <span className="font-medium text-green-600">+₹{salaryDetails.allowances.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Deductions:</span>
-                          <span className="font-medium text-red-600">-₹{salaryDetails.deductions.toLocaleString()}</span>
-                        </div>
                         <div className="border-t pt-2">
-                          <div className="flex justify-between text-sm font-semibold">
+                          <div className="flex text-blue-600 justify-between text-sm font-semibold">
                             <span>Net Salary:</span>
-                            <span className="text-blue-600">₹{salaryDetails.netSalary.toLocaleString()}</span>
+                            <span className="">₹{salaryDetails.netSalary.toLocaleString()}</span>
                           </div>
-                        </div>
-                        <div className="text-xs text-green-600 flex items-center">
-                          <FiDollarSign className="mr-1" />
-                          ✓ Salary slip available
                         </div>
                       </div>
                     )}
