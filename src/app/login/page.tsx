@@ -75,7 +75,12 @@ export default function LoginPage() {
       <div className="max-w-md w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           {/* Logo and Company Name */}
-          <div className="flex items-center justify-center mb-3 sm:mb-4">
+          <a 
+            href="https://adysunventures.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center mb-3 sm:mb-4 transition-colors cursor-pointer hover:opacity-80"
+          >
             <Image
               src="/adysun-logo.png"
               alt="Adysun Ventures Logo"
@@ -84,8 +89,10 @@ export default function LoginPage() {
               className="object-contain mr-2 sm:mr-3 sm:w-[50px] sm:h-[50px]"
               priority
             />
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Adysun Ventures</h1>
-          </div>
+            <span className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Adysun Ventures
+            </span>
+          </a>
           <hr className="border-gray-300 my-3 sm:my-4" />
           <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Login Portal</h2>
           <p className="mt-2 text-sm sm:text-base text-gray-600">
