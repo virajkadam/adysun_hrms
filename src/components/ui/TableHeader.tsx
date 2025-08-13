@@ -237,7 +237,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
               const buttonContent = (
                 <>
                   {button.icon}
-                  {button.label}
+                  <span className="hidden sm:inline">{button.label}</span>
                 </>
               );
 
