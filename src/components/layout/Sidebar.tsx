@@ -91,14 +91,14 @@ const Sidebar = () => {
           onClick={toggleSidebar}
           className="p-2 rounded-md text-black hover:text-gray-700 transition-colors"
         >
-          {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          <FiMenu size={24} />
         </button>
       </div>
 
       {/* Overlay for mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 backdrop-blur-md bg-white/30 z-40 lg:hidden"
           onClick={toggleSidebar}
         />
       )}
@@ -109,6 +109,15 @@ const Sidebar = () => {
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
+        {/* Close button - positioned outside sidebar on the right */}
+        {isOpen && (
+          <button
+            onClick={toggleSidebar}
+            className="lg:hidden fixed top-4 left-66 p-1 rounded-full bg-slate-500 text-white hover:bg-slate-600 transition-colors z-50"
+          >
+            <FiX size={18} />
+          </button>
+        )}
         <div className="p-5 flex flex-col h-full">
           <h2 className="text-2xl font-bold mb-6">Admin Dashboard</h2>
           <nav className="flex-grow">
