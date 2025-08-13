@@ -66,26 +66,43 @@ const SimpleBreadcrumb: React.FC<SimpleBreadcrumbProps> = ({
 
   if (!resolvedItems || resolvedItems.length === 0) return null;
 
+  // Truncate long text on mobile
+  const truncateText = (text: string) => {
+    if (typeof text !== 'string') return text;
+    
+    // On mobile, show first word + "..."
+    // On desktop, show full text
+    return (
+      <>
+        <span className="hidden sm:inline">{text}</span>
+        <span className="sm:hidden">
+          {text.split(' ')[0]}
+          {text.split(' ').length > 1 && '...'}
+        </span>
+      </>
+    );
+  };
+
   return (
     <nav aria-label="breadcrumb" className={`text-sm text-gray-600 ${className}`}>
-      <ol className="flex items-center space-x-2">
+      <ol className="flex items-center space-x-2 overflow-hidden">
         {resolvedItems.map((item, index) => (
           <React.Fragment key={index}>
             <li className="flex items-center">
               {item.isCurrent ? (
                 <span className="text-gray-900 font-medium">
-                  {item.label}
+                  {truncateText(item.label)}
                 </span>
               ) : item.href ? (
                 <Link 
                   href={item.href}
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                 >
-                  {item.label}
+                  {truncateText(item.label)}
                 </Link>
               ) : (
                 <span className="text-gray-600">
-                  {item.label}
+                  {truncateText(item.label)}
                 </span>
               )}
             </li>

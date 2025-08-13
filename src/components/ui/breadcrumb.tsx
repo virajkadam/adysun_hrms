@@ -19,7 +19,7 @@ const BreadcrumbList = React.forwardRef<
   <ol
     ref={ref}
     className={cn(
-      "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground",
+      "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground overflow-hidden",
       className
     )}
     {...props}
@@ -30,13 +30,34 @@ BreadcrumbList.displayName = "BreadcrumbList"
 const BreadcrumbItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentPropsWithoutRef<"li">
->(({ className, ...props }, ref) => (
-  <li
-    ref={ref}
-    className={cn("inline-flex items-center gap-1.5", className)}
-    {...props}
-  />
-))
+>(({ className, children, ...props }, ref) => {
+  // Truncate long text on mobile
+  const truncateText = (text: string) => {
+    if (typeof text !== 'string') return text;
+    
+    // On mobile, show first word + "..."
+    // On desktop, show full text
+    return (
+      <>
+        <span className="hidden sm:inline">{text}</span>
+        <span className="sm:hidden">
+          {text.split(' ')[0]}
+          {text.split(' ').length > 1 && '...'}
+        </span>
+      </>
+    );
+  };
+
+  return (
+    <li
+      ref={ref}
+      className={cn("inline-flex items-center gap-1.5", className)}
+      {...props}
+    >
+      {typeof children === 'string' ? truncateText(children) : children}
+    </li>
+  );
+})
 BreadcrumbItem.displayName = "BreadcrumbItem"
 
 const BreadcrumbLink = React.forwardRef<
@@ -87,6 +108,23 @@ const DynamicBreadcrumbItem = React.forwardRef<
   const [displayName, setDisplayName] = React.useState<string>(fallback)
   const [loading, setLoading] = React.useState<boolean>(false)
 
+  // Truncate long text on mobile
+  const truncateText = (text: string) => {
+    if (typeof text !== 'string') return text;
+    
+    // On mobile, show first word + "..."
+    // On desktop, show full text
+    return (
+      <>
+        <span className="hidden sm:inline">{text}</span>
+        <span className="sm:hidden">
+          {text.split(' ')[0]}
+          {text.split(' ').length > 1 && '...'}
+        </span>
+      </>
+    );
+  };
+
   React.useEffect(() => {
     if (!id || !type) return
 
@@ -122,9 +160,11 @@ const DynamicBreadcrumbItem = React.forwardRef<
       {...props}
     >
       {loading ? (
-        <span className="animate-pulse bg-gray-200 h-4 w-20 rounded"></span>
+        <span className="hidden sm:inline">
+          <span className="animate-pulse bg-gray-200 h-4 w-20 rounded"></span>
+        </span>
       ) : (
-        children || displayName
+        children || truncateText(displayName)
       )}
     </li>
   )
