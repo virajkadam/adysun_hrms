@@ -70,24 +70,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-slate-300 p-4">
       <Toaster position="top-center" />
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           {/* Logo and Company Name */}
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
             <Image
               src="/adysun-logo.png"
               alt="Adysun Ventures Logo"
-              width={50}
-              height={50}
-              className="object-contain mr-3"
+              width={40}
+              height={40}
+              className="object-contain mr-2 sm:mr-3 sm:w-[50px] sm:h-[50px]"
               priority
             />
-            <h1 className="text-3xl font-bold text-gray-900">Adysun Ventures</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Adysun Ventures</h1>
           </div>
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">Login Portal</h2>
-          <p className="mt-2 text-gray-600">
+          <hr className="border-gray-300 my-3 sm:my-4" />
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">Login Portal</h2>
+          <p className="mt-2 text-sm sm:text-base text-gray-600">
             Enter your credentials to continue
           </p>
         </div>
@@ -100,7 +101,7 @@ export default function LoginPage() {
 
         <form 
           onSubmit={handleSubmit(handleLoginSubmit)}
-          className="mt-8 space-y-6"
+          className="mt-6 sm:mt-8 space-y-4 sm:space-y-6"
         >
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
@@ -112,6 +113,19 @@ export default function LoginPage() {
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={10}
+              onKeyPress={(e) => {
+                // Only allow numbers
+                if (!/[0-9]/.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+              onPaste={(e) => {
+                // Prevent paste of non-numeric content
+                const pastedText = e.clipboardData.getData('text');
+                if (!/^[0-9]+$/.test(pastedText)) {
+                  e.preventDefault();
+                }
+              }}
               {...register('phone', { 
                 required: 'Phone number is required',
                 pattern: {
@@ -119,7 +133,7 @@ export default function LoginPage() {
                   message: 'Please enter a valid 10-digit phone number'
                 }
               })}
-              className="py-3 px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black"
+              className="py-2.5 sm:py-3 px-3 sm:px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black text-base"
               placeholder="Enter mobile number"
             />
             {errors.phone && (
@@ -142,7 +156,7 @@ export default function LoginPage() {
                     message: 'Password must be at least 4 characters'
                   }
                 })}
-                className="py-3 px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black pr-10"
+                className="py-2.5 sm:py-3 px-3 sm:px-4 block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-black pr-10 text-base"
                 placeholder="Enter password"
               />
               <span
@@ -165,7 +179,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center py-2.5 sm:py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-base font-medium"
             >
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
@@ -173,7 +187,7 @@ export default function LoginPage() {
         </form>
 
         {/* Social Media Links */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
           <SocialMediaLinks variant="login" />
         </div>
       </div>
