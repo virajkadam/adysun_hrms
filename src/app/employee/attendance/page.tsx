@@ -7,6 +7,7 @@ import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAttendanceByEmployee, useTodayAttendance, useMarkAttendanceCheckIn, useMarkAttendanceCheckOut } from '@/hooks/useAttendance';
+import { useEmployeeLeaves } from '@/hooks/useLeaves';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { formatDurationHours } from '@/lib/utils';
 import TableHeader from '@/components/ui/TableHeader';
@@ -49,6 +50,14 @@ export default function EmployeeAttendancePage() {
     isError: todayError,
     error: todayErrorData
   } = useTodayAttendance(currentUserData?.id || '');
+
+  // Use leave hooks
+  const {
+    data: leaveRecords = [],
+    isLoading: leaveLoading,
+    isError: leaveError,
+    error: leaveErrorData
+  } = useEmployeeLeaves(currentUserData?.id || '');
 
   // Attendance mutations
   const checkInMutation = useMarkAttendanceCheckIn();
@@ -101,6 +110,13 @@ export default function EmployeeAttendancePage() {
       toast.error('Failed to load today\'s attendance');
     }
   }, [todayError, todayErrorData]);
+
+  useEffect(() => {
+    if (leaveError && leaveErrorData) {
+      console.error('Leave data error:', leaveErrorData);
+      toast.error('Failed to load leave data');
+    }
+  }, [leaveError, leaveErrorData]);
 
   const handleCheckIn = async () => {
     try {
@@ -168,9 +184,32 @@ export default function EmployeeAttendancePage() {
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       case 'half-day':
         return `${baseClasses} bg-orange-100 text-orange-800`;
+      case 'leave':
+        return `${baseClasses} bg-blue-100 text-blue-800`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
     }
+  };
+
+  const getLeaveStatusBadge = (record: CombinedRecord) => {
+    if (!record.isLeave) return null;
+    
+    const baseClasses = "inline-flex px-2 py-1 text-xs font-semibold rounded-full";
+    return (
+      <div className="flex flex-col gap-1">
+        <span className={`${baseClasses} bg-blue-100 text-blue-800`}>
+          Leave Approved
+        </span>
+        <span className="text-xs text-gray-600 capitalize">
+          {record.leaveType}
+        </span>
+        {record.isMultiDay && record.totalDays && record.totalDays > 1 && (
+          <span className="text-xs text-gray-500">
+            {record.totalDays} days
+          </span>
+        )}
+      </div>
+    );
   };
 
   const getTotalHoursClass = (hours: number) => {
@@ -202,15 +241,130 @@ export default function EmployeeAttendancePage() {
     totalHours: record.totalHours || 9
   }));
 
+  // Create combined records with leaves
+  interface CombinedRecord {
+    id: string;
+    date: string;
+    checkIn: string;
+    checkOut: string;
+    status: 'present' | 'absent' | 'late' | 'half-day' | 'leave';
+    totalHours: number;
+    isLeave: boolean;
+    leaveType?: string;
+    leaveReason?: string;
+    isMultiDay?: boolean;
+    startDate?: string;
+    endDate?: string;
+    totalDays?: number;
+  }
+
+  // Transform leave records to attendance-like format
+  const leaveRecordsForAttendance: CombinedRecord[] = leaveRecords
+    .filter(leave => leave.status === 'approved')
+    .map(leave => {
+      // Create a single consolidated entry for multi-day leaves
+      const startDate = new Date(leave.startDate);
+      const endDate = new Date(leave.endDate);
+      
+      // If it's a single day leave, use that date
+      // If it's multi-day, use the start date as the display date
+      const displayDate = startDate.toISOString().split('T')[0];
+      
+      // Create a single record for the entire leave period
+      return {
+        id: `leave_${leave.id}`,
+        date: displayDate,
+        checkIn: '--',
+        checkOut: '--',
+        status: 'leave' as any,
+        totalHours: 0,
+        isLeave: true,
+        leaveType: leave.type,
+        leaveReason: leave.reason,
+        // Add additional info for multi-day leaves
+        isMultiDay: startDate.getTime() !== endDate.getTime(),
+        startDate: leave.startDate,
+        endDate: leave.endDate,
+        totalDays: leave.totalDays
+      };
+    });
+
+  // Combine attendance and leave records with proper deduplication
+  const combinedRecords: CombinedRecord[] = [];
+  
+  // First, add all attendance records
+  transformedAttendanceRecords.forEach(record => {
+    combinedRecords.push({
+      ...record,
+      isLeave: false
+    });
+  });
+  
+  // Then, add all leave records (they will be sorted by date later)
+  leaveRecordsForAttendance.forEach(leaveRecord => {
+    combinedRecords.push(leaveRecord);
+  });
+
+  // Sort by date (most recent first)
+  combinedRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Debug logging to ensure no duplicates
+  console.log('🔍 Attendance Records:', transformedAttendanceRecords.length);
+  console.log('🔍 Leave Records (approved):', leaveRecords.filter(l => l.status === 'approved').length);
+  console.log('🔍 Leave Entries (consolidated):', leaveRecordsForAttendance.length);
+  console.log('🔍 Combined Records:', combinedRecords.length);
+  console.log('�� Processed Dates:', new Set(combinedRecords.map(r => r.date)).size);
+  
+  // Verify no duplicate dates in final result
+  const finalDates = combinedRecords.map(r => r.date);
+  const uniqueFinalDates = new Set(finalDates);
+  if (finalDates.length !== uniqueFinalDates.size) {
+    console.warn('⚠️ Duplicate dates detected in final result!');
+    console.warn('Final dates:', finalDates);
+    console.warn('Unique dates:', Array.from(uniqueFinalDates));
+  }
+
+  // Additional validation: Check for conflicting records
+  const validateDataIntegrity = () => {
+    const dateMap = new Map<string, CombinedRecord[]>();
+    
+    combinedRecords.forEach(record => {
+      if (!dateMap.has(record.date)) {
+        dateMap.set(record.date, []);
+      }
+      dateMap.get(record.date)!.push(record);
+    });
+    
+    // Check for dates with multiple records
+    dateMap.forEach((records, date) => {
+      if (records.length > 1) {
+        const hasAttendance = records.some(r => !r.isLeave);
+        const hasLeave = records.some(r => r.isLeave);
+        
+        if (hasAttendance && hasLeave) {
+          console.log(`ℹ️ Date ${date} has both attendance and leave records - this is normal`);
+        }
+        
+        if (records.length > 2) {
+          console.warn(`⚠️ Date ${date} has ${records.length} records!`);
+          console.warn('Records:', records);
+        }
+      }
+    });
+  };
+  
+  validateDataIntegrity();
+
   const halfDayCount = transformedAttendanceRecords.filter(r => r.status === 'half-day').length;
   const fullDayCount = transformedAttendanceRecords.filter(r => r.status === 'present' || r.status === 'late').length;
+  const leaveCount = leaveRecords.filter(leave => leave.status === 'approved').length;
 
   // Pagination calculations
-  const totalItems = transformedAttendanceRecords.length;
+  const totalItems = combinedRecords.length;
   const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedRecords = transformedAttendanceRecords.slice(startIndex, endIndex);
+  const paginatedRecords = combinedRecords.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -221,7 +375,7 @@ export default function EmployeeAttendancePage() {
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
-  const isLoading = attendanceLoading || todayLoading;
+  const isLoading = attendanceLoading || todayLoading || leaveLoading;
 
   if (isLoading) {
     return (
@@ -254,11 +408,12 @@ export default function EmployeeAttendancePage() {
             return (
           <TableHeader
           title="Attendance Records"
-          total={transformedAttendanceRecords.length}
+          total={combinedRecords.length}
           dropdown={
             <div className="flex items-center gap-4 text-sm">
               <span className="text-green-700">Full Day: <span className="font-medium">{fullDayCount}</span></span>
               <span className="text-orange-700">Half Day: <span className="font-medium">{halfDayCount}</span></span>
+              <span className="text-blue-700">Leave: <span className="font-medium">{leaveCount}</span></span>
             </div>
           }
           searchValue=""
@@ -286,7 +441,7 @@ export default function EmployeeAttendancePage() {
         <div className="">
 
           {/* Attendance Records Table */}
-          {transformedAttendanceRecords.length === 0 ? (
+          {combinedRecords.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
               <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-500">No attendance records found for this month.</p>
@@ -317,24 +472,43 @@ export default function EmployeeAttendancePage() {
                   {paginatedRecords.map((record) => (
                     <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {formatDateToDayMonYear(record.date)}
+                        {record.isLeave && record.isMultiDay && record.startDate && record.endDate ? (
+                          <div className="flex flex-col">
+                            <span>{formatDateToDayMonYear(record.startDate)}</span>
+                            <span className="text-xs text-gray-500">to {formatDateToDayMonYear(record.endDate)}</span>
+                          </div>
+                        ) : (
+                          formatDateToDayMonYear(record.date)
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {record.checkIn}
+                        {record.isLeave ? '--' : record.checkIn}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {record.checkOut}
+                        {record.isLeave ? '--' : record.checkOut}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          {/* {getStatusIcon(record.status)} */}
-                          <span className={getStatusBadge(record.status)}>
-                            {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                          </span>
+                          {record.isLeave ? (
+                            getLeaveStatusBadge(record)
+                          ) : (
+                            <span className={getStatusBadge(record.status)}>
+                              {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm ${getTotalHoursClass(record.totalHours)}`}>
-                        {formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })}
+                        {record.isLeave ? (
+                          <span className="text-blue-600 font-medium">
+                            {record.isMultiDay && record.totalDays && record.totalDays > 1 
+                              ? `${record.totalDays} Day${record.totalDays > 1 ? 's' : ''} Leave`
+                              : 'Leave Day'
+                            }
+                          </span>
+                        ) : (
+                          formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })
+                        )}
                       </td>
                     </tr>
                   ))}
