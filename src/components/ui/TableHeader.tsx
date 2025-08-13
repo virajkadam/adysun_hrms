@@ -111,7 +111,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   secondFilterOptions = [],
   showSecondFilter = false,
   secondFilterLabel = 'Filter',
-  headerClassName = 'px-6 pt-6 pb-6',
+  headerClassName = 'px-4 sm:px-6 pt-6 pb-6',
   showAttendanceMarking = false,
   attendanceData,
   onCheckIn,
@@ -171,7 +171,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   onClick={backButton.onClick}
                 >
                   <FiChevronLeft className="w-4 h-4" />
-                  {backButton.label || 'Back'}
+                  <span className="hidden sm:inline">{backButton.label || 'Back'}</span>
                 </Link>
               ) : (
                 <button
@@ -179,7 +179,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   className={getBackButtonClasses()}
                 >
                   <FiChevronLeft className="w-4 h-4" />
-                  {backButton.label || 'Back'}
+                  <span className="hidden sm:inline">{backButton.label || 'Back'}</span>
                 </button>
               )
             )}
@@ -187,7 +187,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
           {/* Center - Title */}
           {title && (
-            <div className="flex-1 flex justify-center">
+            <div className="flex-1 flex justify-center text-center">
               <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
             </div>
           )}
@@ -204,28 +204,27 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                     className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors duration-200"
                   >
                     <FiLogIn className="w-4 h-4" />
-                    {isMarkingAttendance ? 'Checking In...' : 'Check In'}
+                    <span className="hidden sm:inline">{isMarkingAttendance ? 'Checking In...' : 'Check In'}</span>
                   </button>
                 ) : (
                   <>
                     <div className="px-3 py-2 bg-green-100 text-green-800 rounded-md text-sm font-medium flex items-center gap-2">
                       <FiCheck className="w-4 h-4" />
-                      Checked In
+                      <span className="hidden sm:inline">Checked In</span>
                     </div>
-                    {!attendanceData.checkOutTime && (
+                    {!attendanceData.checkOutTime ? (
                       <button
                         onClick={onCheckOut}
                         disabled={isMarkingAttendance}
                         className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors duration-200"
                       >
                         <FiLogOut className="w-4 h-4" />
-                        {isMarkingAttendance ? 'Checking Out...' : 'Check Out'}
+                        <span className="hidden sm:inline">{isMarkingAttendance ? 'Checking Out...' : 'Check Out'}</span>
                       </button>
-                    )}
-                    {attendanceData.checkOutTime && (
+                    ) : (
                       <div className="px-3 py-2 bg-red-100 text-red-800 rounded-md text-sm font-medium flex items-center gap-2">
                         <FiCheck className="w-4 h-4" />
-                        Checked Out
+                        <span className="hidden sm:inline">Checked Out</span>
                       </div>
                     )}
                   </>
