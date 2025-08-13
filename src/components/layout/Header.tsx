@@ -66,8 +66,8 @@ const Header = () => {
   return (
     <header className="bg-white shadow-sm h-16 fixed top-0 right-0 left-0 lg:left-64 z-10">
       <div className="flex items-center justify-between h-full px-4">
-        {/* Mobile title - hidden on desktop */}
-        <h1 className="text-xl font-semibold text-gray-800 lg:hidden">
+        {/* Mobile title - centered on mobile, hidden on desktop */}
+        <h1 className="text-xl font-semibold text-gray-800 lg:hidden flex-1 text-center">
           {currentAdmin ? 'Admin Dashboard' : 'Employee Portal'}
         </h1>
         

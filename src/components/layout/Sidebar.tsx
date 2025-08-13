@@ -85,11 +85,11 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* Mobile menu button - moved to header area */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-md bg-gray-800 text-white"
+          className="p-2 rounded-md text-black hover:text-gray-700 transition-colors"
         >
           {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
