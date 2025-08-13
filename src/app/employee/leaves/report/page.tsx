@@ -372,7 +372,7 @@ export default function LeaveReportPage() {
           headerClassName="px-6 pt-6 mb-0"
         />
 
-        <div className="p-6">
+        <div className="p-6 pb-0">
           {/* Overall Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-blue-50 p-4 rounded-lg">
@@ -473,141 +473,137 @@ export default function LeaveReportPage() {
               <p className="text-gray-500">No monthly summary available. Start by requesting some leaves!</p>
             </div>
           )}
-
-          {/* Filters */}
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <div className="flex flex-wrap gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <FiFilter className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Filters:</span>
-              </div>
-              
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm"
-              >
-                <option value="all">All Months</option>
-                {monthlyData.map((month) => (
-                  <option key={`${month.month}-${month.year}`} value={month.month}>
-                    {month.month} {month.year}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="approved">Approved</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-              </select>
-
-              <select
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm"
-              >
-                <option value="all">All Types</option>
-                <option value="casual">Casual</option>
-                <option value="sick">Sick</option>
-                <option value="annual">Annual</option>
-                <option value="personal">Personal</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Detailed Leave Records Table */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Month
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Leave Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Start Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    End Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Days
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Reason
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedRecords.map((record) => (
-                  <tr key={record.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {record.month} {record.year}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={getLeaveTypeBadge(record.type)}>
-                        {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDateToDayMonYear(record.startDate)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="flex items-center gap-2">
-                        <span>{formatDateToDayMonYear(record.endDate)}</span>
-                        {record.wasEdited && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
-                            Edited
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {record.totalDays} day{record.totalDays > 1 ? 's' : ''}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={getStatusBadge(record.status)}>
-                        {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
-                      {record.reason}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredRecords.length === 0 && (
-            <div className="text-center py-8">
-              <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No leave records found for the selected filters.</p>
-            </div>
-          )}
-          
-          {/* Pagination */}
-          {totalItems > 0 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              totalItems={totalItems}
-              onPageChange={handlePageChange}
-              onPageSizeChange={handlePageSizeChange}
-            />
-          )}
         </div>
+
+{/* Filters */}
+<div className="bg-gray-50 p-4 rounded-lg">
+  <div className="flex flex-wrap gap-4 items-center justify-end">
+    
+    <select
+      value={selectedMonth}
+      onChange={(e) => setSelectedMonth(e.target.value)}
+      className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+    >
+      <option value="all">All Months</option>
+      {monthlyData.map((month) => (
+        <option key={`${month.month}-${month.year}`} value={month.month}>
+          {month.month} {month.year}
+        </option>
+      ))}
+    </select>
+
+    <select
+      value={selectedStatus}
+      onChange={(e) => setSelectedStatus(e.target.value)}
+      className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+    >
+      <option value="all">All Status</option>
+      <option value="approved">Approved</option>
+      <option value="pending">Pending</option>
+      <option value="rejected">Rejected</option>
+    </select>
+
+    <select
+      value={selectedType}
+      onChange={(e) => setSelectedType(e.target.value)}
+      className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+    >
+      <option value="all">All Types</option>
+      <option value="casual">Casual</option>
+      <option value="sick">Sick</option>
+      <option value="annual">Annual</option>
+      <option value="personal">Personal</option>
+    </select>
+  </div>
+</div>
+
+{/* Detailed Leave Records Table */}
+<div className="overflow-x-auto">
+  <table className="min-w-full divide-y divide-gray-200">
+    <thead className="bg-gray-50">
+      <tr>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Month
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Leave Type
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Start Date
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          End Date
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Days
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Status
+        </th>
+        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Reason
+        </th>
+      </tr>
+    </thead>
+    <tbody className="bg-white divide-y divide-gray-200">
+      {paginatedRecords.map((record) => (
+        <tr key={record.id} className="hover:bg-gray-50">
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {record.month} {record.year}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap">
+            <span className={getLeaveTypeBadge(record.type)}>
+              {record.type.charAt(0).toUpperCase() + record.type.slice(1)}
+            </span>
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {formatDateToDayMonYear(record.startDate)}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <div className="flex items-center gap-2">
+              <span>{formatDateToDayMonYear(record.endDate)}</span>
+              {record.wasEdited && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                  Edited
+                </span>
+              )}
+            </div>
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            {record.totalDays} day{record.totalDays > 1 ? 's' : ''}
+          </td>
+          <td className="px-6 py-4 whitespace-nowrap">
+            <span className={getStatusBadge(record.status)}>
+              {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+            </span>
+          </td>
+          <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate">
+            {record.reason}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+{filteredRecords.length === 0 && (
+  <div className="text-center py-8">
+    <FiCalendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+    <p className="text-gray-500">No leave records found for the selected filters.</p>
+  </div>
+)}
+
+{/* Pagination */}
+{totalItems > 0 && (
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    pageSize={pageSize}
+    totalItems={totalItems}
+    onPageChange={handlePageChange}
+    onPageSizeChange={handlePageSizeChange}
+  />
+)}
       </div>
     </EmployeeLayout>
   );
