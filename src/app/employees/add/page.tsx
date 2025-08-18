@@ -122,8 +122,8 @@ export default function AddEmployeePage() {
           }}
           actionButtons={[
             {
-              label: isSubmitting ? 'Saving...' : 'Add Employee',
-              icon: <FiPlus />,
+              label: isSubmitting ? 'Saving...' : 'Save',
+              icon: <FiSave />,
               variant: 'success',
               onClick: handleSubmit(onSubmit),
               disabled: isSubmitting
