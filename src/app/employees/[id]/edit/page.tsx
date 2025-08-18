@@ -145,7 +145,7 @@ export default function EditEmployeePage({ params }: PageParams) {
           onSearchChange={() => { }}
           headerClassName="px-6 py-6"
           backButton={{
-            href: `/employees/${id}`,
+            onClick: () => router.back(),
             label: 'Back'
           }}
           actionButtons={[
