@@ -247,7 +247,9 @@ export default function EnquiryListPage() {
               icon: <FiCopy className="w-4 h-4" />,
               variant: 'info' as const,
               onClick: () => {
-                navigator.clipboard.writeText('https://adysun-hrms.netlify.app/candidate/enquiry/');
+                const currentDomain = window.location.origin;
+                const enquiryLink = `${currentDomain}/candidate/enquiry/`;
+                navigator.clipboard.writeText(enquiryLink);
                 toast.success('Enquiry form link copied!');
               }
             }
