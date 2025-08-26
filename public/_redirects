@@ -1,4 +1,0 @@
-# Netlify redirects for Next.js
-/_next/static/*  /_next/static/:splat  200
-/_next/data/*    /_next/data/:splat    200
-/api/*           /api/:splat           200 
