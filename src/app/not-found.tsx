@@ -14,13 +14,13 @@ export default function WebsiteNotFound() {
             </p>
             <div className="space-x-4">
               <Link 
-                href="/website" 
+                href="/" 
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
               >
                 Back to Home
               </Link>
               <Link 
-                href="/website/contact-us" 
+                href="/contact-us" 
                 className="border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-colors"
               >
                 Contact Support
