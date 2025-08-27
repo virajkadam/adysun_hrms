@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import Footer from './Footer';
 
 interface WebsiteLayoutProps {
   children: React.ReactNode;
@@ -167,104 +168,7 @@ export default function WebsiteLayout({ children, title, description }: WebsiteL
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <img 
-                  src="/assets/adysunventures_logo.png" 
-                  alt="Adysun Ventures Logo" 
-                  className="w-8 h-8"
-                />
-                <div className="flex flex-col">
-                  <h3 className="text-lg font-semibold">ADYSUN VENTURES</h3>
-                  <p className="text-sm text-gray-400 -mt-1">Inspire. Imagine. Implement.</p>
-                </div>
-              </div>
-              <p className="text-gray-300 text-sm mb-4">
-                We deliver high-performance services to help your business embrace innovation and tackle the ever-changing challenges of today's digital world.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  📘
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  🐦
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  💼
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  📷
-                </a>
-              </div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/about-us" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    → About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact-us" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    → Contact
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/services" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    → Services
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/technologies" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    → Technologies
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/careers" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    → Careers
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Industries */}
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Industries</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/industries/stock-exchange" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    Stock Exchange
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/industries/ecommerce" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    E-Commerce
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/industries/transportation" className="text-gray-300 hover:text-white transition-colors text-sm">
-                    Transportation
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400 text-sm">
-              © Copyright 2025 ADYSUN VENTURES PVT. LTD. All Rights Reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
