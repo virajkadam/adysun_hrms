@@ -1,4 +1,5 @@
 import React from 'react';
+import CountUp from '@/components/website/content/CountUp';
 
 type CounterItem = {
   icon: React.ReactNode;
@@ -46,7 +47,22 @@ export default function CounterSection({
                 {/* Icons should inherit current color; ensure they are sized */}
                 <span className="[&_*]:w-5 [&_*]:h-5">{item.icon}</span>
               </span>
-              <h3 className="text-3xl font-bold text-white">{item.value}</h3>
+              <h3 className="text-3xl font-bold text-white">
+                {typeof item.value === 'string' ? (
+                  (() => {
+                    const match = (item.value as string).match(/^(\d+(?:\.\d+)?)(.*)$/);
+                    const end = match ? parseFloat(match[1]) : Number(item.value);
+                    const suffix = match && match[2] ? match[2] : '';
+                    return (
+                      <>
+                        <CountUp to={end} duration={2} />{suffix}
+                      </>
+                    );
+                  })()
+                ) : (
+                  <CountUp to={Number(item.value)} duration={2} />
+                )}
+              </h3>
               <div className="h-0.5 w-16 bg-white/40 my-3 mx-auto" />
               <p className="text-sm font-medium text-white/90">{item.label}</p>
             </div>
