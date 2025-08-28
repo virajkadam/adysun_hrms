@@ -101,15 +101,15 @@ export default function WebsiteHomePage() {
                   ensuring optimal ROI and competitive advantage.
                 </p>
                 <ul className="space-y-2">
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     IT Strategic Planning
                   </li>
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     Digital Transformation Roadmaps
                   </li>
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     Technology Investment Advisory
                   </li>
@@ -122,15 +122,15 @@ export default function WebsiteHomePage() {
                   We provide comprehensive technical solutions that drive business innovation and efficiency.
                 </p>
                 <ul className="space-y-2">
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     Custom Software Development
                   </li>
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     Cloud Migration & Management
                   </li>
-                  <li className="flex items-center">
+                  <li className="flex items-center text-gray-800">
                     <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
                     Cybersecurity Services
                   </li>

@@ -43,7 +43,7 @@ export default function AboutUsPage() {
                 />
               </div>
               <div className="bg-gray-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold mb-3">Who We Are</h4>
+                <h4 className="text-xl text-gray-800 font-semibold mb-3">Who We Are</h4>
                 <p className="text-gray-600">
                   We help you to grow up your best business and solution for
                   your impressive projects.
@@ -60,7 +60,7 @@ export default function AboutUsPage() {
                 />
               </div>
               <div className="bg-gray-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold mb-3">What We Do</h4>
+                <h4 className="text-xl text-gray-800 font-semibold mb-3">What We Do</h4>
                 <p className="text-gray-600">
                   We help you to grow up your best business and solution for
                   your impressive projects.
@@ -77,7 +77,7 @@ export default function AboutUsPage() {
                 />
               </div>
               <div className="bg-gray-50 p-6 rounded-lg">
-                <h4 className="text-xl font-semibold mb-3">Our Success</h4>
+                <h4 className="text-xl text-gray-800 font-semibold mb-3">Our Success</h4>
                 <p className="text-gray-600">
                   We help you to grow up your best business and solution for
                   your impressive projects.

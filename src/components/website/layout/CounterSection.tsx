@@ -64,7 +64,7 @@ export default function CounterSection({
                 )}
               </h3>
               <div className="h-0.5 w-16 bg-white/40 my-3 mx-auto" />
-              <p className="text-sm font-medium text-white/90">{item.label}</p>
+              <p className="text-sm text-gray-800 font-medium text-white/90">{item.label}</p>
             </div>
           ))}
         </div>
