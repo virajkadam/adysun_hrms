@@ -8,7 +8,7 @@ import CTASection from '@/components/website/layout/CTASection';
 import ContactCard from '@/components/website/content/ContactCard';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
-import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck } from 'lucide-react';
+import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck, CheckCircle2 } from 'lucide-react';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
@@ -78,61 +78,66 @@ export default function WebsiteHomePage() {
           />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left intro copy */}
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-gray-900">Premier IT Solutions Provider in India</h3>
               <p className="text-gray-600">
-                Adysun Ventures stands as a premier IT solutions provider, delivering cutting-edge technology 
-                solutions across software development, cloud computing, cybersecurity, data analytics, and 
-                digital transformation. Our strategic partnerships with leading technology providers ensure 
-                access to the latest innovations and best practices.
+                Adysun Ventures delivers cutting‑edge software, cloud, cybersecurity, analytics and digital
+                transformation services. Our partnerships with leading technology vendors ensure access to the
+                latest innovations and proven practices.
               </p>
               <p className="text-gray-600">
-                With a decade of experience, we have successfully delivered projects across various industries, 
-                helping businesses optimize their technology investments and achieve sustainable growth through 
-                innovative IT solutions.
+                With a decade of experience across industries, we help organizations optimize technology
+                investments and achieve sustainable growth.
               </p>
             </div>
             
+            {/* Right feature cards */}
             <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Business Strategy Consulting</h3>
+              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900">Business Strategy Consulting</h3>
+                  <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">Advisory</span>
+                </div>
                 <p className="text-gray-600 mb-4">
-                  Our consulting services help businesses align technology with strategic objectives, 
-                  ensuring optimal ROI and competitive advantage.
+                  Align technology with strategic objectives to maximize ROI and competitive advantage.
                 </p>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    IT Strategic Planning
+                <ul className="space-y-3">
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>IT Strategic Planning</span>
                   </li>
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Digital Transformation Roadmaps
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>Digital Transformation Roadmaps</span>
                   </li>
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Technology Investment Advisory
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>Technology Investment Advisory</span>
                   </li>
                 </ul>
               </div>
               
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Advanced IT Solutions</h3>
+              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900">Advanced IT Solutions</h3>
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">Delivery</span>
+                </div>
                 <p className="text-gray-600 mb-4">
-                  We provide comprehensive technical solutions that drive business innovation and efficiency.
+                  Comprehensive technical solutions engineered for performance, resilience, and scale.
                 </p>
-                <ul className="space-y-2">
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Custom Software Development
+                <ul className="space-y-3">
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>Custom Software Development</span>
                   </li>
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Cloud Migration & Management
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>Cloud Migration &amp; Management</span>
                   </li>
-                  <li className="flex items-center text-gray-800">
-                    <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
-                    Cybersecurity Services
+                  <li className="flex items-start text-gray-800">
+                    <CheckCircle2 className="mr-3 h-5 w-5 text-orange-600" />
+                    <span>Cybersecurity Services</span>
                   </li>
                 </ul>
               </div>
