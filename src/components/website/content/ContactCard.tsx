@@ -3,7 +3,7 @@ import Button from '../ui/Button';
 
 interface ContactCardProps {
   title: string;
-  icon: string;
+  icon: React.ReactNode;
   content: React.ReactNode;
   actions?: Array<{
     text: string;
@@ -24,7 +24,7 @@ export default function ContactCard({
     <div className={`bg-white rounded-lg p-6 shadow-sm border ${className}`}>
       <div className="flex items-center mb-4">
         <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
-          <span className="text-xl">{icon}</span>
+          <span className="text-xl text-orange-600">{icon}</span>
         </div>
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       </div>

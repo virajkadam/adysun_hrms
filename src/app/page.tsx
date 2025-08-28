@@ -11,6 +11,7 @@ import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
 import InteractiveProcessSteps from '@/components/website/layout/InteractiveProcessSteps';
+import ContactSection from '@/components/website/layout/ContactSection';
 
 export default function WebsiteHomePage() {
   return (
@@ -176,7 +177,7 @@ export default function WebsiteHomePage() {
           </div>
           
           <InteractiveProcessSteps
-            steps={[
+                steps={[
               {
                 number: "01",
                 title: "Planning",
@@ -356,71 +357,7 @@ export default function WebsiteHomePage() {
       />
 
       {/* Contact Section */}
-      <section className="mb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            title="REACH OUT TO ADYSUN VENTURES"
-            alignment="center"
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ContactCard
-              title="Pune Office (Head Office)"
-              icon="📍"
-              content={
-                <div>
-                  <p>Adysun Ventures Pvt. Ltd.</p>
-                  <p>Pune, Maharashtra, India</p>
-                </div>
-              }
-              actions={[
-                { text: "Google Maps", href: "#", variant: "primary" },
-                { text: "Google Search", href: "#", variant: "primary" }
-              ]}
-            />
-            
-            <ContactCard
-              title="Thane Office (Mumbai Division)"
-              icon="📍"
-              content={
-                <div>
-                  <p>Adysun Ventures Pvt. Ltd.</p>
-                  <p>Thane, Mumbai, Maharashtra, India</p>
-                </div>
-              }
-              actions={[
-                { text: "Google Maps", href: "#", variant: "primary" },
-                { text: "Google Search", href: "#", variant: "primary" }
-              ]}
-            />
-            
-            <ContactCard
-              title="Email Contacts"
-              icon="✉️"
-              content={
-                <div>
-                  <p><strong>General Inquiries:</strong></p>
-                  <p>info@adysunventures.com</p>
-                  <p><strong>HR & Recruitment:</strong></p>
-                  <p>hr@adysunventures.com</p>
-                </div>
-              }
-            />
-            
-            <ContactCard
-              title="Phone"
-              icon="📞"
-              content={
-                <div>
-                  <p className="text-lg font-semibold">+91 9511557023</p>
-                  <p>Mon-Sat: 10:00 AM - 6:00 PM</p>
-                  <p>Closed on Sundays & National Holidays</p>
-                </div>
-              }
-            />
-          </div>
-        </div>
-      </section>
+      <ContactSection />
 
       {/* Statistics Section */}
       <section className="bg-gray-800 text-white py-16 mb-16">
