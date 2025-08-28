@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
+import { BarChart3, Building, Truck, Factory, ShoppingCart, Shield, Lock } from 'lucide-react';
 
 export default function ClientsPage() {
   const clientCategories = [
@@ -127,7 +128,9 @@ export default function ClientsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">🚚</span>
+                <span className="text-2xl">
+                  <Truck className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Logistics Optimization</h3>
               <p className="text-gray-600">
@@ -138,7 +141,9 @@ export default function ClientsPage() {
             
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">🏗️</span>
+                <span className="text-2xl">
+                  <Building className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Construction Management</h3>
               <p className="text-gray-600">
@@ -149,7 +154,9 @@ export default function ClientsPage() {
             
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">🏭</span>
+                <span className="text-2xl">
+                  <Factory className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Manufacturing Efficiency</h3>
               <p className="text-gray-600">
@@ -160,7 +167,9 @@ export default function ClientsPage() {
             
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">🛒</span>
+                <span className="text-2xl">
+                  <ShoppingCart className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">E-Commerce Growth</h3>
               <p className="text-gray-600">
@@ -171,7 +180,9 @@ export default function ClientsPage() {
             
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">📊</span>
+                <span className="text-2xl">
+                  <BarChart3 className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Data Analytics</h3>
               <p className="text-gray-600">
@@ -182,7 +193,9 @@ export default function ClientsPage() {
             
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">🔒</span>
+                <span className="text-2xl">
+                  <Lock className="w-6 h-6" />
+                </span>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Security & Compliance</h3>
               <p className="text-gray-600">
@@ -206,7 +219,9 @@ export default function ClientsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-12">
             <div className="text-center group">
               <div className="bg-orange-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <span className="text-3xl">🚚</span>
+                <span className="text-3xl">
+                  <Truck className="w-8 h-8" />
+                </span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Transportation & Logistics</h3>
               <p className="text-sm text-gray-600">
@@ -216,7 +231,9 @@ export default function ClientsPage() {
             
             <div className="text-center group">
               <div className="bg-orange-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <span className="text-3xl">🏗️</span>
+                <span className="text-3xl">
+                  <Building className="w-8 h-8" />
+                </span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Construction</h3>
               <p className="text-sm text-gray-600">
@@ -226,7 +243,9 @@ export default function ClientsPage() {
             
             <div className="text-center group">
               <div className="bg-orange-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <span className="text-3xl">🏭</span>
+                <span className="text-3xl">
+                  <Factory className="w-8 h-8" />
+                </span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Manufacturing</h3>
               <p className="text-sm text-gray-600">
@@ -236,7 +255,9 @@ export default function ClientsPage() {
             
             <div className="text-center group">
               <div className="bg-orange-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <span className="text-3xl">🛒</span>
+                <span className="text-3xl">
+                  <ShoppingCart className="w-8 h-8" />
+                </span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">E-Commerce</h3>
               <p className="text-sm text-gray-600">

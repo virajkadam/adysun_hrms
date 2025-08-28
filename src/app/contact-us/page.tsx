@@ -2,6 +2,7 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import ContactCard from '@/components/website/content/ContactCard';
+import { Briefcase, Mail, Clock, Globe, Check } from 'lucide-react';
 
 export default function ContactUsPage() {
   return (
@@ -67,7 +68,7 @@ export default function ContactUsPage() {
             
             <ContactCard
               title="Email Contacts"
-              icon="✉️"
+              icon={<Mail className="w-8 h-8" />}
               content={
                 <div>
                   <p className="font-semibold mb-2">General Inquiries:</p>
@@ -240,7 +241,9 @@ export default function ContactUsPage() {
               <div className="space-y-4">
                 <div className="flex items-start space-x-4">
                   <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-xs">⏰</span>
+                    <span className="text-white text-xs">
+                      <Clock className="w-3 h-3" />
+                    </span>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900">Business Hours</h4>
@@ -251,7 +254,9 @@ export default function ContactUsPage() {
                 
                 <div className="flex items-start space-x-4">
                   <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-xs">🌍</span>
+                    <span className="text-white text-xs">
+                      <Globe className="w-3 h-3" />
+                    </span>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900">Response Time</h4>
@@ -262,7 +267,9 @@ export default function ContactUsPage() {
                 
                 <div className="flex items-start space-x-4">
                   <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-xs">💼</span>
+                    <span className="text-white text-xs">
+                      <Briefcase className="w-3 h-3" />
+                    </span>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900">Consultation</h4>
@@ -278,31 +285,41 @@ export default function ContactUsPage() {
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-600 text-xs">✓</span>
+                    <span className="text-orange-600 text-xs">
+                      <Check className="w-3 h-3" />
+                    </span>
                   </div>
                   <span className="text-gray-700">Expert team with 10+ years of experience</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-600 text-xs">✓</span>
+                    <span className="text-orange-600 text-xs">
+                      <Check className="w-3 h-3" />
+                    </span>
                   </div>
                   <span className="text-gray-700">Comprehensive IT solutions and consulting</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-600 text-xs">✓</span>
+                    <span className="text-orange-600 text-xs">
+                      <Check className="w-3 h-3" />
+                    </span>
                   </div>
                   <span className="text-gray-700">Industry-specific expertise and solutions</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-600 text-xs">✓</span>
+                    <span className="text-orange-600 text-xs">
+                      <Check className="w-3 h-3" />
+                    </span>
                   </div>
                   <span className="text-gray-700">Ongoing support and maintenance</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-600 text-xs">✓</span>
+                    <span className="text-orange-600 text-xs">
+                      <Check className="w-3 h-3" />
+                    </span>
                   </div>
                   <span className="text-gray-700">Competitive pricing and transparent communication</span>
                 </div>

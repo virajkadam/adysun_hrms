@@ -1,11 +1,12 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import { RefreshCw, Brain, Building, MessageSquare, Mail } from 'lucide-react';
 
 export default function CareersPage() {
   // Company values and culture
   const companyValues = [
     {
-      icon: "⚓",
+              icon: <RefreshCw className="w-8 h-8" />,
       title: "Innovation",
       description: "We encourage and empower our people to think outside the box and drive innovation in the tech industry."
     },
@@ -20,7 +21,7 @@ export default function CareersPage() {
       description: "We create inclusive environments where everyone has equal opportunities to contribute and grow."
     },
     {
-      icon: "💬",
+      icon: <MessageSquare className="w-8 h-8" />,
       title: "Candor",
       description: "We promote open, honest communication and constructive feedback to drive continuous improvement."
     }
@@ -34,7 +35,7 @@ export default function CareersPage() {
       description: "Our culture values self-directed individuals who can take ownership of their work and be proactive in driving themselves forward, advancing our mission."
     },
     {
-      icon: "🧠",
+              icon: <Brain className="w-8 h-8" />,
       title: "Adaptable Mindset",
       description: "Change is Inevitable. We seek those who can readily adjust to changes, embrace new opportunities, and thrive in uncertain situations."
     },
@@ -231,7 +232,9 @@ export default function CareersPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Office Location */}
             <div className="bg-gray-50 rounded-lg p-8 text-center">
-              <div className="text-4xl text-orange-500 mb-4">🏢</div>
+                             <div className="text-4xl text-orange-500 mb-4">
+                 <Building className="w-10 h-10" />
+               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Office Location</h3>
               <p className="text-gray-600 mb-4">
                 Adysun Ventures<br />
@@ -249,7 +252,9 @@ export default function CareersPage() {
 
             {/* Email Contacts */}
             <div className="bg-gray-50 rounded-lg p-8 text-center">
-              <div className="text-4xl text-orange-500 mb-4">📧</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Mail className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Email Contacts</h3>
               <div className="space-y-2">
                 <p className="text-gray-600">

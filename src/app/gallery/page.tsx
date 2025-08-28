@@ -1,19 +1,22 @@
+'use client'
+
 import React, { useState } from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
+import { Image, Camera, Building, Users, Home, Stethoscope, FileText } from 'lucide-react';
 
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState('all');
 
   const galleryCategories = [
-    { id: 'all', name: 'All Images', icon: '🖼️' },
-    { id: 'gallery', name: 'Gallery', icon: '📸' },
-    { id: 'projects', name: 'Projects', icon: '🏗️' },
-    { id: 'team', name: 'Team', icon: '👥' },
-    { id: 'construction', name: 'Construction', icon: '🏢' },
-    { id: 'interior', name: 'Interior', icon: '🏠' },
-    { id: 'medical', name: 'Medical', icon: '🏥' },
-    { id: 'blog', name: 'Blog', icon: '📝' }
+    { id: 'all', name: 'All Images', icon: <Image className="w-6 h-6" /> },
+    { id: 'gallery', name: 'Gallery', icon: <Camera className="w-6 h-6" /> },
+    { id: 'projects', name: 'Projects', icon: <Building className="w-6 h-6" /> },
+    { id: 'team', name: 'Team', icon: <Users className="w-6 h-6" /> },
+    { id: 'construction', name: 'Construction', icon: <Building className="w-6 h-6" /> },
+    { id: 'interior', name: 'Interior', icon: <Home className="w-6 h-6" /> },
+    { id: 'medical', name: 'Medical', icon: <Stethoscope className="w-6 h-6" /> },
+    { id: 'blog', name: 'Blog', icon: <FileText className="w-6 h-6" /> }
   ];
 
   const galleryImages = [
@@ -149,7 +152,9 @@ export default function GalleryPage() {
           
           {filteredImages.length === 0 && (
             <div className="text-center py-16">
-              <div className="text-6xl mb-4">🖼️</div>
+              <div className="text-6xl mb-4">
+                <Image className="w-16 h-16" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No images found</h3>
               <p className="text-gray-600">Try selecting a different category or check back later for new content.</p>
             </div>

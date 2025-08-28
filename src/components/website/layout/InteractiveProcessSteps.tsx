@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Rocket, Brain, BarChart3, Smartphone, Target, TrendingUp, Zap, RefreshCw, Briefcase } from 'lucide-react';
 
 interface ProcessStep {
   number: string;
@@ -10,7 +11,7 @@ interface ProcessStep {
     mainTitle: string;
     mainDescription: string;
     features: Array<{
-      icon: string;
+      icon: React.ReactNode;
       title: string;
       description: string;
     }>;
@@ -138,8 +139,10 @@ export default function InteractiveProcessSteps({ steps, className = '' }: Inter
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps[activeStep].content.features.map((feature, index) => (
             <div key={index} className="text-center bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">{feature.icon}</span>
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="text-orange-600">
+                  {feature.icon}
+                </div>
               </div>
               <h4 className="text-lg font-semibold mb-2 text-gray-900">{feature.title}</h4>
               <p className="text-gray-600 text-sm leading-relaxed">

@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Link from 'next/link';
+import { TrendingUp, Target, Zap } from 'lucide-react';
 
 export default function ECommercePage() {
   // E-commerce solutions
@@ -166,7 +167,9 @@ export default function ECommercePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">📈</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <TrendingUp className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Increased Sales</h3>
               <p className="text-gray-300">
                 Optimized user experience and conversion funnels that drive higher sales and revenue growth.
@@ -174,7 +177,9 @@ export default function ECommercePage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">🎯</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Target className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Better Customer Experience</h3>
               <p className="text-gray-300">
                 Seamless shopping experiences that increase customer satisfaction and loyalty.
@@ -182,7 +187,9 @@ export default function ECommercePage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">⚡</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Zap className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Operational Efficiency</h3>
               <p className="text-gray-300">
                 Streamlined processes and automated systems that reduce costs and improve productivity.

@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Link from 'next/link';
+import { Zap, BarChart3, TrendingUp, Building, DollarSign, Shield, Globe, Lock } from 'lucide-react';
 
 export default function StockExchangePage() {
   // Financial solutions
@@ -166,7 +167,9 @@ export default function StockExchangePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">⚡</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Zap className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">High Performance</h3>
               <p className="text-gray-300">
                 Ultra-low latency trading systems that execute trades in microseconds for maximum efficiency.
@@ -174,7 +177,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">🛡️</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Shield className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Risk Management</h3>
               <p className="text-gray-300">
                 Comprehensive risk management systems that protect investments and ensure regulatory compliance.
@@ -182,7 +187,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">📊</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <BarChart3 className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Market Intelligence</h3>
               <p className="text-gray-300">
                 Advanced analytics and real-time market data for informed trading decisions and strategy development.
@@ -206,7 +213,9 @@ export default function StockExchangePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🏦</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Building className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Investment Banks</h3>
               <p className="text-gray-600">
                 High-frequency trading platforms and risk management systems for investment banking operations.
@@ -214,7 +223,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">📈</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <TrendingUp className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Trading Firms</h3>
               <p className="text-gray-600">
                 Custom trading platforms with advanced analytics and automated trading strategies.
@@ -222,7 +233,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🏛️</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Building className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Stock Exchanges</h3>
               <p className="text-gray-600">
                 Exchange technology infrastructure and market data distribution systems.
@@ -230,7 +243,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">💰</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <DollarSign className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Asset Management</h3>
               <p className="text-gray-600">
                 Portfolio management systems with risk assessment and performance analytics.
@@ -238,7 +253,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🔒</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Lock className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Regulatory Compliance</h3>
               <p className="text-gray-600">
                 Automated compliance monitoring and reporting for regulatory requirements.
@@ -246,7 +263,9 @@ export default function StockExchangePage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🌐</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Globe className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Fintech Startups</h3>
               <p className="text-gray-600">
                 Scalable financial technology platforms for innovative fintech solutions.

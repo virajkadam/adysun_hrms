@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Link from 'next/link';
+import { Zap, Target, Ship, Plane, DollarSign, Package, Factory, ShoppingCart, Truck } from 'lucide-react';
 
 export default function TransportationPage() {
   // Transportation solutions
@@ -166,7 +167,9 @@ export default function TransportationPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">💰</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <DollarSign className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Cost Reduction</h3>
               <p className="text-gray-300">
                 Optimize routes, reduce fuel consumption, and minimize operational costs with intelligent automation.
@@ -174,7 +177,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">⚡</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Zap className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Operational Efficiency</h3>
               <p className="text-gray-300">
                 Streamline processes and improve productivity with real-time monitoring and automated systems.
@@ -182,7 +187,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">🎯</div>
+              <div className="text-5xl text-orange-400 mb-4">
+                <Target className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Customer Satisfaction</h3>
               <p className="text-gray-300">
                 Enhance delivery accuracy and provide real-time updates to improve customer experience.
@@ -206,7 +213,9 @@ export default function TransportationPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🚛</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Truck className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Trucking & Freight</h3>
               <p className="text-gray-600">
                 Optimize routes, track shipments, and manage fleet operations for long-haul and local delivery services.
@@ -214,7 +223,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">📦</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Package className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Last-Mile Delivery</h3>
               <p className="text-gray-600">
                 Streamline final delivery operations with route optimization and real-time customer updates.
@@ -222,7 +233,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🏭</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Factory className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Manufacturing Logistics</h3>
               <p className="text-gray-600">
                 Integrate transportation with manufacturing processes for seamless supply chain management.
@@ -230,7 +243,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🛒</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <ShoppingCart className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">E-commerce Fulfillment</h3>
               <p className="text-gray-600">
                 Optimize order fulfillment and delivery for online retail businesses with intelligent logistics.
@@ -238,7 +253,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">🚢</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Ship className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Maritime & Ports</h3>
               <p className="text-gray-600">
                 Manage port operations, container tracking, and maritime logistics with advanced technology.
@@ -246,7 +263,9 @@ export default function TransportationPage() {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-8 hover:shadow-lg transition-shadow">
-              <div className="text-4xl text-orange-500 mb-4">✈️</div>
+              <div className="text-4xl text-orange-500 mb-4">
+                <Plane className="w-10 h-10" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Air Cargo & Aviation</h3>
               <p className="text-gray-600">
                 Optimize air freight operations and manage cargo tracking for aviation logistics companies.

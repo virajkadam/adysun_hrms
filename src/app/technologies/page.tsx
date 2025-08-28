@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import { Rocket, Users, Wrench } from 'lucide-react';
 
 export default function TechnologiesPage() {
   // Technology categories and their items
@@ -145,7 +146,9 @@ export default function TechnologiesPage() {
                             alt={tech.name}
                             className="w-8 h-8 object-contain"
                           />
-                          <span className="hidden text-2xl text-gray-400">🔧</span>
+                          <span className="hidden text-2xl text-gray-400">
+                            <Wrench className="w-6 h-6" />
+                          </span>
                         </div>
                         <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
                           {tech.name}
@@ -174,7 +177,9 @@ export default function TechnologiesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center p-6 border border-gray-600 rounded-lg">
-              <div className="text-6xl text-orange-500 mb-4">🚀</div>
+              <div className="text-6xl text-orange-500 mb-4">
+                <Rocket className="w-16 h-16" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Fast Development</h3>
               <p className="text-gray-300">
                 We build fast and deliver quality solutions within your timeline, ensuring your project stays on track.
@@ -182,7 +187,9 @@ export default function TechnologiesPage() {
             </div>
 
             <div className="text-center p-6 border border-gray-600 rounded-lg">
-              <div className="text-6xl text-orange-500 mb-4">✅</div>
+              <div className="text-6xl text-orange-500 mb-4">
+                <Users className="w-16 h-16" />
+              </div>
               <h3 className="text-xl font-semibold mb-4">Implemented 4200+ Projects</h3>
               <p className="text-gray-300">
                 We have successfully completed hundreds of projects and are ready to explore new ventures.
@@ -190,7 +197,9 @@ export default function TechnologiesPage() {
             </div>
 
             <div className="text-center p-6 border border-gray-600 rounded-lg">
-              <div className="text-6xl text-orange-500 mb-4">👥</div>
+                             <div className="text-6xl text-orange-500 mb-4">
+                 <Users className="w-16 h-16" />
+               </div>
               <h3 className="text-xl font-semibold mb-4">Free Project Management</h3>
               <p className="text-gray-300">
                 We not only build fast but also free you from management issues. You get a PM from our side.

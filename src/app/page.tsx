@@ -8,7 +8,7 @@ import CTASection from '@/components/website/layout/CTASection';
 import ContactCard from '@/components/website/content/ContactCard';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
-import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck, CheckCircle2 } from 'lucide-react';
+import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck, CheckCircle2, Cog, Handshake, Brain, Smartphone, Target, TrendingUp, Zap, RefreshCw, Briefcase } from 'lucide-react';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
@@ -156,17 +156,17 @@ export default function WebsiteHomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <FeatureCard
-              icon="⚙️"
+              icon={<Cog />}
               title="Innovative Approach"
               description="We leverage cutting-edge technologies and methodologies to deliver innovative solutions."
             />
             <FeatureCard
-              icon="👥"
+              icon={<Users />}
               title="Expert Team"
               description="Our experienced team brings deep domain knowledge and technical expertise."
             />
             <FeatureCard
-              icon="🤝"
+              icon={<Handshake />}
               title="Client Partnership"
               description="We build long-term partnerships, understanding your business needs and goals."
             />
@@ -195,17 +195,17 @@ export default function WebsiteHomePage() {
                   mainDescription: "We help businesses develop comprehensive IT strategies that align with their long-term objectives, ensuring technology investments drive measurable business outcomes.",
                   features: [
                     {
-                      icon: "🚀",
+                      icon: <Rocket className="w-8 h-8" />,
                       title: "Digital Transformation",
                       description: "Modernize your business processes with cutting-edge digital solutions."
                     },
                     {
-                      icon: "🧠",
+                      icon: <Brain className="w-8 h-8" />,
                       title: "AI Integration",
                       description: "Leverage artificial intelligence to automate and optimize operations."
                     },
                     {
-                      icon: "📊",
+                      icon: <BarChart3 className="w-8 h-8" />,
                       title: "Data Analytics",
                       description: "Transform data into actionable insights for better decision-making."
                     }
@@ -221,17 +221,17 @@ export default function WebsiteHomePage() {
                   mainDescription: "We develop comprehensive digital marketing strategies that help businesses reach their target audience and achieve sustainable growth through data-driven approaches.",
                   features: [
                     {
-                      icon: "📱",
+                      icon: <Smartphone className="w-8 h-8" />,
                       title: "Digital Presence",
                       description: "Build a strong online presence across all digital channels."
                     },
                     {
-                      icon: "🎯",
+                      icon: <Target className="w-8 h-8" />,
                       title: "Target Marketing",
                       description: "Reach your ideal customers with precision-targeted campaigns."
                     },
                     {
-                      icon: "📈",
+                      icon: <TrendingUp className="w-8 h-8" />,
                       title: "Growth Analytics",
                       description: "Track performance and optimize for continuous improvement."
                     }
@@ -247,17 +247,17 @@ export default function WebsiteHomePage() {
                   mainDescription: "We help businesses scale their operations efficiently while maintaining quality and optimizing processes for maximum productivity and profitability.",
                   features: [
                     {
-                      icon: "⚡",
+                      icon: <Zap className="w-8 h-8" />,
                       title: "Process Optimization",
                       description: "Streamline operations for maximum efficiency and productivity."
                     },
                     {
-                      icon: "🔄",
+                      icon: <RefreshCw className="w-8 h-8" />,
                       title: "Scalable Solutions",
                       description: "Build infrastructure that grows with your business needs."
                     },
                     {
-                      icon: "💼",
+                      icon: <Briefcase className="w-8 h-8" />,
                       title: "Performance Management",
                       description: "Monitor and improve key performance indicators."
                     }

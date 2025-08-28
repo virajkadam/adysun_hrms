@@ -2,91 +2,93 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import FeatureCard from '@/components/website/FeatureCard';
+import { Smartphone, Target, Settings, Handshake, Crown, Code, Puzzle, Users, DollarSign, Palette, Globe, Apple, Smartphone as Mobile, Circle, FileText, Monitor, Coffee, MessageSquare, ClipboardList, ShoppingCart, Monitor as MonitorIcon } from 'lucide-react';
+import { SiGit, SiGoogle, SiLinux, SiGitlab, SiDocker, SiKubernetes, SiReact, SiAngular, SiNodedotjs, SiPython, SiOracle, SiJavascript, SiBootstrap, SiHtml5, SiAndroid, SiApple, SiSlack, SiJira } from 'react-icons/si';
 
 export default function ServicesPage() {
   const serviceItems = [
     {
       image: "/assets/images/content/web_application_development.jpg",
-      icon: "💻",
+      icon: <Code className="w-8 h-8" />,
       title: "Web Application Development",
       description: "Our web application development services deliver robust, scalable solutions tailored to your business needs."
     },
     {
       image: "/assets/images/content/dynamic_website_development.jpg",
-      icon: "🌐",
+      icon: <Globe className="w-8 h-8" />,
       title: "Dynamic Website Development",
       description: "Our dynamic website development services create interactive online experiences tailored to your audience."
     },
     {
       image: "/assets/images/content/services/service3b.jpg",
-      icon: "🛒",
+      icon: <ShoppingCart className="w-8 h-8" />,
       title: "E-Comm Solutions",
       description: "Our e-commerce solutions are designed to empower your business with seamless, secure, and scalable online platforms."
     },
     {
       image: "/assets/images/content/services/service3b.jpg",
-      icon: "📱",
+      icon: <MonitorIcon className="w-8 h-8" />,
       title: "Digital Marketing Services",
       description: "At Adysun Ventures, our digital marketing services are meticulously crafted to enhance your brand's online presence."
     }
   ];
 
   const technologyStack = [
-    { name: "PHP", icon: "🐘", category: "Backend" },
-    { name: "Node.js", icon: "🟢", category: "Backend" },
-    { name: "WordPress", icon: "📝", category: "CMS" },
-    { name: "Bootstrap", icon: "🎨", category: "Frontend" },
-    { name: "HTML5", icon: "🌐", category: "Frontend" },
-    { name: "Angular", icon: "🅰️", category: "Frontend" },
-    { name: "Apple", icon: "🍎", category: "Mobile" },
-    { name: "Android", icon: "🤖", category: "Mobile" },
-    { name: "Windows", icon: "🪟", category: "Platform" },
-    { name: "Java", icon: "☕", category: "Backend" },
-    { name: "Slack", icon: "💬", category: "Tools" },
-    { name: "Jira", icon: "📋", category: "Tools" },
-    { name: "Git", icon: "📚", category: "Version Control" },
-    { name: "Google", icon: "🔍", category: "Services" },
-    { name: "Yahoo", icon: "📧", category: "Services" }
+    { name: "PHP", icon: <Code className="w-6 h-6" />, category: "Backend" },
+               { name: "Node.js", icon: <SiNodedotjs className="w-6 h-6" />, category: "Backend" },
+      { name: "WordPress", icon: <FileText className="w-6 h-6" />, category: "CMS" },
+      { name: "Bootstrap", icon: <SiBootstrap className="w-6 h-6" />, category: "Frontend" },
+      { name: "HTML5", icon: <SiHtml5 className="w-6 h-6" />, category: "Frontend" },
+      { name: "Angular", icon: <SiAngular className="w-6 h-6" />, category: "Frontend" },
+      { name: "Apple", icon: <SiApple className="w-6 h-6" />, category: "Mobile" },
+      { name: "Android", icon: <SiAndroid className="w-6 h-6" />, category: "Mobile" },
+      { name: "Windows", icon: <Monitor className="w-6 h-6" />, category: "Platform" },
+      { name: "Java", icon: <SiOracle className="w-6 h-6" />, category: "Backend" },
+     { name: "Slack", icon: <SiSlack className="w-6 h-6" />, category: "Tools" },
+     { name: "Jira", icon: <SiJira className="w-6 h-6" />, category: "Tools" },
+     { name: "Git", icon: <SiGit className="w-6 h-6" />, category: "Version Control" },
+     { name: "Google", icon: <SiGoogle className="w-6 h-6" />, category: "Services" },
+     { name: "Yahoo", icon: <SiDocker className="w-6 h-6" />, category: "Services" }
   ];
 
   const serviceCategories = [
     {
-      icon: "💰",
+      icon: <DollarSign className="w-8 h-8" />,
       title: "Cost Optimization",
       description: "Strategic cost management and optimization solutions to maximize your IT investment returns."
     },
     {
-      icon: "🤝",
+      icon: <Handshake className="w-8 h-8" />,
       title: "Client Partnership",
       description: "Building long-term relationships through understanding and delivering on your business objectives."
     },
     {
-      icon: "👔",
+      icon: <Crown className="w-8 h-8" />,
       title: "Professional Excellence",
       description: "Maintaining the highest standards of professionalism and quality in all our deliverables."
     },
     {
-      icon: "🎯",
+      icon: <Target className="w-8 h-8" />,
       title: "Strategic Planning",
       description: "Comprehensive strategic planning to align technology with your business goals."
     },
     {
-      icon: "⚙️",
+      icon: <Settings className="w-8 h-8" />,
       title: "Technical Expertise",
       description: "Deep technical knowledge and expertise across multiple technologies and platforms."
     },
     {
-      icon: "💻",
+      icon: <Code className="w-8 h-8" />,
       title: "Development Excellence",
       description: "Custom software development with focus on quality, performance, and scalability."
     },
     {
-      icon: "🧩",
+      icon: <Puzzle className="w-8 h-8" />,
       title: "Modular Solutions",
       description: "Building flexible, modular solutions that can grow and adapt with your business."
     },
     {
-      icon: "👥",
+      icon: <Users className="w-8 h-8" />,
       title: "Team Collaboration",
       description: "Fostering effective collaboration between our team and yours for optimal results."
     }

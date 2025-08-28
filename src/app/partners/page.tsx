@@ -1,6 +1,8 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
+import { Rocket, Target, Cloud, Shield, Lightbulb } from 'lucide-react';
+import { SiLinux, SiGitlab } from 'react-icons/si';
 
 export default function PartnersPage() {
   const partners = [
@@ -117,7 +119,7 @@ export default function PartnersPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
             <div className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🚀</span>
+                                 <Rocket className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Access to Latest Technology</h3>
               <p className="text-gray-600">
@@ -127,7 +129,7 @@ export default function PartnersPage() {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎯</span>
+                                 <Target className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Expert Training & Support</h3>
               <p className="text-gray-600">
@@ -137,7 +139,7 @@ export default function PartnersPage() {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💡</span>
+                                 <Lightbulb className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Innovation & Best Practices</h3>
               <p className="text-gray-600">
@@ -160,7 +162,9 @@ export default function PartnersPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12">
             <div className="text-center group">
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🐧</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                  <SiLinux className="w-10 h-10" />
+                </div>
                 <h4 className="font-semibold text-gray-900 mb-1">Linux Solutions</h4>
                 <span className="text-sm text-gray-500">SUSE, Red Hat, Ubuntu</span>
               </div>
@@ -168,7 +172,9 @@ export default function PartnersPage() {
             
             <div className="text-center group">
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">☁️</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                  <Cloud className="w-10 h-10" />
+                </div>
                 <h4 className="font-semibold text-gray-900 mb-1">Cloud & Container</h4>
                 <span className="text-sm text-gray-500">Rancher, Kubernetes</span>
               </div>
@@ -176,7 +182,9 @@ export default function PartnersPage() {
             
             <div className="text-center group">
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🔧</div>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                  <SiGitlab className="w-10 h-10" />
+                </div>
                 <h4 className="font-semibold text-gray-900 mb-1">DevOps Platform</h4>
                 <span className="text-sm text-gray-500">GitLab, CI/CD</span>
               </div>
@@ -184,7 +192,9 @@ export default function PartnersPage() {
             
             <div className="text-center group">
               <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">🛡️</div>
+                                 <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                   <Shield className="w-10 h-10" />
+                 </div>
                 <h4 className="font-semibold text-gray-900 mb-1">Enterprise Security</h4>
                 <span className="text-sm text-gray-500">Compliance & Security</span>
               </div>

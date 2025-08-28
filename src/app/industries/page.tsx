@@ -1,6 +1,7 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Link from 'next/link';
+import { Smartphone, BarChart3, Cloud, Link as LinkIcon } from 'lucide-react';
 
 export default function IndustriesPage() {
   // Industry solutions
@@ -156,7 +157,9 @@ export default function IndustriesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">☁️</div>
+              <div className="text-5xl mb-4">
+                <Cloud className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-3">Cloud Computing</h3>
               <p className="text-gray-300 text-sm">
                 Scalable cloud infrastructure and platform solutions for modern applications.
@@ -164,7 +167,9 @@ export default function IndustriesPage() {
             </div>
 
             <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">📱</div>
+              <div className="text-5xl mb-4">
+                <Smartphone className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-3">Mobility</h3>
               <p className="text-gray-300 text-sm">
                 Cross-platform mobile applications and responsive web solutions.
@@ -172,7 +177,9 @@ export default function IndustriesPage() {
             </div>
 
             <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">🔗</div>
+              <div className="text-5xl mb-4">
+                <BarChart3 className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-3">IoT Solutions</h3>
               <p className="text-gray-300 text-sm">
                 Connected devices and smart systems for industry automation.
@@ -180,7 +187,9 @@ export default function IndustriesPage() {
             </div>
 
             <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">📊</div>
+              <div className="text-5xl mb-4">
+                <LinkIcon className="w-12 h-12" />
+              </div>
               <h3 className="text-xl font-semibold mb-3">Analytics</h3>
               <p className="text-gray-300 text-sm">
                 Data-driven insights and business intelligence solutions.

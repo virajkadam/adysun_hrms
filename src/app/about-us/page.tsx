@@ -3,7 +3,7 @@ import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
-import { Users, Smile, BarChart3, Briefcase } from 'lucide-react';
+import { Users, Smile, BarChart3, Briefcase, Cloud, Trophy } from 'lucide-react';
 
 export default function AboutUsPage() {
   return (
@@ -112,7 +112,9 @@ export default function AboutUsPage() {
               <div className="flex items-center justify-between bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">☁️</span>
+                    <span className="text-white text-xl">
+                      <Cloud className="w-5 h-5" />
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-white font-semibold">Total Projects</h3>
@@ -127,7 +129,9 @@ export default function AboutUsPage() {
               <div className="flex items-center justify-between bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">👥</span>
+                    <span className="text-white text-xl">
+                      <Users className="w-5 h-5" />
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-white font-semibold">Happy Clients</h3>
@@ -142,7 +146,9 @@ export default function AboutUsPage() {
               <div className="flex items-center justify-between bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">📊</span>
+                    <span className="text-white text-xl">
+                      <BarChart3 className="w-5 h-5" />
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-white font-semibold">Projects Finished</h3>
@@ -157,7 +163,9 @@ export default function AboutUsPage() {
               <div className="flex items-center justify-between bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">🏆</span>
+                    <span className="text-white text-xl">
+                      <Trophy className="w-5 h-5" />
+                    </span>
                   </div>
                   <div>
                     <h3 className="text-white font-semibold">Business Solutions</h3>
