@@ -8,7 +8,7 @@ import CTASection from '@/components/website/layout/CTASection';
 import ContactCard from '@/components/website/content/ContactCard';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
-import { Users, Smile, Crown, CheckSquare } from 'lucide-react';
+import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck } from 'lucide-react';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
@@ -47,19 +47,19 @@ export default function WebsiteHomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <FeatureCard
-              icon="💰"
+              icon={<PiggyBank />}
               title="Saving Investments"
               description="Optimize your technology investments for long-term growth and success."
               variant="dark"
             />
             <FeatureCard
-              icon="📊"
+              icon={<BarChart3 />}
               title="Effective Strategy"
               description="Building effective strategies to optimize your IT infrastructure for maximum ROI."
               variant="dark"
             />
             <FeatureCard
-              icon="🚀"
+              icon={<Rocket />}
               title="Innovative Solutions"
               description="Providing cutting-edge IT solutions that keep your business ahead of the curve."
               variant="dark"
@@ -275,7 +275,7 @@ export default function WebsiteHomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <IndustryCard
-              icon="📈"
+              icon={<LineChart />}
               title="Stock Exchange & Financial Services"
               description="High-performance solutions for financial markets and trading platforms."
               link="/industries/stock-exchange"
@@ -283,7 +283,7 @@ export default function WebsiteHomePage() {
               bgColor="bg-green-100"
             />
             <IndustryCard
-              icon="🛒"
+              icon={<ShoppingCart />}
               title="E-Commerce & Retail Solutions"
               description="Scalable platforms and solutions for online retail businesses."
               link="/industries/ecommerce"
@@ -291,7 +291,7 @@ export default function WebsiteHomePage() {
               bgColor="bg-purple-100"
             />
             <IndustryCard
-              icon="🚚"
+              icon={<Truck />}
               title="Transportation & Logistics"
               description="Logistics and fleet management technology solutions."
               link="/industries/transportation"

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface FeatureCardProps {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
   variant?: 'light' | 'dark';
@@ -25,7 +25,7 @@ export default function FeatureCard({
       <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
         variant === 'dark' ? 'bg-orange-100' : 'bg-blue-100'
       }`}>
-        <span className="text-2xl">{icon}</span>
+        <span className={`text-2xl text-orange-600 [&_*]:w-6 [&_*]:h-6`}>{icon}</span>
       </div>
       <h4 className="text-xl font-semibold mb-2">{title}</h4>
       <p className="text-gray-600">{description}</p>
