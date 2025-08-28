@@ -2,6 +2,8 @@ import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
+import CounterSection from '@/components/website/layout/CounterSection';
+import { Users, Smile, BarChart3, Briefcase } from 'lucide-react';
 
 export default function AboutUsPage() {
   return (
@@ -227,32 +229,15 @@ export default function AboutUsPage() {
       </section>
 
       {/* Statistics Section */}
-      <section className="bg-gray-800 text-white py-16 mb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <StatisticsCard
-              number="50+"
-              label="Total Projects"
-              variant="light"
-            />
-            <StatisticsCard
-              number="200"
-              label="Happy Clients"
-              variant="light"
-            />
-            <StatisticsCard
-              number="50+"
-              label="Projects Finished"
-              variant="light"
-            />
-            <StatisticsCard
-              number="100"
-              label="Business Solutions"
-              variant="light"
-            />
-          </div>
-        </div>
-      </section>
+      <CounterSection
+        className="mb-16"
+        items={[
+          { icon: <Users />, value: '50+', label: 'Total Projects' },
+          { icon: <Smile />, value: '200+', label: 'Happy Clients' },
+          { icon: <BarChart3 />, value: '3+', label: 'Awards Won' },
+          { icon: <Briefcase />, value: '888+', label: 'Task Completed' }
+        ]}
+      />
     </WebsiteLayout>
   );
 }

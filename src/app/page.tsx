@@ -7,6 +7,8 @@ import IndustryCard from '@/components/website/IndustryCard';
 import CTASection from '@/components/website/layout/CTASection';
 import ContactCard from '@/components/website/content/ContactCard';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
+import CounterSection from '@/components/website/layout/CounterSection';
+import { Users, Smile, Crown, CheckSquare } from 'lucide-react';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
@@ -360,32 +362,15 @@ export default function WebsiteHomePage() {
       <ContactSection />
 
       {/* Statistics Section */}
-      <section className="bg-gray-800 text-white py-16 mb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <StatisticsCard
-              number="0+"
-              label="Total Projects"
-              variant="light"
-            />
-            <StatisticsCard
-              number="0+"
-              label="Happy Clients"
-              variant="light"
-            />
-            <StatisticsCard
-              number="0+"
-              label="Awards Won"
-              variant="light"
-            />
-            <StatisticsCard
-              number="0+"
-              label="Task Completed"
-              variant="light"
-            />
-          </div>
-        </div>
-      </section>
+      <CounterSection
+        className="mb-16"
+        items={[
+          { icon: <Users />, value: '50+', label: 'Total Projects' },
+          { icon: <Smile />, value: '200+', label: 'Happy Clients' },
+          { icon: <Crown />, value: '3+', label: 'Awards Won' },
+          { icon: <CheckSquare />, value: '888+', label: 'Task Completed' }
+        ]}
+      />
 
       {/* Partner Logos Section */}
       <section className="bg-gray-800 py-16">
