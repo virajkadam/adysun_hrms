@@ -14,6 +14,7 @@ import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
 import InteractiveProcessSteps from '@/components/website/layout/InteractiveProcessSteps';
 import ContactSection from '@/components/website/layout/ContactSection';
+import LogoLoop from '@/components/reactbits/LogoLoop';
 
 export default function WebsiteHomePage() {
   return (
@@ -375,24 +376,31 @@ export default function WebsiteHomePage() {
       {/* Partner Logos Section */}
       <section className="bg-gray-800 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <PartnerLogo
-              src="/assets/images/brand-logos/android.png"
-              alt="Android"
-            />
-            <PartnerLogo
-              src="/assets/images/brand-logos/aws.png"
-              alt="AWS"
-            />
-            <PartnerLogo
-              src="/assets/images/brand-logos/reactjs.png"
-              alt="React.js"
-            />
-            <PartnerLogo
-              src="/assets/images/brand-logos/nodejs.png"
-              alt="Node.js"
-            />
-          </div>
+          <LogoLoop
+            className="mx-auto"
+            height={56}
+            gap={48}
+            speedSec={30}
+            logos={[
+              // Local PNGs from website brand-logos (for items not in Devicon or to match brand assets)
+              { src: '/assets/images/brand-logos/android.png', alt: 'Android' },
+              { src: '/assets/images/brand-logos/aws.png', alt: 'AWS' },
+              { src: '/assets/images/brand-logos/reactjs.png', alt: 'React' },
+              { src: '/assets/images/brand-logos/nodejs.png', alt: 'Node.js' },
+              { src: '/assets/images/brand-logos/googlecloud.png', alt: 'Google Cloud' },
+              { src: '/assets/images/brand-logos/firebase.png', alt: 'Firebase' },
+              { src: '/assets/images/brand-logos/docker.png', alt: 'Docker' },
+              { src: '/assets/images/brand-logos/javascript.png', alt: 'JavaScript' },
+              { src: '/assets/images/brand-logos/python.png', alt: 'Python' },
+              { src: '/assets/images/brand-logos/java.png', alt: 'Java' },
+              { src: '/assets/images/brand-logos/php.png', alt: 'PHP' },
+              { src: '/assets/images/brand-logos/laravel.png', alt: 'Laravel' },
+              { src: '/assets/images/brand-logos/magento.png', alt: 'Magento' },
+              { src: '/assets/images/brand-logos/wordpress.png', alt: 'WordPress' },
+              { src: '/assets/images/brand-logos/powerbi.png', alt: 'Power BI' },
+              { src: '/assets/images/brand-logos/vuejs.png', alt: 'Vue.js' },
+            ]}
+          />
         </div>
       </section>
     </WebsiteLayout>
