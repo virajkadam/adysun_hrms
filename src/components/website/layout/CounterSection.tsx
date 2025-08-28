@@ -1,5 +1,5 @@
 import React from 'react';
-import CountUp from '@/components/website/content/CountUp';
+import CountUp from '@/components/reactbits/CountUp';
 
 type CounterItem = {
   icon: React.ReactNode;
