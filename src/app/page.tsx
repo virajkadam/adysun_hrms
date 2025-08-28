@@ -22,7 +22,8 @@ export default function WebsiteHomePage() {
         title="When service matters"
         subtitle="Adysun Ventures: Premium IT Solutions & Business Strategy Services"
         description="Adysun Ventures is a leading IT solutions provider, offering comprehensive technology services to meet your industry-specific business needs."
-        variant="dark"
+        variant="image"
+        backgroundImage="/assets/images/bg/hero-bg-new.jpeg"
         actions={[
           { text: "Our Services", href: "/services", variant: "primary" },
           { text: "Contact Us", href: "/contact-us", variant: "outline" }
