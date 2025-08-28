@@ -10,6 +10,7 @@ import StatisticsCard from '@/components/website/content/StatisticsCard';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
 import FAQAccordion from '@/components/website/content/FAQAccordion';
 import ProcessSteps from '@/components/website/content/ProcessSteps';
+import InteractiveProcessSteps from '@/components/website/layout/InteractiveProcessSteps';
 
 export default function WebsiteHomePage() {
   return (
@@ -174,61 +175,88 @@ export default function WebsiteHomePage() {
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            {/* Left Sidebar - Process Steps */}
-            <div className="lg:col-span-1">
-              <ProcessSteps
-                steps={[
-                  { number: "01", title: "Planning", subtitle: "Vision to Formation", isActive: true },
-                  { number: "02", title: "Marketing", subtitle: "Reach to Growth" },
-                  { number: "03", title: "Growth", subtitle: "Scale to Grow" }
-                ]}
-              />
-            </div>
-            
-            {/* Right Side - Content */}
-            <div className="lg:col-span-2 space-y-8">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Strategic Vision in IT</h3>
-                <p className="text-gray-600">
-                  We help businesses develop comprehensive IT strategies that align with their long-term 
-                  objectives, ensuring technology investments drive measurable business outcomes.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🚀</span>
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">Digital Transformation</h4>
-                  <p className="text-gray-600 text-sm">
-                    Modernize your business processes with cutting-edge digital solutions.
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🧠</span>
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">AI Integration</h4>
-                  <p className="text-gray-600 text-sm">
-                    Leverage artificial intelligence to automate and optimize operations.
-                  </p>
-                </div>
-                
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">📊</span>
-                  </div>
-                  <h4 className="text-lg font-semibold mb-2">Data Analytics</h4>
-                  <p className="text-gray-600 text-sm">
-                    Transform data into actionable insights for better decision-making.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <InteractiveProcessSteps
+            steps={[
+              {
+                number: "01",
+                title: "Planning",
+                subtitle: "Vision to Formation",
+                content: {
+                  mainTitle: "Strategic Vision in IT",
+                  mainDescription: "We help businesses develop comprehensive IT strategies that align with their long-term objectives, ensuring technology investments drive measurable business outcomes.",
+                  features: [
+                    {
+                      icon: "🚀",
+                      title: "Digital Transformation",
+                      description: "Modernize your business processes with cutting-edge digital solutions."
+                    },
+                    {
+                      icon: "🧠",
+                      title: "AI Integration",
+                      description: "Leverage artificial intelligence to automate and optimize operations."
+                    },
+                    {
+                      icon: "📊",
+                      title: "Data Analytics",
+                      description: "Transform data into actionable insights for better decision-making."
+                    }
+                  ]
+                }
+              },
+              {
+                number: "02",
+                title: "Marketing",
+                subtitle: "Reach to Growth",
+                content: {
+                  mainTitle: "Digital Marketing & Growth Strategy",
+                  mainDescription: "We develop comprehensive digital marketing strategies that help businesses reach their target audience and achieve sustainable growth through data-driven approaches.",
+                  features: [
+                    {
+                      icon: "📱",
+                      title: "Digital Presence",
+                      description: "Build a strong online presence across all digital channels."
+                    },
+                    {
+                      icon: "🎯",
+                      title: "Target Marketing",
+                      description: "Reach your ideal customers with precision-targeted campaigns."
+                    },
+                    {
+                      icon: "📈",
+                      title: "Growth Analytics",
+                      description: "Track performance and optimize for continuous improvement."
+                    }
+                  ]
+                }
+              },
+              {
+                number: "03",
+                title: "Growth",
+                subtitle: "Scale to Grow",
+                content: {
+                  mainTitle: "Business Scaling & Optimization",
+                  mainDescription: "We help businesses scale their operations efficiently while maintaining quality and optimizing processes for maximum productivity and profitability.",
+                  features: [
+                    {
+                      icon: "⚡",
+                      title: "Process Optimization",
+                      description: "Streamline operations for maximum efficiency and productivity."
+                    },
+                    {
+                      icon: "🔄",
+                      title: "Scalable Solutions",
+                      description: "Build infrastructure that grows with your business needs."
+                    },
+                    {
+                      icon: "💼",
+                      title: "Performance Management",
+                      description: "Monitor and improve key performance indicators."
+                    }
+                  ]
+                }
+              }
+            ]}
+          />
         </div>
       </section>
 
