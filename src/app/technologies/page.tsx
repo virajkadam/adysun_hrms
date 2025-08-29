@@ -1,12 +1,14 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import { Rocket, Users, Wrench } from 'lucide-react';
+import TechnologyCategoryCard from '@/components/website/TechnologyCategoryCard';
+import { Rocket, Users, Wrench, Code, Database, Cloud, Brain, ShoppingCart } from 'lucide-react';
 
 export default function TechnologiesPage() {
   // Technology categories and their items
   const technologyCategories = [
     {
       title: "Mobility",
+      icon: <Code />,
       technologies: [
         { name: "Android", logo: "/assets/images/brand-logos/android.png" },
         { name: "iOS", logo: "/assets/images/brand-logos/IOS.png" },
@@ -23,6 +25,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "JavaScript & Frontend",
+      icon: <Code />,
       technologies: [
         { name: "JavaScript", logo: "/assets/images/brand-logos/javascript.png" },
         { name: "Angular", logo: "/assets/images/brand-logos/angularjs.png" },
@@ -36,6 +39,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "Big Data & Analytics",
+      icon: <Database />,
       technologies: [
         { name: "Hadoop", logo: "/assets/images/brand-logos/hadoop.png" },
         { name: "Power BI", logo: "/assets/images/brand-logos/powerbi.png" },
@@ -47,6 +51,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "Backend Development",
+      icon: <Code />,
       technologies: [
         { name: "PHP", logo: "/assets/images/brand-logos/php.png" },
         { name: "Laravel", logo: "/assets/images/brand-logos/laravel.png" },
@@ -62,6 +67,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "Cloud & DevOps",
+      icon: <Cloud />,
       technologies: [
         { name: "AWS", logo: "/assets/images/brand-logos/aws.png" },
         { name: "Azure", logo: "/assets/images/brand-logos/azure.png" },
@@ -75,6 +81,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "Blockchain, ML & AI",
+      icon: <Brain />,
       technologies: [
         { name: "Blockchain", logo: "/assets/images/brand-logos/blockchain.png" },
         { name: "Machine Learning", logo: "/assets/images/brand-logos/machinelearning.png" },
@@ -86,6 +93,7 @@ export default function TechnologiesPage() {
     },
     {
       title: "E-Commerce & CMS",
+      icon: <ShoppingCart />,
       technologies: [
         { name: "Drupal", logo: "/assets/images/brand-logos/drupal.png" },
         { name: "Magento", logo: "/assets/images/brand-logos/magento.png" },
@@ -98,33 +106,58 @@ export default function TechnologiesPage() {
     }
   ];
 
+  const benefits = [
+    {
+      icon: <Rocket />,
+      title: "Fast Development",
+      description: "We build fast and deliver quality solutions within your timeline, ensuring your project stays on track."
+    },
+    {
+      icon: <Users />,
+      title: "4200+ Projects Completed",
+      description: "We have successfully completed hundreds of projects and are ready to explore new ventures."
+    },
+    {
+      icon: <Wrench />,
+      title: "Free Project Management",
+      description: "We not only build fast but also free you from management issues. You get a PM from our side."
+    }
+  ];
+
   return (
     <WebsiteLayout 
       title="Technologies - Overview Of Our Diverse Technology Competency"
       description="Adysun Ventures offers comprehensive technology solutions across Mobility, Frontend, Backend, Big Data, AI/ML, Blockchain, and E-Commerce platforms. Hire skilled developers for your software development needs."
     >
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Hire Software Developers / Programmers Of Adysun Ventures
+      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-6">
+            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
+              Technology Expertise
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
+            Hire Software Developers
           </h1>
+          <h2 className="text-3xl md:text-4xl font-bold text-orange-600 mb-8">
+            Of Adysun Ventures
+          </h2>
           <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <p className="text-xl max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
             Adysun Ventures is a software development firm offering software developers / engineers / programmers to hire on hourly, part time or monthly basis. We focus on creating scalable, high performing, and secure software solutions for all the industry verticals.
           </p>
         </div>
       </section>
 
       {/* Technology Overview Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Overview Of Our Diverse Technology Competency
             </h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Adysun Ventures is dedicated to offer technology solutions for all industry verticals. We have a team of skilled programmers experienced in diverse technology set ranging from mobility, web development to Blockchain, AI, Ecommerce, CMS and more. Take a look at the core technologies our developers hold comprehensive expertise in.
             </p>
           </div>
@@ -132,30 +165,42 @@ export default function TechnologiesPage() {
           {/* Technology Categories Grid */}
           <div className="space-y-16">
             {technologyCategories.map((category, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                  {category.title}
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                  {category.technologies.map((tech, techIndex) => (
-                    <div key={techIndex} className="group">
-                      <div className="bg-gray-50 hover:bg-white border border-gray-200 hover:border-orange-300 rounded-lg p-4 text-center transition-all duration-300 hover:shadow-md">
-                        <div className="flex items-center justify-center mb-3">
-                          <img 
-                            src={tech.logo} 
-                            alt={tech.name}
-                            className="w-8 h-8 object-contain"
-                          />
-                          <span className="hidden text-2xl text-gray-400">
-                            <Wrench className="w-6 h-6" />
-                          </span>
-                        </div>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
-                          {tech.name}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+              <TechnologyCategoryCard
+                key={index}
+                title={category.title}
+                icon={category.icon}
+                technologies={category.technologies}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Hire Developers Section */}
+      <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Why Hire Developers from Adysun Ventures?
+            </h2>
+            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+              We provide skilled developers who deliver quality solutions with proven expertise across multiple technologies.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="text-center group">
+                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-orange-200">
+                  <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                    <span className="text-white [&_*]:w-8 [&_*]:h-8">{benefit.icon}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-orange-700 transition-colors">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-lg text-gray-700 leading-relaxed">
+                    {benefit.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -163,71 +208,30 @@ export default function TechnologiesPage() {
         </div>
       </section>
 
-      {/* Why Hire Developers Section */}
-      <section className="py-20 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Why Hire Developers from Adysun Ventures?
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-orange-900/95 to-orange-800/95 text-white relative"
+               style={{ backgroundImage: 'url(/assets/images/bg/bg1.jpg)' }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+              Ready to Hire Skilled Developers?
             </h2>
-            <p className="text-xl text-gray-300 max-w-4xl mx-auto">
-              We provide skilled developers who deliver quality solutions with proven expertise across multiple technologies.
+            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed mb-10">
+              Get in touch with us to discuss your development needs and find the perfect developers for your project.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 border border-gray-600 rounded-lg">
-              <div className="text-6xl text-orange-500 mb-4">
-                <Rocket className="w-16 h-16" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Fast Development</h3>
-              <p className="text-gray-300">
-                We build fast and deliver quality solutions within your timeline, ensuring your project stays on track.
-              </p>
-            </div>
-
-            <div className="text-center p-6 border border-gray-600 rounded-lg">
-              <div className="text-6xl text-orange-500 mb-4">
-                <Users className="w-16 h-16" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Implemented 4200+ Projects</h3>
-              <p className="text-gray-300">
-                We have successfully completed hundreds of projects and are ready to explore new ventures.
-              </p>
-            </div>
-
-            <div className="text-center p-6 border border-gray-600 rounded-lg">
-                             <div className="text-6xl text-orange-500 mb-4">
-                 <Users className="w-16 h-16" />
-               </div>
-              <h3 className="text-xl font-semibold mb-4">Free Project Management</h3>
-              <p className="text-gray-300">
-                We not only build fast but also free you from management issues. You get a PM from our side.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-orange-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Hire Skilled Developers?
-          </h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Get in touch with us to discuss your development needs and find the perfect developers for your project.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <a 
               href="/contact-us" 
-              className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-lg"
             >
               Contact Us Now
             </a>
             <a 
               href="/services" 
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors"
+              className="bg-white text-orange-600 border-2 border-white px-8 py-4 rounded-xl font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-lg"
             >
               View Our Services
             </a>

@@ -1,6 +1,10 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
+import PartnerCard from '@/components/website/PartnerCard';
+import BenefitCard from '@/components/website/BenefitCard';
+import TechStackCard from '@/components/website/TechStackCard';
+import CTAButton from '@/components/website/CTAButton';
 import { Rocket, Target, Cloud, Shield, Lightbulb } from 'lucide-react';
 import { SiLinux, SiGitlab } from 'react-icons/si';
 
@@ -32,83 +36,109 @@ export default function PartnersPage() {
     }
   ];
 
+  const benefits = [
+    {
+      icon: <Rocket />,
+      title: "Access to Latest Technology",
+      description: "Early access to cutting-edge technologies and beta programs from our partners"
+    },
+    {
+      icon: <Target />,
+      title: "Expert Training & Support",
+      description: "Certified expertise and dedicated support channels for optimal solution delivery"
+    },
+    {
+      icon: <Lightbulb />,
+      title: "Innovation & Best Practices",
+      description: "Access to industry best practices and innovative solution architectures"
+    }
+  ];
+
+  const techStack = [
+    {
+      icon: <SiLinux />,
+      title: "Linux Solutions",
+      subtitle: "SUSE, Red Hat, Ubuntu"
+    },
+    {
+      icon: <Cloud />,
+      title: "Cloud & Container",
+      subtitle: "Rancher, Kubernetes"
+    },
+    {
+      icon: <SiGitlab />,
+      title: "DevOps Platform",
+      subtitle: "GitLab, CI/CD"
+    },
+    {
+      icon: <Shield />,
+      title: "Enterprise Security",
+      subtitle: "Compliance & Security"
+    }
+  ];
+
   return (
     <WebsiteLayout 
       title="Our Partners - Adysun Ventures"
       description="Strategic technology partnerships with industry leaders including SUSE, Red Hat, Canonical, and GitLab to deliver comprehensive IT solutions."
     >
       {/* Hero Section */}
-      <section className="pt-6 pb-16">
+      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="text-center lg:text-left">
-              <div className="mb-4">
-                <span className="text-orange-600 font-semibold text-lg">
+              <div className="mb-6">
+                <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
                   Technology Partnership
                 </span>
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
                 Our Company Affiliations
               </h1>
+              <p className="text-xl text-gray-700 leading-relaxed max-w-2xl">
+                Strategic partnerships with industry leaders to deliver cutting-edge solutions
+              </p>
             </div>
             <div className="text-center">
-              <img
-                src="/assets/images/content/partners_content.png"
-                alt="Company Affiliations"
-                className="w-full max-w-md mx-auto rounded-lg shadow-lg"
-              />
+              <div className="bg-white p-8 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                <img
+                  src="/assets/images/content/partners_content.png"
+                  alt="Company Affiliations"
+                  className="w-full max-w-md mx-auto rounded-2xl"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Partners Section */}
-      <section className="mb-16">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Our Strategic Partners
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              We collaborate with industry leaders to provide comprehensive technology solutions and expertise
+            </p>
+          </div>
+          
           {partners.map((partner, index) => (
-            <div key={index}>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-12">
-                {/* Partner Logo */}
-                <div className="lg:col-span-3 text-center">
-                  <img
-                    src={partner.logo}
-                    alt={`${partner.name} Logo`}
-                    className="w-48 h-48 object-contain mx-auto"
-                  />
-                </div>
-
-                {/* Divider Line */}
-                <div className="hidden lg:block lg:col-span-1">
-                  <div className="w-px h-48 bg-green-500 mx-auto"></div>
-                </div>
-
-                {/* Partner Information */}
-                <div className="lg:col-span-8">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-3 text-center lg:text-left">
-                    {partner.name}
-                  </h2>
-                  <h3 className="text-xl text-green-600 font-semibold mb-4 text-center lg:text-left uppercase">
-                    {partner.partnership}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed text-center lg:text-left">
-                    {partner.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Divider */}
-              {index < partners.length - 1 && (
-                <div className="flex justify-center mb-12">
-                  <div className="w-3/4 h-px bg-gray-300"></div>
-                </div>
-              )}
-            </div>
+            <PartnerCard
+              key={index}
+              name={partner.name}
+              logo={partner.logo}
+              partnership={partner.partnership}
+              description={partner.description}
+              isLast={index === partners.length - 1}
+            />
           ))}
         </div>
       </section>
 
       {/* Partnership Benefits Section */}
-      <section className="bg-gray-50 py-16 mb-16">
+      <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             title="Why Strategic Partnerships Matter"
@@ -116,42 +146,21 @@ export default function PartnersPage() {
             alignment="center"
           />
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                 <Rocket className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Access to Latest Technology</h3>
-              <p className="text-gray-600">
-                Early access to cutting-edge technologies and beta programs from our partners
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                 <Target className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Expert Training & Support</h3>
-              <p className="text-gray-600">
-                Certified expertise and dedicated support channels for optimal solution delivery
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                 <Lightbulb className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Innovation & Best Practices</h3>
-              <p className="text-gray-600">
-                Access to industry best practices and innovative solution architectures
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+            {benefits.map((benefit, index) => (
+              <BenefitCard
+                key={index}
+                icon={benefit.icon}
+                title={benefit.title}
+                description={benefit.description}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Technology Stack Section */}
-      <section className="mb-16">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionTitle
             title="Technologies We Specialize In"
@@ -159,73 +168,47 @@ export default function PartnersPage() {
             alignment="center"
           />
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12">
-            <div className="text-center group">
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                  <SiLinux className="w-10 h-10" />
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Linux Solutions</h4>
-                <span className="text-sm text-gray-500">SUSE, Red Hat, Ubuntu</span>
-              </div>
-            </div>
-            
-            <div className="text-center group">
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                  <Cloud className="w-10 h-10" />
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Cloud & Container</h4>
-                <span className="text-sm text-gray-500">Rancher, Kubernetes</span>
-              </div>
-            </div>
-            
-            <div className="text-center group">
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                  <SiGitlab className="w-10 h-10" />
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-1">DevOps Platform</h4>
-                <span className="text-sm text-gray-500">GitLab, CI/CD</span>
-              </div>
-            </div>
-            
-            <div className="text-center group">
-              <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                                 <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
-                   <Shield className="w-10 h-10" />
-                 </div>
-                <h4 className="font-semibold text-gray-900 mb-1">Enterprise Security</h4>
-                <span className="text-sm text-gray-500">Compliance & Security</span>
-              </div>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20">
+            {techStack.map((tech, index) => (
+              <TechStackCard
+                key={index}
+                icon={tech.icon}
+                title={tech.title}
+                subtitle={tech.subtitle}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative bg-cover bg-center bg-no-repeat py-20"
+      <section className="relative bg-cover bg-center bg-no-repeat py-24"
                style={{ backgroundImage: 'url(/assets/images/bg/bg1.jpg)' }}>
-        <div className="absolute inset-0 bg-black bg-opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <p className="text-xl text-orange-400 mb-4 font-semibold">REACH OUT TO US</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Interested?
+          <div className="mb-16">
+            <p className="text-2xl text-orange-300 mb-8 font-semibold tracking-wide">
+              REACH OUT TO US
+            </p>
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
+              Ready to Start?
             </h2>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              Let's start a project together.
-            </h2>
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-200 mb-10">
+              Let's build something amazing together.
+            </h3>
+            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed">
+              Our partnership expertise is ready to transform your technology landscape
+            </p>
           </div>
-          <a 
-            href="/contact-us" 
-            className="inline-flex items-center bg-orange-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-lg"
-          >
-            <span>Contact Us</span>
-            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <CTAButton href="/contact-us" variant="primary">
+              Contact Us
+            </CTAButton>
+            <CTAButton href="/services" variant="secondary">
+              Explore Services
+            </CTAButton>
+          </div>
         </div>
       </section>
     </WebsiteLayout>
