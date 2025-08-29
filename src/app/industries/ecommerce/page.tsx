@@ -1,7 +1,9 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import Link from 'next/link';
-import { TrendingUp, Target, Zap } from 'lucide-react';
+import BenefitCard from '@/components/website/BenefitCard';
+import CTAButton from '@/components/website/CTAButton';
+import { TrendingUp, Target, Zap, ShoppingCart, CreditCard, Package, BarChart3 } from 'lucide-react';
 
 export default function ECommercePage() {
   // E-commerce solutions
@@ -33,47 +35,88 @@ export default function ECommercePage() {
     "Magento", "Shopify", "WooCommerce", "React", "Node.js", "PHP", "MySQL", "AWS", "Docker"
   ];
 
+  // Benefits data
+  const benefits = [
+    {
+      icon: <TrendingUp />,
+      title: "Increased Sales",
+      description: "Optimized user experience and conversion funnels that drive higher sales and revenue growth."
+    },
+    {
+      icon: <Target />,
+      title: "Better Customer Experience",
+      description: "Seamless shopping experiences that increase customer satisfaction and loyalty."
+    },
+    {
+      icon: <Zap />,
+      title: "Operational Efficiency",
+      description: "Streamlined processes and automated systems that reduce costs and improve productivity."
+    }
+  ];
+
+  // Process steps
+  const processSteps = [
+    {
+      number: "1",
+      title: "Discovery",
+      description: "Understanding your business requirements and defining project scope."
+    },
+    {
+      number: "2",
+      title: "Design",
+      description: "Creating intuitive user interfaces and seamless user experiences."
+    },
+    {
+      number: "3",
+      title: "Development",
+      description: "Building robust, scalable e-commerce platforms with modern technologies."
+    },
+    {
+      number: "4",
+      title: "Launch",
+      description: "Deploying and optimizing your e-commerce platform for maximum performance."
+    }
+  ];
+
   return (
     <WebsiteLayout 
       title="E-Commerce Solutions - Smart Retail Operations and Customer Experience"
       description="Adysun Ventures provides comprehensive e-commerce solutions including online store development, payment integration, inventory management, and customer analytics for modern retail businesses."
     >
       {/* Hero Section */}
-      <section 
-        className="relative py-20 text-white"
-        style={{
-          backgroundImage: "url('/assets/images/bg/whyChoose.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-70"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Smart Retail: Operations and Customer Experience with Cloud Solutions
-            </h1>
-            <div className="flex justify-center space-x-4 text-lg mb-8">
-              <Link href="/industries" className="hover:text-orange-400 transition-colors">
-                Industries
-              </Link>
-              <span>/</span>
-              <span className="text-orange-400">E-Commerce</span>
-            </div>
-            <p className="text-xl max-w-3xl mx-auto leading-relaxed">
-              Transform your retail business with cutting-edge e-commerce solutions that drive growth, enhance customer experience, and streamline operations.
-            </p>
+      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
+              E-Commerce Solutions
+            </span>
           </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
+            Smart Retail: Operations and Customer Experience
+          </h1>
+          <h2 className="text-3xl md:text-4xl font-bold text-orange-600 mb-8">
+            with Cloud Solutions
+          </h2>
+          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
+          <div className="flex justify-center space-x-4 text-lg mb-8">
+            <Link href="/industries" className="text-gray-700 hover:text-orange-600 transition-colors">
+              Industries
+            </Link>
+            <span className="text-gray-500">/</span>
+            <span className="text-orange-600 font-semibold">E-Commerce</span>
+          </div>
+          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+            Transform your retail business with cutting-edge e-commerce solutions that drive growth, enhance customer experience, and streamline operations.
+          </p>
         </div>
       </section>
 
       {/* Overview Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                 Revolutionizing Retail with Technology
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
@@ -84,40 +127,42 @@ export default function ECommercePage() {
               </p>
             </div>
             <div className="text-center">
-              <img 
-                src="/assets/images/content/eCommerce.png" 
-                alt="E-Commerce Solutions" 
-                className="w-full max-w-md mx-auto rounded-lg shadow-2xl"
-              />
+              <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-8 rounded-2xl shadow-lg border border-orange-200">
+                <img 
+                  src="/assets/images/content/eCommerce.png" 
+                  alt="E-Commerce Solutions" 
+                  className="w-full max-w-md mx-auto rounded-lg shadow-xl"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Solutions Grid */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Comprehensive E-Commerce Solutions
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
               From initial concept to ongoing optimization, we provide end-to-end e-commerce solutions that drive business growth.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {ecommerceSolutions.map((solution, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{solution.title}</h3>
-                <p className="text-gray-600 mb-6">{solution.description}</p>
+              <div key={index} className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-orange-200">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{solution.title}</h3>
+                <p className="text-lg text-gray-600 mb-6 leading-relaxed">{solution.description}</p>
                 
                 <div className="mb-6">
-                  <h4 className="font-semibold text-gray-800 mb-3">Key Features:</h4>
-                  <ul className="space-y-2">
+                  <h4 className="font-semibold text-gray-800 mb-3 text-lg">Key Features:</h4>
+                  <ul className="space-y-3">
                     {solution.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center text-sm text-gray-600">
-                        <div className="w-2 h-2 bg-orange-500 rounded-full mr-3"></div>
+                      <li key={featureIndex} className="flex items-center text-base text-gray-600">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 flex-shrink-0"></div>
                         {feature}
                       </li>
                     ))}
@@ -130,21 +175,21 @@ export default function ECommercePage() {
       </section>
 
       {/* Technology Stack Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Technology Stack
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               We leverage the latest technologies and platforms to build robust, scalable e-commerce solutions.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {technologyStack.map((tech, index) => (
-              <div key={index} className="bg-gray-50 hover:bg-orange-50 border border-gray-200 hover:border-orange-300 rounded-lg p-6 text-center transition-all duration-300 hover:shadow-md">
-                <span className="text-lg font-medium text-gray-700 group-hover:text-orange-600">
+              <div key={index} className="bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 to-orange-200 border-2 border-orange-200 hover:border-orange-300 rounded-xl p-6 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                <span className="text-lg font-semibold text-gray-700 group-hover:text-orange-600">
                   {tech}
                 </span>
               </div>
@@ -154,113 +199,81 @@ export default function ECommercePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
+      <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Why Choose Our E-Commerce Solutions?
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
               We deliver measurable results that transform your retail business and drive sustainable growth.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
-                <TrendingUp className="w-12 h-12" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Increased Sales</h3>
-              <p className="text-gray-300">
-                Optimized user experience and conversion funnels that drive higher sales and revenue growth.
-              </p>
-            </div>
-
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
-                <Target className="w-12 h-12" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Better Customer Experience</h3>
-              <p className="text-gray-300">
-                Seamless shopping experiences that increase customer satisfaction and loyalty.
-              </p>
-            </div>
-
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
-                <Zap className="w-12 h-12" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4">Operational Efficiency</h3>
-              <p className="text-gray-300">
-                Streamlined processes and automated systems that reduce costs and improve productivity.
-              </p>
-            </div>
+            {benefits.map((benefit, index) => (
+              <BenefitCard
+                key={index}
+                icon={benefit.icon}
+                title={benefit.title}
+                description={benefit.description}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* Process Section */}
-      <section className="py-16 bg-white">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Our Development Process
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               We follow a proven methodology to deliver successful e-commerce solutions on time and within budget.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Discovery</h3>
-              <p className="text-gray-600">Understanding your business requirements and defining project scope.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Design</h3>
-              <p className="text-gray-600">Creating intuitive user interfaces and seamless user experiences.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Development</h3>
-              <p className="text-gray-600">Building robust, scalable e-commerce platforms with modern technologies.</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Launch</h3>
-              <p className="text-gray-600">Deploying and optimizing your e-commerce platform for maximum performance.</p>
-            </div>
+            {processSteps.map((step, index) => (
+              <div key={index} className="text-center group">
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-orange-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                  {step.number}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-700 transition-colors">
+                  {step.title}
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-orange-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Transform Your Retail Business?
-          </h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Let's discuss how our e-commerce solutions can drive your business growth and digital transformation.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/contact-us"
-              className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
+      <section className="py-24 bg-gradient-to-r from-orange-900/95 to-orange-800/95 text-white relative"
+               style={{ backgroundImage: 'url(/assets/images/bg/whyChoose.png)' }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-16">
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+              Ready to Transform Your Retail Business?
+            </h2>
+            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed mb-10">
+              Let's discuss how our e-commerce solutions can drive your business growth and digital transformation.
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+            <CTAButton href="/contact-us" variant="primary">
               Get Free Consultation
-            </Link>
-            <Link 
-              href="/services"
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors"
-            >
+            </CTAButton>
+            <CTAButton href="/services" variant="secondary">
               View Our Services
-            </Link>
+            </CTAButton>
           </div>
         </div>
       </section>
