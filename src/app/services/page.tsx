@@ -1,96 +1,141 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import SectionTitle from '@/components/website/ui/SectionTitle';
-import FeatureCard from '@/components/website/FeatureCard';
-import { Smartphone, Target, Settings, Handshake, Crown, Code, Puzzle, Users, DollarSign, Palette, Globe, Apple, Smartphone as Mobile, Circle, FileText, Monitor, Coffee, MessageSquare, ClipboardList, ShoppingCart, Monitor as MonitorIcon } from 'lucide-react';
-import { SiGit, SiGoogle, SiLinux, SiGitlab, SiDocker, SiKubernetes, SiReact, SiAngular, SiNodedotjs, SiPython, SiOracle, SiJavascript, SiBootstrap, SiHtml5, SiAndroid, SiApple, SiSlack, SiJira } from 'react-icons/si';
+import ContactSection from '@/components/website/layout/ContactSection';
+import { Code, Globe, ShoppingCart, Monitor as MonitorIcon, Brain, Zap, Settings, Users, Rocket, ArrowRight } from 'lucide-react';
 
 export default function ServicesPage() {
   const serviceItems = [
     {
       image: "/assets/images/content/web_application_development.jpg",
-      icon: <Code className="w-8 h-8" />,
+      icon: <Code className="w-8 h-8 text-orange-500" />,
       title: "Web Application Development",
       description: "Our web application development services deliver robust, scalable solutions tailored to your business needs."
     },
     {
       image: "/assets/images/content/dynamic_website_development.jpg",
-      icon: <Globe className="w-8 h-8" />,
+      icon: <Globe className="w-8 h-8 text-orange-500" />,
       title: "Dynamic Website Development",
       description: "Our dynamic website development services create interactive online experiences tailored to your audience."
     },
     {
-      image: "/assets/images/content/services/service3b.jpg",
-      icon: <ShoppingCart className="w-8 h-8" />,
+      image: "/assets/images/content/services/service-3b.jpg",
+      icon: <ShoppingCart className="w-8 h-8 text-orange-500" />,
       title: "E-Comm Solutions",
       description: "Our e-commerce solutions are designed to empower your business with seamless, secure, and scalable online platforms."
     },
     {
-      image: "/assets/images/content/services/service3b.jpg",
-      icon: <MonitorIcon className="w-8 h-8" />,
+      image: "/assets/images/content/services/service-4b.jpg",
+      icon: <MonitorIcon className="w-8 h-8 text-orange-500" />,
       title: "Digital Marketing Services",
       description: "At Adysun Ventures, our digital marketing services are meticulously crafted to enhance your brand's online presence."
     }
   ];
 
-  const technologyStack = [
-    { name: "PHP", icon: <Code className="w-6 h-6" />, category: "Backend" },
-               { name: "Node.js", icon: <SiNodedotjs className="w-6 h-6" />, category: "Backend" },
-      { name: "WordPress", icon: <FileText className="w-6 h-6" />, category: "CMS" },
-      { name: "Bootstrap", icon: <SiBootstrap className="w-6 h-6" />, category: "Frontend" },
-      { name: "HTML5", icon: <SiHtml5 className="w-6 h-6" />, category: "Frontend" },
-      { name: "Angular", icon: <SiAngular className="w-6 h-6" />, category: "Frontend" },
-      { name: "Apple", icon: <SiApple className="w-6 h-6" />, category: "Mobile" },
-      { name: "Android", icon: <SiAndroid className="w-6 h-6" />, category: "Mobile" },
-      { name: "Windows", icon: <Monitor className="w-6 h-6" />, category: "Platform" },
-      { name: "Java", icon: <SiOracle className="w-6 h-6" />, category: "Backend" },
-     { name: "Slack", icon: <SiSlack className="w-6 h-6" />, category: "Tools" },
-     { name: "Jira", icon: <SiJira className="w-6 h-6" />, category: "Tools" },
-     { name: "Git", icon: <SiGit className="w-6 h-6" />, category: "Version Control" },
-     { name: "Google", icon: <SiGoogle className="w-6 h-6" />, category: "Services" },
-     { name: "Yahoo", icon: <SiDocker className="w-6 h-6" />, category: "Services" }
+  const comprehensiveServices = [
+    {
+      icon: <Zap className="w-12 h-12 text-orange-500" />,
+      title: "Digital Transformation",
+      description: "Comprehensive digital transformation strategies to modernize your business operations."
+    },
+    {
+      icon: <Settings className="w-12 h-12 text-orange-500" />,
+      title: "IT Consulting",
+      description: "Strategic IT consulting to align technology with your business objectives."
+    },
+    {
+      icon: <Code className="w-12 h-12 text-orange-500" />,
+      title: "Custom Application Development",
+      description: "Tailored software solutions designed specifically for your business requirements."
+    },
+    {
+      icon: <Brain className="w-12 h-12 text-orange-500" />,
+      title: "Software Product Engineering",
+      description: "End-to-end product development from concept to deployment and maintenance."
+    },
+    {
+      icon: <Users className="w-12 h-12 text-orange-500" />,
+      title: "Dedicated Team Hiring",
+      description: "Access to skilled professionals who integrate seamlessly with your existing team."
+    },
+    {
+      icon: <Rocket className="w-12 h-12 text-orange-500" />,
+      title: "Product Development",
+      description: "Innovative product development services to bring your ideas to market."
+    }
   ];
 
-  const serviceCategories = [
+  const detailedServices = [
     {
-      icon: <DollarSign className="w-8 h-8" />,
-      title: "Cost Optimization",
-      description: "Strategic cost management and optimization solutions to maximize your IT investment returns."
+      title: "Machine Learning & AI Solutions",
+      description: "Leverage the power of artificial intelligence and machine learning to gain insights, automate processes, and make data-driven decisions. Our AI solutions help businesses stay ahead of the competition by implementing cutting-edge technologies.",
+      solutions: [
+        "Predictive Analytics & Forecasting",
+        "Natural Language Processing (NLP)",
+        "Computer Vision Solutions",
+        "Recommendation Systems",
+        "Chatbot & Virtual Assistants",
+        "Process Automation"
+      ]
     },
     {
-      icon: <Handshake className="w-8 h-8" />,
-      title: "Client Partnership",
-      description: "Building long-term relationships through understanding and delivering on your business objectives."
+      title: "Web Development",
+      description: "Comprehensive web development services that create engaging, responsive, and high-performance websites. From simple landing pages to complex web applications, we deliver solutions that drive user engagement and business growth.",
+      solutions: [
+        "Custom Website Development",
+        "Content Management System (CMS)",
+        "Frontend Design & Development",
+        "Backend Development",
+        "E-commerce Solutions",
+        "Progressive Web Apps (PWA)"
+      ]
     },
     {
-      icon: <Crown className="w-8 h-8" />,
-      title: "Professional Excellence",
-      description: "Maintaining the highest standards of professionalism and quality in all our deliverables."
+      title: "Mobile Application Development",
+      description: "Native and cross-platform mobile applications that deliver exceptional user experiences across all devices. Our mobile development expertise ensures your app stands out in the competitive app marketplace.",
+      solutions: [
+        "Enterprise Mobile Apps",
+        "Cross-platform Apps",
+        "Native Applications",
+        "App Maintenance & Support",
+        "UI/UX Design",
+        "App Store Optimization"
+      ]
     },
     {
-      icon: <Target className="w-8 h-8" />,
-      title: "Strategic Planning",
-      description: "Comprehensive strategic planning to align technology with your business goals."
+      title: "Business Intelligence (BI) Analytics",
+      description: "Transform your data into actionable insights with our comprehensive BI and analytics solutions. We help organizations make informed decisions by providing clear, visual, and interactive data representations.",
+      solutions: [
+        "Data Integration & Warehousing",
+        "Data Extraction",
+        "Data Visualization",
+        "Performance Dashboards",
+        "KPI Monitoring",
+        "Predictive Analytics"
+      ]
     },
     {
-      icon: <Settings className="w-8 h-8" />,
-      title: "Technical Expertise",
-      description: "Deep technical knowledge and expertise across multiple technologies and platforms."
+      title: "Agile Project Management",
+      description: "Implement agile methodologies to improve project delivery, team collaboration, and product quality. Our agile experts help organizations adopt best practices for faster time-to-market and better stakeholder satisfaction.",
+      solutions: [
+        "Scrum Masters",
+        "Project Managers",
+        "Product Managers",
+        "Agile Coaching",
+        "Sprint Planning",
+        "Retrospectives"
+      ]
     },
     {
-      icon: <Code className="w-8 h-8" />,
-      title: "Development Excellence",
-      description: "Custom software development with focus on quality, performance, and scalability."
-    },
-    {
-      icon: <Puzzle className="w-8 h-8" />,
-      title: "Modular Solutions",
-      description: "Building flexible, modular solutions that can grow and adapt with your business."
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Team Collaboration",
-      description: "Fostering effective collaboration between our team and yours for optimal results."
+      title: "SEO (Search Engine Optimisation)",
+      description: "Improve your website's visibility in search engines and drive organic traffic with our comprehensive SEO services. We implement proven strategies to boost your search rankings and increase online presence.",
+      solutions: [
+        "Keyword Research",
+        "Competitive Analysis",
+        "Link Building",
+        "Technical SEO",
+        "Content Optimization",
+        "Local SEO"
+      ]
     }
   ];
 
@@ -104,7 +149,7 @@ export default function ServicesPage() {
                style={{ backgroundImage: 'url(/assets/images/bg/bg9.jpg)' }}>
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Our Services</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Services</h1>
           <nav className="flex justify-center items-center space-x-2 text-white">
             <a href="/" className="hover:text-orange-400 transition-colors">Home</a>
             <span>/</span>
@@ -113,28 +158,26 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Main Services Section */}
-      <section className="mb-16">
+      {/* What We Offer Section */}
+      <section className="mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            title="Our Core Services"
-            subtitle="Comprehensive IT solutions designed to drive your business growth and digital transformation"
-            alignment="center"
-          />
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">What We Offer</h2>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {serviceItems.map((service, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                 <div className="h-48 overflow-hidden">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <div className="p-6">
-                  <div className="text-3xl mb-3">{service.icon}</div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{service.title}</h3>
+                  <div className="mb-3">{service.icon}</div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{service.title}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{service.description}</p>
                 </div>
               </div>
@@ -143,22 +186,22 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Technology Stack Section */}
-      <section className="bg-gray-50 py-16 mb-16">
+      {/* Our Comprehensive Services Section */}
+      <section className="mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            title="Technology Stack"
-            subtitle="We work with cutting-edge technologies to deliver innovative solutions"
-            alignment="center"
-          />
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Comprehensive Services</h2>
+          </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {technologyStack.map((tech, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {comprehensiveServices.map((service, index) => (
               <div key={index} className="text-center group">
-                <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow">
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{tech.icon}</div>
-                  <h4 className="font-semibold text-gray-900 mb-1">{tech.name}</h4>
-                  <span className="text-sm text-gray-500">{tech.category}</span>
+                <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                  <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {service.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{service.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{service.description}</p>
                 </div>
               </div>
             ))}
@@ -166,31 +209,36 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Service Categories Section */}
-      <section className="mb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionTitle
-            title="Why Choose Our Services"
-            subtitle="Comprehensive approach to IT solutions and business strategy"
-            alignment="center"
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {serviceCategories.map((category, index) => (
-              <FeatureCard
-                key={index}
-                icon={category.icon}
-                title={category.title}
-                description={category.description}
-                variant="default"
-              />
-            ))}
+      {/* Detailed Service Sections */}
+      {detailedServices.map((service, index) => (
+        <section key={index} className="mb-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+              <div>
+                <h3 className="text-3xl font-bold text-orange-500 mb-6">{service.title}</h3>
+                <p className="text-gray-700 leading-relaxed mb-6">{service.description}</p>
+              </div>
+              
+              <div className="bg-gray-50 p-6 rounded-xl">
+                <h4 className="text-xl font-semibold text-gray-900 mb-4">
+                  Adysun Ventures {service.title} Solutions Include:
+                </h4>
+                <ul className="space-y-3">
+                  {service.solutions.map((solution, idx) => (
+                    <li key={idx} className="flex items-start space-x-3">
+                      <ArrowRight className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700">{solution}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-16 mb-16">
+      <section className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-16 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Transform Your Business?
@@ -215,79 +263,8 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Additional Services Info */}
-      <section className="mb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h3 className="text-3xl font-semibold text-gray-900 mb-6">
-                Comprehensive IT Solutions
-              </h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                At Adysun Ventures, we understand that every business has unique technology needs. 
-                Our comprehensive IT solutions are designed to address your specific challenges 
-                and opportunities, helping you achieve sustainable growth and competitive advantage.
-              </p>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                From initial consultation to ongoing support, we partner with you throughout 
-                your digital transformation journey, ensuring that every solution aligns with 
-                your business objectives and delivers measurable results.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span className="text-gray-700">Custom software development</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span className="text-gray-700">Cloud migration and management</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span className="text-gray-700">Digital transformation consulting</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
-                  <span className="text-gray-700">Cybersecurity services</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gray-50 p-8 rounded-lg">
-              <h4 className="text-xl font-semibold text-gray-900 mb-4">Service Highlights</h4>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-600 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-900">Expert Team</h5>
-                    <p className="text-sm text-gray-600">Experienced professionals with deep domain knowledge</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-600 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-900">Quality Assurance</h5>
-                    <p className="text-sm text-gray-600">Rigorous testing and quality control processes</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-orange-600 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-900">Ongoing Support</h5>
-                    <p className="text-sm text-gray-600">Continuous support and maintenance services</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Contact Section - Using existing component */}
+      <ContactSection />
     </WebsiteLayout>
   );
 }
