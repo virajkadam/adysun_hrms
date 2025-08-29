@@ -17,7 +17,14 @@ export { default as FAQAccordion } from './content/FAQAccordion';
 export { default as ProcessSteps } from './content/ProcessSteps';
 export { default as SocialMediaLinks } from './content/SocialMediaLinks';
 
+// Service Components
+export { default as ServiceCard } from './ServiceCard';
+export { default as ComprehensiveServiceCard } from './ComprehensiveServiceCard';
+export { default as DetailedServiceSection } from './DetailedServiceSection';
+
 // Layout Components
 export { default as WebsiteLayout } from './WebsiteLayout';
 export { default as HeroSection } from './layout/HeroSection';
 export { default as CTASection } from './layout/CTASection';
+export { default as CounterSection } from './layout/CounterSection';
+export { default as ContactSection } from './layout/ContactSection';
