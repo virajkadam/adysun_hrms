@@ -78,23 +78,7 @@ export default function WebsiteHomePage() {
           />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left intro copy */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-gray-900">Premier IT Solutions Provider in India</h3>
-              <p className="text-gray-600">
-                Adysun Ventures delivers cutting‑edge software, cloud, cybersecurity, analytics and digital
-                transformation services. Our partnerships with leading technology vendors ensure access to the
-                latest innovations and proven practices.
-              </p>
-              <p className="text-gray-600">
-                With a decade of experience across industries, we help organizations optimize technology
-                investments and achieve sustainable growth.
-              </p>
-            </div>
-            
-            {/* Right feature cards */}
-            <div className="space-y-6">
-              <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-xl font-bold text-gray-900">Business Strategy Consulting</h3>
                   <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">Advisory</span>
@@ -141,7 +125,7 @@ export default function WebsiteHomePage() {
                   </li>
                 </ul>
               </div>
-            </div>
+            
           </div>
         </div>
       </section>
