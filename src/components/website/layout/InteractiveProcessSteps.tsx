@@ -96,25 +96,25 @@ export default function InteractiveProcessSteps({ steps, className = '' }: Inter
               key={index}
               className={`cursor-pointer transition-all duration-300 rounded-xl p-4 ${
                 activeStep === index
-                  ? 'bg-orange-100 border-l-4 border-orange-500 pl-6 shadow-lg'
-                  : 'hover:bg-gray-50 pl-6 hover:shadow-md'
+                  ? 'bg-gradient-to-r from-orange-200 to-orange-100 border-l-4 border-orange-600 pl-6 shadow-xl ring-2 ring-orange-200 border-0'
+                  : 'bg-gradient-to-r from-orange-50 to-white border border-orange-200 pl-6 hover:bg-orange-100 hover:shadow-lg hover:border-orange-300'
               }`}
               onClick={() => handleStepClick(index)}
             >
               <div className="flex items-start space-x-4">
                 <div className={`text-2xl font-bold transition-colors duration-300 ${
-                  activeStep === index ? 'text-orange-600' : 'text-gray-400'
+                  activeStep === index ? 'text-orange-700' : 'text-gray-400'
                 }`}>
                   {step.number}
                 </div>
                 <div className="flex-1">
                   <h3 className={`text-lg font-semibold mb-1 transition-colors duration-300 ${
-                    activeStep === index ? 'text-orange-600' : 'text-gray-900'
+                    activeStep === index ? 'text-orange-800' : 'text-gray-900'
                   }`}>
                     {step.title}
                   </h3>
                   <p className={`text-sm transition-colors duration-300 ${
-                    activeStep === index ? 'text-orange-600' : 'text-gray-600'
+                    activeStep === index ? 'text-orange-700' : 'text-gray-600'
                   }`}>
                     {step.subtitle}
                   </p>
@@ -127,25 +127,25 @@ export default function InteractiveProcessSteps({ steps, className = '' }: Inter
       
       {/* Right Side - Content */}
       <div className="lg:col-span-2 space-y-8">
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="bg-gradient-to-br from-orange-50 to-white rounded-2xl p-8 shadow-xl border-2 border-orange-200 hover:shadow-2xl hover:border-orange-300 transition-all duration-300">
+          <h3 className="text-2xl font-bold text-orange-900 mb-4">
             {steps[activeStep].content.mainTitle}
           </h3>
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-orange-700 leading-relaxed">
             {steps[activeStep].content.mainDescription}
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps[activeStep].content.features.map((feature, index) => (
-            <div key={index} className="text-center bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="text-orange-600">
+            <div key={index} className="text-center bg-gradient-to-br from-orange-50 to-white rounded-xl p-6 shadow-xl border-2 border-orange-200 hover:shadow-2xl hover:scale-105 hover:border-orange-300 transition-all duration-300">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="text-white">
                   {feature.icon}
                 </div>
               </div>
-              <h4 className="text-lg font-semibold mb-2 text-gray-900">{feature.title}</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <h4 className="text-lg font-semibold mb-2 text-orange-900">{feature.title}</h4>
+              <p className="text-orange-700 text-sm leading-relaxed">
                 {feature.description}
               </p>
             </div>
