@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import CounterSection from '@/components/website/layout/CounterSection';
 import CTAButton from '@/components/website/CTAButton';
 import ContactCard from '@/components/website/content/ContactCard';
@@ -153,28 +154,16 @@ export default function ClientsPage() {
       title="Our Clients - Adysun Ventures"
       description="Discover our diverse client portfolio across transportation, logistics, construction, manufacturing, and e-commerce industries. We've helped businesses transform their operations with innovative IT solutions."
     >
-      {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              Our Clients
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8 text-center">
-            Trusted by Industry Leaders
-          </h1>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed text-center mb-12">
-            Discover our diverse client portfolio across transportation, logistics, construction, manufacturing, and e-commerce industries.
-          </p>
-          <div className="text-center">
-            <CTAButton href="/contact-us" variant="primary">
-              Talk to our Solution Specialist
-            </CTAButton>
-          </div>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="Our"
+        titleHighlight="Clients"
+        description="Discover our diverse client portfolio across transportation, logistics, construction, manufacturing, and e-commerce industries."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Clients', isActive: true }
+        ]}
+      />
 
       {/* Client Categories Section */}
       <section className="py-20 bg-white">

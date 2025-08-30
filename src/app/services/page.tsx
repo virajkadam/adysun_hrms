@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import ServiceCard from '@/components/website/ServiceCard';
 import ComprehensiveServiceCard from '@/components/website/ComprehensiveServiceCard';
 import DetailedServiceSection from '@/components/website/DetailedServiceSection';
@@ -192,30 +193,16 @@ export default function ServicesPage() {
       title="Our Services - Adysun Ventures"
       description="Comprehensive IT solutions and business strategy services including web development, e-commerce, digital marketing, machine learning, and technology consulting."
     >
-      {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              Our Services
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8 text-center">
-            Comprehensive IT Solutions
-          </h1>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="flex justify-center space-x-4 text-lg mb-8">
-            <a href="/" className="text-gray-700 hover:text-orange-600 transition-colors">
-              Home
-            </a>
-            <span className="text-gray-500">/</span>
-            <span className="text-orange-600 font-semibold">Services</span>
-          </div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed text-center">
-            From web development to AI solutions, we provide end-to-end technology services that drive business growth and digital transformation.
-          </p>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="Our"
+        titleHighlight="Services"
+        description="From web development to AI solutions, we provide end-to-end technology services that drive business growth and digital transformation."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Services', isActive: true }
+        ]}
+      />
 
       {/* What We Offer Section */}
       <section className="py-20 bg-white">

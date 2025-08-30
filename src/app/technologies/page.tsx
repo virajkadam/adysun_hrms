@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import TechnologyCategoryCard from '@/components/website/TechnologyCategoryCard';
 import { Rocket, Users, Wrench, Code, Database, Cloud, Brain, ShoppingCart } from 'lucide-react';
 
@@ -129,26 +130,15 @@ export default function TechnologiesPage() {
       title="Technologies - Overview Of Our Diverse Technology Competency"
       description="Adysun Ventures offers comprehensive technology solutions across Mobility, Frontend, Backend, Big Data, AI/ML, Blockchain, and E-Commerce platforms. Hire skilled developers for your software development needs."
     >
-      {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              Technology Expertise
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
-            Hire Software Developers
-          </h1>
-          <h2 className="text-3xl md:text-4xl font-bold text-orange-600 mb-8">
-            Of Adysun Ventures
-          </h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Adysun Ventures is a software development firm offering software developers / engineers / programmers to hire on hourly, part time or monthly basis. We focus on creating scalable, high performing, and secure software solutions for all the industry verticals.
-          </p>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="Technologies"
+        description="Adysun Ventures is a software development firm offering software developers / engineers / programmers to hire on hourly, part time or monthly basis. We focus on creating scalable, high performing, and secure software solutions for all the industry verticals."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Technologies', isActive: true }
+        ]}
+      />
 
       {/* Technology Overview Section */}
       <section className="py-20 bg-white">

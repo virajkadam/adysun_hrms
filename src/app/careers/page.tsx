@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import BenefitCard from '@/components/website/BenefitCard';
 import CTAButton from '@/components/website/CTAButton';
 import CounterSection from '@/components/website/layout/CounterSection';
@@ -98,23 +99,15 @@ export default function CareersPage() {
       title="Careers - Let's shape the future with tech together!"
       description="Join Adysun Ventures and be part of a team that's passionate about innovation and creating solutions that make a difference. Explore career opportunities in software development, IT consulting, and technology innovation."
     >
-      {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              Join Our Team
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
-            Let's shape the future with tech together!
-          </h1>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            At Adysun Ventures, we're passionate about innovation and shaping the future. Be part of a team that's dedicated to creating solutions that make a difference.
-          </p>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="Careers"
+        description="At Adysun Ventures, we're passionate about innovation and shaping the future. Be part of a team that's dedicated to creating solutions that make a difference."
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Careers', isActive: true }
+        ]}
+      />
 
       {/* Culture Section */}
       <section className="py-20 bg-white">

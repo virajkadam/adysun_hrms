@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
@@ -11,25 +12,16 @@ export default function AboutUsPage() {
       title="About Us - Adysun Ventures"
       description="Learn about Adysun Ventures and our mission to deliver growth to your business through innovative IT solutions and strategic consulting."
     >
-      {/* Hero Section with Enhanced Background */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900 py-24 mb-20">
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-transparent"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            About <span className="text-orange-400">Us</span>
-          </h1>
-          <p className="text-xl text-gray-200 mb-8 max-w-3xl mx-auto">
-            Discover how we inspire, imagine, and implement innovative solutions 
-            that drive your business forward
-          </p>
-          <nav className="flex justify-center items-center space-x-3 text-white">
-            <a href="/" className="hover:text-orange-400 transition-colors duration-300">Home</a>
-            <span className="text-orange-400">/</span>
-            <span className="text-orange-400 font-semibold">About Us</span>
-          </nav>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="About"
+        titleHighlight="Us"
+        description="Discover how we inspire, imagine, and implement innovative solutions that drive your business forward"
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'About Us', isActive: true }
+        ]}
+      />
 
       {/* Enhanced Service Overview Section */}
       <section className="mb-20">

@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import PartnerCard from '@/components/website/PartnerCard';
 import BenefitCard from '@/components/website/BenefitCard';
@@ -82,35 +83,16 @@ export default function PartnersPage() {
       title="Our Partners - Adysun Ventures"
       description="Strategic technology partnerships with industry leaders including SUSE, Red Hat, Canonical, and GitLab to deliver comprehensive IT solutions."
     >
-      {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="text-center lg:text-left">
-              <div className="mb-6">
-                <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-                  Technology Partnership
-                </span>
-              </div>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
-                Our Company Affiliations
-              </h1>
-              <p className="text-xl text-gray-700 leading-relaxed max-w-2xl">
-                Strategic partnerships with industry leaders to deliver cutting-edge solutions
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-white p-8 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
-                <img
-                  src="/assets/images/content/partners_content.png"
-                  alt="Company Affiliations"
-                  className="w-full max-w-md mx-auto rounded-2xl"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Page Hero Section */}
+      <PageHero
+        title="Our"
+        titleHighlight="Partners"
+        description="Strategic partnerships with industry leaders to deliver cutting-edge solutions"
+        breadcrumbs={[
+          { label: 'Home', href: '/' },
+          { label: 'Partners', isActive: true }
+        ]}
+      />
 
       {/* Partners Section */}
       <section className="py-20 bg-white">
