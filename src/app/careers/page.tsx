@@ -77,8 +77,8 @@ export default function CareersPage() {
 
   // Statistics for CounterSection
   const statistics = [
-    { icon: <Users />, value: "50+", label: "Total Projects" },
-    { icon: <Heart />, value: "200+", label: "Happy Clients" },
+            { icon: <Users />, value: "150+", label: "Total Projects" },
+        { icon: <Heart />, value: "75+", label: "Happy Clients" },
     { icon: <FileText />, value: "3+", label: "Awards Won" },
     { icon: <ArrowRight />, value: "888+", label: "Task Completed" }
   ];

@@ -134,8 +134,8 @@ export default function ClientsPage() {
 
   // Statistics for CounterSection
   const statistics = [
-    { icon: <BarChart3 />, value: "50+", label: "Total Projects" },
-    { icon: <Building />, value: "200+", label: "Happy Clients" },
+            { icon: <BarChart3 />, value: "150+", label: "Total Projects" },
+        { icon: <Building />, value: "75+", label: "Happy Clients" },
     { icon: <Truck />, value: "3+", label: "Awards Won" },
     { icon: <ShoppingCart />, value: "888+", label: "Task Completed" }
   ];

@@ -59,8 +59,8 @@ export default function ContactUsPage() {
 
   // Statistics for CounterSection
   const statistics = [
-    { icon: <Briefcase />, value: "50+", label: "Total Projects" },
-    { icon: <Mail />, value: "200+", label: "Happy Clients" },
+            { icon: <Briefcase />, value: "150+", label: "Total Projects" },
+        { icon: <Mail />, value: "75+", label: "Happy Clients" },
     { icon: <Clock />, value: "3+", label: "Awards Won" },
     { icon: <Globe />, value: "888+", label: "Task Completed" }
   ];

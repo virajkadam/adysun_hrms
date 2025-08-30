@@ -70,13 +70,14 @@ export default function HeroSection({
             )}
             
             {actions.length > 0 && (
-              <div className="mt-8 space-x-4">
+              <div className="mt-8 space-x-4 flex flex-col sm:flex-row gap-4">
                 {actions.map((action, index) => (
                   <Button
                     key={index}
                     href={action.href}
                     variant={action.variant}
                     size="lg"
+                    className="min-h-[48px] min-w-[44px] touch-manipulation"
                   >
                     {action.text}
                   </Button>
@@ -112,13 +113,14 @@ export default function HeroSection({
         )}
         
         {actions.length > 0 && (
-          <div className="space-x-4">
+          <div className="space-x-4 flex flex-col sm:flex-row gap-4 justify-center">
             {actions.map((action, index) => (
               <Button
                 key={index}
                 href={action.href}
                 variant={action.variant}
                 size="lg"
+                className="min-h-[48px] min-w-[44px] touch-manipulation"
               >
                 {action.text}
               </Button>

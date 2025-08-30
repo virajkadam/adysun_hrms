@@ -383,8 +383,8 @@ export default function AboutUsPage() {
       <CounterSection
         className="mb-20"
         items={[
-          { icon: <Users />, value: '50+', label: 'Total Projects' },
-          { icon: <Smile />, value: '200+', label: 'Happy Clients' },
+                  { icon: <Users />, value: '150+', label: 'Total Projects' },
+        { icon: <Smile />, value: '75+', label: 'Happy Clients' },
           { icon: <BarChart3 />, value: '3+', label: 'Awards Won' },
           { icon: <Briefcase />, value: '888+', label: 'Task Completed' }
         ]}

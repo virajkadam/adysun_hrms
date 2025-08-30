@@ -4,6 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import responsive typography */
+@import '../lib/responsive-typography.css';
+
+/* Enhanced touch targets for mobile */
+* {
+  touch-action: manipulation;
+}
+
+/* Improved focus indicators */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 /* Custom scrollbar styles */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */

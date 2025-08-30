@@ -1,11 +1,41 @@
 import React from 'react';
 import ContactCard from '../content/ContactCard';
+import Section from '../../ui/Section';
+import { designTokens } from '@/lib/design-tokens';
 import { MapPin, Mail, Phone } from 'lucide-react';
 
-export default function ContactSection() {
-  const title = 'REACH OUT TO ADYSUN VENTURES';
+interface Contact {
+  title: string;
+  icon: React.ReactNode;
+  content: React.ReactNode;
+  actions?: Array<{
+    text: string;
+    href: string;
+    variant: 'primary' | 'secondary';
+  }>;
+}
 
-  const contacts = [
+interface ContactSectionProps {
+  contacts?: Contact[];
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+
+/**
+ * ContactSection component for displaying contact information
+ * @param contacts - Array of contact information
+ * @param title - Section title
+ * @param subtitle - Section subtitle
+ * @param className - Additional CSS classes
+ */
+export default function ContactSection({ 
+  contacts,
+  title = 'REACH OUT TO ADYSUN VENTURES',
+  subtitle = 'Ready to start your journey with Adysun Ventures? Contact our team today.',
+  className = ''
+}: ContactSectionProps) {
+  const defaultContacts: Contact[] = [
     {
       title: 'Pune Office (Head Office)',
       icon: <MapPin className="w-5 h-5" />,
@@ -18,8 +48,8 @@ export default function ContactSection() {
         </div>
       ),
       actions: [
-        { text: 'Google Maps', href: '#', variant: 'primary' as const },
-        { text: 'Google Search', href: '#', variant: 'primary' as const }
+        { text: 'Google Maps', href: '#', variant: 'primary' },
+        { text: 'Google Search', href: '#', variant: 'primary' }
       ]
     },
     {
@@ -34,8 +64,8 @@ export default function ContactSection() {
         </div>
       ),
       actions: [
-        { text: 'Google Maps', href: '#', variant: 'primary' as const },
-        { text: 'Google Search', href: '#', variant: 'primary' as const }
+        { text: 'Google Maps', href: '#', variant: 'primary' },
+        { text: 'Google Search', href: '#', variant: 'primary' }
       ]
     },
     {
@@ -63,30 +93,30 @@ export default function ContactSection() {
     }
   ];
 
+  const contactData = contacts || defaultContacts;
+
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            {title}
-          </h2>
-          <p className="text-xl text-gray-600">
-            Ready to start your journey with Adysun Ventures? Contact our team today.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {contacts.map((contact, index) => (
-            <ContactCard
-              key={index}
-              title={contact.title}
-              icon={contact.icon}
-              content={contact.content}
-              actions={contact.actions}
-            />
-          ))}
-        </div>
+    <Section variant="white" size="large" className={className}>
+      <div className="text-center mb-20">
+        <h2 className={`${designTokens.typography.h2} mb-6`}>
+          {title}
+        </h2>
+        <p className={`${designTokens.typography.body.large} ${designTokens.colors.text.secondary}`}>
+          {subtitle}
+        </p>
       </div>
-    </section>
+      
+      <div className={`grid grid-cols-1 md:grid-cols-2 ${designTokens.spacing.gap.large}`}>
+        {contactData.map((contact, index) => (
+          <ContactCard
+            key={index}
+            title={contact.title}
+            icon={contact.icon}
+            content={contact.content}
+            actions={contact.actions}
+          />
+        ))}
+      </div>
+    </Section>
   );
 }

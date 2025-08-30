@@ -173,8 +173,8 @@ export default function ServicesPage() {
 
   // Statistics for CounterSection
   const statistics = [
-    { icon: <Code />, value: "50+", label: "Total Projects" },
-    { icon: <Globe />, value: "200+", label: "Happy Clients" },
+            { icon: <Code />, value: "150+", label: "Total Projects" },
+        { icon: <Globe />, value: "75+", label: "Happy Clients" },
     { icon: <ShoppingCart />, value: "3+", label: "Awards Won" },
     { icon: <MonitorIcon />, value: "888+", label: "Task Completed" }
   ];

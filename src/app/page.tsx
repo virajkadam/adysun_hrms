@@ -6,7 +6,7 @@ import FeatureCard from '@/components/website/FeatureCard';
 import IndustryCard from '@/components/website/IndustryCard';
 import CTASection from '@/components/website/layout/CTASection';
 import ContactCard from '@/components/website/content/ContactCard';
-import StatisticsCard from '@/components/website/content/StatisticsCard';
+
 import CounterSection from '@/components/website/layout/CounterSection';
 import { Users, Smile, Crown, CheckSquare, PiggyBank, BarChart3, Rocket, ShoppingCart, LineChart, Truck, CheckCircle2, Cog, Handshake, Brain, Smartphone, Target, TrendingUp, Zap, RefreshCw, Briefcase } from 'lucide-react';
 import PartnerLogo from '@/components/website/content/PartnerLogo';
@@ -308,9 +308,8 @@ export default function WebsiteHomePage() {
       <CTASection
         title="Ready to Transform Your Business with IT Solutions?"
         description="Contact us today to discuss how our services can drive your business growth."
-        background="orange"
         actions={[
-          { text: "Get in Touch", href: "/contact-us", variant: "outline" }
+          { text: "Get in Touch", href: "/contact-us", variant: "secondary" }
         ]}
         className="mb-16"
       />
@@ -322,8 +321,8 @@ export default function WebsiteHomePage() {
       <CounterSection
         className="mb-16"
         items={[
-          { icon: <Users />, value: '50+', label: 'Total Projects' },
-          { icon: <Smile />, value: '200+', label: 'Happy Clients' },
+                  { icon: <Users />, value: '150+', label: 'Total Projects' },
+        { icon: <Smile />, value: '75+', label: 'Happy Clients' },
           { icon: <Crown />, value: '3+', label: 'Awards Won' },
           { icon: <CheckSquare />, value: '888+', label: 'Task Completed' }
         ]}
