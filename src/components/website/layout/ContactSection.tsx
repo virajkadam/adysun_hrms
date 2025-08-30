@@ -1,8 +1,8 @@
 import React from 'react';
 import ContactCard from '../content/ContactCard';
-import Section from '../../ui/Section';
-import { designTokens } from '@/lib/design-tokens';
 import { MapPin, Mail, Phone } from 'lucide-react';
+import GoogleSearchIcon from '../icons/GoogleSearchIcon';
+import GoogleMapsIcon from '../icons/GoogleMapsIcon';
 
 interface Contact {
   title: string;
@@ -12,6 +12,7 @@ interface Contact {
     text: string;
     href: string;
     variant: 'primary' | 'secondary';
+    icon?: React.ReactNode;
   }>;
 }
 
@@ -48,8 +49,8 @@ export default function ContactSection({
         </div>
       ),
       actions: [
-        { text: 'Google Maps', href: '#', variant: 'primary' },
-        { text: 'Google Search', href: '#', variant: 'primary' }
+        { text: 'Google Maps', href: '#', variant: 'primary', icon: <GoogleMapsIcon size={16} /> },
+        { text: 'Google Search', href: '#', variant: 'primary', icon: <GoogleSearchIcon size={16} /> }
       ]
     },
     {
@@ -64,8 +65,8 @@ export default function ContactSection({
         </div>
       ),
       actions: [
-        { text: 'Google Maps', href: '#', variant: 'primary' },
-        { text: 'Google Search', href: '#', variant: 'primary' }
+        { text: 'Google Maps', href: '#', variant: 'primary', icon: <GoogleMapsIcon size={16} /> },
+        { text: 'Google Search', href: '#', variant: 'primary', icon: <GoogleSearchIcon size={16} /> }
       ]
     },
     {
@@ -96,27 +97,33 @@ export default function ContactSection({
   const contactData = contacts || defaultContacts;
 
   return (
-    <Section variant="white" size="large" className={className}>
-      <div className="text-center mb-20">
-        <h2 className={`${designTokens.typography.h2} mb-6`}>
-          {title}
-        </h2>
-        <p className={`${designTokens.typography.body.large} ${designTokens.colors.text.secondary}`}>
-          {subtitle}
-        </p>
+    <section className={`py-20 bg-gradient-to-br from-orange-50 to-white ${className}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-20">
+          <div className="inline-block bg-orange-100 text-orange-700 px-6 py-3 rounded-full text-sm font-semibold mb-6">
+            Contact Information
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            {title}
+          </h2>
+          <p className="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
+            {subtitle}
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {contactData.map((contact, index) => (
+            <ContactCard
+              key={index}
+              title={contact.title}
+              icon={contact.icon}
+              content={contact.content}
+              actions={contact.actions}
+              className="hover:shadow-xl hover:border-orange-300 transition-all duration-300 border border-orange-200"
+            />
+          ))}
+        </div>
       </div>
-      
-      <div className={`grid grid-cols-1 md:grid-cols-2 ${designTokens.spacing.gap.large}`}>
-        {contactData.map((contact, index) => (
-          <ContactCard
-            key={index}
-            title={contact.title}
-            icon={contact.icon}
-            content={contact.content}
-            actions={contact.actions}
-          />
-        ))}
-      </div>
-    </Section>
+    </section>
   );
 }
