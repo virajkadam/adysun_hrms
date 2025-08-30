@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
 interface NavigationProps {
   className?: string;
@@ -12,6 +12,8 @@ interface NavigationProps {
 export default function Navigation({ className = '' }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isIndustriesOpen, setIsIndustriesOpen] = useState(false);
+  const industriesRef = useRef<HTMLDivElement>(null);
 
   // Handle scroll effect
   useEffect(() => {
@@ -44,15 +46,31 @@ export default function Navigation({ className = '' }: NavigationProps) {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsMenuOpen(false);
+        setIsIndustriesOpen(false);
       }
     };
 
-    if (isMenuOpen) {
+    if (isMenuOpen || isIndustriesOpen) {
       document.addEventListener('keydown', handleEscape);
     }
 
     return () => document.removeEventListener('keydown', handleEscape);
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isIndustriesOpen]);
+
+  // Close industries dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (industriesRef.current && !industriesRef.current.contains(event.target as Node)) {
+        setIsIndustriesOpen(false);
+      }
+    };
+
+    if (isIndustriesOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isIndustriesOpen]);
 
   const navigationItems = [
     { href: '/', label: 'Home' },
@@ -63,6 +81,11 @@ export default function Navigation({ className = '' }: NavigationProps) {
     { href: '/careers', label: 'Careers' },
     { href: '/clients', label: 'Clients' },
     { href: '/contact-us', label: 'Contact' }
+  ];
+
+  const industriesItems = [
+    { href: '/industries/ecommerce', label: 'E-commerce' },
+    { href: '/industries/stock-exchange', label: 'Stock Exchange' }
   ];
 
   return (
@@ -80,7 +103,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md"
+            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md flex-shrink-0"
             aria-label="Adysun Ventures Home"
           >
             <Image
@@ -88,27 +111,79 @@ export default function Navigation({ className = '' }: NavigationProps) {
               alt="Adysun Ventures Logo"
               width={40}
               height={40}
-              className="w-10 h-10"
+              className="w-10 h-10 flex-shrink-0"
             />
-            <div className="hidden sm:block">
-              <div className="text-lg font-bold text-gray-900">ADYSUN VENTURES</div>
+            <div className="hidden sm:block flex-shrink-0">
+              <div className="text-base lg:text-lg font-bold text-gray-900">ADYSUN VENTURES</div>
               <div className="text-xs text-gray-600">Inspire. Imagine. Implement.</div>
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-                           <div className="hidden md:flex items-center space-x-8">
-                   {navigationItems.map((item) => (
-                     <Link
-                       key={item.href}
-                       href={item.href}
-                       className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-3 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                       aria-label={`Navigate to ${item.label} page`}
-                     >
-                       {item.label}
-                     </Link>
-                   ))}
-                 </div>
+                    {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+                aria-label={`Navigate to ${item.label} page`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            
+            {/* Industries Dropdown */}
+            <div ref={industriesRef} className="relative">
+              <div className="flex items-center">
+                <Link
+                  href="/industries"
+                  className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] flex items-center justify-center text-sm lg:text-base"
+                  aria-label="Navigate to Industries page"
+                >
+                  Industries
+                </Link>
+                <button
+                  className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-1 py-2 min-h-[44px] min-w-[32px] flex items-center justify-center text-sm lg:text-base"
+                  onClick={() => setIsIndustriesOpen(!isIndustriesOpen)}
+                  aria-expanded={isIndustriesOpen}
+                  aria-haspopup="true"
+                  aria-label="Industries dropdown menu"
+                >
+                  <ChevronDown 
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      isIndustriesOpen ? 'rotate-180' : ''
+                    }`} 
+                    aria-hidden="true" 
+                  />
+                </button>
+              </div>
+              
+              {/* Dropdown Menu */}
+              <div
+                className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-orange-200 py-2 transition-all duration-200 ${
+                  isIndustriesOpen 
+                    ? 'opacity-100 visible translate-y-0' 
+                    : 'opacity-0 invisible -translate-y-2'
+                }`}
+                role="menu"
+                aria-orientation="vertical"
+                aria-hidden={!isIndustriesOpen}
+              >
+                {industriesItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                    onClick={() => setIsIndustriesOpen(false)}
+                    role="menuitem"
+                    aria-label={`Navigate to ${item.label} page`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -136,19 +211,72 @@ export default function Navigation({ className = '' }: NavigationProps) {
           }`}
           aria-hidden={!isMenuOpen}
         >
-                           <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-lg border border-orange-200">
-                   {navigationItems.map((item) => (
-                     <Link
-                       key={item.href}
-                       href={item.href}
-                       className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
-                       onClick={() => setIsMenuOpen(false)}
-                       aria-label={`Navigate to ${item.label} page`}
-                     >
-                       {item.label}
-                     </Link>
-                   ))}
-                 </div>
+                                                     <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-lg border border-orange-200">
+                    {navigationItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                        onClick={() => setIsMenuOpen(false)}
+                        aria-label={`Navigate to ${item.label} page`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                    
+                    {/* Mobile Industries Dropdown */}
+                    <div className="border-t border-orange-200 pt-2 mt-2">
+                      <div className="flex items-center justify-between">
+                        <Link
+                          href="/industries"
+                          className="flex-1 text-left px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                          onClick={() => setIsMenuOpen(false)}
+                          aria-label="Navigate to Industries page"
+                        >
+                          Industries
+                        </Link>
+                        <button
+                          className="px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
+                          onClick={() => setIsIndustriesOpen(!isIndustriesOpen)}
+                          aria-expanded={isIndustriesOpen}
+                          aria-haspopup="true"
+                          aria-label="Industries dropdown menu"
+                        >
+                          <ChevronDown 
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              isIndustriesOpen ? 'rotate-180' : ''
+                            }`} 
+                            aria-hidden="true" 
+                          />
+                        </button>
+                      </div>
+                      
+                      {/* Mobile Dropdown Items */}
+                      <div
+                        className={`transition-all duration-200 ${
+                          isIndustriesOpen 
+                            ? 'max-h-48 opacity-100' 
+                            : 'max-h-0 opacity-0'
+                        }`}
+                        aria-hidden={!isIndustriesOpen}
+                      >
+                        {industriesItems.map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="block px-6 py-2 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              setIsIndustriesOpen(false);
+                            }}
+                            aria-label={`Navigate to ${item.label} page`}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
         </div>
       </div>
     </nav>

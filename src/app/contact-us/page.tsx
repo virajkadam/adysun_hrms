@@ -5,7 +5,7 @@ import CounterSection from '@/components/website/layout/CounterSection';
 import CTAButton from '@/components/website/CTAButton';
 import ContactCard from '@/components/website/content/ContactCard';
 import ContactSection from '@/components/website/layout/ContactSection';
-import PartnerLogosSection from '@/components/website/layout/PartnerLogosSection';
+import LogoLoop from '@/components/reactbits/LogoLoop';
 import CTASection from '@/components/website/layout/CTASection';
 import { 
   Briefcase, 
@@ -68,12 +68,12 @@ export default function ContactUsPage() {
 
   // Technology/Partner logos
   const techLogos = [
-    "/assets/images/partners/android.png",
-    "/assets/images/partners/angular.png",
-    "/assets/images/partners/aws.png",
-    "/assets/images/partners/azure.png",
-    "/assets/images/partners/bigdata.png",
-    "/assets/images/partners/blockchain.png"
+    { src: "/assets/images/partners/android.png", alt: "Android" },
+    { src: "/assets/images/partners/angular.png", alt: "Angular" },
+    { src: "/assets/images/partners/aws.png", alt: "AWS" },
+    { src: "/assets/images/partners/azure.png", alt: "Azure" },
+    { src: "/assets/images/partners/bigdata.png", alt: "Big Data" },
+    { src: "/assets/images/partners/blockchain.png", alt: "Blockchain" }
   ];
 
   return (
@@ -276,11 +276,26 @@ export default function ContactUsPage() {
       />
 
       {/* Technology/Partner Logos Section */}
-      <PartnerLogosSection 
-        logos={techLogos} 
-        title="Technology & Partner Stack"
-        subtitle="We work with leading technology platforms to deliver world-class solutions"
-      />
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Technology & Partner Stack
+            </h3>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We work with leading technology platforms to deliver world-class solutions
+            </p>
+          </div>
+          <LogoLoop 
+            logos={techLogos}
+            height={80}
+            gap={48}
+            speedSec={25}
+            grayscale={true}
+            className="py-8"
+          />
+        </div>
+      </section>
 
       {/* CTA Section */}
       <CTASection
