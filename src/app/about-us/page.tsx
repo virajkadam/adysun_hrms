@@ -48,9 +48,9 @@ export default function AboutUsPage() {
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
                 <img
-                  src="/assets/images/content/services/service2b.jpg"
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"
                   alt="Who We Are"
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-orange-600/80 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -65,9 +65,9 @@ export default function AboutUsPage() {
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
                 <img
-                  src="/assets/images/content/services/service4b.jpg"
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"
                   alt="What We Do"
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-orange-600/80 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -82,9 +82,9 @@ export default function AboutUsPage() {
             <div className="group">
               <div className="relative overflow-hidden rounded-2xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
                 <img
-                  src="/assets/images/content/services/service3b.jpg"
+                  src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"
                   alt="Our Success"
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-orange-600/80 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
