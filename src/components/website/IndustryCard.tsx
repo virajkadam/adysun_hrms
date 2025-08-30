@@ -19,16 +19,16 @@ export default function IndustryCard({
   bgColor = 'bg-green-100'
 }: IndustryCardProps) {
   return (
-    <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-      <div className={`w-16 h-16 ${bgColor} rounded-full flex items-center justify-center mx-auto mb-4`}>
-        <span className="text-2xl text-orange-600 [&_*]:w-6 [&_*]:h-6">{icon}</span>
+    <div className="bg-gradient-to-br from-orange-50 to-white border-2 border-orange-200 rounded-xl p-6 hover:shadow-xl hover:border-orange-300 transition-all duration-300">
+      <div className={`w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+        <span className="text-white [&_*]:w-6 [&_*]:h-6">{icon}</span>
       </div>
-      <h4 className="text-xl text-gray-800 font-semibold text-center mb-2">{title}</h4>
-      <p className="text-gray-600 text-center mb-4">{description}</p>
+      <h4 className="text-xl text-orange-900 font-semibold text-center mb-2">{title}</h4>
+      <p className="text-orange-700 text-center mb-4">{description}</p>
       <div className="text-center">
         <Link 
           href={link} 
-          className="text-blue-600 hover:text-blue-800 font-semibold"
+          className="text-orange-600 hover:text-orange-700 font-semibold hover:underline transition-colors"
         >
           {linkText} →
         </Link>
