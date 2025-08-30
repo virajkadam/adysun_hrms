@@ -64,15 +64,18 @@ export default function ContactSection() {
   ];
 
   return (
-    <section className="mb-16">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             {title}
           </h2>
+          <p className="text-xl text-gray-600">
+            Ready to start your journey with Adysun Ventures? Contact our team today.
+          </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {contacts.map((contact, index) => (
             <ContactCard
               key={index}

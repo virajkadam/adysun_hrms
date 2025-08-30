@@ -24,7 +24,7 @@ export default function CounterSection({
 
   return (
     <section
-      className={`relative py-12 md:py-16 ${hasBackground ? 'bg-cover bg-center' : 'bg-gray-900'} ${className}`}
+      className={`relative py-12 md:py-16 ${hasBackground ? 'bg-cover bg-center' : ''} ${className}`}
       style={hasBackground ? { backgroundImage: `url(${backgroundImageUrl})` } : undefined}
       aria-label="Key metrics"
     >
@@ -41,13 +41,13 @@ export default function CounterSection({
           {items.map((item, index) => (
             <div
               key={index}
-              className="bg-white/5 border border-white/10 rounded-lg text-center p-6 backdrop-blur-sm"
+              className="bg-white/80 border border-orange-200 rounded-lg text-center p-6 shadow-lg backdrop-blur-sm"
             >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-orange-400 mb-3">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 text-orange-600 mb-4">
                 {/* Icons should inherit current color; ensure they are sized */}
-                <span className="[&_*]:w-5 [&_*]:h-5">{item.icon}</span>
+                <span className="[&_*]:w-6 [&_*]:h-6">{item.icon}</span>
               </span>
-              <h3 className="text-3xl font-bold text-white">
+              <h3 className="text-3xl font-bold text-gray-900 mb-2">
                 {typeof item.value === 'string' ? (
                   (() => {
                     const match = (item.value as string).match(/^(\d+(?:\.\d+)?)(.*)$/);
@@ -63,8 +63,8 @@ export default function CounterSection({
                   <CountUp to={Number(item.value)} duration={2} />
                 )}
               </h3>
-              <div className="h-0.5 w-16 bg-white/40 my-3 mx-auto" />
-              <p className="text-sm text-gray-800 font-medium text-white/90">{item.label}</p>
+              <div className="h-0.5 w-16 bg-orange-300 my-3 mx-auto" />
+              <p className="text-sm font-medium text-gray-700">{item.label}</p>
             </div>
           ))}
         </div>

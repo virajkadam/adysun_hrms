@@ -1,8 +1,11 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import StatisticsCard from '@/components/website/content/StatisticsCard';
+import CounterSection from '@/components/website/layout/CounterSection';
 import CTAButton from '@/components/website/CTAButton';
 import ContactCard from '@/components/website/content/ContactCard';
+import ContactSection from '@/components/website/layout/ContactSection';
+import PartnerLogosSection from '@/components/website/layout/PartnerLogosSection';
+import CTASection from '@/components/website/layout/CTASection';
 import { 
   Briefcase, 
   Mail, 
@@ -15,70 +18,7 @@ import {
 } from 'lucide-react';
 
 export default function ContactUsPage() {
-  // Contact information
-  const contactInfo = [
-    {
-      icon: <MapPin />,
-      title: "Pune Office (Head Office)",
-      content: (
-        <div>
-          <p className="font-semibold">Adysun Ventures Pvt. Ltd.</p>
-          <p>Workplex, S no 47, Near Bhapkar Petrol Pump</p>
-          <p>Pune, Maharashtra - 411009</p>
-          <p className="text-sm text-gray-600 mt-2">Main headquarters and development center</p>
-        </div>
-      ),
-      actions: [
-        { text: "Google Maps", href: "https://maps.google.com", variant: "primary" as const },
-        { text: "Google Search", href: "https://google.com", variant: "secondary" as const }
-      ]
-    },
-    {
-      icon: <MapPin />,
-      title: "Thane Office (Mumbai Division)",
-      content: (
-        <div>
-          <p className="font-semibold">Adysun Ventures Pvt. Ltd.</p>
-          <p>A2, 704, Kanchanpushp Society Kavesar</p>
-          <p>Thane West, Thane, Maharashtra - 400607</p>
-          <p className="text-sm text-gray-600 mt-2">Mumbai metropolitan region office</p>
-        </div>
-      ),
-      actions: [
-        { text: "Google Maps", href: "https://maps.google.com", variant: "primary" as const },
-        { text: "Google Search", href: "https://google.com", variant: "secondary" as const }
-      ]
-    },
-    {
-      icon: <Mail />,
-      title: "Email Contacts",
-      content: (
-        <div>
-          <p className="font-semibold mb-2">General Inquiries:</p>
-          <p className="text-orange-600">info@adysunventures.com</p>
-          <p className="font-semibold mb-2 mt-3">HR & Recruitment:</p>
-          <p className="text-orange-600">hr@adysunventures.com</p>
-        </div>
-      ),
-      actions: [
-        { text: "Send Email", href: "mailto:info@adysunventures.com", variant: "primary" as const }
-      ]
-    },
-    {
-      icon: <Phone />,
-      title: "Phone Support",
-      content: (
-        <div>
-          <p className="text-lg font-semibold text-orange-600">+91 9511557023</p>
-          <p className="text-sm text-gray-600 mt-2">Mon-Sat: 10:00 AM - 6:00 PM</p>
-          <p className="text-sm text-gray-600">Closed on Sundays & National Holidays</p>
-        </div>
-      ),
-      actions: [
-        { text: "Call Now", href: "tel:+919511557023", variant: "primary" as const }
-      ]
-    }
-  ];
+
 
   // Office hours and additional info
   const officeInfo = [
@@ -117,12 +57,12 @@ export default function ContactUsPage() {
     "Competitive pricing and transparent communication"
   ];
 
-  // Statistics
+  // Statistics for CounterSection
   const statistics = [
-    { label: "Total Projects", value: "0+", delay: 0 },
-    { label: "Happy Clients", value: "0+", delay: 0.2 },
-    { label: "Awards Won", value: "0+", delay: 0.4 },
-    { label: "Task Completed", value: "0+", delay: 0.6 }
+    { icon: <Briefcase />, value: "50+", label: "Total Projects" },
+    { icon: <Mail />, value: "200+", label: "Happy Clients" },
+    { icon: <Clock />, value: "3+", label: "Awards Won" },
+    { icon: <Globe />, value: "888+", label: "Task Completed" }
   ];
 
   // Technology/Partner logos
@@ -166,30 +106,7 @@ export default function ContactUsPage() {
       </section>
 
       {/* Contact Information Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              REACH OUT TO ADYSUN VENTURES
-            </h2>
-            <p className="text-xl text-gray-600">
-              Ready to start your journey with Adysun Ventures? Contact our team today.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {contactInfo.map((contact, index) => (
-              <ContactCard
-                key={index}
-                icon={contact.icon}
-                title={contact.title}
-                content={contact.content}
-                actions={contact.actions}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <ContactSection />
 
       {/* Contact Form Section */}
       <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
@@ -366,82 +283,28 @@ export default function ContactUsPage() {
       </section>
 
       {/* Statistics Section */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Our Achievements
-            </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-              Numbers that reflect our commitment to excellence and innovation
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {statistics.map((stat, index) => (
-              <StatisticsCard
-                key={index}
-                number={stat.value}
-                label={stat.label}
-                variant="dark"
-                duration={2}
-                delay={stat.delay}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <CounterSection
+        items={statistics}
+        className="bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200"
+      />
 
       {/* Technology/Partner Logos Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Technology & Partner Stack
-            </h3>
-            <p className="text-gray-600">
-              We work with leading technology platforms to deliver world-class solutions
-            </p>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-8 items-center">
-            {techLogos.map((logo, index) => (
-              <div key={index} className="flex justify-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 hover:shadow-lg transition-shadow duration-300">
-                  <img
-                    src={logo}
-                    alt={`Technology ${index + 1}`}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PartnerLogosSection 
+        logos={techLogos} 
+        title="Technology & Partner Stack"
+        subtitle="We work with leading technology platforms to deliver world-class solutions"
+      />
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-orange-900/95 to-orange-800/95 text-white relative"
-               style={{ backgroundImage: 'url(/assets/images/content/tab-content-03.jpg)' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-16">
-            <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
-              Ready to Start Your Project?
-            </h2>
-            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed mb-10">
-              Let's discuss how we can help transform your business with innovative IT solutions.
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <CTAButton href="tel:+919511557023" variant="primary">
-              Call Us Now
-            </CTAButton>
-            <CTAButton href="mailto:info@adysunventures.com" variant="secondary">
-              Send Email
-            </CTAButton>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Ready to Start Your Project?"
+        description="Let's discuss how we can help transform your business with innovative IT solutions."
+        actions={[
+          { text: "Call Us Now", href: "tel:+919511557023", variant: "primary" },
+          { text: "Send Email", href: "mailto:info@adysunventures.com", variant: "secondary" }
+        ]}
+        backgroundImage="/assets/images/content/tab-content-03.jpg"
+      />
     </WebsiteLayout>
   );
 }
