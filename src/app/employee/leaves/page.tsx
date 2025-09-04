@@ -1,29 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile, FiEdit2 } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile, FiBarChart } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
-import { useEmployeeLeaves, useUpdateLeaveEndDate } from '@/hooks/useLeaves';
+import { useEmployeeLeaves } from '@/hooks/useLeaves';
 
-interface LeaveRecord {
-  id: string;
-  type: 'casual' | 'sick' | 'annual' | 'personal' | 'maternity' | 'paternity';
-  startDate: string;
-  endDate: string;
-  reason: string;
-  status: 'pending' | 'approved' | 'rejected';
-  appliedDate: string;
-  totalDays: number;
-  employmentId?: string;
-  employeeId?: string;
-  wasEdited?: boolean;
-}
 
 
 
@@ -66,6 +53,10 @@ export default function EmployeeLeavesPage() {
     router.push('/employee/leaves/report')
   }
 
+  const handleLeavesByYear = () => {
+    router.push('/employee/leaves/by-year')
+  }
+
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
     try {
@@ -79,24 +70,6 @@ export default function EmployeeLeavesPage() {
 
 
 
-  const getLeaveTypeIcon = (type: string) => {
-    switch (type) {
-      case 'casual':
-        return <FiCalendar className="w-4 h-4 text-blue-600" />;
-      case 'sick':
-        return <FiCalendar className="w-4 h-4 text-red-600" />;
-      case 'annual':
-        return <FiCalendar className="w-4 h-4 text-green-600" />;
-      case 'personal':
-        return <FiCalendar className="w-4 h-4 text-purple-600" />;
-      case 'maternity':
-        return <FiCalendar className="w-4 h-4 text-pink-600" />;
-      case 'paternity':
-        return <FiCalendar className="w-4 h-4 text-indigo-600" />;
-      default:
-        return <FiCalendar className="w-4 h-4 text-gray-600" />;
-    }
-  };
 
   const getStatusBadge = (status: string) => {
     const baseClasses = "inline-flex px-2 py-1 text-xs font-semibold rounded-full";
@@ -162,6 +135,12 @@ export default function EmployeeLeavesPage() {
           showStats={false}
           backButton={{ href: '/employee-dashboard' }}
           actionButtons={[
+            {
+              label: 'Leaves by Year',
+              onClick: handleLeavesByYear,
+              icon: <FiBarChart />,
+              variant: 'secondary' as const,
+            },
             {
               label: 'Leave Reports',
               onClick: handleLeavesReport,
