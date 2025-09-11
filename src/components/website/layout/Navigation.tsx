@@ -118,7 +118,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
               height={40}
               className="w-10 h-10 flex-shrink-0"
             />
-            <div className="hidden sm:block flex-shrink-0">
+            <div className=" sm:block flex-shrink-0">
               <div className="text-base lg:text-lg font-bold text-gray-900">ADYSUN VENTURES</div>
               <div className="text-xs text-gray-600">Inspire. Imagine. Implement.</div>
             </div>
