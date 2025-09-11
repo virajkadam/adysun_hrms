@@ -14,6 +14,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isIndustriesOpen, setIsIndustriesOpen] = useState(false);
   const industriesRef = useRef<HTMLDivElement>(null);
+  const mobileIndustriesRef = useRef<HTMLDivElement>(null);
 
   // Handle scroll effect
   useEffect(() => {
@@ -60,7 +61,11 @@ export default function Navigation({ className = '' }: NavigationProps) {
   // Close industries dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (industriesRef.current && !industriesRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isInsideDesktop = industriesRef.current && industriesRef.current.contains(target);
+      const isInsideMobile = mobileIndustriesRef.current && mobileIndustriesRef.current.contains(target);
+      
+      if (!isInsideDesktop && !isInsideMobile) {
         setIsIndustriesOpen(false);
       }
     };
@@ -324,7 +329,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     </Link>
                     
                     {/* Mobile Industries Dropdown */}
-                    <div className="border-t border-orange-200 pt-2 mt-2">
+                    <div ref={mobileIndustriesRef} className="border-t border-orange-200 pt-2 mt-2 relative z-10">
                       <div className="flex items-center justify-between">
                         <Link
                           href="/industries"
@@ -336,7 +341,11 @@ export default function Navigation({ className = '' }: NavigationProps) {
                         </Link>
                         <button
                           className="px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
-                          onClick={() => setIsIndustriesOpen(!isIndustriesOpen)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsIndustriesOpen(!isIndustriesOpen);
+                          }}
                           aria-expanded={isIndustriesOpen}
                           aria-haspopup="true"
                           aria-label="Industries dropdown menu"
@@ -352,10 +361,10 @@ export default function Navigation({ className = '' }: NavigationProps) {
                       
                       {/* Mobile Dropdown Items */}
                       <div
-                        className={`transition-all duration-200 ${
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
                           isIndustriesOpen 
-                            ? 'max-h-48 opacity-100' 
-                            : 'max-h-0 opacity-0'
+                            ? 'max-h-48 opacity-100 translate-y-0' 
+                            : 'max-h-0 opacity-0 -translate-y-2'
                         }`}
                         aria-hidden={!isIndustriesOpen}
                       >
