@@ -121,16 +121,50 @@ export default function Navigation({ className = '' }: NavigationProps) {
 
                     {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
-                aria-label={`Navigate to ${item.label} page`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {/* Home */}
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Home page"
+            >
+              Home
+            </Link>
+            
+            {/* About */}
+            <Link
+              href="/about-us"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to About page"
+            >
+              About
+            </Link>
+            
+            {/* Services */}
+            <Link
+              href="/services"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Services page"
+            >
+              Services
+            </Link>
+            
+            {/* Partners */}
+            <Link
+              href="/partners"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Partners page"
+            >
+              Partners
+            </Link>
+            
+            {/* Technologies */}
+            <Link
+              href="/technologies"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Technologies page"
+            >
+              Technologies
+            </Link>
             
             {/* Industries Dropdown */}
             <div ref={industriesRef} className="relative">
@@ -183,6 +217,33 @@ export default function Navigation({ className = '' }: NavigationProps) {
                 ))}
               </div>
             </div>
+            
+            {/* Careers */}
+            <Link
+              href="/careers"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Careers page"
+            >
+              Careers
+            </Link>
+            
+            {/* Clients */}
+            <Link
+              href="/clients"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Clients page"
+            >
+              Clients
+            </Link>
+            
+            {/* Contact */}
+            <Link
+              href="/contact-us"
+              className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base"
+              aria-label="Navigate to Contact page"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -212,17 +273,55 @@ export default function Navigation({ className = '' }: NavigationProps) {
           aria-hidden={!isMenuOpen}
         >
                                                      <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-lg border border-orange-200">
-                    {navigationItems.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
-                        onClick={() => setIsMenuOpen(false)}
-                        aria-label={`Navigate to ${item.label} page`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+                    {/* Home */}
+                    <Link
+                      href="/"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Home page"
+                    >
+                      Home
+                    </Link>
+                    
+                    {/* About */}
+                    <Link
+                      href="/about-us"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to About page"
+                    >
+                      About
+                    </Link>
+                    
+                    {/* Services */}
+                    <Link
+                      href="/services"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Services page"
+                    >
+                      Services
+                    </Link>
+                    
+                    {/* Partners */}
+                    <Link
+                      href="/partners"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Partners page"
+                    >
+                      Partners
+                    </Link>
+                    
+                    {/* Technologies */}
+                    <Link
+                      href="/technologies"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Technologies page"
+                    >
+                      Technologies
+                    </Link>
                     
                     {/* Mobile Industries Dropdown */}
                     <div className="border-t border-orange-200 pt-2 mt-2">
@@ -276,6 +375,36 @@ export default function Navigation({ className = '' }: NavigationProps) {
                         ))}
                       </div>
                     </div>
+                    
+                    {/* Careers */}
+                    <Link
+                      href="/careers"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Careers page"
+                    >
+                      Careers
+                    </Link>
+                    
+                    {/* Clients */}
+                    <Link
+                      href="/clients"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Clients page"
+                    >
+                      Clients
+                    </Link>
+                    
+                    {/* Contact */}
+                    <Link
+                      href="/contact-us"
+                      className="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center"
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label="Navigate to Contact page"
+                    >
+                      Contact
+                    </Link>
                   </div>
         </div>
       </div>
