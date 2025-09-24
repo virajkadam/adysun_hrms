@@ -182,10 +182,10 @@ export default function ServicesPage() {
 
   // Partner logos
   const partnerLogos = [
-    "/assets/images/partners/aws.png",
-    "/assets/images/partners/google-cloud.png",
-    "/assets/images/partners/azure.png",
-    "/assets/images/partners/alibaba-cloud.png"
+    "/assets/images/brand-logos/aws.png",
+    "/assets/images/brand-logos/googlecloud.png",
+    "/assets/images/brand-logos/azure.png",
+    "/assets/images/brand-logos/alibaba-cloud.png"
   ];
 
   return (
