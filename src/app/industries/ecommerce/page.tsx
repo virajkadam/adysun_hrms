@@ -1,6 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import Link from 'next/link';
+import PageHero from '@/components/website/ui/PageHero';
 import BenefitCard from '@/components/website/BenefitCard';
 import CTAButton from '@/components/website/CTAButton';
 import { TrendingUp, Target, Zap, ShoppingCart, CreditCard, Package, BarChart3 } from 'lucide-react';
@@ -84,32 +84,15 @@ export default function ECommercePage() {
       description="Adysun Ventures provides comprehensive e-commerce solutions including online store development, payment integration, inventory management, and customer analytics for modern retail businesses."
     >
       {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              E-Commerce Solutions
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
-            Smart Retail: Operations and Customer Experience
-          </h1>
-          <h2 className="text-3xl md:text-4xl font-bold text-orange-600 mb-8">
-            with Cloud Solutions
-          </h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="flex justify-center space-x-4 text-lg mb-8">
-            <Link href="/industries" className="text-gray-700 hover:text-orange-600 transition-colors">
-              Industries
-            </Link>
-            <span className="text-gray-500">/</span>
-            <span className="text-orange-600 font-semibold">E-Commerce</span>
-          </div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Transform your retail business with cutting-edge e-commerce solutions that drive growth, enhance customer experience, and streamline operations.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Smart Retail: Operations and Customer Experience"
+        titleHighlight="with Cloud Solutions"
+        description="Transform your retail business with cutting-edge e-commerce solutions that drive growth, enhance customer experience, and streamline operations."
+        breadcrumbs={[
+          { label: 'Industries', href: '/industries' },
+          { label: 'E-Commerce', isActive: true }
+        ]}
+      />
 
       {/* Overview Section */}
       <section className="py-20 bg-white">

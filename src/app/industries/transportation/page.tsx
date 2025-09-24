@@ -1,6 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import Link from 'next/link';
+import PageHero from '@/components/website/ui/PageHero';
 import BenefitCard from '@/components/website/BenefitCard';
 import CTAButton from '@/components/website/CTAButton';
 import { Zap, Target, Ship, Plane, DollarSign, Package, Factory, ShoppingCart, Truck } from 'lucide-react';
@@ -118,29 +118,14 @@ export default function TransportationPage() {
       description="Adysun Ventures provides cutting-edge transportation and logistics solutions including fleet management, route optimization, real-time tracking, and supply chain management for modern transportation companies."
     >
       {/* Hero Section */}
-      <section className="pt-16 pb-20 bg-gradient-to-br from-orange-50 to-orange-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-orange-600 font-semibold text-lg bg-white px-6 py-3 rounded-full shadow-md">
-              Transportation Solutions
-            </span>
-          </div>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight mb-8">
-            Transportation & Logistics Technology Solutions
-          </h1>
-          <div className="w-24 h-1 bg-orange-500 mx-auto mb-8"></div>
-          <div className="flex justify-center space-x-4 text-lg mb-8">
-            <Link href="/industries" className="text-gray-700 hover:text-orange-600 transition-colors">
-              Industries
-            </Link>
-            <span className="text-gray-500">/</span>
-            <span className="text-orange-600 font-semibold">Transportation</span>
-          </div>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Revolutionize your transportation business with intelligent logistics solutions that optimize operations, reduce costs, and enhance customer satisfaction.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Transportation & Logistics Technology Solutions"
+        description="Revolutionize your transportation business with intelligent logistics solutions that optimize operations, reduce costs, and enhance customer satisfaction."
+        breadcrumbs={[
+          { label: 'Industries', href: '/industries' },
+          { label: 'Transportation', isActive: true }
+        ]}
+      />
 
       {/* Overview Section */}
       <section className="py-20 bg-white">
