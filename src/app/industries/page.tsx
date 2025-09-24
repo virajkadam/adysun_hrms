@@ -1,5 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
+import PageHero from '@/components/website/ui/PageHero';
 import Link from 'next/link';
 import { Smartphone, BarChart3, Cloud, Link as LinkIcon } from 'lucide-react';
 
@@ -35,31 +36,13 @@ export default function IndustriesPage() {
       description="Adysun Ventures provides comprehensive industry solutions across E-Commerce, Transportation & Logistics, and Financial Services. We help businesses work smarter and grow faster with business technology consulting."
     >
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Industries Solutions
-              </h1>
-              <div className="flex items-center space-x-2 mb-8">
-                <div className="w-8 h-1 bg-orange-500"></div>
-                <div className="w-8 h-1 bg-orange-500"></div>
-              </div>
-              <p className="text-xl leading-relaxed">
-                We help businesses work smarter and grow faster with business technology consulting. Reach out to us to build effective digital transformation and technology strategy with IoT, Cloud, Mobility, and Analytics as core technology platforms.
-              </p>
-            </div>
-            <div className="text-center">
-              <img 
-                src="/assets/images/content/industries.png" 
-                alt="Industries Solutions" 
-                className="w-full max-w-md mx-auto rounded-lg shadow-2xl"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="Industries Solutions"
+        description="We help businesses work smarter and grow faster with business technology consulting. Reach out to us to build effective digital transformation and technology strategy with IoT, Cloud, Mobility, and Analytics as core technology platforms."
+        breadcrumbs={[
+          { label: 'Industries', isActive: true }
+        ]}
+      />
 
       {/* Industry Solutions Section */}
       <section className="py-16">
@@ -144,54 +127,54 @@ export default function IndustriesPage() {
       </section>
 
       {/* Technology Platforms Section */}
-      <section className="py-16 bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+      <section className="py-16 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
               Core Technology Platforms
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
               We leverage cutting-edge technologies to deliver innovative solutions across all industries.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200 hover:border-orange-300 transition-colors">
+              <div className="text-5xl text-orange-600 mb-4">
                 <Cloud className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Cloud Computing</h3>
-              <p className="text-gray-300 text-sm">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Cloud Computing</h3>
+              <p className="text-gray-600 text-sm">
                 Scalable cloud infrastructure and platform solutions for modern applications.
               </p>
             </div>
 
-            <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200 hover:border-orange-300 transition-colors">
+              <div className="text-5xl text-orange-600 mb-4">
                 <Smartphone className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Mobility</h3>
-              <p className="text-gray-300 text-sm">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Mobility</h3>
+              <p className="text-gray-600 text-sm">
                 Cross-platform mobile applications and responsive web solutions.
               </p>
             </div>
 
-            <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200 hover:border-orange-300 transition-colors">
+              <div className="text-5xl text-orange-600 mb-4">
                 <BarChart3 className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">IoT Solutions</h3>
-              <p className="text-gray-300 text-sm">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">IoT Solutions</h3>
+              <p className="text-gray-600 text-sm">
                 Connected devices and smart systems for industry automation.
               </p>
             </div>
 
-            <div className="text-center p-6 border border-gray-600 rounded-lg hover:border-orange-500 transition-colors">
-              <div className="text-5xl mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200 hover:border-orange-300 transition-colors">
+              <div className="text-5xl text-orange-600 mb-4">
                 <LinkIcon className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-3">Analytics</h3>
-              <p className="text-gray-300 text-sm">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Analytics</h3>
+              <p className="text-gray-600 text-sm">
                 Data-driven insights and business intelligence solutions.
               </p>
             </div>
@@ -200,24 +183,24 @@ export default function IndustriesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-orange-600 text-white">
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             Ready to Transform Your Industry?
           </h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
             Let's discuss how our industry-specific solutions can drive your business growth and digital transformation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/contact-us"
-              className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
             >
               Get Free Consultation
             </Link>
             <Link 
               href="/services"
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors"
+              className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 hover:text-white transition-colors"
             >
               View Our Services
             </Link>
