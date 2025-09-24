@@ -254,15 +254,15 @@ export default function ECommercePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-orange-900/95 to-orange-800/95 text-white relative"
+      <section className="py-24 bg-gradient-to-r from-orange-100/90 to-orange-200/90 text-gray-800 relative"
                style={{ backgroundImage: 'url(/assets/images/bg/whyChoose.png)' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/90 to-orange-200/90"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-16">
             <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
               Ready to Transform Your Retail Business?
             </h2>
-            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed mb-10">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
               Let's discuss how our e-commerce solutions can drive your business growth and digital transformation.
             </p>
           </div>
