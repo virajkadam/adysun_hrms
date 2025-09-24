@@ -1,6 +1,6 @@
 import React from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
-import Link from 'next/link';
+import PageHero from '@/components/website/ui/PageHero';
 import { Zap, BarChart3, TrendingUp, Building, DollarSign, Shield, Globe, Lock } from 'lucide-react';
 
 export default function StockExchangePage() {
@@ -39,34 +39,14 @@ export default function StockExchangePage() {
       description="Adysun Ventures provides cutting-edge financial technology solutions including trading platforms, market analysis tools, risk management systems, and compliance solutions for financial markets."
     >
       {/* Hero Section */}
-      <section 
-        className="relative py-20 text-white"
-        style={{
-          backgroundImage: "url('/assets/images/bg/whyChoose.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat"
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-70"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Stock Exchange & Financial Services Technology
-            </h1>
-            <div className="flex justify-center space-x-4 text-lg mb-8">
-              <Link href="/industries" className="hover:text-orange-400 transition-colors">
-                Industries
-              </Link>
-              <span>/</span>
-              <span className="text-orange-400">Stock Exchange</span>
-            </div>
-            <p className="text-xl max-w-3xl mx-auto leading-relaxed">
-              Powering the future of financial markets with high-performance trading platforms, advanced analytics, and intelligent risk management solutions.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="Stock Exchange & Financial Services Technology"
+        description="Powering the future of financial markets with high-performance trading platforms, advanced analytics, and intelligent risk management solutions."
+        breadcrumbs={[
+          { label: 'Industries', href: '/industries' },
+          { label: 'Stock Exchange', isActive: true }
+        ]}
+      />
 
       {/* Overview Section */}
       <section className="py-16 bg-white">
@@ -154,44 +134,44 @@ export default function StockExchangePage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
+      <section className="py-16 bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
               Why Choose Our Financial Technology Solutions?
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
               We deliver measurable results that transform your financial operations and drive market success.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200">
+              <div className="text-5xl text-orange-600 mb-4">
                 <Zap className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">High Performance</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">High Performance</h3>
+              <p className="text-gray-600">
                 Ultra-low latency trading systems that execute trades in microseconds for maximum efficiency.
               </p>
             </div>
 
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200">
+              <div className="text-5xl text-orange-600 mb-4">
                 <Shield className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Risk Management</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Risk Management</h3>
+              <p className="text-gray-600">
                 Comprehensive risk management systems that protect investments and ensure regulatory compliance.
               </p>
             </div>
 
-            <div className="text-center p-6 border border-blue-600 rounded-lg">
-              <div className="text-5xl text-orange-400 mb-4">
+            <div className="text-center p-6 bg-white rounded-lg shadow-lg border border-orange-200">
+              <div className="text-5xl text-orange-600 mb-4">
                 <BarChart3 className="w-12 h-12" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Market Intelligence</h3>
-              <p className="text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Market Intelligence</h3>
+              <p className="text-gray-600">
                 Advanced analytics and real-time market data for informed trading decisions and strategy development.
               </p>
             </div>
@@ -316,27 +296,27 @@ export default function StockExchangePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-orange-600 text-white">
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
             Ready to Transform Your Financial Operations?
           </h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
             Let's discuss how our financial technology solutions can drive your business growth and market success.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
+            <a 
               href="/contact-us"
-              className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              className="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
             >
               Get Free Consultation
-            </Link>
-            <Link 
+            </a>
+            <a 
               href="/services"
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition-colors"
+              className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 hover:text-white transition-colors"
             >
               View Our Services
-            </Link>
+            </a>
           </div>
         </div>
       </section>
