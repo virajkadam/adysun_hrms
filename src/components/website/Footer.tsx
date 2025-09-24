@@ -15,6 +15,7 @@ import {
   User,
   CheckCircle
 } from 'lucide-react';
+import { GoogleMapsButton, GoogleSearchButton } from '../ui/HollowButton';
 
 export default function Footer() {
   return (
@@ -144,33 +145,19 @@ export default function Footer() {
                   <div className="flex items-start space-x-3 mb-3">
                     <MapPin className="w-5 h-5 text-orange-500 mt-1 flex-shrink-0" />
                     <div>
-                      <h5 className="font-semibold text-orange-500">Pune Office (Head Office)</h5>
-                      <p className="text-white text-sm mt-1">
-                        Adysun Ventures Pvt. Ltd.<br />
-                        Workplex, S no 47,<br />
-                        Near Bhapkar Petrol Pump,<br />
-                        Pune, Maharashtra - 411009
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex space-x-2 mt-3">
-                    <a 
-                      href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors duration-300"
-                    >
-                      Google Maps
-                    </a>
-                    <a 
-                      href="https://g.co/kgs/C5Fe6uz" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors duration-300"
-                    >
-                      Google Search
-                    </a>
-                  </div>
+                       <h5 className="font-semibold text-orange-500">Pune Office (Head Office)</h5>
+                       <p className="text-white text-sm mt-1">
+                         Adysun Ventures Pvt. Ltd.<br />
+                         Workplex, S no 47,<br />
+                         Near Bhapkar Petrol Pump,<br />
+                         Pune, Maharashtra - 411009
+                       </p>
+                     </div>
+                   </div>
+                   <div className="flex space-x-2 mt-3">
+                     <GoogleMapsButton href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" />
+                     <GoogleSearchButton href="https://g.co/kgs/C5Fe6uz" />
+                   </div>
                 </div>
 
                 {/* Thane Office */}
@@ -188,22 +175,8 @@ export default function Footer() {
                     </div>
                   </div>
                   <div className="flex space-x-2 mt-3">
-                    <a 
-                      href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors duration-300"
-                    >
-                      Google Maps
-                    </a>
-                    <a 
-                      href="https://g.co/kgs/C5Fe6uz" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors duration-300"
-                    >
-                      Google Search
-                    </a>
+                    <GoogleMapsButton href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" />
+                    <GoogleSearchButton href="https://g.co/kgs/C5Fe6uz" />
                   </div>
                 </div>
               </div>
