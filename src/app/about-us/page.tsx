@@ -5,6 +5,7 @@ import SectionTitle from '@/components/website/ui/SectionTitle';
 import StatisticsCard from '@/components/website/content/StatisticsCard';
 import CounterSection from '@/components/website/layout/CounterSection';
 import { Users, Smile, BarChart3, Briefcase, Cloud, Trophy, Target, Lightbulb, Shield, TrendingUp, MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { GoogleMapsButton, GoogleSearchButton } from '@/components/ui/HollowButton';
 
 export default function AboutUsPage() {
   return (
@@ -297,12 +298,8 @@ export default function AboutUsPage() {
                 Pune, Maharashtra - 411009
               </p>
               <div className="flex space-x-4">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300">
-                  Google Maps
-                </button>
-                <button className="border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300">
-                  Google Search
-                </button>
+                <GoogleMapsButton href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" />
+                <GoogleSearchButton href="https://g.co/kgs/C5Fe6uz" />
               </div>
             </div>
             
@@ -318,12 +315,8 @@ export default function AboutUsPage() {
                 Thane West, Thane, Maharashtra - 400607
               </p>
               <div className="flex space-x-4">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300">
-                  Google Maps
-                </button>
-                <button className="border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-300">
-                  Google Search
-                </button>
+                <GoogleMapsButton href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" />
+                <GoogleSearchButton href="https://g.co/kgs/C5Fe6uz" />
               </div>
             </div>
           </div>
