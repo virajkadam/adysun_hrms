@@ -20,34 +20,34 @@ export default function PageHero({
   className = ''
 }: PageHeroProps) {
   return (
-    <section className={`relative bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900 py-16 mb-16 ${className}`}>
+    <section className={`relative bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 py-16 mb-16 ${className}`}>
       {/* Background Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-transparent"></div>
+      <div className="absolute inset-0 bg-white bg-opacity-60"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-300/30 to-transparent"></div>
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           {/* Breadcrumbs */}
           {breadcrumbs.length > 0 && (
-            <nav className="flex justify-center items-center space-x-2 text-sm text-gray-300 mb-6">
+            <nav className="flex justify-center items-center space-x-2 text-sm text-gray-600 mb-6">
               {breadcrumbs.map((crumb, index) => (
                 <React.Fragment key={index}>
                   {index > 0 && (
-                    <span className="text-orange-400 mx-2">/</span>
+                    <span className="text-orange-600 mx-2">/</span>
                   )}
                   {crumb.href ? (
                     <a 
                       href={crumb.href}
-                      className={`hover:text-orange-400 transition-colors duration-300 ${
-                        crumb.isActive ? 'text-orange-400 font-semibold' : 'text-gray-300'
+                      className={`hover:text-orange-600 transition-colors duration-300 ${
+                        crumb.isActive ? 'text-orange-600 font-semibold' : 'text-gray-600'
                       }`}
                     >
                       {crumb.label}
                     </a>
                   ) : (
                     <span className={`${
-                      crumb.isActive ? 'text-orange-400 font-semibold' : 'text-gray-300'
+                      crumb.isActive ? 'text-orange-600 font-semibold' : 'text-gray-600'
                     }`}>
                       {crumb.label}
                     </span>
@@ -58,16 +58,16 @@ export default function PageHero({
           )}
           
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6">
             {title}
             {titleHighlight && (
-              <span className="text-orange-400"> {titleHighlight}</span>
+              <span className="text-orange-600"> {titleHighlight}</span>
             )}
           </h1>
           
           {/* Description */}
           {description && (
-            <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
               {description}
             </p>
           )}
