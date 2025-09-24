@@ -141,13 +141,6 @@ export default function ClientsPage() {
     { icon: <ShoppingCart />, value: "888+", label: "Task Completed" }
   ];
 
-  // Partner logos
-  const partnerLogos = [
-    "/assets/images/partners/android.png",
-    "/assets/images/partners/aws.png",
-    "/assets/images/partners/azure.png",
-    "/assets/images/partners/alibaba-cloud.png"
-  ];
 
   return (
     <WebsiteLayout 
@@ -268,7 +261,7 @@ export default function ClientsPage() {
       />
 
       {/* Partner Logos Section */}
-      <PartnerLogosSection logos={partnerLogos} />
+      <PartnerLogosSection />
 
       {/* CTA Section */}
       <CTASection

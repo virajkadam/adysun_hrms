@@ -180,13 +180,6 @@ export default function ServicesPage() {
     { icon: <MonitorIcon />, value: "888+", label: "Task Completed" }
   ];
 
-  // Partner logos
-  const partnerLogos = [
-    "/assets/images/brand-logos/aws.png",
-    "/assets/images/brand-logos/googlecloud.png",
-    "/assets/images/brand-logos/azure.png",
-    "/assets/images/brand-logos/alibaba-cloud.png"
-  ];
 
   return (
     <WebsiteLayout 
@@ -288,7 +281,7 @@ export default function ServicesPage() {
       />
 
       {/* Partner Logos Section */}
-      <PartnerLogosSection logos={partnerLogos} />
+      <PartnerLogosSection />
     </WebsiteLayout>
   );
 }

@@ -1,18 +1,24 @@
 import React from 'react';
 
 interface PartnerLogosSectionProps {
-  logos: string[];
   title?: string;
   subtitle?: string;
   className?: string;
 }
 
 export default function PartnerLogosSection({ 
-  logos,
   title = "Trusted Technology Partners",
   subtitle = "We work with leading technology platforms to deliver world-class solutions",
   className = ''
 }: PartnerLogosSectionProps) {
+  // Hardcoded partner logos for consistency
+  const partnerLogos = [
+    "/assets/images/brand-logos/aws.png",
+    "/assets/images/brand-logos/azure.png", 
+    "/assets/images/brand-logos/googlecloud.png",
+    "/assets/images/brand-logos/alibaba-cloud.png"
+  ];
+
   return (
     <section className={`py-16 bg-white ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +31,7 @@ export default function PartnerLogosSection({
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-          {logos.map((logo, index) => (
+          {partnerLogos.map((logo, index) => (
             <div key={index} className="flex justify-center">
               <div className="w-24 h-24 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 hover:shadow-lg transition-shadow duration-300">
                 <img

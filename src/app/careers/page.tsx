@@ -84,15 +84,6 @@ export default function CareersPage() {
     { icon: <ArrowRight />, value: "888+", label: "Task Completed" }
   ];
 
-  // Partner logos (placeholder data)
-  const partnerLogos = [
-    "/assets/images/partners/android.png",
-    "/assets/images/partners/aws.png",
-    "/assets/images/partners/partner1.png",
-    "/assets/images/partners/partner2.png",
-    "/assets/images/partners/partner3.png",
-    "/assets/images/partner4.png"
-  ];
 
   return (
     <WebsiteLayout 
@@ -238,7 +229,7 @@ export default function CareersPage() {
       />
 
       {/* Partner Logos Section */}
-      <PartnerLogosSection logos={partnerLogos} />
+      <PartnerLogosSection />
 
       {/* CTA Section */}
       <CTASection
