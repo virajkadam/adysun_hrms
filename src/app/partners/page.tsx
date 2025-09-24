@@ -166,19 +166,19 @@ export default function PartnersPage() {
       {/* CTA Section */}
       <section className="relative bg-cover bg-center bg-no-repeat py-24"
                style={{ backgroundImage: 'url(/assets/images/bg/bg1.jpg)' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-900/95 to-orange-800/95"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-100/90 to-orange-200/90"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-16">
-            <p className="text-2xl text-orange-300 mb-8 font-semibold tracking-wide">
+            <p className="text-2xl text-orange-600 mb-8 font-semibold tracking-wide">
               REACH OUT TO US
             </p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-800 mb-8 leading-tight">
               Ready to Start?
             </h2>
-            <h3 className="text-3xl md:text-4xl font-bold text-orange-200 mb-10">
+            <h3 className="text-3xl md:text-4xl font-bold text-orange-700 mb-10">
               Let's build something amazing together.
             </h3>
-            <p className="text-xl text-orange-100 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
               Our partnership expertise is ready to transform your technology landscape
             </p>
           </div>

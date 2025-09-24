@@ -274,13 +274,13 @@ export default function AboutUsPage() {
       </section>
 
       {/* Enhanced Contact Section */}
-      <section className="bg-gradient-to-br from-gray-900 to-orange-900 py-20 mb-20">
+      <section className="bg-gradient-to-br from-orange-50 to-orange-200 py-20 mb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Reach Out To <span className="text-orange-400">Adysun Ventures</span>
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+              Reach Out To <span className="text-orange-600">Adysun Ventures</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
               Get in touch with us to discuss how we can help transform your business
             </p>
           </div>
