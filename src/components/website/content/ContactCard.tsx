@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../ui/Button';
+import HollowButton from '@/components/ui/HollowButton';
 
 interface ContactCardProps {
   title: string;
@@ -37,16 +37,14 @@ export default function ContactCard({
       {actions.length > 0 && (
         <div className="flex space-x-3">
           {actions.map((action, index) => (
-            <Button
+            <HollowButton
               key={index}
               href={action.href}
-              variant={action.variant || 'primary'}
-              size="sm"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors duration-300 flex items-center space-x-2"
+              icon={action.icon}
+              className="px-4 py-2 text-sm font-semibold"
             >
-              {action.icon && <span>{action.icon}</span>}
-              <span>{action.text}</span>
-            </Button>
+              {action.text}
+            </HollowButton>
           ))}
         </div>
       )}
