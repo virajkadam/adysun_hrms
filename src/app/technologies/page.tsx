@@ -87,7 +87,7 @@ export default function TechnologiesPage() {
         { name: "Machine Learning", logo: "/assets/images/brand-logos/machinelearning.png" },
         { name: "TensorFlow", logo: "/assets/images/brand-logos/tensorflow.png" },
         { name: "PyTorch", logo: "/assets/images/brand-logos/pytorch.png" },
-        { name: "OpenAI", logo: "/assets/images/brand-logos/openai.png" },
+        { name: "OpenAI", logo: "/assets/images/brand-logos/openai.svg" },
         { name: "Computer Vision", logo: "/assets/images/brand-logos/computer-vision.svg" }
       ]
     },
@@ -96,12 +96,12 @@ export default function TechnologiesPage() {
       icon: <ShoppingCart />,
       technologies: [
         { name: "Drupal", logo: "/assets/images/brand-logos/drupal.png" },
-        { name: "Magento", logo: "/assets/images/brand-logos/magento.png" },
-        { name: "WordPress", logo: "/assets/images/brand-logos/wordpress.png" },
-        { name: "Shopify", logo: "/assets/images/brand-logos/shopify.png" },
-        { name: "WooCommerce", logo: "/assets/images/brand-logos/woocommerce.png" },
-        { name: "Joomla", logo: "/assets/images/brand-logos/joomla.png" },
-        { name: "CodeIgniter", logo: "/assets/images/brand-logos/coeigniter.png" }
+        { name: "Magento", logo: "/assets/images/brand-logos/magento.svg" },
+        { name: "WordPress", logo: "/assets/images/brand-logos/wordpress.svg" },
+        { name: "Shopify", logo: "/assets/images/brand-logos/shopify.svg" },
+        { name: "WooCommerce", logo: "/assets/images/brand-logos/woocommerce.svg" },
+        { name: "Joomla", logo: "/assets/images/brand-logos/joomla.svg" },
+        { name: "CodeIgniter", logo: "/assets/images/brand-logos/codeigniter.svg" }
       ]
     }
   ];
