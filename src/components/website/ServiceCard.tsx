@@ -24,7 +24,7 @@ export default function ServiceCard({
           alt={title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg transform translate-y-1/2 ml-4">
+        <div className="absolute top-0 left-0 w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg transform translate-y-1/2 ml-4">
           <span className="text-white [&_*]:w-6 [&_*]:h-6">{icon}</span>
         </div>
       </div>
