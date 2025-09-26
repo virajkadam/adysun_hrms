@@ -13,9 +13,9 @@ export default function PartnerLogosSection({
 }: PartnerLogosSectionProps) {
   // Hardcoded partner logos for consistency
   const partnerLogos = [
-    "/assets/images/brand-logos/aws.png",
-    "/assets/images/brand-logos/azure.png", 
-    "/assets/images/brand-logos/googlecloud.png",
+    "/assets/images/brand-logos/adysunventures_aws.png",
+    "/assets/images/brand-logos/adysunventures_azure.png", 
+    "/assets/images/brand-logos/adysunventures_googlecloud.png",
     "/assets/images/brand-logos/alibaba-cloud.png"
   ];
 
