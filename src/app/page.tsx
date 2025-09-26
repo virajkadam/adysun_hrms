@@ -332,28 +332,29 @@ export default function WebsiteHomePage() {
       <section className="bg-gray-800 py-16">
         <div className="w-full">
           <LogoLoop
-            className="mx-auto"
+            className="mx-auto px-8 sm:px-12"
             height={56}
             gap={48}
             speedSec={30}
             logos={[
               // Local PNGs from website brand-logos (for items not in Devicon or to match brand assets)
+              
               { src: '/assets/images/brand-logos/android.png', alt: 'Android' },
               { src: '/assets/images/brand-logos/aws.png', alt: 'AWS' },
-              { src: '/assets/images/brand-logos/reactjs.png', alt: 'React' },
-              { src: '/assets/images/brand-logos/nodejs.png', alt: 'Node.js' },
+              { src: '/assets/images/brand-logos/react-icon.svg', alt: 'React' },
+              { src: '/assets/images/brand-logos/nodejs.svg', alt: 'Node.js' },
               { src: '/assets/images/brand-logos/googlecloud.png', alt: 'Google Cloud' },
               { src: '/assets/images/brand-logos/firebase.png', alt: 'Firebase' },
               { src: '/assets/images/brand-logos/docker.png', alt: 'Docker' },
               { src: '/assets/images/brand-logos/javascript.png', alt: 'JavaScript' },
-              { src: '/assets/images/brand-logos/python.png', alt: 'Python' },
-              { src: '/assets/images/brand-logos/java.png', alt: 'Java' },
-              { src: '/assets/images/brand-logos/php.png', alt: 'PHP' },
-              { src: '/assets/images/brand-logos/laravel.png', alt: 'Laravel' },
-              { src: '/assets/images/brand-logos/magento.png', alt: 'Magento' },
-              { src: '/assets/images/brand-logos/wordpress.png', alt: 'WordPress' },
-              { src: '/assets/images/brand-logos/powerbi.png', alt: 'Power BI' },
-              { src: '/assets/images/brand-logos/vuejs.png', alt: 'Vue.js' },
+              { src: '/assets/images/brand-logos/python.svg', alt: 'Python' },
+              { src: '/assets/images/brand-logos/java.svg', alt: 'Java' },
+              { src: '/assets/images/brand-logos/php.svg', alt: 'PHP' },
+              { src: '/assets/images/brand-logos/laravel.svg', alt: 'Laravel' },
+              { src: '/assets/images/brand-logos/magento.svg', alt: 'Magento' },
+              { src: '/assets/images/brand-logos/wordpress.svg', alt: 'WordPress' },
+              { src: '/assets/images/brand-logos/powerbi.svg', alt: 'Power BI' },
+              { src: '/assets/images/brand-logos/vuejs.svg', alt: 'Vue.js' },
             ]}
           />
         </div>
