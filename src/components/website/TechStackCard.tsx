@@ -21,7 +21,8 @@ export default function TechStackCard({ icon, title, subtitle }: TechStackCardPr
         </h4>
         
         {/* Subtitle - Consistent styling */}
-        <span className="text-sm text-gray-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-200 font-medium">
+        <span className="
+inline-block text-sm text-gray-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-200 font-medium leading-snug text-center">
           {subtitle}
         </span>
       </div>
