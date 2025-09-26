@@ -86,7 +86,7 @@ export default function TechnologiesPage() {
         { name: "Blockchain", logo: "/assets/images/brand-logos/blockchain.svg" },
         { name: "Machine Learning", logo: "/assets/images/brand-logos/machinelearning.png" },
         { name: "TensorFlow", logo: "/assets/images/brand-logos/tensorflow.png" },
-        { name: "PyTorch", logo: "/assets/images/brand-logos/pytorch.png" },
+        { name: "PyTorch", logo: "/assets/images/brand-logos/pytorch.svg" },
         { name: "OpenAI", logo: "/assets/images/brand-logos/openai.svg" },
         { name: "Computer Vision", logo: "/assets/images/brand-logos/computer-vision.svg" }
       ]
