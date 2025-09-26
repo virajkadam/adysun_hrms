@@ -75,8 +75,8 @@ export default function TechnologiesPage() {
         { name: "Docker", logo: "/assets/images/brand-logos/docker.png" },
         { name: "Kubernetes", logo: "/assets/images/brand-logos/kubernetes.svg" },
         { name: "Jenkins", logo: "/assets/images/brand-logos/jenkins.svg" },
-        { name: "Git", logo: "/assets/images/brand-logos/git.png" },
-        { name: "GitHub", logo: "/assets/images/brand-logos/github.png" }
+        { name: "Git", logo: "/assets/images/brand-logos/git.svg" },
+        { name: "GitHub", logo: "/assets/images/brand-logos/github.svg" }
       ]
     },
     {
