@@ -76,7 +76,7 @@ export default function CompanyContactBar({
 
   return (
     <div className={`${bg} ${className}`}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Left: Logo + Company Name */}
           <div className="flex items-center gap-3 min-w-0">

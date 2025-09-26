@@ -27,75 +27,9 @@ export default function Footer() {
           <CompanyContactBar />
         </section>
       {/* Main Footer Content */}
-      <div className="py-16">
+      <div className="pb-16 pt-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Company Info */}
-            <div className="lg:col-span-1">
-              <div className="flex items-center space-x-3 mb-6">
-                <img 
-                  src="/assets/adysunventures_logo.png" 
-                  alt="Adysun Ventures Logo" 
-                  className="w-10 h-10"
-                />
-                <div className="flex flex-col">
-                  <h3 className="text-xl font-bold">ADYSUN VENTURES</h3>
-                  <p className="text-sm text-gray-300">Inspire. Imagine. Implement.</p>
-                </div>
-              </div>
-              <p className="text-gray-300 mb-6 text-sm leading-relaxed">
-                We are a high-performance service provider that delivers exceptional results through innovative solutions and dedicated expertise.
-              </p>
-              
-              {/* Social Media Links */}
-              <div className="flex space-x-4">
-                <a 
-                  href="https://x.com/adysunventures" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                  title="Twitter (X)"
-                >
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a 
-                  href="https://www.instagram.com/adysunventures/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                  title="Instagram"
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a 
-                  href="https://www.linkedin.com/in/adysun-ventures/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                  title="LinkedIn"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-                <a 
-                  href="https://g.co/kgs/C5Fe6uz" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                  title="Google Business"
-                >
-                  <Building2 className="w-5 h-5" />
-                </a>
-                <a 
-                  href="https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                  title="Google Maps"
-                >
-                  <MapPin className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             {/* Quick Links */}
             <div className="lg:col-span-1">
