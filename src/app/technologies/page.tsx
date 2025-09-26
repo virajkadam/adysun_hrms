@@ -28,40 +28,40 @@ export default function TechnologiesPage() {
       icon: <Code />,
       technologies: [
         { name: "JavaScript", logo: "/assets/images/brand-logos/javascript.png" },
-        { name: "Angular", logo: "/assets/images/brand-logos/angularjs.png" },
-        { name: "Vue.js", logo: "/assets/images/brand-logos/vuejs.png" },
+        { name: "Angular", logo: "/assets/images/brand-logos/angular.svg" },
+        { name: "Vue.js", logo: "/assets/images/brand-logos/vuejs.svg" },
         { name: "React.js", logo: "/assets/images/brand-logos/react.svg" },
-        { name: "Bootstrap", logo: "/assets/images/brand-logos/bootstrap.png" },
-        { name: "HTML5", logo: "/assets/images/brand-logos/html5.png" },
-        { name: "CSS3", logo: "/assets/images/brand-logos/css3.png" },
-        { name: "jQuery", logo: "/assets/images/brand-logos/jquery.png" }
+        { name: "Bootstrap", logo: "/assets/images/brand-logos/bootstrap.svg" },
+        { name: "HTML5", logo: "/assets/images/brand-logos/html5.svg" },
+        { name: "CSS3", logo: "/assets/images/brand-logos/css3.svg" },
+        { name: "jQuery", logo: "/assets/images/brand-logos/jquery.svg" }
       ]
     },
     {
       title: "Big Data & Analytics",
       icon: <Database />,
       technologies: [
-        { name: "Hadoop", logo: "/assets/images/brand-logos/hadoop.png" },
-        { name: "Power BI", logo: "/assets/images/brand-logos/powerbi.png" },
-        { name: "Big Data", logo: "/assets/images/brand-logos/bigdata.png" },
+        { name: "Hadoop", logo: "/assets/images/brand-logos/hadoop.svg" },
+        { name: "Power BI", logo: "/assets/images/brand-logos/powerbi.svg" },
+        { name: "Big Data", logo: "/assets/images/brand-logos/bigdata.svg" },
         { name: "Tableau", logo: "/assets/images/brand-logos/tableau.png" },
-        { name: "Apache Spark", logo: "/assets/images/brand-logos/apache-spark.png" },
-        { name: "MongoDB", logo: "/assets/images/brand-logos/mongodb.png" }
+        { name: "Apache Spark", logo: "/assets/images/brand-logos/apache-spark.svg" },
+        { name: "MongoDB", logo: "/assets/images/brand-logos/mongodb.svg" }
       ]
     },
     {
       title: "Backend Development",
       icon: <Code />,
       technologies: [
-        { name: "PHP", logo: "/assets/images/brand-logos/php.png" },
-        { name: "Laravel", logo: "/assets/images/brand-logos/laravel.png" },
-        { name: "Java", logo: "/assets/images/brand-logos/java.png" },
-        { name: "Python", logo: "/assets/images/brand-logos/python.png" },
-        { name: "Node.js", logo: "/assets/images/brand-logos/nodejs.png" },
+        { name: "PHP", logo: "/assets/images/brand-logos/php.svg" },
+        { name: "Laravel", logo: "/assets/images/brand-logos/laravel.svg" },
+        { name: "Java", logo: "/assets/images/brand-logos/java.svg" },
+        { name: "Python", logo: "/assets/images/brand-logos/python.svg" },
+        { name: "Node.js", logo: "/assets/images/brand-logos/nodejs.svg" },
         { name: "Objective C", logo: "/assets/images/brand-logos/objectivec.png" },
-        { name: "C++", logo: "/assets/images/brand-logos/c++.png" },
-        { name: "C#", logo: "/assets/images/brand-logos/chash.png" },
-        { name: "Ruby", logo: "/assets/images/brand-logos/ruby.png" },
+        { name: "C++", logo: "/assets/images/brand-logos/c++.svg" },
+        { name: "C#", logo: "/assets/images/brand-logos/chash.svg" },
+        { name: "Ruby", logo: "/assets/images/brand-logos/ruby.svg" },
         { name: "Go", logo: "/assets/images/brand-logos/go.png" }
       ]
     },
