@@ -11,97 +11,97 @@ export default function TechnologiesPage() {
       title: "Mobility",
       icon: <Code />,
       technologies: [
-        { name: "Android", logo: "/assets/images/brand-logos/android.png" },
-        { name: "iOS", logo: "/assets/images/brand-logos/apple.svg" },
-        { name: "React Native", logo: "/assets/images/brand-logos/react.svg" },
-        { name: "Flutter", logo: "/assets/images/brand-logos/flutter.svg" },
-        { name: "Ionic", logo: "/assets/images/brand-logos/ionic.svg" },
-        { name: "Xamarin", logo: "/assets/images/brand-logos/xamarin.svg" },
-        { name: "PWA", logo: "/assets/images/brand-logos/pwa.svg" },
-        { name: "PhoneGap", logo: "/assets/images/brand-logos/phonegap.svg" },
-        { name: "Electron.js", logo: "/assets/images/brand-logos/electron.svg" },
-        { name: "Hybrid App", logo: "/assets/images/brand-logos/hybrid-app.png" }
+        { name: "Android", logo: "/assets/images/brand-logos/adysunventures_android.png" },
+        { name: "iOS", logo: "/assets/images/brand-logos/adysunventures_apple.svg" },
+        { name: "React Native", logo: "/assets/images/brand-logos/adysunventures_react.svg" },
+        { name: "Flutter", logo: "/assets/images/brand-logos/adysunventures_flutter.svg" },
+        { name: "Ionic", logo: "/assets/images/brand-logos/adysunventures_ionic.svg" },
+        { name: "Xamarin", logo: "/assets/images/brand-logos/adysunventures_xamarin.svg" },
+        { name: "PWA", logo: "/assets/images/brand-logos/adysunventures_pwa.svg" },
+        { name: "PhoneGap", logo: "/assets/images/brand-logos/adysunventures_phonegap.svg" },
+        { name: "Electron.js", logo: "/assets/images/brand-logos/adysunventures_electron.svg" },
+        { name: "Hybrid App", logo: "/assets/images/brand-logos/adysunventures_hybrid-app.png" }
       ]
     },
     {
       title: "JavaScript & Frontend",
       icon: <Code />,
       technologies: [
-        { name: "JavaScript", logo: "/assets/images/brand-logos/javascript.png" },
-        { name: "Angular", logo: "/assets/images/brand-logos/angular.svg" },
-        { name: "Vue.js", logo: "/assets/images/brand-logos/vuejs.svg" },
-        { name: "React.js", logo: "/assets/images/brand-logos/react.svg" },
-        { name: "Bootstrap", logo: "/assets/images/brand-logos/bootstrap.svg" },
-        { name: "HTML5", logo: "/assets/images/brand-logos/html5.svg" },
-        { name: "CSS3", logo: "/assets/images/brand-logos/css3.svg" },
-        { name: "jQuery", logo: "/assets/images/brand-logos/jquery.svg" }
+        { name: "JavaScript", logo: "/assets/images/brand-logos/adysunventures_javascript.png" },
+        { name: "Angular", logo: "/assets/images/brand-logos/adysunventures_angular.svg" },
+        { name: "Vue.js", logo: "/assets/images/brand-logos/adysunventures_vuejs.svg" },
+        { name: "React.js", logo: "/assets/images/brand-logos/adysunventures_react.svg" },
+        { name: "Bootstrap", logo: "/assets/images/brand-logos/adysunventures_bootstrap.svg" },
+        { name: "HTML5", logo: "/assets/images/brand-logos/adysunventures_html5.svg" },
+        { name: "CSS3", logo: "/assets/images/brand-logos/adysunventures_css3.svg" },
+        { name: "jQuery", logo: "/assets/images/brand-logos/adysunventures_jquery.svg" }
       ]
     },
     {
       title: "Big Data & Analytics",
       icon: <Database />,
       technologies: [
-        { name: "Hadoop", logo: "/assets/images/brand-logos/hadoop.svg" },
-        { name: "Power BI", logo: "/assets/images/brand-logos/powerbi.svg" },
-        { name: "Big Data", logo: "/assets/images/brand-logos/bigdata.svg" },
-        { name: "Tableau", logo: "/assets/images/brand-logos/tableau.png" },
-        { name: "Apache Spark", logo: "/assets/images/brand-logos/apache-spark.svg" },
-        { name: "MongoDB", logo: "/assets/images/brand-logos/mongodb.svg" }
+        { name: "Hadoop", logo: "/assets/images/brand-logos/adysunventures_hadoop.svg" },
+        { name: "Power BI", logo: "/assets/images/brand-logos/adysunventures_powerbi.svg" },
+        { name: "Big Data", logo: "/assets/images/brand-logos/adysunventures_bigdata.svg" },
+        { name: "Tableau", logo: "/assets/images/brand-logos/adysunventures_tableau.png" },
+        { name: "Apache Spark", logo: "/assets/images/brand-logos/adysunventures_apache-spark.svg" },
+        { name: "MongoDB", logo: "/assets/images/brand-logos/adysunventures_mongodb.svg" }
       ]
     },
     {
       title: "Backend Development",
       icon: <Code />,
       technologies: [
-        { name: "PHP", logo: "/assets/images/brand-logos/php.svg" },
-        { name: "Laravel", logo: "/assets/images/brand-logos/laravel.svg" },
-        { name: "Java", logo: "/assets/images/brand-logos/java.svg" },
-        { name: "Python", logo: "/assets/images/brand-logos/python.svg" },
-        { name: "Node.js", logo: "/assets/images/brand-logos/nodejs.svg" },
-        { name: "Objective C", logo: "/assets/images/brand-logos/objectivec.svg" },
-        { name: "C++", logo: "/assets/images/brand-logos/c++.svg" },
-        { name: "C#", logo: "/assets/images/brand-logos/chash.svg" },
-        { name: "Ruby", logo: "/assets/images/brand-logos/ruby.svg" },
-        { name: "Go", logo: "/assets/images/brand-logos/go.svg" }
+        { name: "PHP", logo: "/assets/images/brand-logos/adysunventures_php.svg" },
+        { name: "Laravel", logo: "/assets/images/brand-logos/adysunventures_laravel.svg" },
+        { name: "Java", logo: "/assets/images/brand-logos/adysunventures_java.svg" },
+        { name: "Python", logo: "/assets/images/brand-logos/adysunventures_python.svg" },
+        { name: "Node.js", logo: "/assets/images/brand-logos/adysunventures_nodejs.svg" },
+        { name: "Objective C", logo: "/assets/images/brand-logos/adysunventures_objectivec.svg" },
+        { name: "C++", logo: "/assets/images/brand-logos/adysunventures_c++.svg" },
+        { name: "C#", logo: "/assets/images/brand-logos/adysunventures_chash.svg" },
+        { name: "Ruby", logo: "/assets/images/brand-logos/adysunventures_ruby.svg" },
+        { name: "Go", logo: "/assets/images/brand-logos/adysunventures_go.svg" }
       ]
     },
     {
       title: "Cloud & DevOps",
       icon: <Cloud />,
       technologies: [
-        { name: "AWS", logo: "/assets/images/brand-logos/aws.png" },
-        { name: "Azure", logo: "/assets/images/brand-logos/azure.png" },
-        { name: "Google Cloud", logo: "/assets/images/brand-logos/googlecloud.png" },
-        { name: "Docker", logo: "/assets/images/brand-logos/docker.png" },
-        { name: "Kubernetes", logo: "/assets/images/brand-logos/kubernetes.svg" },
-        { name: "Jenkins", logo: "/assets/images/brand-logos/jenkins.svg" },
-        { name: "Git", logo: "/assets/images/brand-logos/git.svg" },
-        { name: "GitHub", logo: "/assets/images/brand-logos/github.svg" }
+        { name: "AWS", logo: "/assets/images/brand-logos/adysunventures_aws.png" },
+        { name: "Azure", logo: "/assets/images/brand-logos/adysunventures_azure.png" },
+        { name: "Google Cloud", logo: "/assets/images/brand-logos/adysunventures_googlecloud.png" },
+        { name: "Docker", logo: "/assets/images/brand-logos/adysunventures_docker.png" },
+        { name: "Kubernetes", logo: "/assets/images/brand-logos/adysunventures_kubernetes.svg" },
+        { name: "Jenkins", logo: "/assets/images/brand-logos/adysunventures_jenkins.svg" },
+        { name: "Git", logo: "/assets/images/brand-logos/adysunventures_git.svg" },
+        { name: "GitHub", logo: "/assets/images/brand-logos/adysunventures_github.svg" }
       ]
     },
     {
       title: "Blockchain, ML & AI",
       icon: <Brain />,
       technologies: [
-        { name: "Blockchain", logo: "/assets/images/brand-logos/blockchain.svg" },
-        { name: "Machine Learning", logo: "/assets/images/brand-logos/machinelearning.png" },
-        { name: "TensorFlow", logo: "/assets/images/brand-logos/tensorflow.png" },
-        { name: "PyTorch", logo: "/assets/images/brand-logos/pytorch.svg" },
-        { name: "OpenAI", logo: "/assets/images/brand-logos/openai.svg" },
-        { name: "Computer Vision", logo: "/assets/images/brand-logos/computer-vision.svg" }
+        { name: "Blockchain", logo: "/assets/images/brand-logos/adysunventures_blockchain.svg" },
+        { name: "Machine Learning", logo: "/assets/images/brand-logos/adysunventures_machinelearning.png" },
+        { name: "TensorFlow", logo: "/assets/images/brand-logos/adysunventures_tensorflow.png" },
+        { name: "PyTorch", logo: "/assets/images/brand-logos/adysunventures_pytorch.svg" },
+        { name: "OpenAI", logo: "/assets/images/brand-logos/adysunventures_openai.svg" },
+        { name: "Computer Vision", logo: "/assets/images/brand-logos/adysunventures_computer-vision.svg" }
       ]
     },
     {
       title: "E-Commerce & CMS",
       icon: <ShoppingCart />,
       technologies: [
-        { name: "Drupal", logo: "/assets/images/brand-logos/drupal.png" },
-        { name: "Magento", logo: "/assets/images/brand-logos/magento.svg" },
-        { name: "WordPress", logo: "/assets/images/brand-logos/wordpress.svg" },
-        { name: "Shopify", logo: "/assets/images/brand-logos/shopify.svg" },
-        { name: "WooCommerce", logo: "/assets/images/brand-logos/woocommerce.svg" },
-        { name: "Joomla", logo: "/assets/images/brand-logos/joomla.svg" },
-        { name: "CodeIgniter", logo: "/assets/images/brand-logos/codeigniter.svg" }
+        { name: "Drupal", logo: "/assets/images/brand-logos/adysunventures_drupal.png" },
+        { name: "Magento", logo: "/assets/images/brand-logos/adysunventures_magento.svg" },
+        { name: "WordPress", logo: "/assets/images/brand-logos/adysunventures_wordpress.svg" },
+        { name: "Shopify", logo: "/assets/images/brand-logos/adysunventures_shopify.svg" },
+        { name: "WooCommerce", logo: "/assets/images/brand-logos/adysunventures_woocommerce.svg" },
+        { name: "Joomla", logo: "/assets/images/brand-logos/adysunventures_joomla.svg" },
+        { name: "CodeIgniter", logo: "/assets/images/brand-logos/adysunventures_codeigniter.svg" }
       ]
     }
   ];
@@ -198,8 +198,7 @@ export default function TechnologiesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-orange-100/90 to-orange-200/90 text-gray-800 relative"
-               style={{ backgroundImage: 'url(/assets/images/bg/bg1.jpg)' }}>
+      <section className="py-24 bg-gradient-to-r from-orange-100/90 to-orange-200/90 text-gray-800 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-orange-100/90 to-orange-200/90"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="mb-16">
