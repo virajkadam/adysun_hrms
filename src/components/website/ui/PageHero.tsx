@@ -20,7 +20,7 @@ export default function PageHero({
   className = ''
 }: PageHeroProps) {
   return (
-    <section className={`relative bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 py-16 mb-16 ${className}`}>
+    <section className={`relative bg-gradient-to-br from-orange-50 via-orange-100 to-orange-200 py-16 ${className}`}>
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-white bg-opacity-60"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-orange-300/30 to-transparent"></div>

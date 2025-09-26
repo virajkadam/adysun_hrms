@@ -5,7 +5,6 @@ import CounterSection from '@/components/website/layout/CounterSection';
 import CTAButton from '@/components/website/CTAButton';
 import ContactCard from '@/components/website/content/ContactCard';
 import ContactSection from '@/components/website/layout/ContactSection';
-import LogoLoop from '@/components/reactbits/LogoLoop';
 import CTASection from '@/components/website/layout/CTASection';
 import { 
   Briefcase, 
@@ -68,12 +67,11 @@ export default function ContactUsPage() {
 
   // Technology/Partner logos
   const techLogos = [
-    { src: "/assets/images/partners/android.png", alt: "Android" },
-    { src: "/assets/images/partners/angular.png", alt: "Angular" },
-    { src: "/assets/images/partners/aws.png", alt: "AWS" },
-    { src: "/assets/images/partners/azure.png", alt: "Azure" },
-    { src: "/assets/images/partners/bigdata.png", alt: "Big Data" },
-    { src: "/assets/images/partners/blockchain.png", alt: "Blockchain" }
+    { src: "/assets/images/brand-logos/android.png", alt: "Android" },
+    { src: "/assets/images/brand-logos/angular.png", alt: "Angular" },
+    { src: "/assets/images/brand-logos/aws.png", alt: "AWS" },
+    { src: "/assets/images/brand-logos/azure.png", alt: "Azure" },
+    { src: "/assets/images/brand-logos/blockchain.png", alt: "Blockchain" }
   ];
 
   return (
@@ -286,14 +284,19 @@ export default function ContactUsPage() {
               We work with leading technology platforms to deliver world-class solutions
             </p>
           </div>
-          <LogoLoop 
-            logos={techLogos}
-            height={80}
-            gap={48}
-            speedSec={25}
-            grayscale={true}
-            className="py-8"
-          />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
+            {techLogos.map((logo, index) => (
+              <div key={index} className="flex justify-center">
+                <div className="w-24 h-24 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 hover:shadow-lg transition-shadow duration-300">
+                  <img
+                    src={logo.src}
+                    alt={logo.alt}
+                    className="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
