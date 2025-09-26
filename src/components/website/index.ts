@@ -28,3 +28,4 @@ export { default as HeroSection } from './layout/HeroSection';
 export { default as CTASection } from './layout/CTASection';
 export { default as CounterSection } from './layout/CounterSection';
 export { default as ContactSection } from './layout/ContactSection';
+export { default as CompanyContactBar } from './layout/CompanyContactBar';

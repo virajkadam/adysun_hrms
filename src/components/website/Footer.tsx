@@ -16,10 +16,16 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { GoogleMapsButton, GoogleSearchButton } from '../ui/HollowButton';
+import CompanyContactBar from './layout/CompanyContactBar'; 
 
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
+
+
+<section aria-label="Company contact bar just above footer">
+          <CompanyContactBar />
+        </section>
       {/* Main Footer Content */}
       <div className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

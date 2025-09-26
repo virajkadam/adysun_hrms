@@ -6,11 +6,12 @@ import SkipLink from '../ui/SkipLink';
 
 interface WebsiteLayoutProps {
   children: React.ReactNode;
-  title?: string;
-  description?: string;
+  title?: string; // reserved for future use
+  description?: string; // reserved for future use
+  showContactBar?: boolean;
 }
 
-export default function WebsiteLayout({ children, title, description }: WebsiteLayoutProps) {
+export default function WebsiteLayout({ children,}: WebsiteLayoutProps) {
   return (
     <div className="min-h-screen bg-white">
       {/* Accessibility Skip Links */}
@@ -24,6 +25,8 @@ export default function WebsiteLayout({ children, title, description }: WebsiteL
       <main id="main-content" className="pt-16">
         {children}
       </main>
+
+      
 
       {/* Footer */}
       <footer id="footer">
