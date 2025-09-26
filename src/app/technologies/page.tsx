@@ -58,11 +58,11 @@ export default function TechnologiesPage() {
         { name: "Java", logo: "/assets/images/brand-logos/java.svg" },
         { name: "Python", logo: "/assets/images/brand-logos/python.svg" },
         { name: "Node.js", logo: "/assets/images/brand-logos/nodejs.svg" },
-        { name: "Objective C", logo: "/assets/images/brand-logos/objectivec.png" },
+        { name: "Objective C", logo: "/assets/images/brand-logos/objectivec.svg" },
         { name: "C++", logo: "/assets/images/brand-logos/c++.svg" },
         { name: "C#", logo: "/assets/images/brand-logos/chash.svg" },
         { name: "Ruby", logo: "/assets/images/brand-logos/ruby.svg" },
-        { name: "Go", logo: "/assets/images/brand-logos/go.png" }
+        { name: "Go", logo: "/assets/images/brand-logos/go.svg" }
       ]
     },
     {
@@ -73,8 +73,8 @@ export default function TechnologiesPage() {
         { name: "Azure", logo: "/assets/images/brand-logos/azure.png" },
         { name: "Google Cloud", logo: "/assets/images/brand-logos/googlecloud.png" },
         { name: "Docker", logo: "/assets/images/brand-logos/docker.png" },
-        { name: "Kubernetes", logo: "/assets/images/brand-logos/kubernetes.png" },
-        { name: "Jenkins", logo: "/assets/images/brand-logos/jenkins.png" },
+        { name: "Kubernetes", logo: "/assets/images/brand-logos/kubernetes.svg" },
+        { name: "Jenkins", logo: "/assets/images/brand-logos/jenkins.svg" },
         { name: "Git", logo: "/assets/images/brand-logos/git.png" },
         { name: "GitHub", logo: "/assets/images/brand-logos/github.png" }
       ]
@@ -83,12 +83,12 @@ export default function TechnologiesPage() {
       title: "Blockchain, ML & AI",
       icon: <Brain />,
       technologies: [
-        { name: "Blockchain", logo: "/assets/images/brand-logos/blockchain.png" },
+        { name: "Blockchain", logo: "/assets/images/brand-logos/blockchain.svg" },
         { name: "Machine Learning", logo: "/assets/images/brand-logos/machinelearning.png" },
         { name: "TensorFlow", logo: "/assets/images/brand-logos/tensorflow.png" },
         { name: "PyTorch", logo: "/assets/images/brand-logos/pytorch.png" },
         { name: "OpenAI", logo: "/assets/images/brand-logos/openai.png" },
-        { name: "Computer Vision", logo: "/assets/images/brand-logos/computer-vision.png" }
+        { name: "Computer Vision", logo: "/assets/images/brand-logos/computer-vision.svg" }
       ]
     },
     {
