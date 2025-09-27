@@ -311,7 +311,7 @@ export default function WebsiteHomePage() {
         actions={[
           { text: "Get in Touch", href: "/contact-us", variant: "secondary" }
         ]}
-        className="mb-16"
+        // className="mb-16"
       />
 
       {/* Contact Section */}
@@ -337,24 +337,24 @@ export default function WebsiteHomePage() {
             gap={48}
             speedSec={30}
             logos={[
-              // Local PNGs from website brand-logos (for items not in Devicon or to match brand assets)
+              // Using adysunventures prefixed PNG files to fix 404 errors
               
-              { src: '/assets/images/brand-logos/android.png', alt: 'Android' },
-              { src: '/assets/images/brand-logos/aws.png', alt: 'AWS' },
-              { src: '/assets/images/brand-logos/react-icon.svg', alt: 'React' },
-              { src: '/assets/images/brand-logos/nodejs.svg', alt: 'Node.js' },
-              { src: '/assets/images/brand-logos/googlecloud.png', alt: 'Google Cloud' },
+              { src: '/assets/images/brand-logos/adysunventures_android.png', alt: 'Android' },
+              { src: '/assets/images/brand-logos/adysunventures_aws.png', alt: 'AWS' },
+              { src: '/assets/images/brand-logos/adysunventures_react.png', alt: 'React' },
+              { src: '/assets/images/brand-logos/adysunventures_nodejs.png', alt: 'Node.js' },
+              { src: '/assets/images/brand-logos/adysunventures_googlecloud.png', alt: 'Google Cloud' },
               { src: '/assets/images/brand-logos/firebase.png', alt: 'Firebase' },
-              { src: '/assets/images/brand-logos/docker.png', alt: 'Docker' },
-              { src: '/assets/images/brand-logos/javascript.png', alt: 'JavaScript' },
-              { src: '/assets/images/brand-logos/python.svg', alt: 'Python' },
-              { src: '/assets/images/brand-logos/java.svg', alt: 'Java' },
-              { src: '/assets/images/brand-logos/php.svg', alt: 'PHP' },
-              { src: '/assets/images/brand-logos/laravel.svg', alt: 'Laravel' },
-              { src: '/assets/images/brand-logos/magento.svg', alt: 'Magento' },
-              { src: '/assets/images/brand-logos/wordpress.svg', alt: 'WordPress' },
-              { src: '/assets/images/brand-logos/powerbi.svg', alt: 'Power BI' },
-              { src: '/assets/images/brand-logos/vuejs.svg', alt: 'Vue.js' },
+              { src: '/assets/images/brand-logos/adysunventures_docker.png', alt: 'Docker' },
+              { src: '/assets/images/brand-logos/adysunventures_javascript.png', alt: 'JavaScript' },
+              { src: '/assets/images/brand-logos/adysunventures_python.png', alt: 'Python' },
+              { src: '/assets/images/brand-logos/adysunventures_java.png', alt: 'Java' },
+              { src: '/assets/images/brand-logos/adysunventures_php.png', alt: 'PHP' },
+              { src: '/assets/images/brand-logos/adysunventures_laravel.png', alt: 'Laravel' },
+              { src: '/assets/images/brand-logos/magento.png', alt: 'Magento' },
+              { src: '/assets/images/brand-logos/adysunventures_wordpress.png', alt: 'WordPress' },
+              { src: '/assets/images/brand-logos/adysunventures_powerbi.png', alt: 'Power BI' },
+              { src: '/assets/images/brand-logos/adysunventures_vuejs.png', alt: 'Vue.js' },
             ]}
           />
         </div>

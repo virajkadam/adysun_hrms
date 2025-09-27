@@ -94,6 +94,8 @@ export default function LogoLoop(props: LogoLoopProps) {
       display: 'flex',
       alignItems: 'center',
       gap: `${gap}px`,
+      paddingLeft: `${gap}px`,
+      paddingRight: `${gap}px`,
       animation: `logo-loop ${durationSec}s linear infinite`,
       animationDirection: direction === 'right' ? 'reverse' : 'normal',
     }),
