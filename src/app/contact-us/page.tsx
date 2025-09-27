@@ -67,11 +67,10 @@ export default function ContactUsPage() {
 
   // Technology/Partner logos
   const techLogos = [
-    { src: "/assets/images/brand-logos/android.png", alt: "Android" },
-    { src: "/assets/images/brand-logos/angular.png", alt: "Angular" },
-    { src: "/assets/images/brand-logos/aws.png", alt: "AWS" },
-    { src: "/assets/images/brand-logos/azure.png", alt: "Azure" },
-    { src: "/assets/images/brand-logos/blockchain.png", alt: "Blockchain" }
+    { src: "/assets/images/brand-logos/adysunventures_android.png", alt: "Android" },
+    { src: "/assets/images/brand-logos/adysunventures_angular.png", alt: "Angular" },
+    { src: "/assets/images/brand-logos/adysunventures_aws.png", alt: "AWS" },
+    { src: "/assets/images/brand-logos/adysunventures_azure.png", alt: "Azure" },
   ];
 
   return (
@@ -152,14 +151,14 @@ export default function ContactUsPage() {
               We work with leading technology platforms to deliver world-class solutions
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center justify-items-center">
             {techLogos.map((logo, index) => (
               <div key={index} className="flex justify-center">
                 <div className="w-24 h-24 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 border border-orange-200 hover:shadow-lg transition-shadow duration-300">
                   <img
                     src={logo.src}
                     alt={logo.alt}
-                    className="w-full h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                    className="w-full h-full object-contain transition-all duration-300"
                   />
                 </div>
               </div>
@@ -176,7 +175,6 @@ export default function ContactUsPage() {
           { text: "Call Us Now", href: "tel:+919511557023", variant: "primary" },
           { text: "Send Email", href: "mailto:info@adysunventures.com", variant: "secondary" }
         ]}
-        backgroundImage="/assets/images/content/tab-content-03.jpg"
       />
     </WebsiteLayout>
   );
