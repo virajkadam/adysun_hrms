@@ -61,6 +61,12 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/industries" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
+                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                    Industries
+                  </Link>
+                </li>
+                <li>
                   <Link href="/careers" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
                     <ChevronRight className="w-4 h-4 mr-2 text-white" />
                     Careers
