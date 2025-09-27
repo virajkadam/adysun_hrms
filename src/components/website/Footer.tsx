@@ -54,7 +54,7 @@ export default function Footer() {
       {/* Main Footer Content */}
       <div className="pb-16 pt-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
             {/* Quick Links */}
             <div className="lg:col-span-1">
@@ -101,6 +101,36 @@ export default function Footer() {
                   <Link href="/gallery" className={getLinkClasses('/gallery')}>
                     <ChevronRight className={getIconClasses('/gallery')} />
                     Gallery
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div className="lg:col-span-1">
+              <h4 className="text-lg font-semibold mb-2 text-white">Industries</h4>
+              <div className="w-12 h-0.5 bg-gray-400 mb-6"></div>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="/industries/ecommerce" className={getLinkClasses('/industries/ecommerce')}>
+                    <ChevronRight className={getIconClasses('/industries/ecommerce')} />
+                    E-commerce
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/industries/stock-exchange" className={getLinkClasses('/industries/stock-exchange')}>
+                    <ChevronRight className={getIconClasses('/industries/stock-exchange')} />
+                    Stock Exchange
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/industries/algo-trading" className={getLinkClasses('/industries/algo-trading')}>
+                    <ChevronRight className={getIconClasses('/industries/algo-trading')} />
+                    Algo Trading
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/industries/crypto-currency" className={getLinkClasses('/industries/crypto-currency')}>
+                    <ChevronRight className={getIconClasses('/industries/crypto-currency')} />
+                    Crypto Currency
                   </Link>
                 </li>
               </ul>
