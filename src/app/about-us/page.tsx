@@ -25,7 +25,7 @@ export default function AboutUsPage() {
       />
 
       {/* Enhanced Service Overview Section */}
-      <section className="mb-20">
+      <section className="my-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -274,7 +274,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Enhanced Contact Section */}
-      <section className="bg-gradient-to-br from-orange-50 to-orange-200 py-20 mb-20">
+      <section className="bg-gradient-to-br from-orange-50 to-orange-200 py-10 mb-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">
@@ -366,7 +366,7 @@ export default function AboutUsPage() {
 
       {/* Enhanced Statistics Section */}
       <CounterSection
-        className="mb-20"
+        className="my-5"
         items={[
                   { icon: <Users />, value: '150+', label: 'Total Projects' },
         { icon: <Smile />, value: '75+', label: 'Happy Clients' },
