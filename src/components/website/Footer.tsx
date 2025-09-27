@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   Twitter, 
   Instagram, 
@@ -16,9 +17,33 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { GoogleMapsButton, GoogleSearchButton } from '../ui/HollowButton';
-import CompanyContactBar from './layout/CompanyContactBar'; 
+import CompanyContactBar from './layout/CompanyContactBar';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Function to check if a link is active
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
+
+  // Function to get link classes based on active state
+  const getLinkClasses = (href: string) => {
+    const baseClasses = "flex items-center transition-colors duration-300";
+    const activeClasses = "text-orange-400 hover:text-orange-300";
+    const inactiveClasses = "text-white hover:text-gray-300";
+    
+    return `${baseClasses} ${isActive(href) ? activeClasses : inactiveClasses}`;
+  };
+
+  // Function to get icon classes based on active state
+  const getIconClasses = (href: string) => {
+    return `w-4 h-4 mr-2 ${isActive(href) ? 'text-orange-400' : 'text-white'}`;
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
 
@@ -37,44 +62,44 @@ export default function Footer() {
               <div className="w-12 h-0.5 bg-gray-400 mb-6"></div>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/about" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/about-us" className={getLinkClasses('/about-us')}>
+                    <ChevronRight className={getIconClasses('/about-us')} />
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/contact-us" className={getLinkClasses('/contact-us')}>
+                    <ChevronRight className={getIconClasses('/contact-us')} />
                     Contact
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/services" className={getLinkClasses('/services')}>
+                    <ChevronRight className={getIconClasses('/services')} />
                     Services
                   </Link>
                 </li>
                 <li>
-                  <Link href="/technologies" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/technologies" className={getLinkClasses('/technologies')}>
+                    <ChevronRight className={getIconClasses('/technologies')} />
                     Technologies
                   </Link>
                 </li>
                 <li>
-                  <Link href="/industries" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/industries" className={getLinkClasses('/industries')}>
+                    <ChevronRight className={getIconClasses('/industries')} />
                     Industries
                   </Link>
                 </li>
                 <li>
-                  <Link href="/careers" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/careers" className={getLinkClasses('/careers')}>
+                    <ChevronRight className={getIconClasses('/careers')} />
                     Careers
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery" className="flex items-center text-white hover:text-gray-300 transition-colors duration-300">
-                    <ChevronRight className="w-4 h-4 mr-2 text-white" />
+                  <Link href="/gallery" className={getLinkClasses('/gallery')}>
+                    <ChevronRight className={getIconClasses('/gallery')} />
                     Gallery
                   </Link>
                 </li>
