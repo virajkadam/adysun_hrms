@@ -30,11 +30,11 @@ export default function Navigation({ className = '' }: NavigationProps) {
   // Styling helpers
   const desktopBase = 'font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-2 py-2 min-h-[44px] min-w-[44px] flex items-center justify-center text-sm lg:text-base';
   const desktopActive = 'text-orange-600 border-b-2 border-orange-500 font-semibold';
-  const desktopInactive = 'text-gray-700 hover:text-orange-600';
+  const desktopInactive = 'text-black hover:text-orange-600';
 
   const mobileBase = 'block rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center';
   const mobileActive = 'text-orange-600 bg-orange-50 font-semibold';
-  const mobileInactive = 'text-gray-700 hover:text-orange-600 hover:bg-orange-50';
+  const mobileInactive = 'text-black hover:text-orange-600 hover:bg-orange-50';
 
   const isIndustries = isActive('/industries');
 
@@ -133,7 +133,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             />
             <div className="sm:block flex-shrink-0">
               <div className="text-base lg:text-lg font-bold text-gray-900 drop-shadow-sm">ADYSUN VENTURES</div>
-              <div className="text-xs text-gray-600 drop-shadow-sm">Inspire. Imagine. Implement.</div>
+              <div className="text-xs text-black drop-shadow-sm">Inspire. Imagine. Implement.</div>
             </div>
           </Link>
 
@@ -201,7 +201,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                   Industries
                 </Link>
                 <button
-                  className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-1 py-2 min-h-[44px] min-w-[32px] flex items-center justify-center text-sm lg:text-base hover:bg-white/20 hover:backdrop-blur-sm"
+                  className="text-black hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-1 py-2 min-h-[44px] min-w-[32px] flex items-center justify-center text-sm lg:text-base hover:bg-white/20 hover:backdrop-blur-sm"
                   onClick={() => setIsIndustriesOpen(!isIndustriesOpen)}
                   aria-expanded={isIndustriesOpen}
                   aria-haspopup="true"
