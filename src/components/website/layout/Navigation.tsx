@@ -103,7 +103,9 @@ export default function Navigation({ className = '' }: NavigationProps) {
 
   const industriesItems = [
     { href: '/industries/ecommerce', label: 'E-commerce' },
-    { href: '/industries/stock-exchange', label: 'Stock Exchange' }
+    { href: '/industries/stock-exchange', label: 'Stock Exchange' },
+    { href: '/industries/algo-trading', label: 'Algo Trading'},
+    { href: '/industries/crypto-currency', label: 'Crypto Currency'}
   ];
 
   return (
@@ -218,9 +220,9 @@ export default function Navigation({ className = '' }: NavigationProps) {
               
               {/* Dropdown Menu */}
               <div
-                className={`absolute top-full left-0 mt-1 w-48 backdrop-blur-md bg-white/30 rounded-lg shadow-xl border border-white/30 py-2 transition-all duration-200 ${
+                className={`absolute top-full left-0 mt-1 w-48 backdrop-blur-md bg-white rounded-lg shadow-xl border border-white/30 py-2 transition-all duration-200 ${
                   isIndustriesOpen 
-                    ? 'opacity-100 visible translate-y-0' 
+                    ? 'opacity-100  visible translate-y-0' 
                     : 'opacity-0 invisible -translate-y-2'
                 }`}
                 role="menu"
