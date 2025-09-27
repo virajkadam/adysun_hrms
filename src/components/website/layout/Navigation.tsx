@@ -110,18 +110,18 @@ export default function Navigation({ className = '' }: NavigationProps) {
     <nav 
       className={`navigation-container fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-orange-200' 
-          : 'bg-transparent'
+          ? 'backdrop-blur-md bg-white/20 border-b border-white/30 shadow-xl' 
+          : 'backdrop-blur-sm bg-white/10 border-b border-white/20'
       } ${className}`}
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link 
             href="/" 
-            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md flex-shrink-0"
+            className="flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md flex-shrink-0 hover:opacity-80 transition-opacity"
             aria-label="Adysun Ventures Home"
           >
             <Image
@@ -129,11 +129,11 @@ export default function Navigation({ className = '' }: NavigationProps) {
               alt="Adysun Ventures Logo"
               width={40}
               height={40}
-              className="w-10 h-10 flex-shrink-0"
+              className="w-10 h-10 flex-shrink-0 drop-shadow-sm"
             />
-            <div className=" sm:block flex-shrink-0">
-              <div className="text-base lg:text-lg font-bold text-gray-900">ADYSUN VENTURES</div>
-              <div className="text-xs text-gray-600">Inspire. Imagine. Implement.</div>
+            <div className="sm:block flex-shrink-0">
+              <div className="text-base lg:text-lg font-bold text-gray-900 drop-shadow-sm">ADYSUN VENTURES</div>
+              <div className="text-xs text-gray-600 drop-shadow-sm">Inspire. Imagine. Implement.</div>
             </div>
           </Link>
 
@@ -143,7 +143,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/"
               aria-current={isActive('/') ? 'page' : undefined}
-              className={`${isActive('/') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Home page"
             >
               Home
@@ -153,7 +153,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/about-us"
               aria-current={isActive('/about-us') ? 'page' : undefined}
-              className={`${isActive('/about-us') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/about-us') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to About page"
             >
               About
@@ -163,7 +163,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/services"
               aria-current={isActive('/services') ? 'page' : undefined}
-              className={`${isActive('/services') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/services') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Services page"
             >
               Services
@@ -173,7 +173,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/partners"
               aria-current={isActive('/partners') ? 'page' : undefined}
-              className={`${isActive('/partners') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/partners') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Partners page"
             >
               Partners
@@ -183,7 +183,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/technologies"
               aria-current={isActive('/technologies') ? 'page' : undefined}
-              className={`${isActive('/technologies') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/technologies') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Technologies page"
             >
               Technologies
@@ -195,13 +195,13 @@ export default function Navigation({ className = '' }: NavigationProps) {
                 <Link
                   href="/industries"
                   aria-current={isIndustries ? 'page' : undefined}
-                  className={`${isIndustries ? desktopActive : desktopInactive} ${desktopBase}`}
+                  className={`${isIndustries ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
                   aria-label="Navigate to Industries page"
                 >
                   Industries
                 </Link>
                 <button
-                  className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-1 py-2 min-h-[44px] min-w-[32px] flex items-center justify-center text-sm lg:text-base"
+                  className="text-gray-700 hover:text-orange-600 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md px-1 py-2 min-h-[44px] min-w-[32px] flex items-center justify-center text-sm lg:text-base hover:bg-white/20 hover:backdrop-blur-sm"
                   onClick={() => setIsIndustriesOpen(!isIndustriesOpen)}
                   aria-expanded={isIndustriesOpen}
                   aria-haspopup="true"
@@ -218,7 +218,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
               
               {/* Dropdown Menu */}
               <div
-                className={`absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-orange-200 py-2 transition-all duration-200 ${
+                className={`absolute top-full left-0 mt-1 w-48 backdrop-blur-md bg-white/30 rounded-lg shadow-xl border border-white/30 py-2 transition-all duration-200 ${
                   isIndustriesOpen 
                     ? 'opacity-100 visible translate-y-0' 
                     : 'opacity-0 invisible -translate-y-2'
@@ -232,7 +232,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     key={item.href}
                     href={item.href}
                     aria-current={isActive(item.href) ? 'page' : undefined}
-                    className={`block px-4 py-2 text-sm ${isActive(item.href) ? 'text-orange-600 bg-orange-50 font-semibold' : 'text-gray-700 hover:text-orange-600 hover:bg-orange-50'} transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center`}
+                    className={`block px-4 py-2 text-sm ${isActive(item.href) ? 'text-orange-600 bg-orange-50/80 font-semibold' : 'text-gray-700 hover:text-orange-600 hover:bg-white/40'} transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center backdrop-blur-sm`}
                     onClick={() => setIsIndustriesOpen(false)}
                     role="menuitem"
                     aria-label={`Navigate to ${item.label} page`}
@@ -247,7 +247,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/careers"
               aria-current={isActive('/careers') ? 'page' : undefined}
-              className={`${isActive('/careers') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/careers') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Careers page"
             >
               Careers
@@ -257,7 +257,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/clients"
               aria-current={isActive('/clients') ? 'page' : undefined}
-              className={`${isActive('/clients') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/clients') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Clients page"
             >
               Clients
@@ -267,7 +267,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
             <Link
               href="/contact-us"
               aria-current={isActive('/contact-us') ? 'page' : undefined}
-              className={`${isActive('/contact-us') ? desktopActive : desktopInactive} ${desktopBase}`}
+              className={`${isActive('/contact-us') ? desktopActive : desktopInactive} ${desktopBase} hover:bg-white/20 hover:backdrop-blur-sm transition-all duration-200`}
               aria-label="Navigate to Contact page"
             >
               Contact
@@ -276,7 +276,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-700 hover:text-orange-600 hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200"
+            className="md:hidden p-2 rounded-md text-gray-700 hover:text-orange-600 hover:bg-white/30 hover:backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -295,17 +295,17 @@ export default function Navigation({ className = '' }: NavigationProps) {
           id="mobile-menu"
           className={`md:hidden transition-all duration-300 ease-in-out ${
             isMenuOpen 
-              ? 'max-h-96 opacity-100 visible' 
+              ? 'max-h-auto opacity-100 visible' 
               : 'max-h-0 opacity-0 invisible'
           }`}
           aria-hidden={!isMenuOpen}
         >
-                                                     <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md rounded-lg mt-2 shadow-lg border border-orange-200">
+                                                     <div className="px-2 pt-2 pb-3 space-y-1 backdrop-blur-md bg-white/30 rounded-lg mt-2 shadow-lg border border-white/30">
                     {/* Home */}
                     <Link
                       href="/"
                       aria-current={isActive('/') ? 'page' : undefined}
-                      className={`${isActive('/') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Home page"
                     >
@@ -316,7 +316,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/about-us"
                       aria-current={isActive('/about-us') ? 'page' : undefined}
-                      className={`${isActive('/about-us') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/about-us') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to About page"
                     >
@@ -327,7 +327,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/services"
                       aria-current={isActive('/services') ? 'page' : undefined}
-                      className={`${isActive('/services') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/services') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Services page"
                     >
@@ -338,7 +338,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/partners"
                       aria-current={isActive('/partners') ? 'page' : undefined}
-                      className={`${isActive('/partners') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/partners') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Partners page"
                     >
@@ -349,7 +349,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/technologies"
                       aria-current={isActive('/technologies') ? 'page' : undefined}
-                      className={`${isActive('/technologies') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/technologies') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Technologies page"
                     >
@@ -357,19 +357,19 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     </Link>
                     
                     {/* Mobile Industries Dropdown */}
-                    <div ref={mobileIndustriesRef} className="border-t border-orange-200 pt-2 mt-2 relative z-10">
+                    <div ref={mobileIndustriesRef} className="border-t border-white/30 pt-2 mt-2 relative z-10">
                       <div className="flex items-center justify-between">
                         <Link
                           href="/industries"
                           aria-current={isIndustries ? 'page' : undefined}
-                          className={`flex-1 text-left ${isIndustries ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                          className={`flex-1 text-left ${isIndustries ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                           onClick={() => setIsMenuOpen(false)}
                           aria-label="Navigate to Industries page"
                         >
                           Industries
                         </Link>
                         <button
-                          className="px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
+                          className="px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center justify-center"
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -402,7 +402,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                             key={item.href}
                             href={item.href}
                             aria-current={isActive(item.href) ? 'page' : undefined}
-                            className={`block px-6 py-2 text-sm ${isActive(item.href) ? 'text-orange-600 bg-orange-50 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'} transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center`}
+                            className={`block px-6 py-2 text-sm ${isActive(item.href) ? 'text-orange-600 bg-orange-50/80 font-semibold' : 'text-gray-600 hover:text-orange-600 hover:bg-white/40'} transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 min-h-[44px] flex items-center backdrop-blur-sm`}
                             onClick={() => {
                               setIsMenuOpen(false);
                               setIsIndustriesOpen(false);
@@ -419,7 +419,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/careers"
                       aria-current={isActive('/careers') ? 'page' : undefined}
-                      className={`${isActive('/careers') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/careers') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Careers page"
                     >
@@ -430,7 +430,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/clients"
                       aria-current={isActive('/clients') ? 'page' : undefined}
-                      className={`${isActive('/clients') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/clients') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Clients page"
                     >
@@ -441,7 +441,7 @@ export default function Navigation({ className = '' }: NavigationProps) {
                     <Link
                       href="/contact-us"
                       aria-current={isActive('/contact-us') ? 'page' : undefined}
-                      className={`${isActive('/contact-us') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium`}
+                      className={`${isActive('/contact-us') ? mobileActive : mobileInactive} ${mobileBase} px-3 py-3 text-base font-medium hover:bg-white/40 hover:backdrop-blur-sm transition-all duration-200`}
                       onClick={() => setIsMenuOpen(false)}
                       aria-label="Navigate to Contact page"
                     >
