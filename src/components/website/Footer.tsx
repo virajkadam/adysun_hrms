@@ -45,7 +45,19 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/assets/images/bg/landing_bg.jpg')",
+        }}
+      >
+        <div className="absolute inset-0 bg-gray-900/90"></div>
+      </div>
+      
+      {/* Content Overlay */}
+      <div className="relative z-10">
 
 
 <section aria-label="Company contact bar just above footer">
@@ -265,6 +277,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );
