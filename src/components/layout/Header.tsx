@@ -10,6 +10,7 @@ const Header = () => {
   const { logout, currentAdmin, currentEmployee } = useAuth();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -22,6 +23,16 @@ const Header = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle scroll detection for glassmorphism effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleLogout = async () => {
@@ -64,10 +75,16 @@ const Header = () => {
   const userInfo = getUserInfo();
 
   return (
-    <header className="bg-white shadow-sm h-16 fixed top-0 right-0 left-0 lg:left-64 z-10">
+    <header className={`h-16 fixed top-0 right-0 left-0 lg:left-64 z-10 transition-all duration-300 ${
+      isScrolled 
+        ? 'bg-white/10 backdrop-blur-md border-b border-white/20' 
+        : 'bg-transparent'
+    }`}>
       <div className="flex items-center justify-between h-full px-4">
         {/* Mobile title - centered on mobile, hidden on desktop */}
-        <h1 className="text-xl font-semibold text-gray-800 lg:hidden flex-1 text-center">
+        <h1 className={`text-xl font-semibold lg:hidden flex-1 text-center transition-colors duration-300 ${
+          isScrolled ? 'text-white' : 'text-gray-800'
+        }`}>
           {currentAdmin ? 'Admin Dashboard' : 'Employee Portal'}
         </h1>
         
@@ -87,7 +104,9 @@ const Header = () => {
               className="object-contain mr-2"
               priority
             />
-            <span className="text-xl font-semibold text-gray-800">Adysun Ventures</span>
+            <span className={`text-xl font-semibold transition-colors duration-300 ${
+              isScrolled ? 'text-white' : 'text-gray-800'
+            }`}>Adysun Ventures</span>
           </a>
         </div>
         
@@ -95,14 +114,22 @@ const Header = () => {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors cursor-pointer ${
+              isScrolled 
+                ? 'text-white hover:bg-white/10' 
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
           >
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
               {userInfo.name.charAt(0).toUpperCase()}
             </div>
             <div className="hidden sm:block text-left">
-              <div className="text-sm font-medium text-gray-900">{userInfo.name}</div>
-              <div className="text-xs text-gray-500">{userInfo.type}</div>
+              <div className={`text-sm font-medium transition-colors duration-300 ${
+                isScrolled ? 'text-white' : 'text-gray-900'
+              }`}>{userInfo.name}</div>
+              <div className={`text-xs transition-colors duration-300 ${
+                isScrolled ? 'text-white/70' : 'text-gray-500'
+              }`}>{userInfo.type}</div>
             </div>
             <FiChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
