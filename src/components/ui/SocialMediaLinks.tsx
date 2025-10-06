@@ -69,7 +69,7 @@ const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMed
               target="_blank"
               rel="noopener noreferrer"
               title={link.title}
-              className="flex justify-center items-center w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors"
+              className="flex justify-center items-center w-10 h-10 border-2 border-orange-500 hover:border-orange-600 text-orange-500 hover:text-orange-600 rounded-full transition-colors"
             >
               {link.icon}
             </a>
@@ -98,7 +98,7 @@ const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMed
                 target="_blank"
                 rel="noopener noreferrer"
                 title={link.title}
-                className="flex justify-center items-center w-10 h-10 bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-colors"
+                className="flex justify-center items-center w-10 h-10 border-2 border-orange-500 hover:border-orange-600 text-orange-500 hover:text-orange-600 rounded-full transition-colors"
               >
                 {link.icon}
               </a>
