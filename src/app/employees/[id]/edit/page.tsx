@@ -4,7 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { FiSave, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiSave, FiEye, FiEyeOff, FiPlus, FiX } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getEmployee, updateEmployee, getAdminDataForAudit, checkUserByPhone, validatePANFormat, checkPANExistsAnywhere } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
@@ -12,8 +12,6 @@ import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
-// Define API error type
-type ApiError = Error | unknown;
 
 type PageParams = {
   params: Promise<{ id: string }>;
@@ -25,29 +23,68 @@ export default function EditEmployeePage({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [educationType, setEducationType] = useState<'12th' | 'diploma'>('12th');
+  const [educationEntries, setEducationEntries] = useState<Array<{
+    id: string;
+    type: '12th' | 'diploma';
+  }>>([
+    { id: crypto.randomUUID(), type: '12th' }
+  ]);
 
   const router = useRouter();
   const { id } = use(params);
 
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
 
+  // Helper functions for managing education entries
+  const addEducationEntry = () => {
+    setEducationEntries([
+      ...educationEntries,
+      { id: crypto.randomUUID(), type: '12th' }
+    ]);
+  };
+
+  const removeEducationEntry = (id: string) => {
+    if (educationEntries.length > 1) {
+      setEducationEntries(educationEntries.filter(entry => entry.id !== id));
+    }
+  };
+
+  const toggleEducationType = (id: string) => {
+    setEducationEntries(educationEntries.map(entry => 
+      entry.id === id 
+        ? { ...entry, type: entry.type === '12th' ? 'diploma' : '12th' }
+        : entry
+    ));
+  };
+
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
         setLoading(true);
         const employeeData = await getEmployee(id);
-        // Reset form with all employee data except id and audit fields
-        const { id: _, createdAt, createdBy, updatedAt, updatedBy, ...rest } = employeeData;
-        reset(rest);
-        
-        // Set education type based on existing data
-        if (employeeData.diploma && Object.keys(employeeData.diploma).some(key => employeeData.diploma[key])) {
-          setEducationType('diploma');
+        // Initialize education entries from employee data
+        if (employeeData.secondaryEducation && employeeData.secondaryEducation.length > 0) {
+          setEducationEntries(
+            employeeData.secondaryEducation.map(entry => ({
+              id: entry.id || crypto.randomUUID(),
+              type: entry.type,
+            }))
+          );
+          
+          // Set form values
+          reset({
+            ...employeeData,
+            secondaryEducation: employeeData.secondaryEducation,
+          });
         } else {
-          setEducationType('12th');
+          // Default to one entry if none exists
+          setEducationEntries([{ id: crypto.randomUUID(), type: '12th' }]);
+          
+          // Reset form with all employee data except id and audit fields
+          const { id: _, createdAt, createdBy, updatedAt, updatedBy, ...rest } = employeeData;
+          reset(rest);
         }
-      } catch (error: ApiError) {
+      } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee data';
         setError(errorMessage);
       } finally {
@@ -90,22 +127,36 @@ export default function EditEmployeePage({ params }: PageParams) {
         }
       }
 
-      // Prepare education data based on selected type
-      const educationData = educationType === '12th' 
-        ? { twelthStandard: data.twelthStandard }
-        : { diploma: data.diploma };
+      // Transform education data to new structure
+      const secondaryEducation = educationEntries.map((entry, index) => ({
+        id: entry.id,
+        type: entry.type,
+        twelthData: entry.type === '12th' 
+          ? data.secondaryEducation?.[index]?.twelthData 
+          : undefined,
+        diplomaData: entry.type === 'diploma' 
+          ? data.secondaryEducation?.[index]?.diplomaData 
+          : undefined,
+      })).filter(entry => 
+        // Only include entries with actual data
+        (entry.twelthData && Object.values(entry.twelthData).some(v => v)) ||
+        (entry.diplomaData && Object.values(entry.diplomaData).some(v => v))
+      );
 
-      // Normalize PAN to uppercase and include only selected education type
+      // Normalize PAN to uppercase and include new education structure
       const updatedData = {
         ...data,
-        ...educationData, // Only include the selected education type
+        secondaryEducation,
+        // Remove old fields from submission
+        twelthStandard: undefined,
+        diploma: undefined,
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
       };
       
       await updateEmployee(id, updatedData);
       toast.success('Employee updated successfully!', { id: 'updateEmployee' });
       router.push(`/employees/${id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to update employee';
       setError(errorMessage);
       toast.error(errorMessage, { id: 'updateEmployee' });
@@ -458,134 +509,170 @@ export default function EditEmployeePage({ params }: PageParams) {
               </div>
             </div>
 
-            {/* 12th Standard or Diploma */}
+            {/* Dynamic Education Entries */}
             <div className="bg-white p-4 rounded-lg mb-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-md font-medium text-gray-700 border-l-2 border-green-500 pl-2">12th or Diploma</h3>
-                <div className="flex items-center space-x-2">
-                  <span className={`text-sm font-medium ${educationType === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>12th</span>
-                  <button
-                    type="button"
-                    onClick={() => setEducationType(educationType === '12th' ? 'diploma' : '12th')}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                      educationType === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        educationType === 'diploma' ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
-                  <span className={`text-sm font-medium ${educationType === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>Diploma</span>
-                </div>
-              </div>
+              {educationEntries.map((entry, index) => (
+                <div key={entry.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
+                  {/* Header with Toggle and Actions */}
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-md font-medium text-gray-700 border-l-2 border-green-500 pl-2">
+                      12th or Diploma {index > 0 && `(Entry ${index + 1})`}
+                    </h3>
+                    
+                    <div className="flex items-center gap-3">
+                      {/* Toggle */}
+                      <div className="flex items-center space-x-2">
+                        <span className={`text-sm font-medium ${entry.type === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>
+                          12th
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleEducationType(entry.id)}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                            entry.type === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
+                          }`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            entry.type === 'diploma' ? 'translate-x-6' : 'translate-x-1'
+                          }`} />
+                        </button>
+                        <span className={`text-sm font-medium ${entry.type === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>
+                          Diploma
+                        </span>
+                      </div>
+                      
+                      {/* Add Button (show on last entry) */}
+                      {index === educationEntries.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={addEducationEntry}
+                          className="p-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
+                          title="Add another 12th/Diploma entry"
+                        >
+                          <FiPlus className="w-4 h-4" />
+                        </button>
+                      )}
+                      
+                      {/* Remove Button (hide on first entry) */}
+                      {index > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => removeEducationEntry(entry.id)}
+                          className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors"
+                          title="Remove this entry"
+                        >
+                          <FiX className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
 
-              {/* 12th Standard */}
-              {educationType === '12th' && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
-                    <input type="text" placeholder="Enter school name" {...register('twelthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                    <input type="text" placeholder="Enter stream" {...register('twelthStandard.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                    <select {...register('twelthStandard.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
-                      <option value="">Select Month</option>
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
-                    <input type="text" placeholder="YYYY" {...register('twelthStandard.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                    {errors.twelthStandard?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.twelthStandard.passingYear.message}</p>)}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
-                    <input type="text" placeholder="Enter full school name" {...register('twelthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
-                    <input type="text" placeholder="Enter board name" {...register('twelthStandard.board')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                    <input type="text" placeholder="Enter percentage" {...register('twelthStandard.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
-                    <input type="text" placeholder="Enter grade" {...register('twelthStandard.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                </div>
-              )}
+                  {/* Form Fields */}
+                  {entry.type === '12th' && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
+                        <input type="text" placeholder="Enter school name" {...register(`secondaryEducation.${index}.twelthData.school`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                        <input type="text" placeholder="Enter stream" {...register(`secondaryEducation.${index}.twelthData.branch`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                        <select {...register(`secondaryEducation.${index}.twelthData.month`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
+                          <option value="">Select Month</option>
+                          <option value="January">January</option>
+                          <option value="February">February</option>
+                          <option value="March">March</option>
+                          <option value="April">April</option>
+                          <option value="May">May</option>
+                          <option value="June">June</option>
+                          <option value="July">July</option>
+                          <option value="August">August</option>
+                          <option value="September">September</option>
+                          <option value="October">October</option>
+                          <option value="November">November</option>
+                          <option value="December">December</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+                        <input type="text" placeholder="YYYY" {...register(`secondaryEducation.${index}.twelthData.passingYear`, { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                        {errors.secondaryEducation?.[index]?.twelthData?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.secondaryEducation[index].twelthData.passingYear.message}</p>)}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
+                        <input type="text" placeholder="Enter full school name" {...register(`secondaryEducation.${index}.twelthData.schoolName`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
+                        <input type="text" placeholder="Enter board name" {...register(`secondaryEducation.${index}.twelthData.board`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
+                        <input type="text" placeholder="Enter percentage" {...register(`secondaryEducation.${index}.twelthData.marks`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                        <input type="text" placeholder="Enter grade" {...register(`secondaryEducation.${index}.twelthData.grade`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                    </div>
+                  )}
 
-              {/* Diploma */}
-              {educationType === 'diploma' && (
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Diploma Name</label>
-                    <input type="text" placeholder="Enter diploma name" {...register('diploma.name')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                    <input type="text" placeholder="Enter specialization/branch" {...register('diploma.branch')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
-                    <select {...register('diploma.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
-                      <option value="">Select Month</option>
-                      <option value="January">January</option>
-                      <option value="February">February</option>
-                      <option value="March">March</option>
-                      <option value="April">April</option>
-                      <option value="May">May</option>
-                      <option value="June">June</option>
-                      <option value="July">July</option>
-                      <option value="August">August</option>
-                      <option value="September">September</option>
-                      <option value="October">October</option>
-                      <option value="November">November</option>
-                      <option value="December">December</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
-                    <input type="text" placeholder="YYYY" {...register('diploma.passingYear', { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                    {errors.diploma?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.diploma.passingYear.message}</p>)}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
-                    <input type="text" placeholder="Enter college/institution name" {...register('diploma.collegeName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Institute</label>
-                    <input type="text" placeholder="Enter institute name" {...register('diploma.institute')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
-                    <input type="text" placeholder="Percentage" {...register('diploma.marks')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
-                    <input type="text" placeholder="Enter grade" {...register('diploma.grade')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  </div>
+                  {entry.type === 'diploma' && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Diploma Name</label>
+                        <input type="text" placeholder="Enter diploma name" {...register(`secondaryEducation.${index}.diplomaData.name`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
+                        <input type="text" placeholder="Enter specialization/branch" {...register(`secondaryEducation.${index}.diplomaData.branch`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                        <select {...register(`secondaryEducation.${index}.diplomaData.month`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
+                          <option value="">Select Month</option>
+                          <option value="January">January</option>
+                          <option value="February">February</option>
+                          <option value="March">March</option>
+                          <option value="April">April</option>
+                          <option value="May">May</option>
+                          <option value="June">June</option>
+                          <option value="July">July</option>
+                          <option value="August">August</option>
+                          <option value="September">September</option>
+                          <option value="October">October</option>
+                          <option value="November">November</option>
+                          <option value="December">December</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Passing Year</label>
+                        <input type="text" placeholder="YYYY" {...register(`secondaryEducation.${index}.diplomaData.passingYear`, { pattern: { value: /^(19|20)\d{2}$/, message: 'Enter a valid 4-digit year' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                        {errors.secondaryEducation?.[index]?.diplomaData?.passingYear && (<p className="mt-1 text-sm text-red-600">{errors.secondaryEducation[index].diplomaData.passingYear.message}</p>)}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">College Name</label>
+                        <input type="text" placeholder="Enter college/institution name" {...register(`secondaryEducation.${index}.diplomaData.collegeName`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Institute</label>
+                        <input type="text" placeholder="Enter institute name" {...register(`secondaryEducation.${index}.diplomaData.institute`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Marks</label>
+                        <input type="text" placeholder="Percentage" {...register(`secondaryEducation.${index}.diplomaData.marks`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                        <input type="text" placeholder="Enter grade" {...register(`secondaryEducation.${index}.diplomaData.grade`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
 
             {/* 10th Standard */}

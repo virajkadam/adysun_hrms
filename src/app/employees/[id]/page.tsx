@@ -450,94 +450,132 @@ export default function EmployeeViewPage({ params }: PageParams) {
               </div>
             )}
             
-            {/* 12th Standard */}
-            <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">12th Standard</h3>
-            {employee.twelthStandard ? (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.branch || '-'}</p>
-                  <p className="text-sm text-gray-500">Branch</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">
-                    {employee.twelthStandard.month ? `${employee.twelthStandard.month} ` : ''}
-                    {employee.twelthStandard.passingYear || '-'}
-                  </p>
-                  <p className="text-sm text-gray-500">Passing Year</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.schoolName || '-'}</p>
-                  <p className="text-sm text-gray-500">School Name</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.board || '-'}</p>
-                  <p className="text-sm text-gray-500">Board</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.marks || '-'}</p>
-                  <p className="text-sm text-gray-500">Marks</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.twelthStandard.grade || '-'}</p>
-                  <p className="text-sm text-gray-500">Grade</p>
-                </div>
+            {/* Secondary Education (12th/Diploma) */}
+            <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">12th Standard / Diploma</h3>
+            {employee.secondaryEducation && employee.secondaryEducation.length > 0 ? (
+              <div className="space-y-4">
+                {employee.secondaryEducation.map((entry, index) => (
+                  <div key={entry.id} className="border border-gray-200 rounded-lg p-4">
+                    {/* Type Badge */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        entry.type === '12th' 
+                          ? 'bg-blue-100 text-blue-700' 
+                          : 'bg-purple-100 text-purple-700'
+                      }`}>
+                        {entry.type === '12th' ? '12th Standard' : 'Diploma'}
+                      </span>
+                      {index > 0 && (
+                        <span className="text-sm text-gray-500">Entry {index + 1}</span>
+                      )}
+                    </div>
+                    
+                    {/* Display Fields */}
+                    {entry.type === '12th' && entry.twelthData && (
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {entry.twelthData.school && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.school}</p>
+                            <p className="text-sm text-gray-500">School</p>
+                          </div>
+                        )}
+                        {entry.twelthData.branch && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.branch}</p>
+                            <p className="text-sm text-gray-500">Branch</p>
+                          </div>
+                        )}
+                        {(entry.twelthData.month || entry.twelthData.passingYear) && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">
+                              {entry.twelthData.month ? `${entry.twelthData.month} ` : ''}
+                              {entry.twelthData.passingYear || '-'}
+                            </p>
+                            <p className="text-sm text-gray-500">Passing Year</p>
+                          </div>
+                        )}
+                        {entry.twelthData.schoolName && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.schoolName}</p>
+                            <p className="text-sm text-gray-500">School Name</p>
+                          </div>
+                        )}
+                        {entry.twelthData.board && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.board}</p>
+                            <p className="text-sm text-gray-500">Board</p>
+                          </div>
+                        )}
+                        {entry.twelthData.marks && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.marks}</p>
+                            <p className="text-sm text-gray-500">Marks</p>
+                          </div>
+                        )}
+                        {entry.twelthData.grade && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.grade}</p>
+                            <p className="text-sm text-gray-500">Grade</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {entry.type === 'diploma' && entry.diplomaData && (
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {entry.diplomaData.name && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.name}</p>
+                            <p className="text-sm text-gray-500">Diploma Name</p>
+                          </div>
+                        )}
+                        {entry.diplomaData.branch && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.branch}</p>
+                            <p className="text-sm text-gray-500">Branch</p>
+                          </div>
+                        )}
+                        {(entry.diplomaData.month || entry.diplomaData.passingYear) && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">
+                              {entry.diplomaData.month ? `${entry.diplomaData.month} ` : ''}
+                              {entry.diplomaData.passingYear || '-'}
+                            </p>
+                            <p className="text-sm text-gray-500">Passing Year</p>
+                          </div>
+                        )}
+                        {entry.diplomaData.collegeName && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.collegeName}</p>
+                            <p className="text-sm text-gray-500">College Name</p>
+                          </div>
+                        )}
+                        {entry.diplomaData.institute && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.institute}</p>
+                            <p className="text-sm text-gray-500">Institute</p>
+                          </div>
+                        )}
+                        {entry.diplomaData.marks && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.marks}</p>
+                            <p className="text-sm text-gray-500">Marks</p>
+                          </div>
+                        )}
+                        {entry.diplomaData.grade && (
+                          <div className="bg-white rounded-lg shadow p-3">
+                            <p className="text-lg font-medium text-gray-900">{entry.diplomaData.grade}</p>
+                            <p className="text-sm text-gray-500">Grade</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="bg-white rounded-lg shadow p-3 mb-4">
-                <p className="text-gray-500 italic">No 12th standard details available</p>
-              </div>
-            )}
-            
-            {/* Other Education */}
-            <h3 className="text-md font-medium text-gray-700 mt-6 mb-4">Other Education</h3>
-            {employee.otherEducation ? (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.diploma || '-'}</p>
-                  <p className="text-sm text-gray-500">Diploma</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.branch || '-'}</p>
-                  <p className="text-sm text-gray-500">Branch</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">
-                    {employee.otherEducation.month ? `${employee.otherEducation.month} ` : ''}
-                    {employee.otherEducation.passingYear || '-'}
-                  </p>
-                  <p className="text-sm text-gray-500">Passing Year</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.collegeName || '-'}</p>
-                  <p className="text-sm text-gray-500">College Name</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.institute || '-'}</p>
-                  <p className="text-sm text-gray-500">Institute</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.marks || '-'}</p>
-                  <p className="text-sm text-gray-500">Marks</p>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.otherEducation.grade || '-'}</p>
-                  <p className="text-sm text-gray-500">Grade</p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow p-3 mb-4">
-                <p className="text-gray-500 italic">No other education details available</p>
+                <p className="text-gray-500 italic">No 12th standard or diploma details available</p>
               </div>
             )}
             

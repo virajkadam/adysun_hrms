@@ -1,3 +1,29 @@
+// Secondary Education Entry type for dynamic 12th/Diploma entries
+export interface SecondaryEducationEntry {
+  id: string;
+  type: '12th' | 'diploma';
+  twelthData?: {
+    school?: string;
+    branch?: string;
+    month?: string;
+    passingYear?: string;
+    schoolName?: string;
+    board?: string;
+    marks?: string;
+    grade?: string;
+  };
+  diplomaData?: {
+    name?: string;
+    branch?: string;
+    month?: string;
+    passingYear?: string;
+    collegeName?: string;
+    institute?: string;
+    marks?: string;
+    grade?: string;
+  };
+}
+
 // Employee type
 export interface Employee {
   id: string;
@@ -44,6 +70,10 @@ export interface Employee {
     grade?: string;
   };
   
+  // NEW: Array-based secondary education (12th/Diploma)
+  secondaryEducation?: SecondaryEducationEntry[];
+  
+  // OLD: Keep for backward compatibility
   // 12th Standard
   twelthStandard?: {
     school?: string;

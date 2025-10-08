@@ -1,6 +1,6 @@
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { Employee, Employment, Salary } from '../types';
+import { Employee, Employment, Salary, SecondaryEducationEntry } from '../types';
 import { useAuditTrail } from '../hooks/useAuditTrail';
 
 // Admin authentication functions
@@ -274,7 +274,34 @@ export const getEmployee = async (id: string) => {
     
     if (docSnap.exists()) {
       console.log('✅ Employee found successfully');
-      return { id: docSnap.id, ...docSnap.data() } as Employee;
+      const data = docSnap.data() as Employee;
+      
+      // MIGRATION: Convert old structure to new
+      if (!data.secondaryEducation && (data.twelthStandard || data.diploma)) {
+        console.log('🔄 Migrating old education structure to new format...');
+        const migratedEducation: SecondaryEducationEntry[] = [];
+        
+        if (data.twelthStandard) {
+          migratedEducation.push({
+            id: crypto.randomUUID(),
+            type: '12th',
+            twelthData: data.twelthStandard,
+          });
+        }
+        
+        if (data.diploma) {
+          migratedEducation.push({
+            id: crypto.randomUUID(),
+            type: 'diploma',
+            diplomaData: data.diploma,
+          });
+        }
+        
+        data.secondaryEducation = migratedEducation;
+        console.log('✅ Migration completed:', migratedEducation.length, 'entries created');
+      }
+      
+      return { ...data, id: docSnap.id } as Employee;
     } else {
       console.log('❌ Employee not found in database');
       throw new Error('Employee not found');
