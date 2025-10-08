@@ -1,18 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiBriefcase } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiPlus, FiEye, FiBriefcase, FiDollarSign } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
-import SearchBar from '@/components/ui/SearchBar';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
 import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
-import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 import Pagination from '@/components/ui/Pagination';
 
 // Component to handle employment navigation
@@ -381,6 +377,12 @@ export default function EmployeesPage() {
                             href={`/employees/${employee.id}`}
                           />
                           <EmploymentActionButton employeeId={employee.id} />
+                          <ActionButton
+                            icon={<FiDollarSign className="w-5 h-5" />}
+                            title="View Salaries"
+                            colorClass="bg-yellow-100 text-yellow-600 hover:text-yellow-900"
+                            href={`/salaries?employeeId=${employee.id}`}
+                          />
                           <ActionButton
                             icon={<FiEdit className="w-5 h-5" />}
                             title="Edit"
