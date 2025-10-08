@@ -37,10 +37,37 @@ export default function AddEmployeePage() {
   });
 
   // Helper functions for managing education entries
+  // Check if we can add more entries
+  const canAddEntry = () => {
+    if (educationEntries.length >= 2) return false; // Max 2 entries
+    
+    const has12th = educationEntries.some(e => e.type === '12th');
+    const hasDiploma = educationEntries.some(e => e.type === 'diploma');
+    
+    return !(has12th && hasDiploma); // Can add only if both not present
+  };
+
+  // Get the type that should be added next
+  const getNextEntryType = (): '12th' | 'diploma' => {
+    const has12th = educationEntries.some(e => e.type === '12th');
+    return has12th ? 'diploma' : '12th';
+  };
+
+  // Prevent toggling if it creates duplicate
+  const canToggleType = (id: string, newType: '12th' | 'diploma'): boolean => {
+    // Check if another entry already has this type
+    return !educationEntries.some(e => e.id !== id && e.type === newType);
+  };
+
   const addEducationEntry = () => {
+    if (!canAddEntry()) {
+      toast.error('Maximum 2 entries allowed (one 12th and one Diploma)');
+      return;
+    }
+    
     setEducationEntries([
       ...educationEntries,
-      { id: crypto.randomUUID(), type: '12th' }
+      { id: crypto.randomUUID(), type: getNextEntryType() }
     ]);
   };
 
@@ -51,9 +78,19 @@ export default function AddEmployeePage() {
   };
 
   const toggleEducationType = (id: string) => {
+    const entry = educationEntries.find(e => e.id === id);
+    if (!entry) return;
+    
+    const newType = entry.type === '12th' ? 'diploma' : '12th';
+    
+    if (!canToggleType(id, newType)) {
+      toast.error(`You already have a ${newType === '12th' ? '12th Standard' : 'Diploma'} entry. Please remove it first.`);
+      return;
+    }
+    
     setEducationEntries(educationEntries.map(entry => 
       entry.id === id 
-        ? { ...entry, type: entry.type === '12th' ? 'diploma' : '12th' }
+        ? { ...entry, type: newType }
         : entry
     ));
   };
@@ -701,41 +738,51 @@ export default function AddEmployeePage() {
             <div className="bg-white p-4 rounded-lg mb-4">
               {educationEntries.map((entry, index) => (
                 <div key={entry.id} className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
-                  {/* Header with Toggle and Actions */}
+                  {/* Header with Dynamic Title and Conditional Toggle */}
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-md font-medium text-gray-700 border-l-2 border-green-500 pl-2">
-                      12th or Diploma {index > 0 && `(Entry ${index + 1})`}
+                      {/* Dynamic Title Based on Entry Index and Type */}
+                      {index === 0 
+                        ? "12th or Diploma" 
+                        : entry.type === '12th' 
+                          ? "12th Standard" 
+                          : "Diploma"
+                      }
+                      {index > 0 && ` (Entry ${index + 1})`}
                     </h3>
                     
                     <div className="flex items-center gap-3">
-                      {/* Toggle */}
-                      <div className="flex items-center space-x-2">
-                        <span className={`text-sm font-medium ${entry.type === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>
-                          12th
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => toggleEducationType(entry.id)}
-                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                            entry.type === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
-                          }`}
-                        >
-                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            entry.type === 'diploma' ? 'translate-x-6' : 'translate-x-1'
-                          }`} />
-                        </button>
-                        <span className={`text-sm font-medium ${entry.type === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>
-                          Diploma
-                        </span>
-                      </div>
+                      {/* Toggle - ONLY show for first entry */}
+                      {index === 0 && (
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-sm font-medium ${entry.type === '12th' ? 'text-blue-600' : 'text-gray-500'}`}>
+                            12th
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => toggleEducationType(entry.id)}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+                              entry.type === 'diploma' ? 'bg-blue-600' : 'bg-gray-200'
+                            }`}
+                          >
+                            <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              entry.type === 'diploma' ? 'translate-x-6' : 'translate-x-1'
+                            }`} />
+                          </button>
+                          <span className={`text-sm font-medium ${entry.type === 'diploma' ? 'text-blue-600' : 'text-gray-500'}`}>
+                            Diploma
+                          </span>
+                        </div>
+                      )}
+                     
                       
-                      {/* Add Button (show on last entry) */}
-                      {index === educationEntries.length - 1 && (
+                      {/* Add Button - only show if can add more */}
+                      {index === educationEntries.length - 1 && canAddEntry() && (
                         <button
                           type="button"
                           onClick={addEducationEntry}
                           className="p-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
-                          title="Add another 12th/Diploma entry"
+                          title={`Add ${getNextEntryType() === '12th' ? '12th Standard' : 'Diploma'} entry`}
                         >
                           <FiPlus className="w-4 h-4" />
                         </button>
@@ -997,6 +1044,19 @@ export default function AddEmployeePage() {
                   )}
                 </div>
               ))}
+              
+              {/* Visual Feedback Messages */}
+              {educationEntries.length >= 2 && (
+                <div className="text-sm text-gray-600 italic mt-2">
+                  ✓ Maximum entries reached (12th Standard + Diploma)
+                </div>
+              )}
+
+              {educationEntries.length === 1 && canAddEntry() && (
+                <div className="text-sm text-blue-600 italic mt-2">
+                  💡 You can add one more entry ({getNextEntryType() === '12th' ? '12th Standard' : 'Diploma'})
+                </div>
+              )}
             </div>
             {/* 10th Standard */}
             <div className="bg-white p-4 rounded-lg mb-4">

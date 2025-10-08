@@ -1,6 +1,22 @@
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Employee, Employment, Salary, SecondaryEducationEntry } from '../types';
+
+// Validate education entries before saving
+const validateEducationEntries = (entries: SecondaryEducationEntry[]): boolean => {
+  if (entries.length > 2) {
+    throw new Error('Maximum 2 education entries allowed');
+  }
+  
+  const types = entries.map(e => e.type);
+  const uniqueTypes = new Set(types);
+  
+  if (types.length !== uniqueTypes.size) {
+    throw new Error('Duplicate education types not allowed');
+  }
+  
+  return true;
+};
 import { useAuditTrail } from '../hooks/useAuditTrail';
 
 // Admin authentication functions
@@ -116,6 +132,11 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
     
     console.log('📋 Employee data to save:', employeeDataWithPassword);
     
+    // Validate education entries if present
+    if (employeeDataWithPassword.secondaryEducation) {
+      validateEducationEntries(employeeDataWithPassword.secondaryEducation);
+    }
+    
     // Check for custom admin session
     const sessionId = localStorage.getItem('adminSessionId');
     const adminData = localStorage.getItem('adminData');
@@ -168,6 +189,11 @@ export const updateEmployee = async (id: string, employeeData: Partial<Employee>
     // Get audit fields using the hook
     const { getAuditFields } = useAuditTrail();
     const auditFields = getAuditFields();
+    
+    // Validate education entries if present
+    if (employeeData.secondaryEducation) {
+      validateEducationEntries(employeeData.secondaryEducation);
+    }
     
     // Ensure password field is preserved if not being updated
     const updateDataWithAudit = {

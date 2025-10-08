@@ -472,7 +472,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                     
                     {/* Display Fields */}
                     {entry.type === '12th' && entry.twelthData && (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {entry.twelthData.school && (
                           <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.school}</p>
@@ -480,93 +480,93 @@ export default function EmployeeViewPage({ params }: PageParams) {
                           </div>
                         )}
                         {entry.twelthData.branch && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.branch}</p>
-                            <p className="text-sm text-gray-500">Branch</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Branch</p>
+                </div>
                         )}
                         {(entry.twelthData.month || entry.twelthData.passingYear) && (
-                          <div className="bg-white rounded-lg shadow p-3">
-                            <p className="text-lg font-medium text-gray-900">
+                <div className="bg-white rounded-lg shadow p-3">
+                  <p className="text-lg font-medium text-gray-900">
                               {entry.twelthData.month ? `${entry.twelthData.month} ` : ''}
                               {entry.twelthData.passingYear || '-'}
-                            </p>
-                            <p className="text-sm text-gray-500">Passing Year</p>
-                          </div>
+                  </p>
+                  <p className="text-sm text-gray-500">Passing Year</p>
+                </div>
                         )}
                         {entry.twelthData.schoolName && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.schoolName}</p>
-                            <p className="text-sm text-gray-500">School Name</p>
-                          </div>
+                  <p className="text-sm text-gray-500">School Name</p>
+                </div>
                         )}
                         {entry.twelthData.board && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.board}</p>
-                            <p className="text-sm text-gray-500">Board</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Board</p>
+                </div>
                         )}
                         {entry.twelthData.marks && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.marks}</p>
-                            <p className="text-sm text-gray-500">Marks</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Marks</p>
+                </div>
                         )}
                         {entry.twelthData.grade && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.grade}</p>
-                            <p className="text-sm text-gray-500">Grade</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Grade</p>
+                </div>
                         )}
-                      </div>
-                    )}
-                    
+              </div>
+            )}
+            
                     {entry.type === 'diploma' && entry.diplomaData && (
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {entry.diplomaData.name && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.name}</p>
                             <p className="text-sm text-gray-500">Diploma Name</p>
-                          </div>
+                </div>
                         )}
                         {entry.diplomaData.branch && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.branch}</p>
-                            <p className="text-sm text-gray-500">Branch</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Branch</p>
+                </div>
                         )}
                         {(entry.diplomaData.month || entry.diplomaData.passingYear) && (
-                          <div className="bg-white rounded-lg shadow p-3">
-                            <p className="text-lg font-medium text-gray-900">
+                <div className="bg-white rounded-lg shadow p-3">
+                  <p className="text-lg font-medium text-gray-900">
                               {entry.diplomaData.month ? `${entry.diplomaData.month} ` : ''}
                               {entry.diplomaData.passingYear || '-'}
-                            </p>
-                            <p className="text-sm text-gray-500">Passing Year</p>
-                          </div>
+                  </p>
+                  <p className="text-sm text-gray-500">Passing Year</p>
+                </div>
                         )}
                         {entry.diplomaData.collegeName && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.collegeName}</p>
-                            <p className="text-sm text-gray-500">College Name</p>
-                          </div>
+                  <p className="text-sm text-gray-500">College Name</p>
+                </div>
                         )}
                         {entry.diplomaData.institute && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.institute}</p>
-                            <p className="text-sm text-gray-500">Institute</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Institute</p>
+                </div>
                         )}
                         {entry.diplomaData.marks && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.marks}</p>
-                            <p className="text-sm text-gray-500">Marks</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Marks</p>
+                </div>
                         )}
                         {entry.diplomaData.grade && (
-                          <div className="bg-white rounded-lg shadow p-3">
+                <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.diplomaData.grade}</p>
-                            <p className="text-sm text-gray-500">Grade</p>
-                          </div>
+                  <p className="text-sm text-gray-500">Grade</p>
+                </div>
                         )}
                       </div>
                     )}
