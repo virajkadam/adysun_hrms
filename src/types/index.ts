@@ -50,7 +50,7 @@ export interface Employee {
   panCard?: string;
   voterID?: string;
   
-  // Bank Details
+  // OLD: Bank Details - Moved to Employment (keep for backward compatibility)
   bankName?: string;
   accountNo?: string;
   ifscCode?: string;
@@ -169,6 +169,12 @@ export interface Employment {
   healthInsurance?: number;
   employerPF?: number;
   paymentFrequency: 'monthly' | 'bi-weekly' | 'weekly';
+  
+  // Bank Details (for salary account)
+  bankName?: string;
+  accountNo?: string;
+  ifscCode?: string;
+  accountHolderName?: string;
   
   // Job Details
   jobTitle?: string;

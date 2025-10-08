@@ -6,8 +6,7 @@ import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { addEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
-import { FiSave, FiX, FiPlus } from 'react-icons/fi';
-import Link from 'next/link';
+import { FiSave, FiPlus } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
@@ -73,8 +72,8 @@ export default function AddEmploymentPage() {
   // Calculate salary per month when annual salary changes
   useEffect(() => {
     if (salary) {
-      const monthlyValue = Math.round(Number(salary) / 12);
       // We're not setting this automatically as the form might have other calculations
+      // const monthlyValue = Math.round(Number(salary) / 12);
     }
   }, [salary]);
 
@@ -147,9 +146,10 @@ export default function AddEmploymentPage() {
       } else {
         router.push('/employments');
       }
-    } catch (error: any) {
-      setError(error.message || 'Failed to add employment');
-      toast.error(error.message || 'Failed to add employment', { id: 'add-employment' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add employment';
+      setError(errorMessage);
+      toast.error(errorMessage, { id: 'add-employment' });
       setIsSubmitting(false);
     }
   };
@@ -646,6 +646,89 @@ export default function AddEmploymentPage() {
                     })}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Bank Details Section */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-blue-500 pl-2">Salary Account and Bank Details</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Bank Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter bank name"
+                    {...register('bankName', {
+                      required: 'Bank name is required'
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.bankName && (
+                    <p className="mt-1 text-sm text-red-600">{errors.bankName.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Account No.
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter account number"
+                    {...register('accountNo', {
+                      required: 'Account number is required',
+                      pattern: {
+                        value: /^\d{9,18}$/,
+                        message: 'Please enter a valid account number'
+                      }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.accountNo && (
+                    <p className="mt-1 text-sm text-red-600">{errors.accountNo.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> IFSC Code
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter IFSC code"
+                    {...register('ifscCode', {
+                      required: 'IFSC code is required',
+                      pattern: {
+                        value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+                        message: 'Please enter a valid IFSC code'
+                      }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.ifscCode && (
+                    <p className="mt-1 text-sm text-red-600">{errors.ifscCode.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Account Holder Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter account holder name"
+                    {...register('accountHolderName', {
+                      required: 'Account holder name is required'
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.accountHolderName && (
+                    <p className="mt-1 text-sm text-red-600">{errors.accountHolderName.message}</p>
+                  )}
                 </div>
               </div>
             </div>
