@@ -8,7 +8,8 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
-import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
+import { useEmploymentsByEmployee, useEmployments } from '@/hooks/useEmployments';
+import { useSalaries } from '@/hooks/useSalaries';
 import Pagination from '@/components/ui/Pagination';
 
 // Component to handle employment navigation
@@ -52,8 +53,23 @@ export default function EmployeesPage() {
     refetch
   } = useEmployees();
 
+  // Fetch all employments and salaries for calculating CTC and total salary credits
+  const { data: allEmployments = [] } = useEmployments();
+  const { data: allSalaries = [] } = useSalaries();
+
   // Use mutation for delete operation
   const deleteEmployeeMutation = useDeleteEmployee();
+
+  // Helper functions to get employee data
+  const getEmployeeCTC = (employeeId: string): number | null => {
+    const employment = allEmployments.find(emp => emp.employeeId === employeeId);
+    return employment?.ctc || null;
+  };
+
+  const getTotalSalaryCredits = (employeeId: string): number => {
+    const employeeSalaries = allSalaries.filter(salary => salary.employeeId === employeeId);
+    return employeeSalaries.reduce((total, salary) => total + (salary.totalSalary || 0), 0);
+  };
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
@@ -312,20 +328,24 @@ export default function EmployeesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {/* This would come from employment data in a real app */}
-                        {new Intl.NumberFormat('en-IN', {
-                          style: 'currency',
-                          currency: 'INR'
-                        }).format(50000)}
+                        {(() => {
+                          const ctc = getEmployeeCTC(employee.id);
+                          return ctc ? new Intl.NumberFormat('en-IN', {
+                            style: 'currency',
+                            currency: 'INR'
+                          }).format(ctc) : '-';
+                        })()}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {/* This would come from salary slips in a real app */}
-                        {new Intl.NumberFormat('en-IN', {
-                          style: 'currency',
-                          currency: 'INR'
-                        }).format(600000)}
+                        {(() => {
+                          const totalCredits = getTotalSalaryCredits(employee.id);
+                          return totalCredits > 0 ? new Intl.NumberFormat('en-IN', {
+                            style: 'currency',
+                            currency: 'INR'
+                          }).format(totalCredits) : '-';
+                        })()}
                       </div>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-center'>{employee.status && (
