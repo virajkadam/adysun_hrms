@@ -16,7 +16,7 @@ interface EmploymentFormData extends Omit<Employment, 'id' | 'relievingCtc'> {
   employmentId: string;
   joiningDate: string;
   incrementDate: string;
-  ctc: number;
+  joiningCtc: number;
   inHandCtc: number;
   relievingCtc?: string; // Form input is string, will be converted to number|null
   isIT: boolean;
@@ -116,7 +116,7 @@ export default function AddEmploymentPage() {
       const formattedData = {
         ...data,
         salary: Number(data.salary),
-        ctc: Number(data.ctc),
+        joiningCtc: Number(data.joiningCtc),
         inHandCtc: Number(data.inHandCtc),
         relievingCtc: data.relievingCtc && data.relievingCtc !== '' ? Number(data.relievingCtc) : null,
         basic: Number(data.basic),
@@ -306,20 +306,20 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> CTC (₹)
+                    <span className="text-red-500 mr-1">*</span> Joining CTC (₹)
                   </label>
                   <input
                     type="number"
-                    placeholder="Annual CTC amount"
-                    {...register('ctc', { 
-                      required: 'CTC is required',
-                      min: { value: 0, message: 'CTC must be positive' },
+                    placeholder="Annual Joining CTC amount"
+                    {...register('joiningCtc', { 
+                      required: 'Joining CTC is required',
+                      min: { value: 0, message: 'Joining CTC must be positive' },
                       valueAsNumber: true
                     })}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
-                  {errors.ctc && (
-                    <p className="mt-1 text-sm text-red-600">{errors.ctc.message}</p>
+                  {errors.joiningCtc && (
+                    <p className="mt-1 text-sm text-red-600">{errors.joiningCtc.message}</p>
                   )}
                 </div>
 

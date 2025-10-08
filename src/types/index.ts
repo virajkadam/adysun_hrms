@@ -139,7 +139,7 @@ export interface Employment {
   contractType: 'full-time' | 'part-time' | 'contract';
   startDate: string;
   endDate?: string;
-  ctc?: number;
+  joiningCtc?: number;
   inHandCtc?: number;
   relievingCtc?: number | null;
   isIT?: boolean;

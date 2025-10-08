@@ -470,13 +470,13 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employment.ctc 
-                ? formatCurrency(employment.ctc)
+              {employment.joiningCtc 
+                ? formatCurrency(employment.joiningCtc)
                 : employment.salary
                   ? formatCurrency(employment.salary)
                   : '-'}
             </p>
-            <p className="text-sm text-gray-500">CTC</p>
+            <p className="text-sm text-gray-500">Joining CTC</p>
           </div>
           
           <div className="bg-white rounded-lg shadow p-5">

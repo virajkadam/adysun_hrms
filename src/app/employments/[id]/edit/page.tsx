@@ -41,7 +41,6 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
         const employmentData = await getEmployment(id);
         
         // Reset form with employment data (excluding audit fields)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { 
           id: _id, 
           createdAt: _createdAt, 
@@ -51,6 +50,9 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
           relievingCtc,
           ...rest 
         } = employmentData;
+        
+        // Suppress unused variable warnings for destructured audit fields
+        void _id; void _createdAt; void _createdBy; void _updatedAt; void _updatedBy;
         
         reset({
           ...rest,
@@ -84,7 +86,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
       const formattedData = {
         ...data,
         salary: Number(data.salary),
-        ctc: Number(data.ctc),
+        joiningCtc: Number(data.joiningCtc),
         inHandCtc: Number(data.inHandCtc),
         relievingCtc: Number(data.relievingCtc),
         salaryPerMonth: Number(data.salaryPerMonth),
@@ -352,16 +354,16 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                CTC
+                Joining CTC
               </label>
               <input
                 type="number"
-                {...register('ctc', { 
-                  min: { value: 0, message: 'CTC must be positive' },
+                {...register('joiningCtc', { 
+                  min: { value: 0, message: 'Joining CTC must be positive' },
                   valueAsNumber: true
                 })}
                 className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Total Cost to Company"
+                placeholder="Joining CTC amount"
               />
             </div>
             
