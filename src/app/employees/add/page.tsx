@@ -420,6 +420,11 @@ export default function AddEmployeePage() {
             {/* Password Section */}
             <div className="bg-white p-4 rounded-lg mb-4">
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials (Optional)</h3>
+              
+              <p className="mb-3 text-sm text-gray-600">
+                💡 If blank, password will be: <span className="font-mono font-semibold">Last 5 digits of phone + @#$$</span> (e.g., 43210@#$$)
+              </p>
+              
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -428,7 +433,7 @@ export default function AddEmployeePage() {
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter password"
+                      placeholder="Enter password or leave blank"
                       {...register('password', {
                         minLength: {
                           value: 4,
