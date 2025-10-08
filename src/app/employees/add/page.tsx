@@ -143,12 +143,10 @@ export default function AddEmployeePage() {
       );
 
       // Add audit fields to employee data and ensure status is active
+      // Add audit fields to employee data and ensure status is active
       const employeeDataWithAudit = {
         ...data,
         secondaryEducation,
-        // Remove old fields from submission
-        twelthStandard: undefined,
-        diploma: undefined,
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
         status: 'active' as const,
         password: data.password || `${data.phone.slice(-5)}@#$$`,
@@ -157,6 +155,10 @@ export default function AddEmployeePage() {
         updatedAt: currentTimestamp,
         updatedBy: adminId,
       };
+
+      // Remove old education fields that might cause Firestore errors
+      delete employeeDataWithAudit.twelthStandard;
+      delete employeeDataWithAudit.diploma;
 
       await addEmployee(employeeDataWithAudit);
       toast.success('Employee added successfully!', { id: 'add-employee' });
