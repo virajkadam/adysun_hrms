@@ -4,9 +4,9 @@ import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { FiArrowLeft, FiSave } from 'react-icons/fi';
+import { FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployment, updateEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
+import { getEmployment, updateEmployment, getEmployees } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
@@ -26,7 +26,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
   const router = useRouter();
   const { id } = use(params);
   
-  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<EmploymentFormData>();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<EmploymentFormData>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,12 +41,13 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
         const employmentData = await getEmployment(id);
         
         // Reset form with employment data (excluding audit fields)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { 
-          id: _, 
-          createdAt, 
-          createdBy, 
-          updatedAt, 
-          updatedBy, 
+          id: _id, 
+          createdAt: _createdAt, 
+          createdBy: _createdBy, 
+          updatedAt: _updatedAt, 
+          updatedBy: _updatedBy, 
           relievingCtc,
           ...rest 
         } = employmentData;
@@ -56,8 +57,9 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
           relievingCtc: relievingCtc ? relievingCtc.toString() : '',
           benefits: employmentData.benefits?.join(', ') || '',
         });
-      } catch (error: any) {
-        setError(error.message || 'Failed to fetch data');
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch data';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -117,9 +119,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
       await updateEmployment(id, formattedData);
       toast.success('Employment updated successfully!', { id: 'updateEmployment' });
       router.push(`/employments/${id}`);
-    } catch (error: any) {
-      setError(error.message || 'Failed to update employment');
-      toast.error('Failed to update employment', { id: 'updateEmployment' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update employment';
+      setError(errorMessage);
+      toast.error(errorMessage, { id: 'updateEmployment' });
       setIsSubmitting(false);
     }
   };
@@ -678,19 +681,32 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               </label>
               <input
                 type="text"
-                placeholder="Enter IFSC code"
+                placeholder="e.g., HDFC0000001 (11 characters)"
+                maxLength={11}
                 {...register('ifscCode', {
                   required: 'IFSC code is required',
                   pattern: {
                     value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-                    message: 'Please enter a valid IFSC code'
+                    message: 'Invalid IFSC format. Must be 11 characters: 4 letters + 0 + 6 alphanumeric (e.g., HDFC0000001)'
                   }
                 })}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black uppercase"
+                style={{ textTransform: 'uppercase' }}
               />
               {errors.ifscCode && (
                 <p className="mt-1 text-sm text-red-600">{errors.ifscCode.message}</p>
               )}
+              <p className="mt-1 text-xs text-gray-500">
+                Format: BANK0BRANCH (e.g., HDFC0000001, SBIN0001234).
+                <a 
+                  href="https://www.rbi.org.in/Scripts/bs_viewcontent.aspx?Id=2009" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline ml-1"
+                >
+                  Find IFSC Code
+                </a>
+              </p>
             </div>
 
             <div>

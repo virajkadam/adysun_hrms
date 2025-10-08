@@ -699,19 +699,32 @@ export default function AddEmploymentPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="Enter IFSC code"
+                    placeholder="e.g., HDFC0000001 (11 characters)"
+                    maxLength={11}
                     {...register('ifscCode', {
                       required: 'IFSC code is required',
                       pattern: {
                         value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-                        message: 'Please enter a valid IFSC code'
+                        message: 'Invalid IFSC format. Must be 11 characters: 4 letters + 0 + 6 alphanumeric (e.g., HDFC0000001)'
                       }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black uppercase"
+                    style={{ textTransform: 'uppercase' }}
                   />
                   {errors.ifscCode && (
                     <p className="mt-1 text-sm text-red-600">{errors.ifscCode.message}</p>
                   )}
+                  <p className="mt-1 text-xs text-gray-500">
+                    Format: BANK0BRANCH (e.g., HDFC0000001, SBIN0001234).
+                    <a 
+                      href="https://www.rbi.org.in/Scripts/bs_viewcontent.aspx?Id=2009" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline ml-1"
+                    >
+                      Find IFSC Code
+                    </a>
+                  </p>
                 </div>
 
                 <div>
