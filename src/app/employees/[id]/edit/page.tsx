@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiSave, FiEye, FiEyeOff, FiPlus, FiX } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployee, updateEmployee, getAdminDataForAudit, checkUserByPhone, validatePANFormat, checkPANExistsAnywhere } from '@/utils/firebaseUtils';
+import { getEmployee, updateEmployee, checkUserByPhone, validatePANFormat, checkPANExistsAnywhere } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
@@ -33,7 +33,7 @@ export default function EditEmployeePage({ params }: PageParams) {
   const router = useRouter();
   const { id } = use(params);
 
-  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
+  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
 
   // Helper functions for managing education entries
   // Check if we can add more entries
@@ -118,7 +118,7 @@ export default function EditEmployeePage({ params }: PageParams) {
           setEducationEntries([{ id: crypto.randomUUID(), type: '12th' }]);
           
           // Reset form with all employee data except id and audit fields
-          const { id: _, createdAt, createdBy, updatedAt, updatedBy, ...rest } = employeeData;
+          const { id: _id, createdAt: _createdAt, createdBy: _createdBy, updatedAt: _updatedAt, updatedBy: _updatedBy, ...rest } = employeeData;
           reset(rest);
         }
       } catch (error: unknown) {
@@ -276,10 +276,17 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Employee ID
+                    Employee ID
                   </label>
-                  <input type="text" placeholder="Enter employee ID" {...register('employeeId', { required: 'Employee ID is required', pattern: { value: /^[A-Z0-9-]{3,15}$/i, message: 'Please enter a valid employee ID' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                  {errors.employeeId && (<p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>)}
+                  <input
+                    type="text"
+                    {...register('employeeId')}
+                    className="w-full p-2 border rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+                    readOnly
+                    disabled
+                    title="Employee ID cannot be changed"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Employee ID cannot be modified after creation</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>

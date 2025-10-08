@@ -1,4 +1,4 @@
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit, runTransaction, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Employee, Employment, Salary, SecondaryEducationEntry } from '../types';
 
@@ -17,6 +17,61 @@ const validateEducationEntries = (entries: SecondaryEducationEntry[]): boolean =
   
   return true;
 };
+
+// Generate next sequential employee ID
+export async function getNextEmployeeId(): Promise<string> {
+  const counterRef = doc(db, 'counters', 'employeeIdCounter');
+  
+  try {
+    // Use Firestore transaction to prevent race conditions
+    const newId = await runTransaction(db, async (transaction) => {
+      const counterDoc = await transaction.get(counterRef);
+      
+      let nextNumber = 1;
+      
+      if (counterDoc.exists()) {
+        nextNumber = (counterDoc.data().lastNumber || 0) + 1;
+      } else {
+        // Initialize counter if it doesn't exist
+        transaction.set(counterRef, {
+          lastNumber: 0,
+          lastGeneratedId: 'EMP000',
+          updatedAt: serverTimestamp()
+        });
+      }
+      
+      // Generate new ID with padding
+      const newEmployeeId = `EMP${String(nextNumber).padStart(3, '0')}`;
+      
+      // Update counter
+      transaction.update(counterRef, {
+        lastNumber: nextNumber,
+        lastGeneratedId: newEmployeeId,
+        updatedAt: serverTimestamp()
+      });
+      
+      return newEmployeeId;
+    });
+    
+    return newId;
+  } catch (error) {
+    console.error('Error generating employee ID:', error);
+    throw new Error('Failed to generate employee ID');
+  }
+}
+
+// Check if employee ID already exists
+export async function checkEmployeeIdExists(employeeId: string): Promise<boolean> {
+  try {
+    const employeesRef = collection(db, 'employees');
+    const q = query(employeesRef, where('employeeId', '==', employeeId));
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  } catch (error) {
+    console.error('Error checking employee ID:', error);
+    throw new Error('Failed to check employee ID');
+  }
+}
 import { useAuditTrail } from '../hooks/useAuditTrail';
 
 // Admin authentication functions
@@ -124,9 +179,25 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
   try {
     console.log('🚀 Starting employee creation process...');
     
+    // Auto-generate employee ID if not provided
+    let finalEmployeeId = employeeData.employeeId;
+    
+    if (!finalEmployeeId || finalEmployeeId.trim() === '') {
+      finalEmployeeId = await getNextEmployeeId();
+      console.log('🆔 Auto-generated Employee ID:', finalEmployeeId);
+    } else {
+      // Validate manual employee ID
+      const exists = await checkEmployeeIdExists(finalEmployeeId);
+      if (exists) {
+        throw new Error('Employee ID already exists. Please use a different ID.');
+      }
+      console.log('✅ Manual Employee ID validated:', finalEmployeeId);
+    }
+    
     // Ensure password field is always present
     const employeeDataWithPassword = {
       ...employeeData,
+      employeeId: finalEmployeeId,
       password: employeeData.password || '1234', // Default password if not provided
     };
     
