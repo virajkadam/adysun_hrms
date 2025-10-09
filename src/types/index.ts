@@ -142,7 +142,6 @@ export interface Employment {
   joiningCtc?: number;
   inHandCtc?: number;
   relievingCtc?: number | null;
-  isIT?: boolean;
   isResignation?: boolean;
   
   // Salary Information

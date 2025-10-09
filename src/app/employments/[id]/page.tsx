@@ -585,11 +585,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           </div>
           
           <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.isIT === true ? 'Yes' : employment.isIT === false ? 'No' : '-'}</p>
-            <p className="text-sm text-gray-500">IT</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employment.isResignation ? 'Yes' : 'No'}</p>
             <p className="text-sm text-gray-500">Resignation</p>
           </div>

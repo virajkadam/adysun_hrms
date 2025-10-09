@@ -19,7 +19,6 @@ interface EmploymentFormData extends Omit<Employment, 'id' | 'relievingCtc'> {
   joiningCtc: number;
   inHandCtc: number;
   relievingCtc?: string; // Form input is string, will be converted to number|null
-  isIT: boolean;
   isResignation: boolean;
   
   // Salary details
@@ -62,7 +61,6 @@ export default function AddEmploymentPage() {
   
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmploymentFormData>({
     defaultValues: {
-      isIT: false,
       isResignation: false,
     }
   });
@@ -467,19 +465,6 @@ export default function AddEmploymentPage() {
                     {...register('relievingCtc')}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    IT
-                  </label>
-                  <select
-                    {...register('isIT')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  >
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
-                  </select>
                 </div>
 
                 <div>

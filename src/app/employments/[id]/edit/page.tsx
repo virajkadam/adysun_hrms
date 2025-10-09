@@ -523,32 +523,6 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                IT
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    value="true"
-                    {...register('isIT')}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                  />
-                  <span className="ml-2">Yes</span>
-                </label>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    value="false"
-                    {...register('isIT')}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
-                  />
-                  <span className="ml-2">No</span>
-                </label>
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Resignation
               </label>
               <div className="flex items-center space-x-4">
