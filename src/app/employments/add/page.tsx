@@ -485,29 +485,25 @@ export default function AddEmploymentPage() {
                   </p>
                 </div>
                 
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setIncludePF(false)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      !includePF
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
-                  >
+                {/* Sliding Toggle Switch - matches 12th/Diploma style */}
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-medium ${!includePF ? 'text-orange-600' : 'text-gray-500'}`}>
                     Without PF
-                  </button>
+                  </span>
                   <button
                     type="button"
-                    onClick={() => setIncludePF(true)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      includePF
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    onClick={() => setIncludePF(!includePF)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
+                      includePF ? 'bg-green-600' : 'bg-orange-500'
                     }`}
                   >
-                    With PF
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      includePF ? 'translate-x-6' : 'translate-x-1'
+                    }`} />
                   </button>
+                  <span className={`text-sm font-medium ${includePF ? 'text-green-600' : 'text-gray-500'}`}>
+                    With PF
+                  </span>
                 </div>
               </div>
               
