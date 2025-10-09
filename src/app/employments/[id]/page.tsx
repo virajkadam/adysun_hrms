@@ -435,7 +435,99 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           </div>
       )}
 
-        <div className="px-6 pb-6">
+      <div className="px-6 pb-6">
+      {/* Job Details - MOVED TO TOP */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <FiMapPin className="mr-2" /> Job Details
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employment.jobTitle || '-'}</p>
+            <p className="text-sm text-gray-500">Job Title</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employment.department || '-'}</p>
+            <p className="text-sm text-gray-500">Department</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employment.location || '-'}</p>
+            <p className="text-sm text-gray-500">Location</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employment.reportingManager || '-'}</p>
+            <p className="text-sm text-gray-500">Reporting Manager</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900 capitalize">
+              {employment.employmentType ? (
+                employment.employmentType.includes('-') ?
+                  employment.employmentType.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                  ).join(' ') :
+                  employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1)
+              ) : employment.contractType ? (
+                employment.contractType.includes('-') ?
+                  employment.contractType.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                  ).join(' ') :
+                  employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1)
+              ) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Employment Type</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">{employment.workSchedule || '-'}</p>
+            <p className="text-sm text-gray-500">Work Schedule</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.joiningDate 
+                ? formatDateToDayMonYear(employment.joiningDate)
+                : employment.startDate 
+                  ? formatDateToDayMonYear(employment.startDate)
+                  : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Start Date</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.endDate ? formatDateToDayMonYear(employment.endDate) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">End Date</p>
+          </div>
+        </div>
+        
+        {/* Benefits */}
+        <div className="mt-6">
+          <h3 className="text-md font-medium text-gray-700 mb-4">Benefits</h3>
+          <div className="bg-white rounded-lg shadow p-5">
+            {employment.benefits?.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {employment.benefits.map((benefit, index) => (
+                  <span 
+                    key={index} 
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                  >
+                    {benefit}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No benefits listed</p>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Employment Information Section */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -653,100 +745,8 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
       </div>
-      
-      {/* Job Details */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiMapPin className="mr-2" /> Job Details
-        </h2>
-        
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.jobTitle || '-'}</p>
-            <p className="text-sm text-gray-500">Job Title</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.department || '-'}</p>
-            <p className="text-sm text-gray-500">Department</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.location || '-'}</p>
-            <p className="text-sm text-gray-500">Location</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.reportingManager || '-'}</p>
-            <p className="text-sm text-gray-500">Reporting Manager</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-                <p className="text-lg font-medium text-gray-900 capitalize">
-                  {employment.employmentType ? (
-                    employment.employmentType.includes('-') ?
-                      employment.employmentType.split('-').map(word => 
-                        word.charAt(0).toUpperCase() + word.slice(1)
-                      ).join(' ') :
-                      employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1)
-                  ) : employment.contractType ? (
-                    employment.contractType.includes('-') ?
-                      employment.contractType.split('-').map(word => 
-                        word.charAt(0).toUpperCase() + word.slice(1)
-                      ).join(' ') :
-                      employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1)
-                  ) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Employment Type</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.workSchedule || '-'}</p>
-            <p className="text-sm text-gray-500">Work Schedule</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.joiningDate 
-                ? formatDateToDayMonYear(employment.joiningDate)
-                : employment.startDate 
-                  ? formatDateToDayMonYear(employment.startDate)
-                  : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Start Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.endDate ? formatDateToDayMonYear(employment.endDate) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">End Date</p>
-          </div>
-        </div>
-        
-        {/* Benefits */}
-        <div className="mt-6">
-          <h3 className="text-md font-medium text-gray-700 mb-4">Benefits</h3>
-          <div className="bg-white rounded-lg shadow p-5">
-            {employment.benefits?.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {employment.benefits.map((benefit, index) => (
-                  <span 
-                    key={index} 
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                  >
-                    {benefit}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No benefits listed</p>
-            )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
+    </div>
     </DashboardLayout>
   );
 } 

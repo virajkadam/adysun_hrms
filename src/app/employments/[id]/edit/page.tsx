@@ -360,6 +360,97 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
         </div>
+
+        {/* Job Details - MOVED TO TOP */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">Job Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Job Title
+              </label>
+              <input
+                type="text"
+                {...register('jobTitle')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="E.g., Software Developer"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Department
+              </label>
+              <input
+                type="text"
+                {...register('department')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="E.g., Engineering, HR"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Location
+              </label>
+              <input
+                type="text"
+                {...register('location')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Work location"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Reporting Manager
+              </label>
+              <input
+                type="text"
+                {...register('reportingManager')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Manager name"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Employment Type
+              </label>
+              <input
+                type="text"
+                {...register('employmentType')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="E.g., Permanent, Contract"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Work Schedule
+              </label>
+              <input
+                type="text"
+                {...register('workSchedule')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="E.g., 9 AM - 6 PM, Mon-Fri"
+              />
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Benefits (comma separated)
+              </label>
+              <textarea
+                {...register('benefits')}
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="E.g., Health Insurance, Paid Leave, Retirement Plan"
+                rows={3}
+              ></textarea>
+              <p className="mt-1 text-xs text-gray-500">Enter benefits separated by commas</p>
+            </div>
+          </div>
+        </div>
         
         {/* Employment Information */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -862,96 +953,6 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
           </div>
         </div>
 
-        {/* Job Details */}
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">Job Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Job Title
-              </label>
-              <input
-                type="text"
-                {...register('jobTitle')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., Software Developer"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Department
-              </label>
-              <input
-                type="text"
-                {...register('department')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., Engineering, HR"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
-              </label>
-              <input
-                type="text"
-                {...register('location')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Work location"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Reporting Manager
-              </label>
-              <input
-                type="text"
-                {...register('reportingManager')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Manager name"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Employment Type
-              </label>
-              <input
-                type="text"
-                {...register('employmentType')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., Permanent, Contract"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Work Schedule
-              </label>
-              <input
-                type="text"
-                {...register('workSchedule')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., 9 AM - 6 PM, Mon-Fri"
-              />
-            </div>
-            
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Benefits (comma separated)
-              </label>
-              <textarea
-                {...register('benefits')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., Health Insurance, Paid Leave, Retirement Plan"
-                rows={3}
-              ></textarea>
-              <p className="mt-1 text-xs text-gray-500">Enter benefits separated by commas</p>
-            </div>
-          </div>
-        </div>
 
             {/* Form Buttons */}
             <div className="flex justify-between items-center gap-4 px-6 py-3">

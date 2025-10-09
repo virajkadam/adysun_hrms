@@ -288,6 +288,96 @@ export default function AddEmploymentPage() {
               value={preSelectedEmployee?.id || ''}
             />
 
+            {/* Job Details Section - MOVED TO TOP */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">Job Details</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Job Title
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Software Engineer"
+                    {...register('jobTitle', { 
+                      required: 'Job title is required' 
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.jobTitle && (
+                    <p className="mt-1 text-sm text-red-600">{errors.jobTitle.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Department
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Engineering"
+                    {...register('department')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Headquarters"
+                    {...register('location')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reporting Manager
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Manager's name"
+                    {...register('reportingManager')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Employment Type
+                  </label>
+                  <select
+                    {...register('employmentType', { required: 'Employment type is required' })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  >
+                    <option value="full-time">Full Time</option>
+                    <option value="part-time">Part Time</option>
+                    <option value="contract">Contract</option>
+                    <option value="internship">Internship</option>
+                  </select>
+                  {errors.employmentType && (
+                    <p className="mt-1 text-sm text-red-600">{errors.employmentType.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Work Schedule
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 9:00 AM - 6:00 PM"
+                    {...register('workSchedule')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Employment Information Section */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
               <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-blue-500 pl-2">Employment Information</h2>
@@ -603,23 +693,23 @@ export default function AddEmploymentPage() {
                 </div>
 
                 {includePF && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      PF (₹)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="Provident Fund"
-                      {...register('pf', { 
-                        min: { value: 0, message: 'Amount must be positive' }
-                      })}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    PF (₹)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Provident Fund"
+                    {...register('pf', { 
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
                       className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
-                    />
+                  />
                     <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
-                    {errors.pf && (
-                      <p className="mt-1 text-sm text-red-600">{errors.pf.message}</p>
-                    )}
-                  </div>
+                  {errors.pf && (
+                    <p className="mt-1 text-sm text-red-600">{errors.pf.message}</p>
+                  )}
+                </div>
                 )}
 
                 <div>
@@ -659,24 +749,24 @@ export default function AddEmploymentPage() {
                 </div>
 
                 {includePF && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Gratuity (₹)
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="Gratuity"
-                      {...register('gratuity', { 
-                        min: { value: 0, message: 'Amount must be positive' }
-                      })}
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                    />
-                    {errors.gratuity && (
-                      <p className="mt-1 text-sm text-red-600">{errors.gratuity.message}</p>
-                    )}
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Gratuity (₹)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Gratuity"
+                    {...register('gratuity', { 
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.gratuity && (
+                    <p className="mt-1 text-sm text-red-600">{errors.gratuity.message}</p>
+                  )}
+                </div>
                 )}
-
+                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Total Leaves
@@ -705,7 +795,7 @@ export default function AddEmploymentPage() {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                 </div>
-
+                
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Payable Days
@@ -859,95 +949,6 @@ export default function AddEmploymentPage() {
               </div>
             </div>
 
-            {/* Job Details Section */}
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">Job Details</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Job Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Software Engineer"
-                    {...register('jobTitle', { 
-                      required: 'Job title is required' 
-                    })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                  {errors.jobTitle && (
-                    <p className="mt-1 text-sm text-red-600">{errors.jobTitle.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Engineering"
-                    {...register('department')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Headquarters"
-                    {...register('location')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Reporting Manager
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Manager's name"
-                    {...register('reportingManager')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Employment Type
-                  </label>
-                  <select
-                    {...register('employmentType', { required: 'Employment type is required' })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  >
-                    <option value="full-time">Full Time</option>
-                    <option value="part-time">Part Time</option>
-                    <option value="contract">Contract</option>
-                    <option value="internship">Internship</option>
-                  </select>
-                  {errors.employmentType && (
-                    <p className="mt-1 text-sm text-red-600">{errors.employmentType.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Work Schedule
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 9:00 AM - 6:00 PM"
-                    {...register('workSchedule')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                </div>
-              </div>
-            </div>
 
             <div className="flex justify-between items-center gap-4 px-6 py-3">
               <button
