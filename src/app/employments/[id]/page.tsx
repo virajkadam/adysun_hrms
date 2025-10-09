@@ -585,10 +585,12 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             <p className="text-sm text-gray-500">HRA (House Rent Allowance)</p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.pf ? formatCurrency(employment.pf) : '-'}</p>
-            <p className="text-sm text-gray-500">PF (Provident Fund)</p>
-          </div>
+          {(employment.pf && employment.pf > 0) && (
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.pf)}</p>
+              <p className="text-sm text-gray-500">PF (Provident Fund)</p>
+            </div>
+          )}
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employment.medicalAllowance ? formatCurrency(employment.medicalAllowance) : '-'}</p>
@@ -600,10 +602,12 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             <p className="text-sm text-gray-500">Transport</p>
           </div>
           
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.gratuity ? formatCurrency(employment.gratuity) : '-'}</p>
-            <p className="text-sm text-gray-500">Gratuity</p>
-          </div>
+          {(employment.gratuity && employment.gratuity > 0) && (
+            <div className="bg-white rounded-lg shadow p-5">
+              <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.gratuity)}</p>
+              <p className="text-sm text-gray-500">Gratuity</p>
+            </div>
+          )}
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">{employment.totalLeaves || '-'} {employment.totalLeaves ? 'days/year' : ''}</p>

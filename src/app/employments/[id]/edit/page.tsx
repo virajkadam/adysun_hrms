@@ -22,6 +22,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [includePF, setIncludePF] = useState(true); // Default: With PF
   
   const router = useRouter();
   const { id } = use(params);
@@ -58,16 +59,22 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
       setValue('medicalAllowance', medicalAllowance);
       setValue('transport', transport);
       
-      // Calculate PF (12% of Basic - employer contribution)
-      const pf = Math.round(basic * 0.12);
-      setValue('pf', pf);
+      // Calculate PF (12% of Basic - employer contribution) - only if includePF is true
+      if (includePF) {
+        const pf = Math.round(basic * 0.12);
+        setValue('pf', pf);
+      } else {
+        setValue('pf', 0);
+      }
       
       // Calculate Special Allowance (balancing figure)
-      const calculatedComponents = basic + hra + da + medicalAllowance + transport;
+      const calculatedComponents = includePF 
+        ? basic + hra + da + medicalAllowance + transport
+        : basic + hra + da + medicalAllowance + transport - Math.round(basic * 0.12);
       const specialAllowance = Math.max(0, monthlySalary - calculatedComponents);
       setValue('specialAllowance', specialAllowance);
     }
-  }, [salary, setValue]);
+  }, [salary, setValue, includePF]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -544,12 +551,41 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
 
         {/* Salary Information */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-green-500 pl-2">
-            Salary Information
-          </h2>
-          <p className="text-sm text-gray-600 mb-4 italic">
-            💡 Enter annual salary - other components will auto-calculate
-          </p>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-green-500 pl-2">
+                Salary Information
+              </h2>
+              <p className="text-sm text-gray-600 italic">
+                💡 Enter annual salary - other components will auto-calculate
+              </p>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setIncludePF(false)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  !includePF
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                Without PF
+              </button>
+              <button
+                type="button"
+                onClick={() => setIncludePF(true)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  includePF
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                With PF
+              </button>
+            </div>
+          </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             
             <div>
@@ -604,18 +640,20 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <p className="mt-1 text-xs text-gray-500">50% of Basic</p>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                PF (Provident Fund)
-              </label>
-              <input
-                type="number"
-                {...register('pf')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                placeholder="Provident fund"
-              />
-              <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
-            </div>
+            {includePF && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  PF (Provident Fund)
+                </label>
+                <input
+                  type="number"
+                  {...register('pf')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                  placeholder="Provident fund"
+                />
+                <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
+              </div>
+            )}
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -643,17 +681,19 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <p className="mt-1 text-xs text-gray-500">Fixed ₹1,600</p>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gratuity
-              </label>
-              <input
-                type="number"
-                {...register('gratuity')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Gratuity"
-              />
-            </div>
+            {includePF && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gratuity
+                </label>
+                <input
+                  type="number"
+                  {...register('gratuity')}
+                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Gratuity"
+                />
+              </div>
+            )}
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
