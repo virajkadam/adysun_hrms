@@ -277,7 +277,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       {(showStats || showSearch || showFilter || showSecondFilter || showCustomFilters) && (
         <div className="px-4 sm:px-6 pb-6 border-b border-gray-200">
           {/* Mobile: Stack everything vertically, Desktop: Side by side */}
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mt-4">
+          <div className={`flex flex-col lg:flex-row ${showStats ? 'lg:justify-between' : 'lg:justify-end'} lg:items-center gap-4 mt-4`}>
             {/* Stats Section */}
             {showStats && (
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
