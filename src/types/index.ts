@@ -199,6 +199,8 @@ export interface Employment {
   appraisalDate?: string;
   previousSalary?: number;
   newSalary?: number;
+  incrementedCtc?: number;
+  incrementedInHandCtc?: number;
   percentageIncrease?: number;
   performanceRating?: string;
   effectiveDate?: string;

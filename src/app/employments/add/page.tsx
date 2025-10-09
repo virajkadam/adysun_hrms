@@ -294,18 +294,6 @@ export default function AddEmploymentPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Increment Date
-                  </label>
-                  <input
-                    type="date"
-                    {...register('incrementDate')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={watch('incrementDate') ? formatDateToDayMonYear(watch('incrementDate')) : 'Select increment date'}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500 mr-1">*</span> Joining CTC (₹)
                   </label>
                   <input
@@ -378,6 +366,72 @@ export default function AddEmploymentPage() {
                     <option value="false">No</option>
                     <option value="true">Yes</option>
                   </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Career Progression/Increment Details (CTP) */}
+            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-purple-500 pl-2">
+                Career Progression / Increment Details
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Increment Date
+                  </label>
+                  <input
+                    type="date"
+                    {...register('incrementDate')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder={watch('incrementDate') ? formatDateToDayMonYear(watch('incrementDate')) : 'Select increment date'}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Incremented Salary (₹)
+                  </label>
+                  <input
+                    type="number"
+                    {...register('newSalary', { 
+                      min: { value: 0, message: 'Amount must be positive' },
+                      valueAsNumber: true
+                    })}
+                    placeholder="Incremented salary amount"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Incremented CTC (₹)
+                  </label>
+                  <input
+                    type="number"
+                    {...register('incrementedCtc', { 
+                      min: { value: 0, message: 'Amount must be positive' },
+                      valueAsNumber: true
+                    })}
+                    placeholder="Incremented CTC amount"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Incremented In-hand CTC (₹)
+                  </label>
+                  <input
+                    type="number"
+                    {...register('incrementedInHandCtc', { 
+                      min: { value: 0, message: 'Amount must be positive' },
+                      valueAsNumber: true
+                    })}
+                    placeholder="Incremented in-hand CTC"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
                 </div>
               </div>
             </div>

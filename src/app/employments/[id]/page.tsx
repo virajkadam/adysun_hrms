@@ -3,7 +3,7 @@
 import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiArrowLeft, FiEdit, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import { FiArrowLeft, FiEdit, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin, FiTrendingUp } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -461,15 +461,6 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           
           <div className="bg-white rounded-lg shadow p-5">
             <p className="text-lg font-medium text-gray-900">
-              {employment.incrementDate 
-                ? formatDateToDayMonYear(employment.incrementDate)
-                : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Increment Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
               {employment.joiningCtc 
                 ? formatCurrency(employment.joiningCtc)
                 : employment.salary
@@ -514,6 +505,43 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   ).join(' ') : '-'}
             </span>
             <p className="text-sm text-gray-500 mt-2">Contract Type</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Career Progression/Increment Details (CTP) */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <FiTrendingUp className="mr-2" /> Career Progression / Increment Details
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.incrementDate ? formatDateToDayMonYear(employment.incrementDate) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Increment Date</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.newSalary ? formatCurrency(employment.newSalary) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Incremented Salary</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.incrementedCtc ? formatCurrency(employment.incrementedCtc) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Incremented CTC</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-5">
+            <p className="text-lg font-medium text-gray-900">
+              {employment.incrementedInHandCtc ? formatCurrency(employment.incrementedInHandCtc) : '-'}
+            </p>
+            <p className="text-sm text-gray-500">Incremented In-hand CTC</p>
           </div>
         </div>
       </div>
