@@ -441,26 +441,6 @@ export default function AddEmploymentPage() {
               <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-green-500 pl-2">Salary Information</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Salary ID
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. SAL-001"
-                    {...register('salaryId', { 
-                      required: 'Salary ID is required',
-                      pattern: { 
-                        value: /^[A-Z0-9-]{3,10}$/i, 
-                        message: 'Please enter a valid ID format' 
-                      }
-                    })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                  />
-                  {errors.salaryId && (
-                    <p className="mt-1 text-sm text-red-600">{errors.salaryId.message}</p>
-                  )}
-                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -147,7 +147,6 @@ export interface Employment {
   
   // Salary Information
   salary: number;
-  salaryId?: string;
   salaryPerMonth?: number;
   basic?: number;
   da?: number;

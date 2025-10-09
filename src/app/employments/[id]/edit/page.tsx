@@ -107,7 +107,6 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
         employmentId: data.employmentId || undefined,
         joiningDate: data.joiningDate || undefined,
         incrementDate: data.incrementDate || undefined,
-        salaryId: data.salaryId || undefined,
         salaryCreditDate: data.salaryCreditDate || undefined,
         paymentMode: data.paymentMode || undefined,
         jobTitle: data.jobTitle || undefined,
@@ -506,17 +505,6 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 border-l-4 border-green-500 pl-2">Salary Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Salary ID
-              </label>
-              <input
-                type="text"
-                {...register('salaryId')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="E.g., SAL-001"
-              />
-            </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
