@@ -26,7 +26,48 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
   const router = useRouter();
   const { id } = use(params);
   
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<EmploymentFormData>();
+  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<EmploymentFormData>();
+
+  // Watch salary for calculations
+  const salary = watch('salary');
+
+  // Calculate salary breakdown when annual salary changes
+  useEffect(() => {
+    if (salary && salary > 0) {
+      const annualSalary = Number(salary);
+      
+      // Calculate monthly salary
+      const monthlySalary = Math.round(annualSalary / 12);
+      setValue('salaryPerMonth', monthlySalary);
+      
+      // Calculate Basic (40% of monthly salary)
+      const basic = Math.round(monthlySalary * 0.40);
+      setValue('basic', basic);
+      
+      // Calculate HRA (50% of Basic)
+      const hra = Math.round(basic * 0.50);
+      setValue('hra', hra);
+      
+      // Calculate DA (10% of Basic)
+      const da = Math.round(basic * 0.10);
+      setValue('da', da);
+      
+      // Fixed allowances as per Indian standards
+      const medicalAllowance = 1250;
+      const transport = 1600;
+      setValue('medicalAllowance', medicalAllowance);
+      setValue('transport', transport);
+      
+      // Calculate PF (12% of Basic - employer contribution)
+      const pf = Math.round(basic * 0.12);
+      setValue('pf', pf);
+      
+      // Calculate Special Allowance (balancing figure)
+      const calculatedComponents = basic + hra + da + medicalAllowance + transport;
+      const specialAllowance = Math.max(0, monthlySalary - calculatedComponents);
+      setValue('specialAllowance', specialAllowance);
+    }
+  }, [salary, setValue]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -503,7 +544,12 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
 
         {/* Salary Information */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4 border-l-4 border-green-500 pl-2">Salary Information</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-green-500 pl-2">
+            Salary Information
+          </h2>
+          <p className="text-sm text-gray-600 mb-4 italic">
+            💡 Enter annual salary - other components will auto-calculate
+          </p>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             
             <div>
@@ -513,9 +559,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('salaryPerMonth')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Monthly salary"
               />
+              <p className="mt-1 text-xs text-gray-500">Annual salary ÷ 12</p>
             </div>
             
             <div>
@@ -525,9 +572,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('basic')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Basic pay"
               />
+              <p className="mt-1 text-xs text-gray-500">40% of monthly salary</p>
             </div>
             
             <div>
@@ -537,9 +585,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('da')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Dearness allowance"
               />
+              <p className="mt-1 text-xs text-gray-500">10% of Basic</p>
             </div>
             
             <div>
@@ -549,9 +598,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('hra')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="House rent allowance"
               />
+              <p className="mt-1 text-xs text-gray-500">50% of Basic</p>
             </div>
             
             <div>
@@ -561,9 +611,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('pf')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Provident fund"
               />
+              <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
             </div>
             
             <div>
@@ -573,9 +624,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('medicalAllowance')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Medical allowance"
               />
+              <p className="mt-1 text-xs text-gray-500">Fixed ₹1,250</p>
             </div>
             
             <div>
@@ -585,9 +637,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('transport')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Transport allowance"
               />
+              <p className="mt-1 text-xs text-gray-500">Fixed ₹1,600</p>
             </div>
             
             <div>
@@ -669,9 +722,10 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
               <input
                 type="number"
                 {...register('specialAllowance')}
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
                 placeholder="Special allowance"
               />
+              <p className="mt-1 text-xs text-gray-500">Balancing amount</p>
             </div>
           </div>
         </div>

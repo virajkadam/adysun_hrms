@@ -69,13 +69,43 @@ export default function AddEmploymentPage() {
   // Watch salary for calculations
   const salary = watch('salary');
 
-  // Calculate salary per month when annual salary changes
+  // Calculate salary breakdown when annual salary changes
   useEffect(() => {
-    if (salary) {
-      // We're not setting this automatically as the form might have other calculations
-      // const monthlyValue = Math.round(Number(salary) / 12);
+    if (salary && salary > 0) {
+      const annualSalary = Number(salary);
+      
+      // Calculate monthly salary
+      const monthlySalary = Math.round(annualSalary / 12);
+      setValue('salaryPerMonth', monthlySalary);
+      
+      // Calculate Basic (40% of monthly salary)
+      const basic = Math.round(monthlySalary * 0.40);
+      setValue('basic', basic);
+      
+      // Calculate HRA (50% of Basic)
+      const hra = Math.round(basic * 0.50);
+      setValue('hra', hra);
+      
+      // Calculate DA (10% of Basic)
+      const da = Math.round(basic * 0.10);
+      setValue('da', da);
+      
+      // Fixed allowances as per Indian standards
+      const medicalAllowance = 1250;
+      const transport = 1600;
+      setValue('medicalAllowance', medicalAllowance);
+      setValue('transport', transport);
+      
+      // Calculate PF (12% of Basic - employer contribution)
+      const pf = Math.round(basic * 0.12);
+      setValue('pf', pf);
+      
+      // Calculate Special Allowance (balancing figure)
+      const calculatedComponents = basic + hra + da + medicalAllowance + transport;
+      const specialAllowance = Math.max(0, monthlySalary - calculatedComponents);
+      setValue('specialAllowance', specialAllowance);
     }
-  }, [salary]);
+  }, [salary, setValue]);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -126,10 +156,10 @@ export default function AddEmploymentPage() {
         medicalAllowance: Number(data.medicalAllowance) || 0,
         transport: Number(data.transport) || 0,
         gratuity: Number(data.gratuity) || 0,
-        totalLeaves: Number(data.totalLeaves),
-        payableDays: Number(data.payableDays),
         additionalAllowance: Number(data.additionalAllowance) || 0,
         specialAllowance: Number(data.specialAllowance) || 0,
+        totalLeaves: Number(data.totalLeaves),
+        payableDays: Number(data.payableDays),
         // Add audit fields
         createdAt: currentTimestamp,
         createdBy: adminId, // Permanent admin document ID
@@ -438,7 +468,12 @@ export default function AddEmploymentPage() {
 
             {/* Salary Details Section */}
             <div className="bg-gray-50 p-4 rounded-lg mb-6">
-              <h2 className="text-lg font-medium text-gray-800 mb-4 border-l-4 border-green-500 pl-2">Salary Information</h2>
+              <h2 className="text-lg font-medium text-gray-800 mb-2 border-l-4 border-green-500 pl-2">
+                Salary Information
+              </h2>
+              <p className="text-sm text-gray-600 mb-4 italic">
+                💡 Enter annual salary - other components will auto-calculate
+              </p>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -472,8 +507,9 @@ export default function AddEmploymentPage() {
                       required: 'Monthly salary is required',
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">Annual salary ÷ 12</p>
                   {errors.salaryPerMonth && (
                     <p className="mt-1 text-sm text-red-600">{errors.salaryPerMonth.message}</p>
                   )}
@@ -490,8 +526,9 @@ export default function AddEmploymentPage() {
                       required: 'Basic salary is required',
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">40% of monthly salary</p>
                   {errors.basic && (
                     <p className="mt-1 text-sm text-red-600">{errors.basic.message}</p>
                   )}
@@ -507,8 +544,9 @@ export default function AddEmploymentPage() {
                     {...register('da', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">10% of Basic</p>
                   {errors.da && (
                     <p className="mt-1 text-sm text-red-600">{errors.da.message}</p>
                   )}
@@ -524,8 +562,9 @@ export default function AddEmploymentPage() {
                     {...register('hra', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">50% of Basic</p>
                   {errors.hra && (
                     <p className="mt-1 text-sm text-red-600">{errors.hra.message}</p>
                   )}
@@ -541,8 +580,9 @@ export default function AddEmploymentPage() {
                     {...register('pf', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
                   {errors.pf && (
                     <p className="mt-1 text-sm text-red-600">{errors.pf.message}</p>
                   )}
@@ -558,8 +598,9 @@ export default function AddEmploymentPage() {
                     {...register('medicalAllowance', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">Fixed ₹1,250</p>
                   {errors.medicalAllowance && (
                     <p className="mt-1 text-sm text-red-600">{errors.medicalAllowance.message}</p>
                   )}
@@ -575,8 +616,9 @@ export default function AddEmploymentPage() {
                     {...register('transport', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">Fixed ₹1,600</p>
                   {errors.transport && (
                     <p className="mt-1 text-sm text-red-600">{errors.transport.message}</p>
                   )}
@@ -598,7 +640,7 @@ export default function AddEmploymentPage() {
                     <p className="mt-1 text-sm text-red-600">{errors.gratuity.message}</p>
                   )}
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Total Leaves
@@ -627,7 +669,7 @@ export default function AddEmploymentPage() {
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Payable Days
@@ -678,8 +720,9 @@ export default function AddEmploymentPage() {
                     {...register('specialAllowance', { 
                       min: { value: 0, message: 'Amount must be positive' }
                     })}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
+                  <p className="mt-1 text-xs text-gray-500">Balancing amount</p>
                 </div>
               </div>
             </div>

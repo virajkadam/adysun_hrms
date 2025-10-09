@@ -155,12 +155,12 @@ export interface Employment {
   medicalAllowance?: number;
   transport?: number;
   gratuity?: number;
+  additionalAllowance?: number;
+  specialAllowance?: number;
   totalLeaves?: number;
   salaryCreditDate?: string;
   payableDays?: number;
   paymentMode?: string;
-  additionalAllowance?: number;
-  specialAllowance?: number;
   educationAllowance?: number;
   monthlyReimbursement?: number;
   lta?: number;
