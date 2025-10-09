@@ -10,6 +10,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployment, useDeleteEmployment } from '@/hooks/useEmployments';
 import { useEmployee } from '@/hooks/useEmployees';
+import { useSalaries } from '@/hooks/useSalaries';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
@@ -31,6 +32,11 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     isLoading: employeeLoading,
     isError: employeeError
   } = useEmployee(employment?.employeeId || '');
+
+  // Fetch salaries for this employee to check if button should be shown
+  const { data: allSalaries = [] } = useSalaries();
+  const employeeSalaries = allSalaries.filter(salary => salary.employeeId === employment?.employeeId);
+  const hasSalaries = employeeSalaries.length > 0;
 
   // Calculate real attendance statistics
   const calculateAttendanceStats = () => {
@@ -290,6 +296,12 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
             label: 'Back'
           }}
           actionButtons={[
+            ...(hasSalaries ? [{
+              label: 'View Salaries',
+              icon: <FiDollarSign />,
+              variant: 'warning' as const,
+              href: `/salaries?employeeId=${employment?.employeeId}`
+            }] : []),
             {
               label: 'Edit',
               icon: <FiEdit />,
