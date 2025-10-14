@@ -7,8 +7,8 @@ import QueryProvider from "@/components/providers/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Adysun HRMS",
-  description: "Employee Management System",
+  title: "Adysun Ventures - Premium IT Solutions & Business Strategy Services",
+  description: "Leading IT solutions provider offering comprehensive technology services to meet your industry-specific business needs.",
 };
 
 export default function RootLayout({

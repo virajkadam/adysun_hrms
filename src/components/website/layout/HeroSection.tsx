@@ -25,32 +25,52 @@ export default function HeroSection({
   className = '' 
 }: HeroSectionProps) {
   if (variant === 'image' && backgroundImage) {
+    const isVideo = backgroundImage.endsWith('.mp4') || backgroundImage.endsWith('.webm') || backgroundImage.endsWith('.ogg');
+    
     return (
       <section 
-        className={`relative w-screen h-screen bg-cover bg-center bg-no-repeat ${className}`}
+        className={`relative w-screen h-screen overflow-hidden ${className}`}
         style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
           backgroundColor: 'rgb(10, 10, 10)',
           minHeight: '100vh',
-          width: '100vw'
+          width: '99vw'
         }}
         role="img"
         aria-label="Adysun Ventures hero section background"
       >
+        {isVideo ? (
+          <video
+            className="absolute top-0 left-0 w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            aria-hidden="true"
+          >
+            <source src={backgroundImage} type="video/mp4" />
+          </video>
+        ) : (
+          <div
+            className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center center',
+            }}
+          />
+        )}
         {/* Dark overlay - similar to data-overlay-dark="7" */}
         <div 
           className="absolute top-0 left-0 w-full h-full"
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            // backgroundColor: 'rgba(0, 0, 0, 0.7)',
             zIndex: 0
           }}
         />
         
-        {/* Content container - LEFT ALIGNED */}
-        <div className="container mx-auto py-10 relative h-full flex items-center" style={{ zIndex: 1 }}>
-          <div className="text-left max-w-2xl">
+        {/* Content container - RIGHT ALIGNED */}
+        <div className="container mx-auto py-10 relative h-full flex items-center justify-end" style={{ zIndex: 1 }}>
+          <div className="text-left max-w-2xl mr-0 lg:mr-8">
             <span className="text-white text-2xl md:text-3xl block mb-6 font-light">
               {title}
             </span>

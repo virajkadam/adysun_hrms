@@ -29,7 +29,7 @@ export default function WebsiteHomePage() {
         subtitle="Adysun Ventures: Premium IT Solutions & Business Strategy Services"
         description="Adysun Ventures is a leading IT solutions provider, offering comprehensive technology services to meet your industry-specific business needs."
         variant="image"
-        backgroundImage="/assets/images/bg/hero-bg-new.jpeg"
+        backgroundImage="/assets/images/bg/hero-bg-video.mp4"
         actions={[
           { text: "Our Services", href: "/services", variant: "primary" },
           { text: "Contact Us", href: "/contact-us", variant: "outline" }
