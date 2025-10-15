@@ -1,15 +1,16 @@
 # Employee Bulk Upload Template
 # Instructions:
-# 1. Fill in all required fields (marked with *)
-# 2. Remove this instruction row before uploading
-# 3. Keep the header row as is
+# 1. Fill in all required fields below
+# 2. Keep the header row exactly as shown
+# 3. You can keep these instruction lines - they will be ignored during upload
 # 4. Use YYYY-MM-DD format for dateOfBirth
 # 5. Use exactly 10 digits for phone (no +91 prefix)
 # 6. Use exactly 12 digits for aadharCard
 # 7. Use ABCDE1234F format for panCard (5 letters + 4 digits + 1 letter)
 # 8. Use "insider" or "outsider" for employeeType
-# 9. Save as CSV format before uploading
+# 9. Addresses with commas should be in quotes: "123 Main St, Mumbai"
+# 10. Save as CSV format before uploading
 
 name,dateOfBirth,employeeType,phone,email,currentAddress,aadharCard,panCard
-John Doe,1990-05-15,insider,9876543210,john.doe@example.com,"123 Main Street, Mumbai, Maharashtra",123456789012,ABCDE5234F
+John Doe,1990-05-15,insider,9876543210,john.doe@example.com,"123 Main Street, Mumbai, Maharashtra",123456789012,ABCDE1234F
 Jane Smith,1985-08-22,outsider,9876543211,jane.smith@example.com,"456 Park Avenue, Delhi, NCR",123456789013,BCDEF1234G

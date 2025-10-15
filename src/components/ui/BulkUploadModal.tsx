@@ -105,7 +105,7 @@ export default function BulkUploadModal({ isOpen, onClose, onSuccess }: BulkUplo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -121,19 +121,7 @@ export default function BulkUploadModal({ isOpen, onClose, onSuccess }: BulkUplo
 
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Instructions */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-blue-900 mb-2">Instructions:</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Download the template and fill in all required fields</li>
-              <li>• Use YYYY-MM-DD format for dates</li>
-              <li>• Use exactly 10 digits for phone numbers (no +91 prefix)</li>
-              <li>• Use exactly 12 digits for Aadhar numbers</li>
-              <li>• Use ABCDE1234F format for PAN numbers</li>
-              <li>• Use "insider" or "outsider" for employee type</li>
-              <li>• All rows will be validated before any employees are created</li>
-            </ul>
-          </div>
+        
 
           {/* Template Download */}
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
