@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '../ui/Button';
+import { Cloud, Brain, Shield, Zap } from 'lucide-react';
 
 interface HeroSectionProps {
   title: string;
@@ -73,11 +74,6 @@ export default function HeroSection({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full max-w-7xl mx-auto">
             {/* Left Column - Content */}
             <div className="order-2 lg:order-1">
-              {/* Trust Badge */}
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></div>
-                <span className="text-white text-sm font-medium">Trusted by 75+ Companies</span>
-              </div>
               
               {/* Main Headline */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight">
@@ -90,16 +86,16 @@ export default function HeroSection({
               </h1>
               
               {/* Subtitle */}
-              <h2 className="text-4xl ">
+              <h2 className="text-xl ">
                 Premium IT Solutions & Business Strategy Services
               </h2>
               
               {/* Description */}
-              {/* {description && (
+              {description && (
                 <p className="text-lg text-gray-300 mb-10 leading-relaxed max-w-2xl">
                   {description}
                 </p>
-              )} */}
+              )}
               
               {/* CTA Buttons */}
               {actions.length > 0 && (
@@ -122,19 +118,23 @@ export default function HeroSection({
                 </div>
               )}
               
-              {/* Trust Indicators */}
+              {/* Technology Focus Indicators */}
               <div className="flex items-center space-x-8 text-sm text-gray-400">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-400 rounded-full mr-2"></div>
-                  <span>24/7 Support</span>
+                  <Cloud className="w-10 h-10 text-orange-400 mr-2" />
+                  <span>Cloud Solutions</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-blue-400 rounded-full mr-2"></div>
-                  <span>10+ Years Experience</span>
+                  <Brain className="w-10 h-10 text-blue-400 mr-2" />
+                  <span>AI Integration</span>
                 </div>
                 <div className="flex items-center">
-                  <div className="w-4 h-4 bg-purple-400 rounded-full mr-2"></div>
-                  <span>ISO Certified</span>
+                  <Shield className="w-10 h-10 text-green-400 mr-2" />
+                  <span>Cybersecurity</span>
+                </div>
+                <div className="flex items-center">
+                  <Zap className="w-10 h-10 text-purple-400 mr-2" />
+                  <span>Digital Transformation</span>
                 </div>
               </div>
             </div>
