@@ -7,6 +7,20 @@
 /* Import responsive typography */
 @import '../lib/responsive-typography.css';
 
+/* Floating animation for hero cards */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Enhanced touch targets for mobile */
 * {
   touch-action: manipulation;

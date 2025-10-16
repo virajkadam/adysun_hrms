@@ -142,30 +142,130 @@ export default function HeroSection({
             {/* Right Column - Interactive Tech Showcase */}
             <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Floating Tech Cards - 2 per row on desktop */}
+                {/* Floating Tech Cards - 2 per row on desktop with enhanced interactivity */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <Cloud className="w-8 h-8 text-orange-400 mb-2" />
+                  {/* Cloud Migration Card */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group animate-float" style={{animationDelay: '0s'}}>
+                    <div className="flex items-center justify-between mb-2">
+                      <Cloud className="w-8 h-8 text-orange-400 group-hover:rotate-12 transition-transform duration-300" />
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-ping"></div>
+                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-orange-400 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                      </div>
+                    </div>
                     <h3 className="text-white font-semibold">Cloud Migration</h3>
                     <p className="text-gray-300 text-sm">AWS • Azure • GCP</p>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-3 bg-white/10 rounded-full h-1">
+                      <div className="bg-orange-400 h-1 rounded-full w-4/5 animate-pulse"></div>
+                    </div>
+                    
+                    {/* Hidden Stats on Hover */}
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Projects</span>
+                        <span className="text-orange-400 font-bold">45+</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Success Rate</span>
+                        <span className="text-green-400 font-bold">98%</span>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <Brain className="w-8 h-8 text-blue-400 mb-2" />
+                  {/* AI Solutions Card */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group animate-float" style={{animationDelay: '1.5s'}}>
+                    <div className="flex items-center justify-between mb-2">
+                      <Brain className="w-8 h-8 text-blue-400 group-hover:rotate-12 transition-transform duration-300" />
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                      </div>
+                    </div>
                     <h3 className="text-white font-semibold">AI Solutions</h3>
                     <p className="text-gray-300 text-sm">ML • Automation • Analytics</p>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-3 bg-white/10 rounded-full h-1">
+                      <div className="bg-blue-400 h-1 rounded-full w-3/4 animate-pulse"></div>
+                    </div>
+                    
+                    {/* Hidden Stats on Hover */}
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Models Deployed</span>
+                        <span className="text-blue-400 font-bold">32+</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Accuracy</span>
+                        <span className="text-green-400 font-bold">94%</span>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <Shield className="w-8 h-8 text-green-400 mb-2" />
+                  {/* Security Card */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group animate-float" style={{animationDelay: '3s'}}>
+                    <div className="flex items-center justify-between mb-2">
+                      <Shield className="w-8 h-8 text-green-400 group-hover:rotate-12 transition-transform duration-300" />
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                      </div>
+                    </div>
                     <h3 className="text-white font-semibold">Security</h3>
                     <p className="text-gray-300 text-sm">Compliance • Monitoring</p>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-3 bg-white/10 rounded-full h-1">
+                      <div className="bg-green-400 h-1 rounded-full w-5/6 animate-pulse"></div>
+                    </div>
+                    
+                    {/* Hidden Stats on Hover */}
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Systems Secured</span>
+                        <span className="text-green-400 font-bold">120+</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Zero Breaches</span>
+                        <span className="text-green-400 font-bold">100%</span>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                    <Zap className="w-8 h-8 text-purple-400 mb-2" />
+                  {/* Digital Transform Card */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 hover:-translate-y-2 group animate-float" style={{animationDelay: '4.5s'}}>
+                    <div className="flex items-center justify-between mb-2">
+                      <Zap className="w-8 h-8 text-purple-400 group-hover:rotate-12 transition-transform duration-300" />
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '0.4s'}}></div>
+                      </div>
+                    </div>
                     <h3 className="text-white font-semibold">Digital Transform</h3>
                     <p className="text-gray-300 text-sm">Strategy • Implementation</p>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-3 bg-white/10 rounded-full h-1">
+                      <div className="bg-purple-400 h-1 rounded-full w-4/5 animate-pulse"></div>
+                    </div>
+                    
+                    {/* Hidden Stats on Hover */}
+                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Businesses Transformed</span>
+                        <span className="text-purple-400 font-bold">67+</span>
+                      </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>ROI Improvement</span>
+                        <span className="text-green-400 font-bold">250%</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
