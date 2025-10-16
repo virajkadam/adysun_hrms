@@ -70,10 +70,10 @@ export default function HeroSection({
         />
         
         {/* Content container - Industry Standard Layout */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative h-full flex items-center" style={{ zIndex: 1 }}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative h-full flex items-center pt-20 lg:pt-0" style={{ zIndex: 1 }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full max-w-7xl mx-auto">
             {/* Left Column - Content */}
-            <div className="order-2 lg:order-1">
+            <div className="order-1 lg:order-1">
               
               {/* Main Headline */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6 leading-tight">
@@ -140,7 +140,7 @@ export default function HeroSection({
             </div>
             
             {/* Right Column - Interactive Tech Showcase */}
-            <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+            <div className="order-2 lg:order-2 flex justify-center lg:justify-end hidden lg:flex">
               <div className="relative">
                 {/* Floating Tech Cards - 2 per row on desktop with enhanced interactivity */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
