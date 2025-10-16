@@ -119,7 +119,7 @@ export default function HeroSection({
               )}
               
               {/* Technology Focus Indicators */}
-              <div className="flex items-center space-x-8 text-sm text-gray-400">
+              {/* <div className="flex items-center space-x-8 text-sm text-gray-400">
                 <div className="flex items-center">
                   <Cloud className="w-10 h-10 text-orange-400 mr-2" />
                   <span>Cloud Solutions</span>
@@ -136,10 +136,40 @@ export default function HeroSection({
                   <Zap className="w-10 h-10 text-purple-400 mr-2" />
                   <span>Digital Transformation</span>
                 </div>
-              </div>
+              </div> */}
             </div>
             
-        
+            {/* Right Column - Interactive Tech Showcase */}
+            <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Floating Tech Cards - 2 per row on desktop */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <Cloud className="w-8 h-8 text-orange-400 mb-2" />
+                    <h3 className="text-white font-semibold">Cloud Migration</h3>
+                    <p className="text-gray-300 text-sm">AWS • Azure • GCP</p>
+                  </div>
+                  
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <Brain className="w-8 h-8 text-blue-400 mb-2" />
+                    <h3 className="text-white font-semibold">AI Solutions</h3>
+                    <p className="text-gray-300 text-sm">ML • Automation • Analytics</p>
+                  </div>
+                  
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <Shield className="w-8 h-8 text-green-400 mb-2" />
+                    <h3 className="text-white font-semibold">Security</h3>
+                    <p className="text-gray-300 text-sm">Compliance • Monitoring</p>
+                  </div>
+                  
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+                    <Zap className="w-8 h-8 text-purple-400 mb-2" />
+                    <h3 className="text-white font-semibold">Digital Transform</h3>
+                    <p className="text-gray-300 text-sm">Strategy • Implementation</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
