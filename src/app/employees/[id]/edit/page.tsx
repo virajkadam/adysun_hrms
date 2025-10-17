@@ -593,10 +593,6 @@ export default function EditEmployeePage({ params }: PageParams) {
                   {entry.type === '12th' && (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
-                        <input type="text" placeholder="Enter school name" {...register(`secondaryEducation.${index}.twelthData.school`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                      </div>
-                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
                         <input type="text" placeholder="Enter stream" {...register(`secondaryEducation.${index}.twelthData.branch`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                       </div>
@@ -625,7 +621,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
-                        <input type="text" placeholder="Enter full school name" {...register(`secondaryEducation.${index}.twelthData.schoolName`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                        <input type="text" placeholder="Enter school name" {...register(`secondaryEducation.${index}.twelthData.schoolName`)} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>
@@ -715,10 +711,6 @@ export default function EditEmployeePage({ params }: PageParams) {
               <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">10th Standard</h3>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">School</label>
-                  <input type="text" placeholder="Enter school name" {...register('tenthStandard.school')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
-                </div>
-                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
                   <select {...register('tenthStandard.month')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black">
                     <option value="">Select Month</option>
@@ -743,7 +735,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">School Name</label>
-                  <input type="text" placeholder="Enter full school name" {...register('tenthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter school name" {...register('tenthStandard.schoolName')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Board</label>

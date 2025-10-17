@@ -117,8 +117,7 @@
     "marks": "string",              // Marks obtained
     "month": "string",              // Month of completion
     "passingYear": "string",        // Year of completion
-    "school": "string",             // School name
-    "schoolName": "string",         // School name (alternative)
+    "schoolName": "string",         // School name (full name of the institution)
     "medium": "string"              // Medium of instruction
   },
   "twelthStandard": {
@@ -128,8 +127,7 @@
     "marks": "string",              // Marks obtained
     "month": "string",              // Month of completion
     "passingYear": "string",        // Year of completion
-    "school": "string",             // School name
-    "schoolName": "string"          // School name (alternative)
+    "schoolName": "string"          // School name (full name of the institution)
   },
   "graduation": {
     "branch": "string",             // Branch/stream

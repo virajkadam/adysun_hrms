@@ -3,11 +3,11 @@ export interface SecondaryEducationEntry {
   id: string;
   type: '12th' | 'diploma';
   twelthData?: {
-    school?: string;
+    school?: string;      // @deprecated - Use schoolName instead
     branch?: string;
     month?: string;
     passingYear?: string;
-    schoolName?: string;
+    schoolName?: string;  // Standard field for school name
     board?: string;
     marks?: string;
     grade?: string;
@@ -76,11 +76,11 @@ export interface Employee {
   // OLD: Keep for backward compatibility
   // 12th Standard
   twelthStandard?: {
-    school?: string;
+    school?: string;      // @deprecated - Use schoolName instead
     branch?: string;
     month?: string;
     passingYear?: string;
-    schoolName?: string;
+    schoolName?: string;  // Standard field for school name
     marks?: string;
     board?: string;
     grade?: string;
@@ -100,10 +100,10 @@ export interface Employee {
   
   // 10th Standard
   tenthStandard?: {
-    school?: string;
+    school?: string;      // @deprecated - Use schoolName instead
     month?: string;
     passingYear?: string;
-    schoolName?: string;
+    schoolName?: string;  // Standard field for school name
     marks?: string;
     board?: string;
     grade?: string;

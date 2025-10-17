@@ -473,12 +473,6 @@ export default function EmployeeViewPage({ params }: PageParams) {
                     {/* Display Fields */}
                     {entry.type === '12th' && entry.twelthData && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {entry.twelthData.school && (
-                          <div className="bg-white rounded-lg shadow p-3">
-                            <p className="text-lg font-medium text-gray-900">{entry.twelthData.school}</p>
-                            <p className="text-sm text-gray-500">School</p>
-                          </div>
-                        )}
                         {entry.twelthData.branch && (
                 <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.branch}</p>
@@ -497,7 +491,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                         {entry.twelthData.schoolName && (
                 <div className="bg-white rounded-lg shadow p-3">
                             <p className="text-lg font-medium text-gray-900">{entry.twelthData.schoolName}</p>
-                  <p className="text-sm text-gray-500">School Name</p>
+                  <p className="text-sm text-gray-500">School</p>
                 </div>
                         )}
                         {entry.twelthData.board && (
@@ -584,7 +578,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
             {employee.tenthStandard ? (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-white rounded-lg shadow p-3">
-                  <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.school || '-'}</p>
+                  <p className="text-lg font-medium text-gray-900">{employee.tenthStandard.schoolName || employee.tenthStandard.school || '-'}</p>
                   <p className="text-sm text-gray-500">School</p>
                 </div>
                 
