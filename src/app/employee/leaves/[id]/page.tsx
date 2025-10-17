@@ -2,13 +2,15 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiEdit } from 'react-icons/fi';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { getEmployeeLeaveById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import TableHeader from '@/components/ui/TableHeader';
+import { useCancelLeaveRequest } from '@/hooks/useLeaves';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 
 interface LeaveRecord {
   id: string;
@@ -30,9 +32,12 @@ export default function LeaveDetailPage({ params }: PageParams) {
   const router = useRouter();
   const { currentUserData } = useAuth();
   const { id } = use(params);
+  const cancelLeaveMutation = useCancelLeaveRequest();
   
   const [leaveData, setLeaveData] = useState<LeaveRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   // Fetch leave data
   useEffect(() => {
@@ -95,6 +100,34 @@ export default function LeaveDetailPage({ params }: PageParams) {
       </EmployeeLayout>
     );
   }
+  
+  // Function to open the confirmation modal
+  const handleCancelLeave = () => {
+    setIsConfirmModalOpen(true);
+  };
+  
+  // Function to handle the actual cancellation
+  const confirmCancelLeave = async () => {
+    if (!currentUserData?.id || !leaveData) return;
+    
+    try {
+      setIsCancelling(true);
+      
+      await cancelLeaveMutation.mutateAsync({
+        employeeId: currentUserData.id,
+        leaveId: leaveData.id
+      });
+      
+      toast.success('Leave request cancelled successfully');
+      router.push('/employee/leaves');
+    } catch (error: any) {
+      console.error('Error cancelling leave request:', error);
+      toast.error(error.message || 'Failed to cancel leave request');
+    } finally {
+      setIsCancelling(false);
+      setIsConfirmModalOpen(false);
+    }
+  };
 
   return (
     <EmployeeLayout
@@ -120,6 +153,13 @@ export default function LeaveDetailPage({ params }: PageParams) {
               onClick: () => router.push(`/employee/leaves/${leaveData.id}/edit`),
               icon: <FiEdit />,
               variant: 'warning' as const,
+            },
+            {
+              label: 'Cancel Leave',
+              onClick: handleCancelLeave,
+              icon: <FiTrash2 />,
+              variant: 'danger' as const,
+              disabled: isCancelling,
             }
           ] : []}
           headerClassName="px-6 py-6"
@@ -185,6 +225,18 @@ export default function LeaveDetailPage({ params }: PageParams) {
           </div>
         </div>
       </div>
+      
+      {/* Add the confirmation modal */}
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        title="Cancel Leave Request"
+        message="Are you sure you want to cancel this leave request? This action cannot be undone."
+        confirmText="Yes, Cancel Leave"
+        cancelText="No, Keep It"
+        onConfirm={confirmCancelLeave}
+        onCancel={() => setIsConfirmModalOpen(false)}
+        variant="danger"
+      />
     </EmployeeLayout>
   );
 } 

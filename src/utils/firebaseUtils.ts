@@ -2066,6 +2066,79 @@ export const updateLeaveRequest = async (employmentId: string, leaveId: string, 
   }
 }; 
 
+/**
+ * Cancel an employee leave request
+ * - Only pending leaves can be cancelled
+ * - Only the employee who created the leave can cancel it
+ */
+export const cancelEmployeeLeaveRequest = async (employeeId: string, leaveId: string) => {
+  try {
+    console.log('🔍 Cancelling employee leave request...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeData = localStorage.getItem('employeeData');
+    
+    if (!employeeSessionId || !employeeData) {
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeData);
+    
+    // Security check: Employee can only cancel their own leave requests
+    if (currentEmployee.id !== employeeId) {
+      throw new Error('Access denied. You can only cancel your own leave requests.');
+    }
+    
+    console.log('✅ Employee session validated for leave cancellation');
+    
+    // Get employment document for the employee
+    const employmentQuery = query(
+      collection(db, 'employments'),
+      where('employeeId', '==', employeeId)
+    );
+    const employmentSnapshot = await getDocs(employmentQuery);
+    
+    if (employmentSnapshot.empty) {
+      throw new Error('No employment record found for this employee.');
+    }
+    
+    const employmentDoc = employmentSnapshot.docs[0];
+    const employmentData = employmentDoc.data();
+    const existingLeaves = employmentData.leaves || [];
+    
+    // Find the specific leave record
+    const leaveIndex = existingLeaves.findIndex((leave: any) => leave.id === leaveId);
+    
+    if (leaveIndex === -1) {
+      throw new Error('Leave request not found.');
+    }
+    
+    const leave = existingLeaves[leaveIndex];
+    
+    // Check if leave can be cancelled (only pending leaves can be cancelled)
+    if (leave.status !== 'pending') {
+      throw new Error('Only pending leave requests can be cancelled.');
+    }
+    
+    // Remove the leave from the array
+    const updatedLeaves = existingLeaves.filter((leave: any) => leave.id !== leaveId);
+    
+    // Update the employment document
+    await updateDoc(doc(db, 'employments', employmentDoc.id), {
+      leaves: updatedLeaves,
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId
+    });
+    
+    console.log('✅ Leave request cancelled successfully');
+    return true;
+  } catch (error) {
+    console.error('Error cancelling leave request:', error);
+    throw error;
+  }
+};
+
 // Enquiry Firestore utilities
 export const getEnquiries = async () => {
   const q = query(collection(db, 'enquiries'), orderBy('createdAt', 'desc'));

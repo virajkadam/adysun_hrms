@@ -1,15 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile, FiBarChart } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiClock, FiCheck, FiX, FiEdit, FiEye, FiFile, FiBarChart, FiTrash2 } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
-import { useEmployeeLeaves } from '@/hooks/useLeaves';
+import { useEmployeeLeaves, useCancelLeaveRequest } from '@/hooks/useLeaves';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 
 
 
@@ -17,6 +18,10 @@ import { useEmployeeLeaves } from '@/hooks/useLeaves';
 export default function EmployeeLeavesPage() {
   const router = useRouter();
   const { currentUserData } = useAuth();
+  const cancelLeaveMutation = useCancelLeaveRequest();
+  const [cancellingLeaveId, setCancellingLeaveId] = useState<string | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [leaveToCancel, setLeaveToCancel] = useState<string | null>(null);
 
   // Use TanStack Query hooks
   const {
@@ -65,6 +70,36 @@ export default function EmployeeLeavesPage() {
     } catch (error) {
       console.error('Error refreshing leave data:', error);
       toast.error('Failed to refresh leave data');
+    }
+  };
+  
+  // Update the handleCancelLeave function to open the modal
+  const handleCancelLeave = (leaveId: string) => {
+    setLeaveToCancel(leaveId);
+    setIsConfirmModalOpen(true);
+  };
+  
+  // Add a new function to handle the actual cancellation
+  const confirmCancelLeave = async () => {
+    if (!currentUserData?.id || !leaveToCancel) return;
+    
+    try {
+      setCancellingLeaveId(leaveToCancel);
+      
+      await cancelLeaveMutation.mutateAsync({
+        employeeId: currentUserData.id,
+        leaveId: leaveToCancel
+      });
+      
+      toast.success('Leave request cancelled successfully');
+      // No need to navigate, the list will be updated automatically due to query invalidation
+    } catch (error: any) {
+      console.error('Error cancelling leave request:', error);
+      toast.error(error.message || 'Failed to cancel leave request');
+    } finally {
+      setCancellingLeaveId(null);
+      setIsConfirmModalOpen(false);
+      setLeaveToCancel(null);
     }
   };
 
@@ -310,12 +345,23 @@ export default function EmployeeLeavesPage() {
                           colorClass="bg-blue-100 text-blue-600 hover:text-blue-900"
                           href={`/employee/leaves/${record.id}`}
                         />
-                        <ActionButton
-                          icon={<FiEdit className="w-5 h-5" />}
-                          title="Edit"
-                          colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
-                          href={`/employee/leaves/${record.id}/edit`}
-                        />
+                        {record.status === 'pending' && (
+                          <>
+                            <ActionButton
+                              icon={<FiEdit className="w-5 h-5" />}
+                              title="Edit"
+                              colorClass="bg-amber-100 text-amber-600 hover:text-amber-900"
+                              href={`/employee/leaves/${record.id}/edit`}
+                            />
+                            <ActionButton
+                              icon={<FiTrash2 className="w-5 h-5" />}
+                              title="Cancel"
+                              colorClass="bg-red-100 text-red-600 hover:text-red-900"
+                              onClick={() => handleCancelLeave(record.id)}
+                              disabled={cancellingLeaveId === record.id}
+                            />
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -334,6 +380,21 @@ export default function EmployeeLeavesPage() {
       </div>
 
 
+      
+      {/* Add the confirmation modal */}
+      <ConfirmationModal
+        isOpen={isConfirmModalOpen}
+        title="Cancel Leave Request"
+        message="Are you sure you want to cancel this leave request? This action cannot be undone."
+        confirmText="Yes, Cancel Leave"
+        cancelText="No, Keep It"
+        onConfirm={confirmCancelLeave}
+        onCancel={() => {
+          setIsConfirmModalOpen(false);
+          setLeaveToCancel(null);
+        }}
+        variant="danger"
+      />
     </EmployeeLayout>
   );
 } 

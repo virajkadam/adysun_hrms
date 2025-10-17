@@ -3,7 +3,8 @@ import {
   getEmployeeLeaves, 
   updateEmployeeLeaveEndDate,
   createEmployeeLeaveRequest,
-  updateEmployeeLeaveRequest
+  updateEmployeeLeaveRequest,
+  cancelEmployeeLeaveRequest
 } from '@/utils/firebaseUtils';
 import { queryKeys } from '@/lib/queryKeys';
 import { getQueryClient } from '@/lib/queryClient';
@@ -176,6 +177,28 @@ export const useUpdateLeaveRequest = () => {
     },
     onError: (error) => {
       console.error('Error updating leave request:', error);
+    }
+  });
+};
+
+/**
+ * Custom hook for cancelling leave requests with automatic cache invalidation
+ */
+export const useCancelLeaveRequest = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ employeeId, leaveId }: { employeeId: string, leaveId: string }) => {
+      return await cancelEmployeeLeaveRequest(employeeId, leaveId);
+    },
+    onSuccess: (data, variables) => {
+      // Invalidate the leaves query for this employee
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.leaves.byEmployee(variables.employeeId)
+      });
+    },
+    onError: (error) => {
+      console.error('Error cancelling leave request:', error);
     }
   });
 };
