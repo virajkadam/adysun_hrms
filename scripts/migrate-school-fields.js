@@ -6,9 +6,20 @@
  * consolidate redundant fields in the database.
  */
 
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, updateDoc } from 'firebase/firestore';
-import { firebaseConfig } from '../src/firebase/config';
+// Using require instead of import for better compatibility with Node.js
+const { initializeApp } = require('firebase/app');
+const { getFirestore, collection, getDocs, updateDoc } = require('firebase/firestore');
+
+// Firebase configuration directly included to avoid import issues
+const firebaseConfig = {
+  apiKey: "AIzaSyCHNx1oTFKeC88VWneyRuDvWtzcpMpPew0",
+  authDomain: "adysun-hrms.firebaseapp.com",
+  projectId: "adysun-hrms",
+  storageBucket: "adysun-hrms.firebasestorage.app",
+  messagingSenderId: "481182176506",
+  appId: "1:481182176506:web:85848f6acd565f1b1e6543",
+  measurementId: "G-VY9WBFGBM3"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
