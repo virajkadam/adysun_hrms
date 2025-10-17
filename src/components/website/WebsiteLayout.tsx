@@ -18,7 +18,7 @@ export default function WebsiteLayout({ children,}: WebsiteLayoutProps) {
       <SkipLink href="#main-content">Skip to main content</SkipLink>
       <SkipLink href="#footer">Skip to footer</SkipLink>
 
-      {/* Navigation */}
+      {/* Navigation - Using public variant */}
       <Navigation />
 
       {/* Main Content - Added top padding to account for fixed header */}

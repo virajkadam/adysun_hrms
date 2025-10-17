@@ -1,5 +1,6 @@
+'use client';
+
 import { ReactNode } from 'react';
-import EmployeeSidebar from './EmployeeSidebar';
 import Header from './Header';
 import SimpleBreadcrumb from '../ui/SimpleBreadcrumb';
 
@@ -9,22 +10,21 @@ interface BreadcrumbItem {
   isCurrent?: boolean;
 }
 
-interface EmployeeLayoutProps {
+interface PublicLayoutProps {
   children: ReactNode;
   breadcrumbItems?: BreadcrumbItem[];
   showBreadcrumb?: boolean;
 }
 
-const EmployeeLayout = ({ 
+const PublicLayout = ({ 
   children, 
   breadcrumbItems = [],
-  showBreadcrumb = true 
-}: EmployeeLayoutProps) => {
+  showBreadcrumb = false 
+}: PublicLayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <EmployeeSidebar />
-      <Header variant="protected" />
-      <main className="pt-16 lg:pl-64 min-h-screen">
+      <Header variant="public" />
+      <main className="pt-16 min-h-screen">
         <div className="p-4 md:p-6">
           {showBreadcrumb && breadcrumbItems.length > 0 && (
             <SimpleBreadcrumb items={breadcrumbItems} className="mb-4" />
@@ -36,4 +36,4 @@ const EmployeeLayout = ({
   );
 };
 
-export default EmployeeLayout; 
+export default PublicLayout;

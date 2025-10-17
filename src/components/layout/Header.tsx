@@ -6,7 +6,11 @@ import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
-const Header = () => {
+interface HeaderProps {
+  variant?: 'public' | 'protected';
+}
+
+const Header = ({ variant = 'protected' }: HeaderProps) => {
   const { logout, currentAdmin, currentEmployee } = useAuth();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -74,17 +78,45 @@ const Header = () => {
 
   const userInfo = getUserInfo();
 
+  // Determine header styling based on variant
+  const getHeaderStyles = () => {
+    if (variant === 'public') {
+      return isScrolled 
+        ? 'bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg' 
+        : 'bg-transparent';
+    } else {
+      // Protected variant
+      return 'bg-white border-b border-gray-200 shadow-sm';
+    }
+  };
+
+  // Determine text styling based on variant
+  const getTextStyles = () => {
+    if (variant === 'public') {
+      return isScrolled ? 'text-white' : 'text-gray-800';
+    } else {
+      // Protected variant
+      return 'text-gray-800';
+    }
+  };
+
+  // Determine hover styling based on variant
+  const getHoverStyles = () => {
+    if (variant === 'public') {
+      return isScrolled 
+        ? 'text-white hover:bg-white/10' 
+        : 'text-gray-700 hover:bg-gray-100';
+    } else {
+      // Protected variant
+      return 'text-gray-700 hover:bg-gray-100';
+    }
+  };
+
   return (
-    <header className={`h-16 fixed top-0 right-0 left-0 lg:left-64 z-10 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/10 backdrop-blur-md border-b border-white/20' 
-        : 'bg-transparent'
-    }`}>
+    <header className={`h-16 fixed top-0 right-0 left-0 lg:left-64 z-10 transition-all duration-300 ${getHeaderStyles()}`}>
       <div className="flex items-center justify-between h-full px-4">
         {/* Mobile title - centered on mobile, hidden on desktop */}
-        <h1 className={`text-xl font-semibold lg:hidden flex-1 text-center transition-colors duration-300 ${
-          isScrolled ? 'text-white' : 'text-gray-800'
-        }`}>
+        <h1 className={`text-xl font-semibold lg:hidden flex-1 text-center transition-colors duration-300 ${getTextStyles()}`}>
           {currentAdmin ? 'Admin Dashboard' : 'Employee Portal'}
         </h1>
         
@@ -104,9 +136,9 @@ const Header = () => {
               className="object-contain mr-2"
               priority
             />
-            <span className={`text-xl font-semibold transition-colors duration-300 ${
-              isScrolled ? 'text-white' : 'text-gray-800'
-            }`}>Adysun Ventures</span>
+            <span className={`text-xl font-semibold transition-colors duration-300 ${getTextStyles()}`}>
+              Adysun Ventures
+            </span>
           </a>
         </div>
         
@@ -114,21 +146,17 @@ const Header = () => {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors cursor-pointer ${
-              isScrolled 
-                ? 'text-white hover:bg-white/10' 
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors cursor-pointer ${getHoverStyles()}`}
           >
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
               {userInfo.name.charAt(0).toUpperCase()}
             </div>
             <div className="hidden sm:block text-left">
               <div className={`text-sm font-medium transition-colors duration-300 ${
-                isScrolled ? 'text-white' : 'text-gray-900'
+                variant === 'public' ? (isScrolled ? 'text-white' : 'text-gray-900') : 'text-gray-900'
               }`}>{userInfo.name}</div>
               <div className={`text-xs transition-colors duration-300 ${
-                isScrolled ? 'text-white/70' : 'text-gray-500'
+                variant === 'public' ? (isScrolled ? 'text-white/70' : 'text-gray-500') : 'text-gray-500'
               }`}>{userInfo.type}</div>
             </div>
             <FiChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
