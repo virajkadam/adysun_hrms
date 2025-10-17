@@ -255,26 +255,26 @@ export default function EmployeeViewPage({ params }: PageParams) {
               { 
                 label: 'Employment', 
                 icon: <FiBriefcase />, 
-                variant: 'success' as const, 
+                variant: 'primary' as const, 
                 href: `/employments/${safeEmployments[0].id}` 
               },
               { 
                 label: 'Salary', 
                 icon: <FiDollarSign />, 
-                variant: 'warning' as const, 
+                variant: 'purple' as const, 
                 href: `/salaries?employeeId=${id}` 
               },
             ] : [
               { 
                 label: 'Employment', 
                 icon: <FiBriefcase />, 
-                variant: 'success' as const, 
+                variant: 'primary' as const, 
                 href: `/employments/add?employeeId=${id}` 
               },
               { 
                 label: 'Salary', 
                 icon: <FiDollarSign />, 
-                variant: 'success' as const, 
+                variant: 'purple' as const, 
                 href: `/salaries/add?employeeId=${id}` 
               }
             ]),
