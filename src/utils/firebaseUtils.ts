@@ -2,6 +2,41 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, 
 import { db } from '../firebase/config';
 import { Employee, Employment, Salary, SecondaryEducationEntry } from '../types';
 
+/**
+ * Sanitizes data for Firestore by removing undefined values
+ * @param {any} data - The data to sanitize
+ * @returns {any} - Sanitized data safe for Firestore
+ */
+export function sanitizeForFirestore(data: any): any {
+  // Handle null or undefined input
+  if (data === null || data === undefined) {
+    return null;
+  }
+  
+  // Handle arrays
+  if (Array.isArray(data)) {
+    return data.map(item => sanitizeForFirestore(item));
+  }
+  
+  // Handle objects
+  if (typeof data === 'object') {
+    const sanitized: Record<string, any> = {};
+    
+    for (const [key, value] of Object.entries(data)) {
+      // Skip undefined values
+      if (value !== undefined) {
+        // Recursively sanitize nested objects and arrays
+        sanitized[key] = sanitizeForFirestore(value);
+      }
+    }
+    
+    return sanitized;
+  }
+  
+  // Return primitive values as is
+  return data;
+}
+
 // Validate education entries before saving
 const validateEducationEntries = (entries: SecondaryEducationEntry[]): boolean => {
   if (entries.length > 2) {
@@ -226,9 +261,13 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
     console.log('✅ Custom authentication session found');
     console.log('🔐 === FIRESTORE WRITE ATTEMPT ===');
     console.log('📁 Collection: employees');
-    console.log('📄 Document data:', JSON.stringify(employeeDataWithPassword, null, 2));
     
-    const docRef = await addDoc(collection(db, 'employees'), employeeDataWithPassword);
+    // Sanitize data before sending to Firestore
+    const sanitizedData = sanitizeForFirestore(employeeDataWithPassword);
+    console.log('🧹 Sanitized data (removed undefined values)');
+    console.log('📄 Document data:', JSON.stringify(sanitizedData, null, 2));
+    
+    const docRef = await addDoc(collection(db, 'employees'), sanitizedData);
     
     console.log('✅ === SUCCESS ===');
     console.log('🆔 New Employee ID:', docRef.id);
@@ -286,8 +325,12 @@ export const updateEmployee = async (id: string, employeeData: Partial<Employee>
     
     console.log('📋 Employee update data with audit:', updateDataWithAudit);
     
+    // Sanitize data before sending to Firestore
+    const sanitizedData = sanitizeForFirestore(updateDataWithAudit);
+    console.log('🧹 Sanitized data for update (removed undefined values)');
+    
     const employeeRef = doc(db, 'employees', id);
-    await updateDoc(employeeRef, updateDataWithAudit);
+    await updateDoc(employeeRef, sanitizedData);
     
     console.log('✅ Employee updated successfully with audit trail');
     return { id, ...updateDataWithAudit };
