@@ -6,8 +6,8 @@ import { FiCalendar, FiSave, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { createEmployeeLeaveRequest } from '@/utils/firebaseUtils';
 import TableHeader from '@/components/ui/TableHeader';
+import { useCreateLeaveRequest } from '@/hooks/useLeaves';
 
 interface LeaveRequestForm {
   type: 'casual' | 'sick' | 'annual' | 'personal' | 'maternity' | 'paternity';
@@ -19,6 +19,7 @@ interface LeaveRequestForm {
 export default function RequestLeavePage() {
   const router = useRouter();
   const { currentUserData } = useAuth();
+  const createLeaveMutation = useCreateLeaveRequest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<LeaveRequestForm>({
     type: 'casual',
@@ -93,8 +94,8 @@ export default function RequestLeavePage() {
         totalDays: totalDays
       });
       
-      // Create leave request in Firebase
-      const leaveRequest = await createEmployeeLeaveRequest({
+      // Create leave request using the custom mutation hook
+      await createLeaveMutation.mutateAsync({
         employeeId: currentUserData.id,
         type: formData.type,
         startDate: formData.startDate,
@@ -103,7 +104,7 @@ export default function RequestLeavePage() {
         totalDays: totalDays
       });
       
-      console.log('✅ Leave request created:', leaveRequest);
+      console.log('✅ Leave request created successfully');
       toast.success('Leave request submitted successfully!');
       router.push('/employee/leaves');
     } catch (error: any) {

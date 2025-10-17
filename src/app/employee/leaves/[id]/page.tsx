@@ -131,9 +131,9 @@ export default function LeaveDetailPage({ params }: PageParams) {
               <div>
                 <p className="text-lg font-medium text-gray-900">
                   {leaveData.type.charAt(0).toUpperCase() + leaveData.type.slice(1)}
-                  {leaveData.wasEdited && (
+                  {/* {leaveData.wasEdited && (
                     <span className="ml-2 text-xs text-purple-600">(Modified)</span>
-                  )}
+                  )} */}
                 </p>
                 <p className="text-sm text-gray-600">Leave Type</p>
               </div>

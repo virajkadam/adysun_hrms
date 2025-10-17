@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getEmployeeLeaves, updateEmployeeLeaveEndDate } from '@/utils/firebaseUtils';
+import { 
+  getEmployeeLeaves, 
+  updateEmployeeLeaveEndDate,
+  createEmployeeLeaveRequest,
+  updateEmployeeLeaveRequest
+} from '@/utils/firebaseUtils';
 import { queryKeys } from '@/lib/queryKeys';
 import { getQueryClient } from '@/lib/queryClient';
 
@@ -132,5 +137,45 @@ export const useUpdateLeaveEndDate = () => {
         queryKey: queryKeys.leaves.byEmployee(variables.employeeId),
       });
     },
+  });
+};
+
+/**
+ * Custom hook for creating leave requests with automatic cache invalidation
+ */
+export const useCreateLeaveRequest = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: createEmployeeLeaveRequest,
+    onSuccess: (data, variables) => {
+      // Invalidate the leaves query for this employee
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.leaves.byEmployee(variables.employeeId)
+      });
+    },
+    onError: (error) => {
+      console.error('Error creating leave request:', error);
+    }
+  });
+};
+
+/**
+ * Custom hook for updating leave requests with automatic cache invalidation
+ */
+export const useUpdateLeaveRequest = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: updateEmployeeLeaveRequest,
+    onSuccess: (data, variables) => {
+      // Invalidate the leaves query for this employee
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.leaves.byEmployee(variables.employeeId)
+      });
+    },
+    onError: (error) => {
+      console.error('Error updating leave request:', error);
+    }
   });
 };

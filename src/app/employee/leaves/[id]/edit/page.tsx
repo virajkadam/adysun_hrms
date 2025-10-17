@@ -6,8 +6,9 @@ import { FiSave, FiX } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { getEmployeeLeaveById, updateEmployeeLeaveRequest } from '@/utils/firebaseUtils';
+import { getEmployeeLeaveById } from '@/utils/firebaseUtils';
 import TableHeader from '@/components/ui/TableHeader';
+import { useUpdateLeaveRequest } from '@/hooks/useLeaves';
 
 interface LeaveRequestForm {
   type: 'casual' | 'sick' | 'annual' | 'personal' | 'maternity' | 'paternity';
@@ -33,6 +34,7 @@ interface LeaveRecord {
 export default function EditLeavePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const { currentUserData } = useAuth();
+  const updateLeaveMutation = useUpdateLeaveRequest();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leaveData, setLeaveData] = useState<LeaveRecord | null>(null);
@@ -157,8 +159,8 @@ export default function EditLeavePage({ params }: { params: Promise<{ id: string
         totalDays: totalDays
       });
       
-      // Update leave request in Firebase
-      const updatedLeave = await updateEmployeeLeaveRequest({
+      // Update leave request using the custom mutation hook
+      await updateLeaveMutation.mutateAsync({
         leaveId: leaveData.id,
         employeeId: currentUserData.id,
         type: formData.type,
@@ -168,7 +170,7 @@ export default function EditLeavePage({ params }: { params: Promise<{ id: string
         totalDays: totalDays
       });
       
-      console.log('✅ Leave request updated:', updatedLeave);
+      console.log('✅ Leave request updated successfully');
       toast.success('Leave request updated successfully!');
       router.push('/employee/leaves');
     } catch (error: unknown) {
