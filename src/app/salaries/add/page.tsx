@@ -80,6 +80,10 @@ export default function AddSalaryPage() {
             const latestEmployment = employments[0];
             setEmploymentId(latestEmployment.id);
             setValue('employmentId', latestEmployment.id); // Pre-fill employment ID
+          } else {
+            // If no employment found, show error
+            toast.error('No employment record found for this employee. Please create an employment record first.');
+            router.push('/employments/add?employeeId=' + employeeId);
           }
         } catch (error) {
           console.error('Error fetching employee data:', error);
@@ -89,7 +93,7 @@ export default function AddSalaryPage() {
     };
 
     fetchEmployeeData();
-  }, [employeeId, setValue]);
+  }, [employeeId, setValue, router]);
 
   const onSubmit = async (data: SalaryFormData) => {
     try {

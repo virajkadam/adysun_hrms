@@ -718,7 +718,11 @@ export const addSalary = async (salaryData: Omit<Salary, 'id'>) => {
       updatedBy: adminData.adminId,
     };
     
-    const docRef = await addDoc(collection(db, 'salaries'), salaryWithAudit);
+    // Sanitize data before sending to Firestore
+    const sanitizedData = sanitizeForFirestore(salaryWithAudit);
+    console.log('🧹 Sanitized salary data (removed undefined values)');
+    
+    const docRef = await addDoc(collection(db, 'salaries'), sanitizedData);
     console.log('✅ Salary added successfully for employee:', salaryData.employeeId, 'Salary ID:', docRef.id);
     return docRef.id;
   } catch (error) {
@@ -745,8 +749,12 @@ export const updateSalary = async (id: string, salaryData: Partial<Salary>) => {
       updatedBy: adminData.adminId,
     };
     
+    // Sanitize data before sending to Firestore
+    const sanitizedData = sanitizeForFirestore(salaryWithAudit);
+    console.log('🧹 Sanitized salary update data (removed undefined values)');
+    
     const salaryRef = doc(db, 'salaries', id);
-    await updateDoc(salaryRef, salaryWithAudit);
+    await updateDoc(salaryRef, sanitizedData);
     console.log('✅ Salary updated successfully:', id);
   } catch (error) {
     console.error('Error updating salary:', error);
