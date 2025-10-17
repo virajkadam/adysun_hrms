@@ -414,7 +414,7 @@ export default function EmployeesPage() {
                           <ActionButton
                             icon={<FiDollarSign className="w-5 h-5" />}
                             title="View Salaries"
-                            colorClass="bg-yellow-100 text-yellow-600 hover:text-yellow-900"
+                            colorClass="bg-purple-100 text-purple-600 hover:text-purple-900"
                             href={`/salaries?employeeId=${employee.id}`}
                           />
                           <ActionButton
