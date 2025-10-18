@@ -138,10 +138,34 @@ export default function EmployeeProfilePage() {
                 <p className="text-sm text-gray-500">Full Name</p>
               </div>
               
-                             <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">{currentEmployee.id}</p>
-                 <p className="text-sm text-gray-500">Employee ID</p>
-               </div>
+              <div className="bg-white rounded-lg shadow p-3">
+                <p className="text-lg font-medium text-gray-900">
+                  {(() => {
+                    // Try multiple sources to get the employeeId
+                    let employeeId = (currentEmployee as any).employeeId;
+                    
+                    // If not found in currentEmployee, try localStorage
+                    if (!employeeId) {
+                      try {
+                        const fullEmployeeData = localStorage.getItem('fullEmployeeData');
+                        if (fullEmployeeData) {
+                          const parsedData = JSON.parse(fullEmployeeData);
+                          if (parsedData.employeeId) {
+                            employeeId = parsedData.employeeId;
+                            // Update currentEmployee for future reference
+                            (currentEmployee as any).employeeId = employeeId;
+                          }
+                        }
+                      } catch (error) {
+                        console.error('Error retrieving employee ID:', error);
+                      }
+                    }
+                    
+                    return employeeId || 'Not Assigned';
+                  })()}
+                </p>
+                <p className="text-sm text-gray-500">Employee ID</p>
+              </div>
                
                <div className="bg-white rounded-lg shadow p-3">
                  <p className="text-lg font-medium text-gray-900">{currentEmployee.email || '-'}</p>
