@@ -40,6 +40,30 @@ export default function EmployeeDashboardPage() {
         if (currentUserData.userType === 'employee') {
           const employeeData = await getEmployeeSelf(currentUserData.id);
           setFullEmployeeData(employeeData);
+          
+          // Store full employee data in localStorage for other components to use
+          localStorage.setItem('fullEmployeeData', JSON.stringify(employeeData));
+          
+          // If employeeData has employeeId but currentEmployee doesn't, update it
+          if (employeeData.employeeId && currentEmployee && !(currentEmployee as any).employeeId) {
+            console.log('Syncing employeeId to currentEmployee:', employeeData.employeeId);
+            (currentEmployee as any).employeeId = employeeData.employeeId;
+            
+            // Update the stored employee data in localStorage
+            const storedEmployeeData = localStorage.getItem('employeeData');
+            if (storedEmployeeData) {
+              const parsedData = JSON.parse(storedEmployeeData);
+              parsedData.employeeId = employeeData.employeeId;
+              localStorage.setItem('employeeData', JSON.stringify(parsedData));
+            }
+          }
+          
+          // Also make it available globally for components that might need it
+          if (typeof window !== 'undefined') {
+            (window as any).employeeDashboardData = {
+              employeeId: employeeData.employeeId
+            };
+          }
         }
       } catch (error) {
         console.error('Error fetching employee data:', error);

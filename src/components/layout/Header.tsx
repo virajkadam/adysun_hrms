@@ -59,20 +59,82 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
 
   // Get user information
   const getUserInfo = () => {
+    // Debug: Log the currentEmployee object to see what's available
+    if (currentEmployee) {
+      console.log('Current Employee Data:', currentEmployee);
+    }
+    
     if (currentAdmin) {
       return {
         name: currentAdmin.name || 'Admin User',
-        type: 'Admin'
+        type: 'Admin',
+        employeeId: null
       };
     } else if (currentEmployee) {
+      // Try multiple sources to get the employeeId
+      let employeeId = null;
+      
+      try {
+        // 1. First check if employeeId exists in currentEmployee
+        if ((currentEmployee as any).employeeId) {
+          employeeId = (currentEmployee as any).employeeId;
+          console.log('Found employeeId in currentEmployee:', employeeId);
+        } 
+        // 2. Try to get from localStorage
+        else {
+          const storedEmployeeData = localStorage.getItem('employeeData');
+          if (storedEmployeeData) {
+            const parsedData = JSON.parse(storedEmployeeData);
+            if (parsedData.employeeId) {
+              employeeId = parsedData.employeeId;
+              console.log('Found employeeId in localStorage:', employeeId);
+              
+              // If we found employeeId in localStorage but not in currentEmployee,
+              // let's update currentEmployee for future reference
+              if (!(currentEmployee as any).employeeId) {
+                (currentEmployee as any).employeeId = employeeId;
+              }
+            }
+          }
+        }
+        
+        // 3. If still not found, try to get from fullEmployeeData in localStorage
+        if (!employeeId) {
+          const fullEmployeeData = localStorage.getItem('fullEmployeeData');
+          if (fullEmployeeData) {
+            const parsedData = JSON.parse(fullEmployeeData);
+            if (parsedData.employeeId) {
+              employeeId = parsedData.employeeId;
+              console.log('Found employeeId in fullEmployeeData:', employeeId);
+              
+              // Update currentEmployee
+              if (!(currentEmployee as any).employeeId) {
+                (currentEmployee as any).employeeId = employeeId;
+              }
+            }
+          }
+        }
+        
+        // 4. As a last resort, check if there's a hardcoded value in the dashboard
+        // This is a temporary solution until the proper data flow is fixed
+        if (!employeeId && window && (window as any).employeeDashboardData) {
+          employeeId = (window as any).employeeDashboardData.employeeId;
+          console.log('Found employeeId in window.employeeDashboardData:', employeeId);
+        }
+      } catch (error) {
+        console.error('Error retrieving employee ID:', error);
+      }
+      
       return {
         name: currentEmployee.name || 'Employee User',
-        type: 'Employee'
+        type: 'Employee',
+        employeeId: employeeId
       };
     }
     return {
       name: 'User',
-      type: 'Unknown'
+      type: 'Unknown',
+      employeeId: null
     };
   };
 
@@ -157,7 +219,16 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
               }`}>{userInfo.name}</div>
               <div className={`text-xs transition-colors duration-300 ${
                 variant === 'public' ? (isScrolled ? 'text-white/70' : 'text-gray-500') : 'text-gray-500'
-              }`}>{userInfo.type}</div>
+              }`}>
+                {userInfo.type === 'Employee' && userInfo.employeeId ? (
+                  <span className="flex items-center">
+                    {/* <span className="mr-1">EMP ID:</span> */}
+                    <span className="font-medium">{userInfo.employeeId}</span>
+                  </span>
+                ) : (
+                  userInfo.type
+                )}
+              </div>
             </div>
             <FiChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
