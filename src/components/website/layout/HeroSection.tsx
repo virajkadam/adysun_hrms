@@ -86,7 +86,7 @@ export default function HeroSection({
               </h1>
               
               {/* Subtitle */}
-              <h2 className="text-xl ">
+              <h2 className="text-xl text-white">
                 Premium IT Solutions & Business Strategy Services
               </h2>
               
