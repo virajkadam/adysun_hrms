@@ -1566,8 +1566,8 @@ export const markAttendanceCheckIn = async (employeeId: string, employmentId: st
       throw new Error('Attendance already marked for today.');
     }
     
-    // Determine if late (assuming 9:00 AM is standard check-in time)
-    const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 0);
+    // Determine if late (assuming 11:00 AM is standard check-in time)
+    const isLate = now.getHours() > 11 || (now.getHours() === 11 && now.getMinutes() > 0);
     const status = isLate ? 'late' : 'present';
     
     const newAttendanceRecord = {
@@ -1662,8 +1662,8 @@ export const markAttendanceCheckOut = async (employeeId: string) => {
     const checkInTime = new Date(todayAttendance.checkInTimestamp.toDate());
     const totalHours = (now.getTime() - checkInTime.getTime()) / (1000 * 60 * 60);
     
-    // Determine if early check-out (assuming 6:00 PM is standard check-out time)
-    const isEarlyCheckOut = now.getHours() < 18;
+    // Determine if early check-out (assuming 8:00 PM is standard check-out time)
+    const isEarlyCheckOut = now.getHours() < 20;
     
     // Update status based on total hours
     let status = todayAttendance.status;
@@ -1716,6 +1716,7 @@ export const getTodayAttendance = async (employeeId: string) => {
         isCheckedOut: false,
         checkInTime: null,
         checkOutTime: null,
+        checkInTimestamp: null,
         status: null,
         totalHours: 0
       };
@@ -1734,6 +1735,7 @@ export const getTodayAttendance = async (employeeId: string) => {
         isCheckedOut: false,
         checkInTime: null,
         checkOutTime: null,
+        checkInTimestamp: null,
         status: null,
         totalHours: 0
       };
@@ -1744,6 +1746,7 @@ export const getTodayAttendance = async (employeeId: string) => {
       isCheckedOut: !!todayAttendance.checkOutTime,
       checkInTime: todayAttendance.checkInTime,
       checkOutTime: todayAttendance.checkOutTime,
+      checkInTimestamp: todayAttendance.checkInTimestamp || null,
       status: todayAttendance.status,
       totalHours: todayAttendance.totalHours || 0
     };

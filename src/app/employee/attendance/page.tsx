@@ -29,6 +29,7 @@ interface AttendanceRecord {
 export default function EmployeeAttendancePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -88,6 +89,64 @@ export default function EmployeeAttendancePage() {
     }
   };
 
+  // Helper function to calculate real-time hours from checkInTimestamp
+  const calculateRealtimeHours = (checkInTimestamp: any): number => {
+    if (!checkInTimestamp) return 0;
+    
+    try {
+      // Convert Firestore timestamp to Date
+      const checkInDate = checkInTimestamp.toDate ? checkInTimestamp.toDate() : new Date(checkInTimestamp);
+      
+      // Calculate difference in hours
+      const diffMs = currentTime.getTime() - checkInDate.getTime();
+      const diffHours = diffMs / (1000 * 60 * 60);
+      
+      // Round to 2 decimal places
+      return Math.round(diffHours * 100) / 100;
+    } catch (error) {
+      console.error('Error calculating real-time hours:', error);
+      return 0;
+    }
+  };
+
+  // Helper function to calculate hours from check-in to check-out (or end of day if no check-out)
+  const calculateHoursFromTimestamps = (checkInTimestamp: any, checkOutTimestamp: any, recordDate: string): number => {
+    if (!checkInTimestamp) return 0;
+    
+    try {
+      // Convert Firestore timestamp to Date
+      const checkInDate = checkInTimestamp.toDate ? checkInTimestamp.toDate() : new Date(checkInTimestamp);
+      
+      let endDate: Date;
+      
+      if (checkOutTimestamp) {
+        // If checked out, use check-out timestamp
+        endDate = checkOutTimestamp.toDate ? checkOutTimestamp.toDate() : new Date(checkOutTimestamp);
+      } else {
+        // If not checked out, calculate to end of that day (11:59:59 PM)
+        const recordDateObj = new Date(recordDate);
+        endDate = new Date(recordDateObj);
+        endDate.setHours(23, 59, 59, 999);
+        
+        // If it's today, use current time instead of end of day
+        const today = new Date().toISOString().split('T')[0];
+        if (recordDate === today) {
+          endDate = currentTime;
+        }
+      }
+      
+      // Calculate difference in hours
+      const diffMs = endDate.getTime() - checkInDate.getTime();
+      const diffHours = diffMs / (1000 * 60 * 60);
+      
+      // Round to 2 decimal places
+      return Math.max(0, Math.round(diffHours * 100) / 100);
+    } catch (error) {
+      console.error('Error calculating hours from timestamps:', error);
+      return 0;
+    }
+  };
+
   useEffect(() => {
     // Check if user is authenticated and is employee
     if (!currentUserData || currentUserData.userType !== 'employee') {
@@ -117,6 +176,24 @@ export default function EmployeeAttendancePage() {
       toast.error('Failed to load leave data');
     }
   }, [leaveError, leaveErrorData]);
+
+  // Real-time updates for today's attendance hours
+  useEffect(() => {
+    // Only run interval when checked in but not checked out
+    if (!todayAttendance.isCheckedIn || todayAttendance.isCheckedOut) {
+      return;
+    }
+
+    // Update immediately on mount/change
+    setCurrentTime(new Date());
+
+    // Update every 60 seconds for real-time updates
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [todayAttendance.isCheckedIn, todayAttendance.isCheckedOut]);
 
   const handleCheckIn = async () => {
     try {
@@ -228,18 +305,52 @@ export default function EmployeeAttendancePage() {
     date: string;
     checkInTime?: string;
     checkOutTime?: string;
+    checkInTimestamp?: any;
+    checkOutTimestamp?: any;
     status?: AttendanceRecord['status'];
     totalHours?: number;
   };
 
-  const transformedAttendanceRecords: AttendanceRecord[] = (attendanceRecords as RawAttendance[]).map((record) => ({
-    id: record.id,
-    date: record.date,
-    checkIn: formatTimeTo12Hour(record.checkInTime) || '09:00 AM',
-    checkOut: formatTimeTo12Hour(record.checkOutTime) || '06:00 PM',
-    status: record.status || 'present',
-    totalHours: record.totalHours || 9
-  }));
+  // Get today's date string for comparison
+  const todayDateString = new Date().toISOString().split('T')[0];
+
+  const transformedAttendanceRecords: AttendanceRecord[] = (attendanceRecords as RawAttendance[]).map((record) => {
+    // Check if this is today's record and is checked in but not checked out
+    const isToday = record.date === todayDateString;
+    const isActiveToday = isToday && 
+                          todayAttendance.isCheckedIn && 
+                          !todayAttendance.isCheckedOut &&
+                          todayAttendance.checkInTimestamp;
+    
+    // Calculate total hours based on different scenarios
+    let totalHours: number;
+    
+    if (isActiveToday && todayAttendance.checkInTimestamp) {
+      // Today's active attendance - use real-time calculation
+      totalHours = calculateRealtimeHours(todayAttendance.checkInTimestamp);
+    } else if (record.checkOutTimestamp || record.checkOutTime) {
+      // Has check-out - use stored totalHours from Firebase (already calculated)
+      totalHours = record.totalHours ?? 0;
+    } else if (record.checkInTimestamp) {
+      // No check-out but has check-in timestamp - calculate from check-in to end of day
+      totalHours = calculateHoursFromTimestamps(record.checkInTimestamp, record.checkOutTimestamp, record.date);
+    } else if (record.totalHours !== undefined && record.totalHours !== null) {
+      // Use stored totalHours if available
+      totalHours = record.totalHours;
+    } else {
+      // No data available - show 0
+      totalHours = 0;
+    }
+    
+    return {
+      id: record.id,
+      date: record.date,
+      checkIn: formatTimeTo12Hour(record.checkInTime) || '11:00 AM',
+      checkOut: formatTimeTo12Hour(record.checkOutTime) || '08:00 PM',
+      status: record.status || 'present',
+      totalHours
+    };
+  });
 
   // Create combined records with leaves
   interface CombinedRecord {
@@ -507,7 +618,7 @@ export default function EmployeeAttendancePage() {
                             }
                           </span>
                         ) : (
-                          formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })
+                          <span>{formatDurationHours(record.totalHours, { showSecondsUnderOneHour: true })}</span>
                         )}
                       </td>
                     </tr>
