@@ -11,6 +11,11 @@ export default function SalarySlipV2Page() {
       description="Generate and customize salary slips with selectable text"
       backPath="/dashboard/documents/v2"
       backLabel="Back to Documents"
+      breadcrumbItems={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Documents', href: '/dashboard/documents' },
+        { label: 'Salary Slip Generator', isCurrent: true }
+      ]}
     />
   );
 }

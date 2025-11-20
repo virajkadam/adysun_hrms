@@ -728,117 +728,134 @@ function SalarySlipGeneratorV2() {
   return (
     <div className="container mx-auto p-4">
       <Toaster position="top-center" />
-      <div className="mb-4">
-        <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
-          <FiArrowLeft size={16} /> Back to Documents
+      <div className="mb-6 flex items-center justify-between">
+        <Link
+          href="/dashboard/documents"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          <FiArrowLeft size={16} /> Back
         </Link>
+
+        {/* Form Section */}
+        <h2 className="text-2xl font-bold text-gray-800 flex-1 text-center">Salary Slip Generator (v2)</h2>
+
+        {/* Generate button in header */}
+        <button
+          onClick={handleGenerateSalarySlip}
+          className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 shadow-lg hover:shadow-md transition-all duration-200"
+        >
+          <FiDownload size={18} className="mr-2" />
+          <span>Generate</span>
+        </button>
       </div>
 
-      {/* Form Section */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Salary Slip Details</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
-            <select
-              name="employeeName"
-              value={formData.employeeName}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Employee</option>
-              {candidates.map((candidate) => (
-                <option key={candidate.id} value={candidate.name}>
-                  {candidate.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
-            <select
-              name="company"
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select Company</option>
-              {companies.map((company) => (
-                <option key={company.id} value={company.name}>
-                  {company.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
-            <select
-              name="month"
-              value={formData.month}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="0">January</option>
-              <option value="1">February</option>
-              <option value="2">March</option>
-              <option value="3">April</option>
-              <option value="4">May</option>
-              <option value="5">June</option>
-              <option value="6">July</option>
-              <option value="7">August</option>
-              <option value="8">September</option>
-              <option value="9">October</option>
-              <option value="10">November</option>
-              <option value="11">December</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Leaves</label>
-            <input
-              type="number"
-              name="leaves"
-              value={formData.leaves}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              min="0"
-              max={getDaysInMonth(Number(formData.month))}
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days</label>
-            <input
-              type="text"
-              value={formData.payableDays || getDaysInMonth(Number(formData.month))}
-              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-              readOnly
-            />
-
-          </div>
-
-          <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-gray-700">Pay Date</label>
-            <input
-              type="date"
-              name="payDate"
-              value={formData.payDate}
-              onChange={handleInputChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <button
-            onClick={handleGenerateSalarySlip}
-            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
+          <select
+            name="employeeName"
+            value={formData.employeeName}
+            onChange={handleInputChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <FiDownload size={18} className="mr-2" />
-            <span>Generate Salary Slip</span>
-          </button>
+            <option value="">Select Employee</option>
+            {candidates.map((candidate) => (
+              <option key={candidate.id} value={candidate.name}>
+                {candidate.name}
+              </option>
+            ))}
+          </select>
         </div>
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
+          <select
+            name="company"
+            onChange={handleInputChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select Company</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.name}>
+                {company.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
+          <select
+            name="month"
+            value={formData.month}
+            onChange={handleInputChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Leaves</label>
+          <input
+            type="number"
+            name="leaves"
+            value={formData.leaves}
+            onChange={handleInputChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            min="0"
+            max={getDaysInMonth(Number(formData.month))}
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days</label>
+          <input
+            type="text"
+            value={formData.payableDays || getDaysInMonth(Number(formData.month))}
+            className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+            readOnly
+          />
+
+        </div>
+
+        <div className="form-group">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Pay Date</label>
+          <input
+            type="date"
+            name="payDate"
+            value={formData.payDate}
+            onChange={handleInputChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6 flex justify-between">
+        <button
+          onClick={() => window.history.back()}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleGenerateSalarySlip}
+          className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 shadow-lg hover:shadow-md transition-all duration-200"
+        >
+          <FiDownload size={18} className="mr-2" />
+          <span>Generate</span>
+        </button>
       </div>
 
       {/* PDF Preview Section - only show when Generate button is clicked */}

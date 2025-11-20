@@ -22,6 +22,7 @@ interface DocumentGeneratorFrameProps {
   description: string;
   backPath: string;
   backLabel: string;
+  breadcrumbItems?: { label: string; href?: string; isCurrent?: boolean }[];
 }
 
 const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
@@ -29,7 +30,8 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
   title,
   description,
   backPath,
-  backLabel
+  backLabel,
+  breadcrumbItems = []
 }) => {
   // Render the appropriate document component based on type
   const renderDocumentComponent = () => {
@@ -78,15 +80,7 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
   };
 
   return (
-    <DashboardLayout>
-      <div className="mb-6">
-        <Link href={backPath} className="text-blue-600 hover:underline flex items-center gap-1 mb-4">
-          <FiArrowLeft size={16} /> {backLabel}
-        </Link>
-        <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-        <p className="text-gray-600">{description}</p>
-      </div>
-
+    <DashboardLayout breadcrumbItems={breadcrumbItems}>
       <div className="bg-white rounded-lg shadow-sm p-4">
         <div className="document-container w-full">
           {renderDocumentComponent()}
