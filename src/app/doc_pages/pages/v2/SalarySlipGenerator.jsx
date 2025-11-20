@@ -383,7 +383,8 @@ const adysunSalarySlipStyles = StyleSheet.create({
   },
 });
 
-const getEmployeeNameText = (employeeName) => {
+const getEmployeeNameText = (employeeName, employeeNameText) => {
+  if (employeeNameText) return employeeNameText;
   if (Array.isArray(employeeName)) {
     if (employeeName.length === 0) return 'Employee Name';
     return employeeName.join(', ');
@@ -468,7 +469,7 @@ const DefaultSalarySlipLayout = ({ formData }) => {
           </View>
           <View style={defaultSalarySlipStyles.infoRow}>
             <Text style={defaultSalarySlipStyles.infoLabel}>Name</Text>
-            <Text style={defaultSalarySlipStyles.infoValue}>{getEmployeeNameText(safeFormData.employeeName)}</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{getEmployeeNameText(safeFormData.employeeName, safeFormData.employeeNameText)}</Text>
           </View>
           <View style={defaultSalarySlipStyles.infoRow}>
             <Text style={defaultSalarySlipStyles.infoLabel}>Designation</Text>
@@ -645,7 +646,7 @@ const AdysunSalarySlipLayout = ({ formData }) => {
   ].filter(Boolean);
 
   const detailRows = [
-    { label: 'Employee Name', value: getEmployeeNameText(safeFormData.employeeName) || 'Arnab Kumar Baishya' },
+    { label: 'Employee Name', value: getEmployeeNameText(safeFormData.employeeName, safeFormData.employeeNameText) || 'Arnab Kumar Baishya' },
     { label: 'Employee Code', value: safeFormData.employeeId || 'ADV061' },
     { label: 'Designation', value: safeFormData.designation || 'Software Engineer' },
     { label: 'Department', value: safeFormData.department || 'ADV-DEV' },
@@ -813,6 +814,7 @@ function SalarySlipGeneratorV2() {
   const [formData, setFormData] = useState({
     company: DEFAULT_COMPANY_NAME,
     employeeName: [],
+    employeeNameText: '',
     employeeId: "",
     designation: "",
     department: "",
@@ -1095,6 +1097,7 @@ function SalarySlipGeneratorV2() {
         setFormData(prev => ({
           ...prev,
           employeeName: selectedNames,
+          employeeNameText: primaryEmployeeName || selectedNames.join(', '),
           employeeId: selectedEmployee.employeeId || selectedEmployee.id,
           designation: employeeDesignation || "",
           department: employeeDepartment || "",
@@ -1106,6 +1109,7 @@ function SalarySlipGeneratorV2() {
         setFormData(prev => ({
           ...prev,
           employeeName: selectedNames,
+          employeeNameText: selectedNames.join(', '),
           employeeId: "",
           designation: "",
           department: "",
