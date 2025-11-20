@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -16,6 +16,22 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 type EmployeeFormData = Omit<Employee, 'id'>;
 
+function uuid() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+  // Polyfill for browsers/NodeJS (uses getRandomValues if available, else fallback)
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    // String version to avoid TS error
+    return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c: string) =>
+      (parseInt(c, 16) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> (parseInt(c, 16) / 4)).toString(16)
+    );
+  }
+  // Last fallback: weak random
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export default function AddEmployeePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,17 +40,19 @@ export default function AddEmployeePage() {
     id: string;
     type: '12th' | 'diploma';
   }>>([
-    { id: crypto.randomUUID(), type: '12th' }
+    { id: uuid(), type: '12th' }
   ]);
 
   const router = useRouter();
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<EmployeeFormData>({
+  const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmployeeFormData>({
     defaultValues: {
       status: 'active',
       employeeType: 'internal', // Default to internal
     }
   });
+  const [sameAsCurrentAddress, setSameAsCurrentAddress] = useState(false);
+  const currentAddressValue = watch('currentAddress');
 
   // Helper functions for managing education entries
   // Check if we can add more entries
@@ -67,7 +85,7 @@ export default function AddEmployeePage() {
     
     setEducationEntries([
       ...educationEntries,
-      { id: crypto.randomUUID(), type: getNextEntryType() }
+      { id: uuid(), type: getNextEntryType() }
     ]);
   };
 
@@ -171,6 +189,12 @@ export default function AddEmployeePage() {
     }
   };
 
+
+  useEffect(() => {
+    if (sameAsCurrentAddress) {
+      setValue('permanentAddress', currentAddressValue || '');
+    }
+  }, [sameAsCurrentAddress, currentAddressValue, setValue]);
 
   return (
     <DashboardLayout>
@@ -406,14 +430,32 @@ export default function AddEmployeePage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Permanent Address
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Permanent Address
+                    </label>
+                    <label className="flex items-center text-sm text-gray-600 space-x-2">
+                      <input
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        checked={sameAsCurrentAddress}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setSameAsCurrentAddress(checked);
+                          if (checked) {
+                            setValue('permanentAddress', currentAddressValue || '');
+                          }
+                        }}
+                      />
+                      <span>Same as current</span>
+                    </label>
+                  </div>
                   <input
                     type="text"
                     placeholder="Enter permanent address (if different from current)"
                     {...register('permanentAddress')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                    className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black ${sameAsCurrentAddress ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    readOnly={sameAsCurrentAddress}
                   />
                 </div>
               </div>

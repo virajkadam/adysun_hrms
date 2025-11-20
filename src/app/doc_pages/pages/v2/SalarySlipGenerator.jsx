@@ -653,6 +653,7 @@ const AdysunSalarySlipLayout = ({ formData }) => {
     { label: 'Bank Name', value: safeFormData.bankName || 'State Bank of India (SBI)' },
     { label: 'Bank Account No', value: safeFormData.accountNumber || '38609967034' },
     { label: 'Pan No', value: safeFormData.pan || 'EHNPB1737H' },
+    { label: 'Leaves', value: safeFormData.leaves || '0' },
     { label: 'Effective Work Days', value: `${safeFormData.payableDays || '23'} Days` },
   ];
 
