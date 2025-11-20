@@ -10,6 +10,7 @@ import { CompanyHeader, FormattedDate, Paragraph, Signature, Footer, Watermark }
 import { commonStyles } from '@/components/pdf/PDFStyles';
 import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtils';
 import toast, { Toaster } from 'react-hot-toast';
+import SearchableDropdown from '@/components/ui/SearchableDropdown';
 
 // Define styles for the Salary Slip
 const salarySlipStyles = StyleSheet.create({
@@ -448,7 +449,7 @@ function SalarySlipGeneratorV2() {
   const [isLoading, setIsLoading] = useState(true);
   const [showPDF, setShowPDF] = useState(false);
   const [formData, setFormData] = useState({
-    employeeName: "",
+    employeeName: [],
     employeeId: "",
     designation: "",
     department: "",
@@ -751,20 +752,16 @@ function SalarySlipGeneratorV2() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         <div className="form-group md:col-span-6">
-          <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
-          <select
+          <SearchableDropdown
+            label="Employee Name"
             name="employeeName"
             value={formData.employeeName}
             onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">Select Employee</option>
-            {candidates.map((candidate) => (
-              <option key={candidate.id} value={candidate.name}>
-                {candidate.name}
-              </option>
-            ))}
-          </select>
+            options={candidates}
+            placeholder="Select Employee(s)"
+            searchFields={['name', 'employeeId', 'id']}
+            multiSelect={true}
+          />
         </div>
 
         <div className="form-group md:col-span-3">
