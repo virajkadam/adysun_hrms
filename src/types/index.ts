@@ -283,7 +283,7 @@ export interface Document {
   id: string;
   employeeId: string;
   employmentId?: string;
-  documentType: 'offer' | 'appointment' | 'relieving' | 'appraisal' | 'increment' | 'payslip';
+  documentType: 'offer' | 'appointment' | 'relieving' | 'appraisal' | 'increment' | 'salary-slip';
   createdAt: string;
   updatedAt: string;
   status: 'draft' | 'issued' | 'signed';

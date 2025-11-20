@@ -1,10 +1,10 @@
 import React from "react";
 import html2pdf from "html2pdf.js";
-import "./PaySlip.css";
+import "./SalarySlip.css";
 import { Download } from "lucide-react";
-const PaySlip = ({ employeeData, companyDetails }) => {
+const SalarySlip = ({ employeeData, companyDetails }) => {
   // Function to format the date into Month Year format
-  console.log("PaySlip Received Company Details:", companyDetails); // Debugging
+  console.log("Salary Slip Received Company Details:", companyDetails); // Debugging
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -15,7 +15,7 @@ const PaySlip = ({ employeeData, companyDetails }) => {
       year: "numeric",
     }).format(date); // "05 Feb 2025"
   };
-  
+
   console.log("DOJ Value:", companyDetails?.doj);
 
 
@@ -30,16 +30,16 @@ const PaySlip = ({ employeeData, companyDetails }) => {
   function toTitleCase(str) {
     if (!str) return "";
     return str
-        .toLowerCase()
-        .replace(/\b(\w)/g, function (char) {
-            return char.toUpperCase();
-        });
-}
+      .toLowerCase()
+      .replace(/\b(\w)/g, function (char) {
+        return char.toUpperCase();
+      });
+  }
   const handleDownloadPDF = async () => {
     const element = document.createElement("div");
 
     element.innerHTML = `
-            <div class="payslip-container">
+            <div class="salary-slip-container">
                <div class="header" style="border-bottom: 1px solid ${companyDetails?.color};">
     <div class="company-details">
         <h2 class="capitalize" style="color: ${companyDetails?.color};">${toTitleCase(companyDetails?.name)}</h2>
@@ -54,28 +54,25 @@ const PaySlip = ({ employeeData, companyDetails }) => {
 </div>
 
 
-                <h3 class="payslip-title">PAY SLIP FOR THE MONTH OF ${formatDate(
-                  companyDetails?.doj
-                ).toUpperCase()}</h3>
+                <h3 class="salary-slip-title">SALARY SLIP FOR THE MONTH OF ${formatDate(
+      companyDetails?.doj
+    ).toUpperCase()}</h3>
 
                 <div class="employee-info">
                     <div class="emp-detail">
                         <span class="label">EMP Code</span>
-                        <span class="value">${
-                          companyDetails?.empCode || ""
-                        }</span>
+                        <span class="value">${companyDetails?.empCode || ""
+      }</span>
                     </div>
                     <div class="emp-detail">
                         <span class="label">Name</span>
-                        <span class="value capitalize">${
-                          toTitleCase(companyDetails?.employeeName) || ""
-                        }</span>
+                        <span class="value capitalize">${toTitleCase(companyDetails?.employeeName) || ""
+      }</span>
                     </div>
                     <div class="emp-detail">
                         <span class="label">Designation</span>
-                        <span class="value capitalize">${
-                          toTitleCase(companyDetails?.designation) || ""
-                        }</span>
+                        <span class="value capitalize">${toTitleCase(companyDetails?.designation) || ""
+      }</span>
                     </div>
                     <div class="emp-detail">
                         <span class="label">PAN</span>
@@ -83,9 +80,8 @@ const PaySlip = ({ employeeData, companyDetails }) => {
                     </div>
                     <div class="emp-detail">
                         <span class="label">Location</span>
-                        <span class="value">${
-                          toTitleCase(companyDetails?.location) || ""
-                        }</span>
+                        <span class="value">${toTitleCase(companyDetails?.location) || ""
+      }</span>
                     </div>
                     <div class="emp-detail">
                         <span class="label">DOJ</span>
@@ -93,15 +89,13 @@ const PaySlip = ({ employeeData, companyDetails }) => {
                     </div>
                     <div class="emp-detail">
                         <span class="label">Department</span>
-                        <span class="value">${
-                          toTitleCase(companyDetails?.department) || ""
-                        }</span>
+                        <span class="value">${toTitleCase(companyDetails?.department) || ""
+      }</span>
                     </div>
                     <div class="emp-detail">
                         <span class="label">Payable Days</span>
-                        <span class="value">${
-                          companyDetails?.payableDays || ""
-                        }</span>
+                        <span class="value">${companyDetails?.payableDays || ""
+      }</span>
                     </div>
                 </div>
 
@@ -115,70 +109,70 @@ const PaySlip = ({ employeeData, companyDetails }) => {
                     <div class="salary-row">
                         <div class="salary-item">Basic</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.basic
-                        )}</div>
+        companyDetails?.basic
+      )}</div>
                         <div class="salary-item">Professional Tax</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.professionalTax
-                        )}</div>
+        companyDetails?.professionalTax
+      )}</div>
                     </div>
                     <div class="salary-row">
                         <div class="salary-item">DA</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.da
-                        )}</div>
+        companyDetails?.da
+      )}</div>
                         <div class="salary-item">Other Deductions</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.otherDeductions
-                        )}</div>
+        companyDetails?.otherDeductions
+      )}</div>
                     </div>
                     <div class="salary-row">
                         <div class="salary-item">Conveyance Allowance</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.conveyanceAllowance
-                        )}</div>
+        companyDetails?.conveyanceAllowance
+      )}</div>
                         <div class="salary-item"></div>
                         <div class="salary-item"></div>
                     </div>
                     <div class="salary-row">
                         <div class="salary-item">Other Allowance</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.otherAllowance
-                        )}</div>
+        companyDetails?.otherAllowance
+      )}</div>
                         <div class="salary-item"></div>
                         <div class="salary-item"></div>
                     </div>
                     <div class="salary-row">
                         <div class="salary-item">Medical Allowance</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.medicalAllowance
-                        )}</div>
+        companyDetails?.medicalAllowance
+      )}</div>
                         <div class="salary-item"></div>
                         <div class="salary-item"></div>
                     </div>
                     <div class="salary-row">
                         <div class="salary-item">CCA</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.cca
-                        )}</div>
+        companyDetails?.cca
+      )}</div>
                         <div class="salary-item"></div>
                         <div class="salary-item"></div>
                     </div>
                     <div class="salary-row total">
                         <div class="salary-item">Gross Salary</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.gross
-                        )}</div>
+        companyDetails?.gross
+      )}</div>
                         <div class="salary-item">Total Deductions</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.totalDeductions
-                        )}</div>
+        companyDetails?.totalDeductions
+      )}</div>
                     </div>
                     <div class="salary-row net-pay">
                         <div class="salary-item">Net Pay</div>
                         <div class="salary-item">${formatAmount(
-                          companyDetails?.netPay
-                        )}</div>
+        companyDetails?.netPay
+      )}</div>
                         <div class="salary-item"></div>
                         <div class="salary-item"></div>
                     </div>
@@ -193,9 +187,8 @@ const PaySlip = ({ employeeData, companyDetails }) => {
 
     const opt = {
       margin: 10,
-      filename: `PaySlip_${
-        companyDetails?.employeeName || "Employee"
-      }_${formatDate(companyDetails?.doj)}.pdf`,
+      filename: `SalarySlip_${companyDetails?.employeeName || "Employee"
+        }_${formatDate(companyDetails?.doj)}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {
         scale: 2,
@@ -221,17 +214,17 @@ const PaySlip = ({ employeeData, companyDetails }) => {
   };
 
   return (
-  
-      <div className="mt-6 flex justify-end">
-    <button
-    
-      className="download-btn flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
-    onClick={handleDownloadPDF}>
-       <Download size={18} className="mr-2" /> 
-       <span>Generate PaySlip</span>
+
+    <div className="mt-6 flex justify-end">
+      <button
+
+        className="download-btn flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
+        onClick={handleDownloadPDF}>
+        <Download size={18} className="mr-2" />
+        <span>Generate Salary Slip</span>
       </button>
     </div>
   );
 };
 
-export default PaySlip;
+export default SalarySlip;

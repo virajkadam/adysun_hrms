@@ -150,8 +150,8 @@ export const deleteCompany = async (id: string): Promise<void> => {
   }
 };
 
-// Calculate monthly payslip components
-export const calculatePayslipComponents = (salary: number) => {
+// Calculate monthly salary slip components
+export const calculateSalarySlipComponents = (salary: number) => {
   // Base calculations
   const basic = Math.round(salary * 0.40); // 40% of salary
   const hra = Math.round(basic * 0.50); // 50% of basic

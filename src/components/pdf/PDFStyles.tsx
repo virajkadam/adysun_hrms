@@ -302,8 +302,8 @@ export const incrementLetterStyles = StyleSheet.create({
   },
 });
 
-// Payslip specific styles
-export const payslipStyles = StyleSheet.create({
+// Salary slip specific styles
+export const salarySlipStyles = StyleSheet.create({
   page: {
     padding: 30,
     fontFamily: 'Calibri',

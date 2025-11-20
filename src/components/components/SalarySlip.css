@@ -1,4 +1,4 @@
-.payslip-page {
+.salary-slip-page {
     background: white;
     width: 210mm;
     min-height: 297mm;
@@ -9,7 +9,7 @@
     page-break-after: always;
 }
 
-.payslip-container {
+.salary-slip-container {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -92,7 +92,7 @@
     font-size: 11px;
 }
 
-.payslip-title {
+.salary-slip-title {
     text-align: center;
     margin: 25px 0;
     font-size: 13px;

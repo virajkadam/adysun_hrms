@@ -20,9 +20,9 @@ const documents = [
     icon: <FiFileText size={24} /> 
   },
   { 
-    title: 'Payslip Generator (v2)',
-    description: 'Generate selectable text payslips',
-    path: '/dashboard/documents/v2/payslip', 
+    title: 'Salary Slip Generator (v2)',
+    description: 'Generate selectable text salary slips',
+    path: '/dashboard/documents/v2/salary-slip', 
     icon: <FiFile size={24} /> 
   },
   { 

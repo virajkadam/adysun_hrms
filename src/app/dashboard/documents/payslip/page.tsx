@@ -1,16 +1,14 @@
 'use client';
 
-import React from 'react';
-import DocumentGeneratorFrame from '@/components/documents/DocumentGeneratorFrame';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function PayslipPage() {
-  return (
-    <DocumentGeneratorFrame
-      documentType="payslip"
-      title="Payslip Generator"
-      description="Generate and customize payslips for employees"
-      backPath="/dashboard/documents"
-      backLabel="Back to Documents"
-    />
-  );
-} 
+export default function SalarySlipPageRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/dashboard/documents/salary-slip');
+  }, [router]);
+
+  return null;
+}

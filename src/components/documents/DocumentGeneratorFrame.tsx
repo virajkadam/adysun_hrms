@@ -9,7 +9,7 @@ const OfferLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/OfferLetter
 const AppointmentLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/AppointmentLetter'), { ssr: false });
 const RelievingLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/RelievingLetter'), { ssr: false });
 const AppraisalLetterV2 = dynamic(() => import('@/app/doc_pages/pages/v2/AppraisalLetter'), { ssr: false });
-const PaySlipGeneratorV2 = dynamic(() => import('@/app/doc_pages/pages/v2/PaySlipGenerator'), { ssr: false });
+const SalarySlipGeneratorV2 = dynamic(() => import('@/app/doc_pages/pages/v2/SalarySlipGenerator'), { ssr: false });
 const BankStatementV2 = dynamic(() => import('@/app/doc_pages/pages/v2/BankStatement'), { ssr: false });
 const ManageBankV2 = dynamic(() => import('@/app/doc_pages/pages/v2/ManageBank'), { ssr: false });
 
@@ -45,8 +45,9 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
           return <RelievingLetterV2 />;
         case 'v2/appraisal-letter':
           return <AppraisalLetterV2 />;
-        case 'v2/payslip':
-          return <PaySlipGeneratorV2 />;
+        case 'v2/salary-slip':
+        case 'v2/payslip': // Backward compatibility
+          return <SalarySlipGeneratorV2 />;
         case 'v2/bank-statement':
           return <BankStatementV2 />;
         case 'v2/manage-bank':
@@ -67,8 +68,9 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
           return <AppraisalLetterV2 />;
         case 'increment-letter':
           return <IncrementLetterV1 />;
-        case 'payslip':
-          return <PaySlipGeneratorV2 />;
+        case 'salary-slip':
+        case 'payslip': // Backward compatibility
+          return <SalarySlipGeneratorV2 />;
         default:
           return <div>Document type not found</div>;
       }
@@ -84,7 +86,7 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
         <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
         <p className="text-gray-600">{description}</p>
       </div>
-      
+
       <div className="bg-white rounded-lg shadow-sm p-4">
         <div className="document-container w-full">
           {renderDocumentComponent()}

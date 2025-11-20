@@ -212,7 +212,7 @@ interface Salary {
   createdAt: Timestamp;          // Record creation timestamp
   updatedAt: Timestamp;          // Last update timestamp
   notes?: string;                // Optional notes
-  payslipUrl?: string;           // Optional payslip document URL
+  salarySlipUrl?: string;           // Optional salary slip document URL
 }
 ```
 
@@ -232,7 +232,7 @@ interface Salary {
   "createdAt": "2024-01-01T00:00:00Z",
   "updatedAt": "2024-01-31T10:00:00Z",
   "notes": "January 2024 salary",
-  "payslipUrl": "https://storage.googleapis.com/payslips/emp_001_2024_01.pdf"
+  "salarySlipUrl": "https://storage.googleapis.com/salary-slips/emp_001_2024_01.pdf"
 }
 ```
 

@@ -4,7 +4,8 @@ export async function generateStaticParams() {
     { type: 'offer-letter' },
     { type: 'appointment-letter' },
     { type: 'relieving-letter' },
-    { type: 'payslip' },
+    { type: 'salary-slip' },
+    { type: 'payslip' }, // Backward compatibility
     { type: 'increment-letter' },
     { type: 'appraisal-letter' },
     { type: 'manage-company' },
@@ -14,7 +15,8 @@ export async function generateStaticParams() {
     { type: 'v2/appointment-letter' },
     { type: 'v2/relieving-letter' },
     { type: 'v2/appraisal-letter' },
-    { type: 'v2/payslip' },
+    { type: 'v2/salary-slip' },
+    { type: 'v2/payslip' }, // Backward compatibility
     { type: 'v2/bank-statement' },
     { type: 'v2/manage-bank' }
   ];

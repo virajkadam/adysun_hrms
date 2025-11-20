@@ -155,7 +155,7 @@ However, this hook is not consistently used across all document templates. Most 
 | Relieving Letter | src/pages/RelievingLetter.js | relieving-letter-page | relieving-letter.pdf |
 | Appraisal Letter | src/pages/AppraisalLetter.js | appraisal-letter-page | appraisal-letter.pdf |
 | Increment Letter | src/pages/IncrementLetter.js | increment-letter-page | increment-letter.pdf |
-| Pay Slip | src/components/PaySlip.js | payslip-page | PaySlip_[name]_[date].pdf |
+| Salary Slip | src/components/PaySlip.js | salary-slip-page | SalarySlip_[name]_[date].pdf |
 
 ### 4.2 Document Structure Pattern
 
@@ -258,7 +258,7 @@ const handleDownloadPDF = async () => {
   // Configure options
   const opt = {
     margin: 10,
-    filename: `PaySlip_${companyDetails?.employeeName || "Employee"}_${formatDate(companyDetails?.doj)}.pdf`,
+    filename: `SalarySlip_${companyDetails?.employeeName || "Employee"}_${formatDate(companyDetails?.doj)}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
       scale: 2,

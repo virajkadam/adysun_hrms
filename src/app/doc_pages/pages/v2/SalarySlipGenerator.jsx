@@ -11,8 +11,8 @@ import { commonStyles } from '@/components/pdf/PDFStyles';
 import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtils';
 import toast, { Toaster } from 'react-hot-toast';
 
-// Define styles for the PaySlip
-const payslipStyles = StyleSheet.create({
+// Define styles for the Salary Slip
+const salarySlipStyles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -200,10 +200,10 @@ const payslipStyles = StyleSheet.create({
   },
 });
 
-// PaySlip PDF Document Component
-const PaySlipPDF = ({ formData }) => {
+// Salary Slip PDF Document Component
+const SalarySlipPDF = ({ formData }) => {
   const safeFormData = formData || {};
-  
+
   // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -219,8 +219,8 @@ const PaySlipPDF = ({ formData }) => {
     }
   };
 
-  // Get month and year for payslip
-  const getPayslipMonth = () => {
+  // Get month and year for salary slip
+  const getSalarySlipMonth = () => {
     const payDate = safeFormData.payDate ? new Date(safeFormData.payDate) : new Date();
     return new Intl.DateTimeFormat('en-GB', {
       day: '2-digit',
@@ -231,10 +231,10 @@ const PaySlipPDF = ({ formData }) => {
 
   return (
     <Document>
-      <Page size="A4" style={payslipStyles.page}>
+      <Page size="A4" style={salarySlipStyles.page}>
         {/* Watermark */}
         <Watermark logoSrc={safeFormData.companyLogo} />
-        
+
         {/* Company Header */}
         <CompanyHeader
           companyName={safeFormData.companyName || 'COMPANY NAME'}
@@ -244,98 +244,98 @@ const PaySlipPDF = ({ formData }) => {
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
           companyColor={safeFormData.companyColor || '#FF0000'}
         />
-        
-        {/* Payslip Title */}
-        <Text style={payslipStyles.title}>PAY SLIP FOR THE MONTH OF {getPayslipMonth()}</Text>
-        
+
+        {/* Salary Slip Title */}
+        <Text style={salarySlipStyles.title}>SALARY SLIP FOR THE MONTH OF {getSalarySlipMonth()}</Text>
+
         {/* Employee Information */}
-        <View style={payslipStyles.employeeInfoContainer}>
-          <View style={{...payslipStyles.employeeInfoSection, flexDirection: 'column'}}>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>EMP Code</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.employeeId || 'EMP001'}</Text>
+        <View style={salarySlipStyles.employeeInfoContainer}>
+          <View style={{ ...salarySlipStyles.employeeInfoSection, flexDirection: 'column' }}>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>EMP Code</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.employeeId || 'EMP001'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Name</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.employeeName || 'Employee Name'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Name</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.employeeName || 'Employee Name'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Designation</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.designation || 'Designation'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Designation</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.designation || 'Designation'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>PAN</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.pan || 'XXXXXXXXXX'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>PAN</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.pan || 'XXXXXXXXXX'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Location</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.location || 'Location'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Location</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.location || 'Location'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>DOJ</Text>
-              <Text style={payslipStyles.infoValue}>{formatDate(safeFormData.payDate) || 'DD/MM/YYYY'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>DOJ</Text>
+              <Text style={salarySlipStyles.infoValue}>{formatDate(safeFormData.payDate) || 'DD/MM/YYYY'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Department</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.department || 'Department'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Department</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.department || 'Department'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Payable Days</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.payableDays || '30'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Payable Days</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.payableDays || '30'}</Text>
             </View>
           </View>
-          
-          <View style={payslipStyles.employeeInfoSection}>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Bank Name:</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.bankName || 'Bank Name'}</Text>
+
+          <View style={salarySlipStyles.employeeInfoSection}>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Bank Name:</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.bankName || 'Bank Name'}</Text>
             </View>
-            <View style={payslipStyles.infoRow}>
-              <Text style={payslipStyles.infoLabel}>Bank A/C No:</Text>
-              <Text style={payslipStyles.infoValue}>{safeFormData.accountNumber || 'XXXXXXXXXXXX'}</Text>
+            <View style={salarySlipStyles.infoRow}>
+              <Text style={salarySlipStyles.infoLabel}>Bank A/C No:</Text>
+              <Text style={salarySlipStyles.infoValue}>{safeFormData.accountNumber || 'XXXXXXXXXXXX'}</Text>
             </View>
           </View>
         </View>
-        
+
         {/* Salary Information - Earnings and Deductions */}
-        <View style={payslipStyles.earningsDeductionsContainer}>
+        <View style={salarySlipStyles.earningsDeductionsContainer}>
           {/* Earnings Section */}
-          <View style={payslipStyles.earningsSection}>
-            <View style={payslipStyles.columnHeader}>
-              <Text style={payslipStyles.columnHeaderText}>Earnings</Text>
-              <Text style={payslipStyles.amountColumnHeader}>Amount (₹)</Text>
+          <View style={salarySlipStyles.earningsSection}>
+            <View style={salarySlipStyles.columnHeader}>
+              <Text style={salarySlipStyles.columnHeaderText}>Earnings</Text>
+              <Text style={salarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
             </View>
-            
+
             {/* Earnings Items */}
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Basic</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.basicSalary || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Basic</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.basicSalary || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>DA</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.da || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>DA</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.da || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Conveyance Allowance</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.conveyanceAllowance || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Conveyance Allowance</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.conveyanceAllowance || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Other Allowance</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherAllowance || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Other Allowance</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherAllowance || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Medical Allowance</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.medicalAllowance || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Medical Allowance</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.medicalAllowance || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>CCA</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.cca || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>CCA</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.cca || 0)}</Text>
             </View>
-            
+
             {/* Total Earnings */}
-            <View style={payslipStyles.totalRow}>
-              <Text style={payslipStyles.totalLabel}>Gross Salary</Text>
-              <Text style={payslipStyles.totalAmount}>
+            <View style={salarySlipStyles.totalRow}>
+              <Text style={salarySlipStyles.totalLabel}>Gross Salary</Text>
+              <Text style={salarySlipStyles.totalAmount}>
                 Rs. {formatIndianCurrency(
                   (safeFormData.basicSalary || 0) +
                   (safeFormData.da || 0) +
@@ -347,40 +347,40 @@ const PaySlipPDF = ({ formData }) => {
               </Text>
             </View>
           </View>
-          
+
           {/* Deductions Section */}
-          <View style={payslipStyles.deductionsSection}>
-            <View style={payslipStyles.columnHeader}>
-              <Text style={payslipStyles.columnHeaderText}>Deductions</Text>
-              <Text style={payslipStyles.amountColumnHeader}>Amount (₹)</Text>
+          <View style={salarySlipStyles.deductionsSection}>
+            <View style={salarySlipStyles.columnHeader}>
+              <Text style={salarySlipStyles.columnHeaderText}>Deductions</Text>
+              <Text style={salarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
             </View>
-            
+
             {/* Deduction Items */}
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Professional Tax</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.professionalTax || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Professional Tax</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.professionalTax || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}>Other Deductions</Text>
-              <Text style={payslipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherDeductions || 0)}</Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}>Other Deductions</Text>
+              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherDeductions || 0)}</Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}></Text>
-              <Text style={payslipStyles.itemAmount}></Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}></Text>
+              <Text style={salarySlipStyles.itemAmount}></Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}></Text>
-              <Text style={payslipStyles.itemAmount}></Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}></Text>
+              <Text style={salarySlipStyles.itemAmount}></Text>
             </View>
-            <View style={payslipStyles.item}>
-              <Text style={payslipStyles.itemName}></Text>
-              <Text style={payslipStyles.itemAmount}></Text>
+            <View style={salarySlipStyles.item}>
+              <Text style={salarySlipStyles.itemName}></Text>
+              <Text style={salarySlipStyles.itemAmount}></Text>
             </View>
-            
+
             {/* Total Deductions */}
-            <View style={payslipStyles.totalRow}>
-              <Text style={payslipStyles.totalLabel}>Total Deductions</Text>
-              <Text style={payslipStyles.totalAmount}>
+            <View style={salarySlipStyles.totalRow}>
+              <Text style={salarySlipStyles.totalLabel}>Total Deductions</Text>
+              <Text style={salarySlipStyles.totalAmount}>
                 Rs. {formatIndianCurrency(
                   (safeFormData.professionalTax || 0) +
                   (safeFormData.otherDeductions || 0)
@@ -389,12 +389,12 @@ const PaySlipPDF = ({ formData }) => {
             </View>
           </View>
         </View>
-        
+
         {/* Net Pay */}
-        <View style={payslipStyles.netPayContainer}>
-          <View style={payslipStyles.netPayRow}>
-            <Text style={payslipStyles.netPayLabel}>Net Pay</Text>
-            <Text style={payslipStyles.netPayAmount}>
+        <View style={salarySlipStyles.netPayContainer}>
+          <View style={salarySlipStyles.netPayRow}>
+            <Text style={salarySlipStyles.netPayLabel}>Net Pay</Text>
+            <Text style={salarySlipStyles.netPayAmount}>
               Rs. {formatIndianCurrency(
                 (safeFormData.basicSalary || 0) +
                 (safeFormData.da || 0) +
@@ -407,26 +407,26 @@ const PaySlipPDF = ({ formData }) => {
               )}
             </Text>
           </View>
-          <Text style={payslipStyles.netPayWords}>
+          <Text style={salarySlipStyles.netPayWords}>
             Amount in words: {safeFormData.amountInWords || 'Rupees only'}
           </Text>
         </View>
-        
+
         {/* Signature */}
-        <View style={payslipStyles.signature}>
-          <View style={payslipStyles.signatureSection}>
-            <Text style={payslipStyles.signatureText}>Employee Signature</Text>
+        <View style={salarySlipStyles.signature}>
+          <View style={salarySlipStyles.signatureSection}>
+            <Text style={salarySlipStyles.signatureText}>Employee Signature</Text>
           </View>
-          <View style={payslipStyles.signatureSection}>
-            <Text style={payslipStyles.signatureText}>Authorised Signatory</Text>
+          <View style={salarySlipStyles.signatureSection}>
+            <Text style={salarySlipStyles.signatureText}>Authorised Signatory</Text>
           </View>
         </View>
-        
-        {/* This is a computer generated payslip */}
+
+        {/* This is a computer generated salary slip */}
         <Text style={{ fontSize: 9, marginTop: 30, textAlign: 'center', fontFamily: 'Calibri' }}>
-          This is a computer-generated Pay slip. No Signature is required.
+          This is a computer-generated Salary slip. No Signature is required.
         </Text>
-        
+
         {/* Footer */}
         <Footer
           companyName={safeFormData.companyName || 'COMPANY NAME'}
@@ -441,7 +441,7 @@ const PaySlipPDF = ({ formData }) => {
 };
 
 // Main Component
-function PaySlipGeneratorV2() {
+function SalarySlipGeneratorV2() {
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [employments, setEmployments] = useState({});
@@ -478,7 +478,7 @@ function PaySlipGeneratorV2() {
 
   // Use React.useMemo to memoize the PDF document to prevent unnecessary re-renders
   const memoizedPdfDocument = React.useMemo(() => (
-    <PaySlipPDF formData={formData} />
+    <SalarySlipPDF formData={formData} />
   ), [formData]);
 
   useEffect(() => {
@@ -510,7 +510,7 @@ function PaySlipGeneratorV2() {
       const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       console.log("Fetched Employees:", employeesList);
       setCandidates(employeesList);
-      
+
       // Now fetch all employments for these employees
       const employmentData = {};
       for (const employee of employeesList) {
@@ -518,16 +518,16 @@ function PaySlipGeneratorV2() {
           // Query employments for this employee
           const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
           const empSnapshot = await getDocs(q);
-          
+
           if (!empSnapshot.empty) {
             // Get the most recent employment (usually there will be just one)
             const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             // Sort by startDate (descending) to get the most recent employment first
             const sortedEmployments = employmentsList.sort((a, b) => {
               return new Date(b.startDate) - new Date(a.startDate);
             });
-            
+
             employmentData[employee.id] = sortedEmployments[0];
             console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
           } else {
@@ -537,9 +537,9 @@ function PaySlipGeneratorV2() {
           console.error(`Error fetching employment for employee ${employee.id}:`, err);
         }
       }
-      
+
       setEmployments(employmentData);
-      
+
       if (employeesList.length === 0) {
         console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
       }
@@ -560,22 +560,22 @@ function PaySlipGeneratorV2() {
     const lpaNum = Number(lpa) || 0;
     const leavesNum = Number(leaves) || 0;
     const monthNum = Number(selectedMonth) || new Date().getMonth();
-    
+
     // Get total days in selected month
     const daysInMonth = getDaysInMonth(monthNum);
-    
+
     // Calculate payable days
     const payableDays = Math.max(0, daysInMonth - leavesNum);
-    
+
     // Calculate base annual salary
     const annualSalary = lpaNum * 100000;
-    
+
     // Calculate per day salary
     const perDaySalary = (annualSalary / 12) / daysInMonth;
-    
+
     // Calculate effective monthly salary after leave deductions
     const effectiveSalary = Math.max(0, (annualSalary / 12) - (perDaySalary * leavesNum));
-    
+
     // Calculate components with null checks and Math.max to prevent negative values
     const monthlyBasic = Math.max(0, Math.round(effectiveSalary * 0.5));
     const da = Math.max(0, Math.round(monthlyBasic * 0.2));
@@ -583,18 +583,18 @@ function PaySlipGeneratorV2() {
     const medicalAllowance = Math.max(0, Math.round(1250));
     const cca = Math.max(0, Math.round(500));
     const otherAllowance = Math.max(0, Math.round(effectiveSalary - monthlyBasic - da - conveyanceAllowance - medicalAllowance - cca));
-    
+
     // Professional tax varies by state, using standard 200 for example
     const professionalTax = 200;
-    
+
     // Calculate net amount
     const totalEarnings = monthlyBasic + da + conveyanceAllowance + otherAllowance + medicalAllowance + cca;
     const totalDeductions = professionalTax;
     const netAmount = totalEarnings - totalDeductions;
-    
+
     // Convert to Indian words
     const amountInWords = `Rupees ${numberToWords(netAmount)} Only`;
-    
+
     return {
       basicSalary: monthlyBasic,
       da,
@@ -611,7 +611,7 @@ function PaySlipGeneratorV2() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "company") {
       const selectedCompany = companies.find(company => company.name === value);
       if (selectedCompany) {
@@ -631,17 +631,17 @@ function PaySlipGeneratorV2() {
       const selectedEmployee = candidates.find(employee => employee.name === value);
       if (selectedEmployee) {
         console.log("Selected Employee:", selectedEmployee);
-        
+
         // Get the employment details for this employee
         const employmentDetails = employments[selectedEmployee.id];
         console.log("Employment details:", employmentDetails);
-        
+
         let employeeSalary;
         let employeeDesignation;
         let employeeDepartment;
         let employeeLocation;
         let employeePAN;
-        
+
         if (employmentDetails) {
           // If we have employment details, use those
           employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
@@ -657,17 +657,17 @@ function PaySlipGeneratorV2() {
           employeeLocation = selectedEmployee.location;
           employeePAN = selectedEmployee.pan;
         }
-        
+
         // Calculate CTC in LPA
         const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
-        
+
         // Get current month and leaves
         const currentMonth = formData.month;
         const leaves = formData.leaves;
-        
+
         // Calculate salary components
         const salaryComponents = calculateSalary(ctcValue, leaves, currentMonth);
-        
+
         setFormData(prev => ({
           ...prev,
           employeeName: selectedEmployee.name,
@@ -682,30 +682,30 @@ function PaySlipGeneratorV2() {
     } else if (name === "leaves" || name === "month") {
       // Recalculate salary when leaves or month changes
       const updatedFormData = { ...formData, [name]: value };
-      
+
       // Find the selected employee to get LPA
       const selectedEmployee = candidates.find(employee => employee.name === formData.employeeName);
       if (selectedEmployee) {
         // Get the employment details
         const employmentDetails = employments[selectedEmployee.id];
         let employeeSalary;
-        
+
         if (employmentDetails) {
           employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
         } else {
           employeeSalary = selectedEmployee.salary || 0;
         }
-        
+
         // Calculate CTC in LPA
         const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
-        
+
         // Calculate updated salary
         const salaryComponents = calculateSalary(
-          ctcValue, 
-          updatedFormData.leaves, 
+          ctcValue,
+          updatedFormData.leaves,
           updatedFormData.month
         );
-        
+
         setFormData({
           ...updatedFormData,
           ...salaryComponents
@@ -720,8 +720,8 @@ function PaySlipGeneratorV2() {
       }));
     }
   };
-  
-  const handleGeneratePayslip = () => {
+
+  const handleGenerateSalarySlip = () => {
     setShowPDF(true);
   };
 
@@ -736,8 +736,8 @@ function PaySlipGeneratorV2() {
 
       {/* Form Section */}
       <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Pay Slip Details</h2>
-        
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Salary Slip Details</h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
@@ -770,7 +770,7 @@ function PaySlipGeneratorV2() {
               ))}
             </select>
           </div>
-          
+
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
             <select
@@ -793,7 +793,7 @@ function PaySlipGeneratorV2() {
               <option value="11">December</option>
             </select>
           </div>
-          
+
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Leaves</label>
             <input
@@ -806,7 +806,7 @@ function PaySlipGeneratorV2() {
               max={getDaysInMonth(Number(formData.month))}
             />
           </div>
-          
+
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days</label>
             <input
@@ -815,9 +815,9 @@ function PaySlipGeneratorV2() {
               className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
               readOnly
             />
-           
+
           </div>
-          
+
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-gray-700">Pay Date</label>
             <input
@@ -829,14 +829,14 @@ function PaySlipGeneratorV2() {
             />
           </div>
         </div>
-        
+
         <div className="mt-6">
           <button
-            onClick={handleGeneratePayslip}
+            onClick={handleGenerateSalarySlip}
             className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
           >
             <FiDownload size={18} className="mr-2" />
-            <span>Generate Payslip</span>
+            <span>Generate Salary Slip</span>
           </button>
         </div>
       </div>
@@ -846,16 +846,16 @@ function PaySlipGeneratorV2() {
         <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
-            
-            <PDFDownloadLink 
+
+            <PDFDownloadLink
               document={memoizedPdfDocument}
-              fileName={`PaySlip_${formData.employeeName || 'Employee'}_${formData.payDate}.pdf`}
+              fileName={`SalarySlip_${formData.employeeName || 'Employee'}_${formData.payDate}.pdf`}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
             </PDFDownloadLink>
           </div>
-          
+
           <div className="border rounded-lg" style={{ height: '80vh' }}>
             <PDFViewer width="100%" height="100%" className="rounded-lg">
               {memoizedPdfDocument}
@@ -867,4 +867,4 @@ function PaySlipGeneratorV2() {
   );
 }
 
-export default PaySlipGeneratorV2;
+export default SalarySlipGeneratorV2;

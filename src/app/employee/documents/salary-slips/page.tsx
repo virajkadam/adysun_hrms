@@ -170,25 +170,25 @@ export default function EmployeeSalarySlipsPage() {
     if (salarySlip) {
       // If we have actual salary slip data, use it
       const monthLabel = months.find(m => m.value === month)?.label || month;
-      toast.success(`Downloading payslip for ${monthLabel}`);
+      toast.success(`Downloading salary slip for ${monthLabel}`);
       
       // Simulate download with actual data
       setTimeout(() => {
         const link = document.createElement('a');
         link.href = '#';
-        link.download = `payslip-${month}-${getCurrentEmployeeId()}.pdf`;
+        link.download = `salary-slip-${month}-${getCurrentEmployeeId()}.pdf`;
         link.click();
       }, 1000);
     } else {
       // Fallback for months without salary slips
       const monthLabel = months.find(m => m.value === month)?.label || month;
-      toast.success(`Downloading payslip for ${monthLabel}`);
+      toast.success(`Downloading salary slip for ${monthLabel}`);
       
       // Simulate download
       setTimeout(() => {
         const link = document.createElement('a');
         link.href = '#';
-        link.download = `payslip-${month}.pdf`;
+        link.download = `salary-slip-${month}.pdf`;
         link.click();
       }, 1000);
     }

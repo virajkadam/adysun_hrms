@@ -331,7 +331,7 @@ const CompanyDetailsForm = ({ onUpdateCompanyDetails }) => {
 
   return (
     <div className="">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Payslip Detail</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Salary Slip Detail</h2>
       <div className="form-group">
         <label className="block mb-1 text-sm font-medium text-gray-700">Company</label>
         <select 

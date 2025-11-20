@@ -10,7 +10,7 @@ import { db } from "@/firebase/config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 
-function PaySlipGenerator() {
+function SalarySlipGenerator() {
   const containerRef = useRef(null);
   const [companies, setCompanies] = useState([]);
   const [candidates, setCandidates] = useState([]);
@@ -50,7 +50,7 @@ function PaySlipGenerator() {
       const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       console.log("Fetched Employees:", employeesList);
       setCandidates(employeesList);
-      
+
       // Now fetch all employments for these employees
       const employmentData = {};
       for (const employee of employeesList) {
@@ -58,16 +58,16 @@ function PaySlipGenerator() {
           // Query employments for this employee
           const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
           const empSnapshot = await getDocs(q);
-          
+
           if (!empSnapshot.empty) {
             // Get the most recent employment (usually there will be just one)
             const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             // Sort by startDate (descending) to get the most recent employment first
             const sortedEmployments = employmentsList.sort((a, b) => {
               return new Date(b.startDate) - new Date(a.startDate);
             });
-            
+
             employmentData[employee.id] = sortedEmployments[0];
             console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
           } else {
@@ -77,9 +77,9 @@ function PaySlipGenerator() {
           console.error(`Error fetching employment for employee ${employee.id}:`, err);
         }
       }
-      
+
       setEmployments(employmentData);
-      
+
       if (employeesList.length === 0) {
         console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
       }
@@ -100,19 +100,19 @@ function PaySlipGenerator() {
     const lpaNum = Number(lpa) || 0;
     const leavesNum = Number(leaves) || 0;
     const monthNum = Number(selectedMonth) || new Date().getMonth();
-    
+
     // Get total days in selected month
     const daysInMonth = getDaysInMonth(monthNum);
-    
+
     // Calculate base annual salary
     const annualSalary = lpaNum * 100000;
-    
+
     // Calculate per day salary
     const perDaySalary = (annualSalary / 12) / daysInMonth;
-    
+
     // Calculate effective monthly salary after leave deductions
     const effectiveSalary = Math.max(0, (annualSalary / 12) - (perDaySalary * leavesNum));
-    
+
     // Calculate components with null checks and Math.max to prevent negative values
     const monthlyBasic = Math.max(0, Math.round(effectiveSalary * 0.5));
     const da = Math.max(0, Math.round(monthlyBasic * 0.2));
@@ -120,18 +120,18 @@ function PaySlipGenerator() {
     const medicalAllowance = Math.max(0, Math.round(1250));
     const cca = Math.max(0, Math.round(500));
     const otherAllowance = Math.max(0, Math.round(effectiveSalary - monthlyBasic - da - conveyanceAllowance - medicalAllowance - cca));
-    
+
     // Professional tax varies by state, using standard 200 for example
     const professionalTax = 200;
-    
+
     // Calculate net amount
     const totalEarnings = monthlyBasic + da + conveyanceAllowance + otherAllowance + medicalAllowance + cca;
     const totalDeductions = professionalTax;
     const netAmount = totalEarnings - totalDeductions;
-    
+
     // Convert to Indian words
     const amountInWords = `Rupees ${numberToWords(netAmount)} Only`;
-    
+
     return {
       basicSalary: monthlyBasic,
       da,
@@ -147,7 +147,7 @@ function PaySlipGenerator() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "company") {
       const selectedCompany = companies.find(company => company.name === value);
       if (selectedCompany) {
@@ -166,17 +166,17 @@ function PaySlipGenerator() {
       const selectedEmployee = candidates.find(employee => employee.name === value);
       if (selectedEmployee) {
         console.log("Selected Employee:", selectedEmployee);
-        
+
         // Get the employment details for this employee
         const employmentDetails = employments[selectedEmployee.id];
         console.log("Employment details:", employmentDetails);
-        
+
         let employeeSalary;
         let employeeDesignation;
         let employeeDepartment;
         let employeeLocation;
         let employeePAN;
-        
+
         if (employmentDetails) {
           // If we have employment details, use those
           employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
@@ -192,17 +192,17 @@ function PaySlipGenerator() {
           employeeLocation = selectedEmployee.location;
           employeePAN = selectedEmployee.pan;
         }
-        
+
         // Calculate CTC in LPA
         const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
-        
+
         // Get current month and leaves
         const currentMonth = formData.month;
         const leaves = formData.leaves;
-        
+
         // Calculate salary components
         const salaryComponents = calculateSalary(ctcValue, leaves, currentMonth);
-        
+
         setCompanyDetails(prev => ({
           ...prev,
           employeeName: selectedEmployee.name,
@@ -217,30 +217,30 @@ function PaySlipGenerator() {
     } else if (name === "leaves" || name === "month") {
       // Recalculate salary when leaves or month changes
       const updatedFormData = { ...formData, [name]: value };
-      
+
       // Find the selected employee to get LPA
       const selectedEmployee = candidates.find(employee => employee.name === formData.employeeName);
       if (selectedEmployee) {
         // Get the employment details
         const employmentDetails = employments[selectedEmployee.id];
         let employeeSalary;
-        
+
         if (employmentDetails) {
           employeeSalary = employmentDetails.salary || employmentDetails.ctc || 0;
         } else {
           employeeSalary = selectedEmployee.salary || 0;
         }
-        
+
         // Calculate CTC in LPA
         const ctcValue = employeeSalary ? (employeeSalary / 100000) : 0;
-        
+
         // Calculate updated salary
         const salaryComponents = calculateSalary(
-          ctcValue, 
-          updatedFormData.leaves, 
+          ctcValue,
+          updatedFormData.leaves,
           updatedFormData.month
         );
-        
+
         setCompanyDetails({
           ...updatedFormData,
           ...salaryComponents
@@ -285,4 +285,4 @@ function PaySlipGenerator() {
   );
 }
 
-export default PaySlipGenerator;
+export default SalarySlipGenerator;

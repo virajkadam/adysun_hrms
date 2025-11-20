@@ -20,9 +20,9 @@ const documents = [
     icon: <FiFileText size={24} /> 
   },
   { 
-    title: 'Payslip Generator', 
-    description: 'Generate monthly payslips for employees',
-    path: '/dashboard/documents/payslip', 
+    title: 'Salary Slip Generator', 
+    description: 'Generate monthly salary slips for employees',
+    path: '/dashboard/documents/salary-slip', 
     icon: <FiFile size={24} /> 
   },
   { 
