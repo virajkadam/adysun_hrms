@@ -125,8 +125,12 @@ const SearchableDropdown = ({
                 <input
                     type="checkbox"
                     checked={isOptionSelected(option)}
-                    onChange={() => { }}
-                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                    onChange={(e) => {
+                        e.stopPropagation();
+                        handleSelect(option);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 />
             )}
             <div className="flex flex-col flex-1">

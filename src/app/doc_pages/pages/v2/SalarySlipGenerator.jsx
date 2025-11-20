@@ -204,6 +204,13 @@ const salarySlipStyles = StyleSheet.create({
 // Salary Slip PDF Document Component
 const SalarySlipPDF = ({ formData }) => {
   const safeFormData = formData || {};
+  const getEmployeeNameText = () => {
+    if (Array.isArray(safeFormData.employeeName)) {
+      if (safeFormData.employeeName.length === 0) return 'Employee Name';
+      return safeFormData.employeeName.join(', ');
+    }
+    return safeFormData.employeeName || 'Employee Name';
+  };
 
   // Format date
   const formatDate = (dateString) => {
@@ -258,7 +265,7 @@ const SalarySlipPDF = ({ formData }) => {
             </View>
             <View style={salarySlipStyles.infoRow}>
               <Text style={salarySlipStyles.infoLabel}>Name</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.employeeName || 'Employee Name'}</Text>
+              <Text style={salarySlipStyles.infoValue}>{getEmployeeNameText()}</Text>
             </View>
             <View style={salarySlipStyles.infoRow}>
               <Text style={salarySlipStyles.infoLabel}>Designation</Text>
@@ -477,6 +484,25 @@ function SalarySlipGeneratorV2() {
     companyHR: ""
   });
 
+  const normalizeEmployeeNames = (value) => {
+    if (Array.isArray(value)) {
+      return value.filter(Boolean);
+    }
+    return value ? [value] : [];
+  };
+
+  const getPrimaryEmployeeName = (value) => {
+    const names = normalizeEmployeeNames(value);
+    if (names.length === 0) return '';
+    return names[names.length - 1];
+  };
+
+  const formatEmployeeNamesForFile = (value) => {
+    const names = normalizeEmployeeNames(value);
+    if (names.length === 0) return 'Employee';
+    return names.join('_');
+  };
+
   // Use React.useMemo to memoize the PDF document to prevent unnecessary re-renders
   const memoizedPdfDocument = React.useMemo(() => (
     <SalarySlipPDF formData={formData} />
@@ -629,7 +655,10 @@ function SalarySlipGeneratorV2() {
         }));
       }
     } else if (name === "employeeName") {
-      const selectedEmployee = candidates.find(employee => employee.name === value);
+      const selectedNames = normalizeEmployeeNames(value);
+      const primaryEmployeeName = getPrimaryEmployeeName(selectedNames);
+      const selectedEmployee = candidates.find(employee => employee.name === primaryEmployeeName);
+
       if (selectedEmployee) {
         console.log("Selected Employee:", selectedEmployee);
 
@@ -671,7 +700,7 @@ function SalarySlipGeneratorV2() {
 
         setFormData(prev => ({
           ...prev,
-          employeeName: selectedEmployee.name,
+          employeeName: selectedNames,
           employeeId: selectedEmployee.employeeId || selectedEmployee.id,
           designation: employeeDesignation || "",
           department: employeeDepartment || "",
@@ -679,13 +708,24 @@ function SalarySlipGeneratorV2() {
           pan: employeePAN || "",
           ...salaryComponents
         }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          employeeName: selectedNames,
+          employeeId: "",
+          designation: "",
+          department: "",
+          location: "",
+          pan: ""
+        }));
       }
     } else if (name === "leaves" || name === "month") {
       // Recalculate salary when leaves or month changes
       const updatedFormData = { ...formData, [name]: value };
 
       // Find the selected employee to get LPA
-      const selectedEmployee = candidates.find(employee => employee.name === formData.employeeName);
+      const primaryEmployee = getPrimaryEmployeeName(formData.employeeName);
+      const selectedEmployee = candidates.find(employee => employee.name === primaryEmployee);
       if (selectedEmployee) {
         // Get the employment details
         const employmentDetails = employments[selectedEmployee.id];
@@ -848,7 +888,7 @@ function SalarySlipGeneratorV2() {
 
             <PDFDownloadLink
               document={memoizedPdfDocument}
-              fileName={`SalarySlip_${formData.employeeName || 'Employee'}_${formData.payDate}.pdf`}
+              fileName={`SalarySlip_${formatEmployeeNamesForFile(formData.employeeName)}_${formData.payDate}.pdf`}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
               {({ loading }) => (loading ? 'Loading document...' : 'Download PDF')}
