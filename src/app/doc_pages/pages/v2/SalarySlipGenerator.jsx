@@ -1182,7 +1182,12 @@ function SalarySlipGeneratorV2() {
         {/* Generate button in header */}
         <button
           onClick={handleGenerateSalarySlip}
-          className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 shadow-lg hover:shadow-md transition-all duration-200"
+          disabled={normalizeEmployeeNames(formData.employeeName).length === 0}
+          className={`flex items-center px-6 py-3 rounded-lg shadow-lg hover:shadow-md transition-all duration-200 ${
+            normalizeEmployeeNames(formData.employeeName).length === 0
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-green-600 text-white hover:bg-green-700 active:bg-green-800'
+          }`}
         >
           <FiDownload size={18} className="mr-2" />
           <span>Generate</span>
@@ -1282,7 +1287,12 @@ function SalarySlipGeneratorV2() {
 
         <button
           onClick={handleGenerateSalarySlip}
-          className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 shadow-lg hover:shadow-md transition-all duration-200"
+          disabled={normalizeEmployeeNames(formData.employeeName).length === 0}
+          className={`flex items-center px-6 py-3 rounded-lg shadow-lg hover:shadow-md transition-all duration-200 ${
+            normalizeEmployeeNames(formData.employeeName).length === 0
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-green-600 text-white hover:bg-green-700 active:bg-green-800'
+          }`}
         >
           <FiDownload size={18} className="mr-2" />
           <span>Generate</span>
