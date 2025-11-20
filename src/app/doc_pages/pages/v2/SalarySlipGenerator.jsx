@@ -12,8 +12,10 @@ import { formatIndianCurrency, numberToWords } from '@/components/pdf/SalaryUtil
 import toast, { Toaster } from 'react-hot-toast';
 import SearchableDropdown from '@/components/ui/SearchableDropdown';
 
-// Define styles for the Salary Slip
-const salarySlipStyles = StyleSheet.create({
+const DEFAULT_COMPANY_NAME = 'Adysun Ventures Pvt. Ltd.';
+
+// Define styles for the default Salary Slip layout
+const defaultSalarySlipStyles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -201,249 +203,602 @@ const salarySlipStyles = StyleSheet.create({
   },
 });
 
+// Adysun Ventures layout styles
+const adysunSalarySlipStyles = StyleSheet.create({
+  page: {
+    paddingTop: 24,
+    paddingBottom: 32,
+    paddingHorizontal: 32,
+    fontFamily: 'Calibri',
+    fontSize: 10,
+    backgroundColor: '#fff',
+    color: '#111',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  logoWrapper: {
+    marginRight: 16,
+  },
+  logo: {
+    width: 66,
+    height: 66,
+  },
+  headerTextBlock: {
+    alignItems: 'center',
+  },
+  headerCompany: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  headerInfo: {
+    fontSize: 9,
+    color: '#333',
+  },
+  horizontalRule: {
+    marginTop: 8,
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
+  },
+  dateText: {
+    fontSize: 10,
+    marginBottom: 4,
+  },
+  slipTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  detailTable: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderStyle: 'solid',
+    marginBottom: 12,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
+  },
+  detailLastRow: {
+    borderBottomWidth: 0,
+  },
+  detailCellLabel: {
+    width: '40%',
+    padding: 6,
+    fontWeight: 'bold',
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+    borderRightStyle: 'solid',
+  },
+  detailCellValue: {
+    width: '60%',
+    padding: 6,
+  },
+  dualTable: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderStyle: 'solid',
+    marginBottom: 8,
+  },
+  dualColumn: {
+    flex: 1,
+  },
+  dualColumnDivider: {
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+    borderRightStyle: 'solid',
+  },
+  dualHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#f4f4f4',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
+  },
+  dualHeaderCell: {
+    flex: 1,
+    padding: 6,
+    fontWeight: 'bold',
+  },
+  dualRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#b5b5b5',
+    borderBottomStyle: 'solid',
+  },
+  dualRowLast: {
+    borderBottomWidth: 0,
+  },
+  dualCell: {
+    flex: 1,
+    padding: 6,
+  },
+  dualAmountCell: {
+    textAlign: 'right',
+  },
+  totalsRow: {
+    flexDirection: 'row',
+    backgroundColor: '#f4f4f4',
+    borderTopWidth: 1,
+    borderTopColor: '#000',
+    borderTopStyle: 'solid',
+  },
+  totalsLabel: {
+    flex: 1,
+    padding: 6,
+    fontWeight: 'bold',
+  },
+  totalsAmount: {
+    textAlign: 'right',
+  },
+  netTable: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderStyle: 'solid',
+    marginBottom: 6,
+  },
+  netRow: {
+    flexDirection: 'row',
+  },
+  netLabel: {
+    width: '40%',
+    padding: 6,
+    fontWeight: 'bold',
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+    borderRightStyle: 'solid',
+  },
+  netValue: {
+    width: '60%',
+    padding: 6,
+    textAlign: 'right',
+  },
+  note: {
+    fontSize: 9,
+    textAlign: 'center',
+    marginVertical: 4,
+  },
+  footerSeparator: {
+    marginTop: 12,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    borderBottomStyle: 'solid',
+  },
+  footer: {
+    alignItems: 'center',
+  },
+  footerLine: {
+    fontSize: 9,
+    textAlign: 'center',
+  },
+});
+
+const getEmployeeNameText = (employeeName) => {
+  if (Array.isArray(employeeName)) {
+    if (employeeName.length === 0) return 'Employee Name';
+    return employeeName.join(', ');
+  }
+  return employeeName || 'Employee Name';
+};
+
+const formatDisplayDate = (dateString) => {
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  } catch (e) {
+    return "";
+  }
+};
+
+const getSalarySlipMonthLabel = (dateString) => {
+  const payDate = dateString ? new Date(dateString) : new Date();
+  return new Intl.DateTimeFormat('en-GB', {
+    month: 'long',
+    year: 'numeric'
+  }).format(payDate);
+};
+
+const getSalarySlipMonthUpper = (dateString) => {
+  const payDate = dateString ? new Date(dateString) : new Date();
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }).format(payDate).toUpperCase();
+};
+
+const getTotalEarnings = (formData) => {
+  return (
+    (formData.basicSalary || 0) +
+    (formData.da || 0) +
+    (formData.conveyanceAllowance || 0) +
+    (formData.otherAllowance || 0) +
+    (formData.medicalAllowance || 0) +
+    (formData.cca || 0)
+  );
+};
+
+const getTotalDeductions = (formData) => {
+  return (formData.professionalTax || 0) + (formData.otherDeductions || 0);
+};
+
+const getNetSalary = (formData) => {
+  return getTotalEarnings(formData) - getTotalDeductions(formData);
+};
+
+const DefaultSalarySlipLayout = ({ formData }) => {
+  const safeFormData = formData || {};
+
+  return (
+    <Page size="A4" style={defaultSalarySlipStyles.page}>
+      <Watermark logoSrc={safeFormData.companyLogo} />
+      <CompanyHeader
+        companyName={safeFormData.companyName || 'COMPANY NAME'}
+        companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
+        companyLogo={safeFormData.companyLogo}
+        companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
+        companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
+        companyColor={safeFormData.companyColor || '#FF0000'}
+      />
+
+      <Text style={defaultSalarySlipStyles.title}>
+        SALARY SLIP FOR THE MONTH OF {getSalarySlipMonthUpper(safeFormData.payDate)}
+      </Text>
+
+      <View style={defaultSalarySlipStyles.employeeInfoContainer}>
+        <View style={{ ...defaultSalarySlipStyles.employeeInfoSection, flexDirection: 'column' }}>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>EMP Code</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.employeeId || 'EMP001'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Name</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{getEmployeeNameText(safeFormData.employeeName)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Designation</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.designation || 'Designation'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>PAN</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.pan || 'XXXXXXXXXX'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Location</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.location || 'Location'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>DOJ</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{formatDisplayDate(safeFormData.payDate) || 'DD/MM/YYYY'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Department</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.department || 'Department'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Payable Days</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.payableDays || '30'}</Text>
+          </View>
+        </View>
+
+        <View style={defaultSalarySlipStyles.employeeInfoSection}>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Bank Name:</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.bankName || 'Bank Name'}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.infoRow}>
+            <Text style={defaultSalarySlipStyles.infoLabel}>Bank A/C No:</Text>
+            <Text style={defaultSalarySlipStyles.infoValue}>{safeFormData.accountNumber || 'XXXXXXXXXXXX'}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={defaultSalarySlipStyles.earningsDeductionsContainer}>
+        <View style={defaultSalarySlipStyles.earningsSection}>
+          <View style={defaultSalarySlipStyles.columnHeader}>
+            <Text style={defaultSalarySlipStyles.columnHeaderText}>Earnings</Text>
+            <Text style={defaultSalarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
+          </View>
+
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Basic</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.basicSalary || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>DA</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.da || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Conveyance Allowance</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.conveyanceAllowance || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Other Allowance</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherAllowance || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Medical Allowance</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.medicalAllowance || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>CCA</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.cca || 0)}</Text>
+          </View>
+
+          <View style={defaultSalarySlipStyles.totalRow}>
+            <Text style={defaultSalarySlipStyles.totalLabel}>Gross Salary</Text>
+            <Text style={defaultSalarySlipStyles.totalAmount}>
+              Rs. {formatIndianCurrency(getTotalEarnings(safeFormData))}
+            </Text>
+          </View>
+        </View>
+
+        <View style={defaultSalarySlipStyles.deductionsSection}>
+          <View style={defaultSalarySlipStyles.columnHeader}>
+            <Text style={defaultSalarySlipStyles.columnHeaderText}>Deductions</Text>
+            <Text style={defaultSalarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
+          </View>
+
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Professional Tax</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.professionalTax || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}>Other Deductions</Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherDeductions || 0)}</Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}></Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}></Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}></Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}></Text>
+          </View>
+          <View style={defaultSalarySlipStyles.item}>
+            <Text style={defaultSalarySlipStyles.itemName}></Text>
+            <Text style={defaultSalarySlipStyles.itemAmount}></Text>
+          </View>
+
+          <View style={defaultSalarySlipStyles.totalRow}>
+            <Text style={defaultSalarySlipStyles.totalLabel}>Total Deductions</Text>
+            <Text style={defaultSalarySlipStyles.totalAmount}>
+              Rs. {formatIndianCurrency(getTotalDeductions(safeFormData))}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={defaultSalarySlipStyles.netPayContainer}>
+        <View style={defaultSalarySlipStyles.netPayRow}>
+          <Text style={defaultSalarySlipStyles.netPayLabel}>Net Pay</Text>
+          <Text style={defaultSalarySlipStyles.netPayAmount}>
+            Rs. {formatIndianCurrency(getNetSalary(safeFormData))}
+          </Text>
+        </View>
+        <Text style={defaultSalarySlipStyles.netPayWords}>
+          Amount in words: {safeFormData.amountInWords || 'Rupees only'}
+        </Text>
+      </View>
+
+      <View style={defaultSalarySlipStyles.signature}>
+        <View style={defaultSalarySlipStyles.signatureSection}>
+          <Text style={defaultSalarySlipStyles.signatureText}>Employee Signature</Text>
+        </View>
+        <View style={defaultSalarySlipStyles.signatureSection}>
+          <Text style={defaultSalarySlipStyles.signatureText}>Authorised Signatory</Text>
+        </View>
+      </View>
+
+      <Text style={{ fontSize: 9, marginTop: 30, textAlign: 'center', fontFamily: 'Calibri' }}>
+        This is a computer-generated Salary slip. No Signature is required.
+      </Text>
+
+      <Footer
+        companyName={safeFormData.companyName || 'COMPANY NAME'}
+        companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
+        companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
+        companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
+        companyColor={safeFormData.companyColor || '#FF0000'}
+      />
+    </Page>
+  );
+};
+
+const AdysunSalarySlipLayout = ({ formData }) => {
+  const safeFormData = formData || {};
+
+  const earningsData = [
+    { label: 'Basic', amount: safeFormData.basicSalary || 0 },
+    { label: 'HRA', amount: safeFormData.da || 0 },
+    { label: 'Conveyance Allowance', amount: safeFormData.conveyanceAllowance || 0 },
+    {
+      label: 'Other Allowance',
+      amount: (safeFormData.otherAllowance || 0) + (safeFormData.medicalAllowance || 0) + (safeFormData.cca || 0),
+    },
+  ];
+
+  const deductionsData = [
+    { label: 'PT', amount: safeFormData.professionalTax || 0 },
+    { label: 'Other Deductions', amount: safeFormData.otherDeductions || 0 },
+  ];
+
+  const footerLines = [
+    'Adysun Ventures Pvt. Ltd.',
+    'Adysun Ventures, WorkPlex, S no 47, near Bhapkar petrol pump, Pune - Satara Rd, Taware Colony, Bibwewadi, Pune, Maharashtra 411009, Pune, Maharashtra 411009',
+    'www.AdysunVentures.com  |  info@adysunventures.com  |  hr@adysunventures.com'
+  ].filter(Boolean);
+
+  const detailRows = [
+    { label: 'Employee Name', value: getEmployeeNameText(safeFormData.employeeName) || 'Arnab Kumar Baishya' },
+    { label: 'Employee Code', value: safeFormData.employeeId || 'ADV061' },
+    { label: 'Designation', value: safeFormData.designation || 'Software Engineer' },
+    { label: 'Department', value: safeFormData.department || 'ADV-DEV' },
+    { label: 'Bank Name', value: safeFormData.bankName || 'State Bank of India (SBI)' },
+    { label: 'Bank Account No', value: safeFormData.accountNumber || '38609967034' },
+    { label: 'Pan No', value: safeFormData.pan || 'EHNPB1737H' },
+    { label: 'Effective Work Days', value: `${safeFormData.payableDays || '23'} Days` },
+  ];
+
+  return (
+    <Page size="A4" style={adysunSalarySlipStyles.page}>
+      <View style={adysunSalarySlipStyles.headerRow}>
+        <View style={adysunSalarySlipStyles.logoWrapper}>
+          {safeFormData.companyLogo ? (
+            <Image source={safeFormData.companyLogo} style={adysunSalarySlipStyles.logo} />
+          ) : (
+            <Image source="/assets/images/logos/logo.png" style={adysunSalarySlipStyles.logo} />
+          )}
+        </View>
+        <View style={adysunSalarySlipStyles.headerTextBlock}>
+          <Text style={adysunSalarySlipStyles.headerCompany}>Adysun Ventures Pvt. Ltd.</Text>
+          <Text style={adysunSalarySlipStyles.headerInfo}>
+            www.AdysunVentures.com | info@adysunventures.com | hr@adysunventures.com
+          </Text>
+        </View>
+      </View>
+
+      <View style={adysunSalarySlipStyles.horizontalRule} />
+
+      <View>
+        <Text style={adysunSalarySlipStyles.dateText}>{formatDisplayDate(safeFormData.payDate)}</Text>
+        <Text style={adysunSalarySlipStyles.slipTitle}>
+          Salary Slip {getSalarySlipMonthLabel(safeFormData.payDate)}
+        </Text>
+      </View>
+
+      <View style={adysunSalarySlipStyles.detailTable}>
+        {detailRows.map((row, index) => (
+          <View
+            key={row.label}
+            style={[
+              adysunSalarySlipStyles.detailRow,
+              index === detailRows.length - 1 && adysunSalarySlipStyles.detailLastRow
+            ]}
+          >
+            <Text style={adysunSalarySlipStyles.detailCellLabel}>{row.label}</Text>
+            <Text style={adysunSalarySlipStyles.detailCellValue}>{row.value}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={adysunSalarySlipStyles.dualTable}>
+        <View style={[adysunSalarySlipStyles.dualColumn, adysunSalarySlipStyles.dualColumnDivider]}>
+          <View style={adysunSalarySlipStyles.dualHeader}>
+            <Text style={adysunSalarySlipStyles.dualHeaderCell}>Earnings (A)</Text>
+            <Text style={adysunSalarySlipStyles.dualHeaderCell}>Amount</Text>
+          </View>
+          {earningsData.map((item, index) => (
+            <View
+              key={item.label}
+              style={[
+                adysunSalarySlipStyles.dualRow,
+                index === earningsData.length - 1 && adysunSalarySlipStyles.dualRowLast
+              ]}
+            >
+              <Text style={adysunSalarySlipStyles.dualCell}>{item.label}</Text>
+              <Text style={[adysunSalarySlipStyles.dualCell, adysunSalarySlipStyles.dualAmountCell]}>
+                {formatIndianCurrency(item.amount)}
+              </Text>
+            </View>
+          ))}
+          <View style={adysunSalarySlipStyles.totalsRow}>
+            <Text style={adysunSalarySlipStyles.totalsLabel}>Gross Salary</Text>
+            <Text style={[adysunSalarySlipStyles.totalsLabel, adysunSalarySlipStyles.dualAmountCell]}>
+              {formatIndianCurrency(getTotalEarnings(safeFormData))}
+            </Text>
+          </View>
+        </View>
+
+        <View style={adysunSalarySlipStyles.dualColumn}>
+          <View style={adysunSalarySlipStyles.dualHeader}>
+            <Text style={adysunSalarySlipStyles.dualHeaderCell}>Deductions (B)</Text>
+            <Text style={adysunSalarySlipStyles.dualHeaderCell}>Amount</Text>
+          </View>
+          {deductionsData.map((item, index) => (
+            <View
+              key={item.label}
+              style={[
+                adysunSalarySlipStyles.dualRow,
+                index === deductionsData.length - 1 && adysunSalarySlipStyles.dualRowLast
+              ]}
+            >
+              <Text style={adysunSalarySlipStyles.dualCell}>{item.label}</Text>
+              <Text style={[adysunSalarySlipStyles.dualCell, adysunSalarySlipStyles.dualAmountCell]}>
+                {formatIndianCurrency(item.amount)}
+              </Text>
+            </View>
+          ))}
+          <View style={adysunSalarySlipStyles.totalsRow}>
+            <Text style={adysunSalarySlipStyles.totalsLabel}>Total</Text>
+            <Text style={[adysunSalarySlipStyles.totalsLabel, adysunSalarySlipStyles.dualAmountCell]}>
+              {formatIndianCurrency(getTotalDeductions(safeFormData))}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={adysunSalarySlipStyles.netTable}>
+        <View style={adysunSalarySlipStyles.netRow}>
+          <Text style={adysunSalarySlipStyles.netLabel}>Net Salary ( A - B )</Text>
+          <Text style={adysunSalarySlipStyles.netValue}>
+            {formatIndianCurrency(getNetSalary(safeFormData))}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={adysunSalarySlipStyles.note}>
+        This is a system generated payslip and does not require signature.
+      </Text>
+
+      <View style={adysunSalarySlipStyles.footerSeparator} />
+
+      <View style={adysunSalarySlipStyles.footer}>
+        {footerLines.map((line, idx) => (
+          <Text key={idx} style={adysunSalarySlipStyles.footerLine}>{line}</Text>
+        ))}
+      </View>
+    </Page>
+  );
+};
+
+const layoutRegistry = {
+  default: DefaultSalarySlipLayout,
+  adysun: AdysunSalarySlipLayout,
+};
+
+const resolveSalarySlipLayout = (formData) => {
+  const companyName = (formData.companyName || '').toLowerCase();
+  if (companyName.includes('adysun')) {
+    return 'adysun';
+  }
+  return 'default';
+};
+
 // Salary Slip PDF Document Component
 const SalarySlipPDF = ({ formData }) => {
   const safeFormData = formData || {};
-  const getEmployeeNameText = () => {
-    if (Array.isArray(safeFormData.employeeName)) {
-      if (safeFormData.employeeName.length === 0) return 'Employee Name';
-      return safeFormData.employeeName.join(', ');
-    }
-    return safeFormData.employeeName || 'Employee Name';
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }).format(date);
-    } catch (e) {
-      return "";
-    }
-  };
-
-  // Get month and year for salary slip
-  const getSalarySlipMonth = () => {
-    const payDate = safeFormData.payDate ? new Date(safeFormData.payDate) : new Date();
-    return new Intl.DateTimeFormat('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    }).format(payDate).toUpperCase();
-  };
+  const layoutKey = resolveSalarySlipLayout(safeFormData);
+  const LayoutComponent = layoutRegistry[layoutKey] || DefaultSalarySlipLayout;
 
   return (
     <Document>
-      <Page size="A4" style={salarySlipStyles.page}>
-        {/* Watermark */}
-        <Watermark logoSrc={safeFormData.companyLogo} />
-
-        {/* Company Header */}
-        <CompanyHeader
-          companyName={safeFormData.companyName || 'COMPANY NAME'}
-          companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyLogo={safeFormData.companyLogo}
-          companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
-        />
-
-        {/* Salary Slip Title */}
-        <Text style={salarySlipStyles.title}>SALARY SLIP FOR THE MONTH OF {getSalarySlipMonth()}</Text>
-
-        {/* Employee Information */}
-        <View style={salarySlipStyles.employeeInfoContainer}>
-          <View style={{ ...salarySlipStyles.employeeInfoSection, flexDirection: 'column' }}>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>EMP Code</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.employeeId || 'EMP001'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Name</Text>
-              <Text style={salarySlipStyles.infoValue}>{getEmployeeNameText()}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Designation</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.designation || 'Designation'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>PAN</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.pan || 'XXXXXXXXXX'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Location</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.location || 'Location'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>DOJ</Text>
-              <Text style={salarySlipStyles.infoValue}>{formatDate(safeFormData.payDate) || 'DD/MM/YYYY'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Department</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.department || 'Department'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Payable Days</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.payableDays || '30'}</Text>
-            </View>
-          </View>
-
-          <View style={salarySlipStyles.employeeInfoSection}>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Bank Name:</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.bankName || 'Bank Name'}</Text>
-            </View>
-            <View style={salarySlipStyles.infoRow}>
-              <Text style={salarySlipStyles.infoLabel}>Bank A/C No:</Text>
-              <Text style={salarySlipStyles.infoValue}>{safeFormData.accountNumber || 'XXXXXXXXXXXX'}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Salary Information - Earnings and Deductions */}
-        <View style={salarySlipStyles.earningsDeductionsContainer}>
-          {/* Earnings Section */}
-          <View style={salarySlipStyles.earningsSection}>
-            <View style={salarySlipStyles.columnHeader}>
-              <Text style={salarySlipStyles.columnHeaderText}>Earnings</Text>
-              <Text style={salarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
-            </View>
-
-            {/* Earnings Items */}
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Basic</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.basicSalary || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>DA</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.da || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Conveyance Allowance</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.conveyanceAllowance || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Other Allowance</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherAllowance || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Medical Allowance</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.medicalAllowance || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>CCA</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.cca || 0)}</Text>
-            </View>
-
-            {/* Total Earnings */}
-            <View style={salarySlipStyles.totalRow}>
-              <Text style={salarySlipStyles.totalLabel}>Gross Salary</Text>
-              <Text style={salarySlipStyles.totalAmount}>
-                Rs. {formatIndianCurrency(
-                  (safeFormData.basicSalary || 0) +
-                  (safeFormData.da || 0) +
-                  (safeFormData.conveyanceAllowance || 0) +
-                  (safeFormData.otherAllowance || 0) +
-                  (safeFormData.medicalAllowance || 0) +
-                  (safeFormData.cca || 0)
-                )}
-              </Text>
-            </View>
-          </View>
-
-          {/* Deductions Section */}
-          <View style={salarySlipStyles.deductionsSection}>
-            <View style={salarySlipStyles.columnHeader}>
-              <Text style={salarySlipStyles.columnHeaderText}>Deductions</Text>
-              <Text style={salarySlipStyles.amountColumnHeader}>Amount (₹)</Text>
-            </View>
-
-            {/* Deduction Items */}
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Professional Tax</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.professionalTax || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}>Other Deductions</Text>
-              <Text style={salarySlipStyles.itemAmount}>Rs. {formatIndianCurrency(safeFormData.otherDeductions || 0)}</Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}></Text>
-              <Text style={salarySlipStyles.itemAmount}></Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}></Text>
-              <Text style={salarySlipStyles.itemAmount}></Text>
-            </View>
-            <View style={salarySlipStyles.item}>
-              <Text style={salarySlipStyles.itemName}></Text>
-              <Text style={salarySlipStyles.itemAmount}></Text>
-            </View>
-
-            {/* Total Deductions */}
-            <View style={salarySlipStyles.totalRow}>
-              <Text style={salarySlipStyles.totalLabel}>Total Deductions</Text>
-              <Text style={salarySlipStyles.totalAmount}>
-                Rs. {formatIndianCurrency(
-                  (safeFormData.professionalTax || 0) +
-                  (safeFormData.otherDeductions || 0)
-                )}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Net Pay */}
-        <View style={salarySlipStyles.netPayContainer}>
-          <View style={salarySlipStyles.netPayRow}>
-            <Text style={salarySlipStyles.netPayLabel}>Net Pay</Text>
-            <Text style={salarySlipStyles.netPayAmount}>
-              Rs. {formatIndianCurrency(
-                (safeFormData.basicSalary || 0) +
-                (safeFormData.da || 0) +
-                (safeFormData.conveyanceAllowance || 0) +
-                (safeFormData.otherAllowance || 0) +
-                (safeFormData.medicalAllowance || 0) +
-                (safeFormData.cca || 0) -
-                (safeFormData.professionalTax || 0) -
-                (safeFormData.otherDeductions || 0)
-              )}
-            </Text>
-          </View>
-          <Text style={salarySlipStyles.netPayWords}>
-            Amount in words: {safeFormData.amountInWords || 'Rupees only'}
-          </Text>
-        </View>
-
-        {/* Signature */}
-        <View style={salarySlipStyles.signature}>
-          <View style={salarySlipStyles.signatureSection}>
-            <Text style={salarySlipStyles.signatureText}>Employee Signature</Text>
-          </View>
-          <View style={salarySlipStyles.signatureSection}>
-            <Text style={salarySlipStyles.signatureText}>Authorised Signatory</Text>
-          </View>
-        </View>
-
-        {/* This is a computer generated salary slip */}
-        <Text style={{ fontSize: 9, marginTop: 30, textAlign: 'center', fontFamily: 'Calibri' }}>
-          This is a computer-generated Salary slip. No Signature is required.
-        </Text>
-
-        {/* Footer */}
-        <Footer
-          companyName={safeFormData.companyName || 'COMPANY NAME'}
-          companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
-        />
-      </Page>
+      <LayoutComponent formData={safeFormData} />
     </Document>
   );
 };
@@ -456,6 +811,7 @@ function SalarySlipGeneratorV2() {
   const [isLoading, setIsLoading] = useState(true);
   const [showPDF, setShowPDF] = useState(false);
   const [formData, setFormData] = useState({
+    company: DEFAULT_COMPANY_NAME,
     employeeName: [],
     employeeId: "",
     designation: "",
@@ -474,7 +830,7 @@ function SalarySlipGeneratorV2() {
     cca: 0,
     professionalTax: 0,
     otherDeductions: 0,
-    companyName: "",
+    companyName: DEFAULT_COMPANY_NAME,
     companyAddressLine1: "",
     companyColor: "",
     companyEmail: "",
@@ -523,6 +879,38 @@ function SalarySlipGeneratorV2() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (companies.length === 0) return;
+
+    setFormData(prev => {
+      const desiredName = prev.company || DEFAULT_COMPANY_NAME;
+      const selectedCompany =
+        companies.find(company => company.name === desiredName) || companies[0];
+
+      if (!selectedCompany) return prev;
+
+      const alreadySynced =
+        prev.companyName === selectedCompany.name &&
+        prev.companyAddressLine1 === selectedCompany.address &&
+        prev.companyLogo === selectedCompany.logo;
+
+      if (alreadySynced) return prev;
+
+      return {
+        ...prev,
+        company: selectedCompany.name,
+        companyName: selectedCompany.name,
+        companyAddressLine1: selectedCompany.address || prev.companyAddressLine1,
+        companyColor: selectedCompany.serverColor || prev.companyColor,
+        companyEmail: selectedCompany.email || prev.companyEmail,
+        companyPhone: selectedCompany.mobile || prev.companyPhone,
+        companyWebsite: selectedCompany.website || prev.companyWebsite,
+        companyLogo: selectedCompany.logo || prev.companyLogo,
+        companyHR: selectedCompany.hrName || prev.companyHR
+      };
+    });
+  }, [companies]);
 
   const fetchCompanies = async () => {
     const querySnapshot = await getDocs(collection(db, "companies"));
@@ -644,6 +1032,7 @@ function SalarySlipGeneratorV2() {
       if (selectedCompany) {
         setFormData(prev => ({
           ...prev,
+          company: selectedCompany.name,
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
           companyColor: selectedCompany.serverColor,
@@ -652,6 +1041,11 @@ function SalarySlipGeneratorV2() {
           companyWebsite: selectedCompany.website,
           companyLogo: selectedCompany.logo,
           companyHR: selectedCompany.hrName
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          company: value
         }));
       }
     } else if (name === "employeeName") {
@@ -791,6 +1185,16 @@ function SalarySlipGeneratorV2() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="form-group md:col-span-6">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
+          <input
+            type="text"
+            value={formData.companyName || DEFAULT_COMPANY_NAME}
+            className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+            readOnly
+          />
+        </div>
+
         <div className="form-group md:col-span-6">
           <SearchableDropdown
             label="Employee Name"
