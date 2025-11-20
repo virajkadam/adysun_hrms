@@ -32,7 +32,7 @@ export default function AddEmployeePage() {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<EmployeeFormData>({
     defaultValues: {
       status: 'active',
-      employeeType: 'insider', // Default to insider
+      employeeType: 'internal', // Default to internal
     }
   });
 
@@ -310,8 +310,8 @@ export default function AddEmployeePage() {
                     })}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   >
-                    <option value="insider">Insider</option>
-                    <option value="outsider">Outsider</option>
+                    <option value="internal">Internal</option>
+                    <option value="external">External</option>
                   </select>
                   {errors.employeeType && (
                     <p className="mt-1 text-sm text-red-600">{errors.employeeType.message}</p>

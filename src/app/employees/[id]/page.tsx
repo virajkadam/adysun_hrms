@@ -348,12 +348,12 @@ export default function EmployeeViewPage({ params }: PageParams) {
               <div className="bg-white rounded-lg shadow p-3">
                 <span
                   className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    employee.employeeType === 'insider'
+                    (employee.employeeType || 'internal') === 'internal'
                       ? 'bg-blue-100 text-blue-800'
                       : 'bg-orange-100 text-orange-800'
                   }`}
                 >
-                  {employee.employeeType || 'insider'}
+                  {(employee.employeeType || 'internal') === 'internal' ? 'Internal' : 'External'}
                 </span>
                 <p className="text-sm text-gray-500 mt-2">Employee Type</p>
               </div>

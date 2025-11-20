@@ -23,7 +23,7 @@ export interface BulkUploadResult {
 export interface ParsedEmployee {
   name: string;
   dateOfBirth: string;
-  employeeType: 'insider' | 'outsider';
+  employeeType: 'internal' | 'external';
   phone: string;
   email: string;
   currentAddress: string;
@@ -65,7 +65,7 @@ export const parseCSV = async (file: File): Promise<ParsedEmployee[]> => {
           const employees: ParsedEmployee[] = parsedData.map((row) => ({
             name: row.name?.trim() || '',
             dateOfBirth: row.dateOfBirth?.trim() || '',
-            employeeType: (row.employeeType?.trim() || '') as 'insider' | 'outsider',
+            employeeType: (row.employeeType?.trim() || '') as 'internal' | 'external',
             phone: row.phone?.trim() || '',
             email: row.email?.trim() || '',
             currentAddress: row.currentAddress?.trim() || '',
@@ -121,8 +121,8 @@ export const validateBulkEmployees = async (employees: ParsedEmployee[]): Promis
       }
     }
     
-    if (!employee.employeeType || !['insider', 'outsider'].includes(employee.employeeType)) {
-      errors.push({ row, field: 'employeeType', message: 'Employee type must be "insider" or "outsider"' });
+    if (!employee.employeeType || !['internal', 'external'].includes(employee.employeeType)) {
+      errors.push({ row, field: 'employeeType', message: 'Employee type must be "internal" or "external"' });
     }
     
     if (!employee.phone || employee.phone.trim() === '') {
