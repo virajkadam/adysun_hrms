@@ -164,6 +164,24 @@ export default function EnquiryListPage() {
       filtered = filtered.filter((enquiry) => enquiry.totalWorkExperience === experienceFilter);
     }
 
+    // Sort by createdAt (newest first)
+    filtered.sort((a, b) => {
+      const getDateValue = (enquiry: Enquiry): number => {
+        if (!enquiry.createdAt) return 0;
+        if (typeof enquiry.createdAt === 'string') {
+          return new Date(enquiry.createdAt).getTime();
+        }
+        // Firestore timestamp object
+        return enquiry.createdAt.seconds * 1000 + enquiry.createdAt.nanoseconds / 1000000;
+      };
+      
+      const dateA = getDateValue(a);
+      const dateB = getDateValue(b);
+      
+      // Sort in descending order (newest first)
+      return dateB - dateA;
+    });
+
     setFilteredEnquiries(filtered);
     setCurrentPage(1); // Reset to first page when filtering
   }, [enquiries, searchTerm, technologyFilter, roleFilter, experienceFilter]);

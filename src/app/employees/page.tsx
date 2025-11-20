@@ -117,19 +117,28 @@ export default function EmployeesPage() {
     setDeleteConfirm(null);
   };
 
-  const filteredEmployees = employees.filter(employee => {
-    const matchesSearch = 
-    employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      employee.phone?.includes(searchTerm);
-    
-    const matchesFilter = 
-      filterValue === 'all' || 
-      (filterValue === 'active' && employee.status === 'active') ||
-      (filterValue === 'inactive' && employee.status === 'inactive');
-    
-    return matchesSearch && matchesFilter;
-  });
+  const filteredEmployees = employees
+    .filter(employee => {
+      const matchesSearch = 
+      employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        employee.phone?.includes(searchTerm);
+      
+      const matchesFilter = 
+        filterValue === 'all' || 
+        (filterValue === 'active' && employee.status === 'active') ||
+        (filterValue === 'inactive' && employee.status === 'inactive');
+      
+      return matchesSearch && matchesFilter;
+    })
+    .sort((a, b) => {
+      // Sort by createdAt (newest first), fallback to updatedAt, then joinDate
+      const dateA = a.createdAt || a.updatedAt || a.joinDate || '';
+      const dateB = b.createdAt || b.updatedAt || b.joinDate || '';
+      
+      // Compare dates in descending order (newest first)
+      return dateB.localeCompare(dateA);
+    });
 
   const total = filteredEmployees.length;
   const active = filteredEmployees.filter(e => e.status === 'active').length;
