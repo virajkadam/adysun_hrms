@@ -737,7 +737,7 @@ function SalarySlipGeneratorV2() {
         </Link>
 
         {/* Form Section */}
-        <h2 className="text-2xl font-bold text-gray-800 flex-1 text-center">Salary Slip Generator (v2)</h2>
+        <h2 className="text-2xl font-bold text-gray-800 flex-1 text-center">Salary Slip Generator</h2>
 
         {/* Generate button in header */}
         <button
@@ -749,8 +749,8 @@ function SalarySlipGeneratorV2() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="form-group">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <div className="form-group md:col-span-6">
           <label className="block mb-2 text-sm font-medium text-gray-700">Employee Name</label>
           <select
             name="employeeName"
@@ -766,23 +766,8 @@ function SalarySlipGeneratorV2() {
             ))}
           </select>
         </div>
-        <div className="form-group">
-          <label className="block mb-2 text-sm font-medium text-gray-700">Company</label>
-          <select
-            name="company"
-            onChange={handleInputChange}
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">Select Company</option>
-            {companies.map((company) => (
-              <option key={company.id} value={company.name}>
-                {company.name}
-              </option>
-            ))}
-          </select>
-        </div>
 
-        <div className="form-group">
+        <div className="form-group md:col-span-3">
           <label className="block mb-2 text-sm font-medium text-gray-700">Month</label>
           <select
             name="month"
@@ -805,7 +790,7 @@ function SalarySlipGeneratorV2() {
           </select>
         </div>
 
-        <div className="form-group">
+        <div className="form-group md:col-span-3">
           <label className="block mb-2 text-sm font-medium text-gray-700">Leaves</label>
           <input
             type="number"
@@ -818,7 +803,7 @@ function SalarySlipGeneratorV2() {
           />
         </div>
 
-        <div className="form-group">
+        <div className="form-group md:col-span-6">
           <label className="block mb-2 text-sm font-medium text-gray-700">Payable Days</label>
           <input
             type="text"
@@ -829,7 +814,7 @@ function SalarySlipGeneratorV2() {
 
         </div>
 
-        <div className="form-group">
+        <div className="form-group md:col-span-6">
           <label className="block mb-2 text-sm font-medium text-gray-700">Pay Date</label>
           <input
             type="date"
