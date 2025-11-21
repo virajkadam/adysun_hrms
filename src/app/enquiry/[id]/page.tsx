@@ -71,7 +71,7 @@ export default function EnquiryViewPage() {
             <div className="text-red-500">{error}</div>
           ) : enquiry ? (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-lg font-semibold text-gray-900">{enquiry.name || 'Anonymous'}</div>
                   <div className="text-xs text-gray-500 mt-2">Name</div>
