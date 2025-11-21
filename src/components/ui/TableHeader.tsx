@@ -5,12 +5,13 @@ import SearchBar from './SearchBar';
 import Tooltip from './Tooltip';
 
 interface ActionButton {
-  label: string;
+  label?: string;
   href?: string;
   onClick?: () => void;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'orange' | 'purple';
   disabled?: boolean;
+  hollow?: boolean;
 }
 
 interface BackButton {
@@ -131,8 +132,31 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   onClearFilters,
   hasActiveFilters = false,
 }) => {
-  const getButtonClasses = (variant: string = 'primary') => {
+  const getButtonClasses = (variant: string = 'primary', hollow: boolean = false) => {
     const baseClasses = 'px-2 sm:px-4 py-2 rounded-md flex items-center justify-center gap-1 sm:gap-2 transition-colors duration-200 text-sm sm:text-base w-full sm:w-auto';
+    
+    if (hollow) {
+      switch (variant) {
+        case 'primary':
+          return `${baseClasses} border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white`;
+        case 'secondary':
+          return `${baseClasses} border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white`;
+        case 'success':
+          return `${baseClasses} border border-green-600 text-green-600 hover:bg-green-600 hover:text-white`;
+        case 'warning':
+          return `${baseClasses} border border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white`;
+        case 'danger':
+          return `${baseClasses} border border-red-600 text-red-600 hover:bg-red-600 hover:text-white`;
+        case 'orange':
+          return `${baseClasses} border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white`;
+        case 'purple':
+          return `${baseClasses} border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white`;
+        case 'info':
+          return `${baseClasses} border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white`;
+        default:
+          return `${baseClasses} border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white`;
+      }
+    }
     
     switch (variant) {
       case 'primary':
@@ -149,6 +173,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         return `${baseClasses} bg-orange-400 text-white hover:bg-orange-500`;
       case 'purple':
         return `${baseClasses} bg-purple-600 text-white hover:bg-purple-700`;
+      case 'info':
+        return `${baseClasses} bg-blue-500 text-white hover:bg-blue-600`;
       default:
         return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700`;
     }
@@ -239,7 +265,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
               const buttonContent = (
                 <>
                   {button.icon}
-                  <span className="hidden sm:inline">{button.label}</span>
+                  {button.label && <span className="hidden sm:inline">{button.label}</span>}
                 </>
               );
 
@@ -248,7 +274,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   <Link
                     key={index}
                     href={button.href}
-                    className={`${getButtonClasses(button.variant)} ${
+                    className={`${getButtonClasses(button.variant, button.hollow)} ${
                       button.disabled ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                     onClick={button.onClick}
@@ -263,7 +289,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                   key={index}
                   onClick={button.onClick}
                   disabled={button.disabled}
-                  className={`${getButtonClasses(button.variant)} ${
+                  className={`${getButtonClasses(button.variant, button.hollow)} ${
                     button.disabled ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >

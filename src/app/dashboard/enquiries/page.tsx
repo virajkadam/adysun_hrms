@@ -6,7 +6,7 @@ import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import TableHeader from '@/components/ui/TableHeader';
 import { ActionButton } from '@/components/ui/ActionButton';
-import { FiEye, FiTrash2, FiCopy } from 'react-icons/fi';
+import { FiEye, FiTrash2, FiCopy, FiRefreshCw } from 'react-icons/fi';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Pagination from '@/components/ui/Pagination';
@@ -38,6 +38,7 @@ export default function EnquiryListPage() {
   const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isReloading, setIsReloading] = useState(false);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,27 +112,43 @@ export default function EnquiryListPage() {
     { value: "13+ years", label: "13+ years" },
   ];
 
-  useEffect(() => {
-    const fetchEnquiries = async () => {
+  const fetchEnquiries = async (showLoading = true) => {
+    if (showLoading) {
       setLoading(true);
       setError(null);
-      try {
-        const q = query(collection(db, "enquiries"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        const data: Enquiry[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Enquiry[];
-        setEnquiries(data);
-        setFilteredEnquiries(data);
-      } catch (err: unknown) {
-        console.error("Error fetching enquiries:", err);
-        setError("Failed to load enquiries");
-      } finally {
-        setLoading(false);
+    } else {
+      setIsReloading(true);
+    }
+    try {
+      const q = query(collection(db, "enquiries"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const data: Enquiry[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Enquiry[];
+      setEnquiries(data);
+      setFilteredEnquiries(data);
+      if (!showLoading) {
+        toast.success('Enquiries refreshed');
       }
-    };
-    fetchEnquiries();
+    } catch (err: unknown) {
+      console.error("Error fetching enquiries:", err);
+      if (showLoading) {
+        setError("Failed to load enquiries");
+      } else {
+        toast.error("Failed to refresh enquiries");
+      }
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      } else {
+        setIsReloading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchEnquiries(true);
   }, []);
 
   // Filter enquiries based on search term and filters
@@ -292,6 +309,14 @@ export default function EnquiryListPage() {
           onClearFilters={clearFilters}
           hasActiveFilters={!!(searchTerm || technologyFilter || roleFilter || experienceFilter)}
           actionButtons={[
+            {
+              icon: <FiRefreshCw className={`w-4 h-4 ${isReloading ? 'animate-spin' : ''}`} />,
+              variant: 'info' as const,
+              hollow: true,
+              onClick: () => {
+                fetchEnquiries(false);
+              }
+            },
             {
               label: 'Copy Link',
               icon: <FiCopy className="w-4 h-4" />,
