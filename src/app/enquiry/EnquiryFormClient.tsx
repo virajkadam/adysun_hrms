@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { validatePANFormat, checkPANExistsAnywhere } from "@/utils/firebaseUtils";
@@ -198,8 +198,10 @@ export default function EnquirySubmitPage() {
   const [error, setError] = useState<string | null>(null);
   const [mobileError, setMobileError] = useState<string | null>(null);
   const [panError, setPanError] = useState<string | null>(null);
+  const [panDuplicateError, setPanDuplicateError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(5);
+  const panDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Countdown effect for Instagram redirect
   useEffect(() => {
@@ -222,6 +224,7 @@ export default function EnquirySubmitPage() {
     setMobileError(null);
     setPanError(null);
     setEmailError(null);
+    setPanDuplicateError(null);
 
     // Validate required fields
     if (!formData.name.trim()) {
@@ -341,10 +344,14 @@ export default function EnquirySubmitPage() {
     >
   ) => {
     const { name, value } = e.target;
+    const processedValue =
+      name === "pan"
+        ? value.toUpperCase().replace(/\s+/g, "")
+        : value;
 
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: processedValue,
     });
 
     // Mobile number validation
@@ -363,14 +370,17 @@ export default function EnquirySubmitPage() {
 
     // PAN number validation
     if (name === "pan") {
-      if (value.length > 0) {
-        if (!validatePANFormat(value)) {
+      if (processedValue.length > 0) {
+        if (!validatePANFormat(processedValue)) {
           setPanError("Please enter a valid PAN number (e.g., ABCDE1234F)");
+          setPanDuplicateError(null);
         } else {
           setPanError(null);
+          setPanDuplicateError(null);
         }
       } else {
         setPanError(null);
+        setPanDuplicateError(null);
       }
     }
 
@@ -385,6 +395,21 @@ export default function EnquirySubmitPage() {
         }
       } else {
         setEmailError(null);
+      }
+      if (panDebounceRef.current) {
+        clearTimeout(panDebounceRef.current);
+      }
+      if (processedValue.length === 10 && validatePANFormat(processedValue)) {
+        panDebounceRef.current = setTimeout(async () => {
+          try {
+            const exists = await checkPANExistsAnywhere(processedValue);
+            setPanDuplicateError(exists ? "This PAN number is already registered" : null);
+          } catch (error) {
+            console.error("Error checking PAN uniqueness:", error);
+          }
+        }, 1000);
+      } else {
+        setPanDuplicateError(null);
       }
     }
 
@@ -549,7 +574,7 @@ export default function EnquirySubmitPage() {
                       value={formData.pan}
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        panError ? "border-red-500" : "border-gray-300"
+                        panError || panDuplicateError ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter PAN number (e.g., ABCDE1234F)"
                       pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
@@ -557,6 +582,9 @@ export default function EnquirySubmitPage() {
                     />
                     {panError && (
                       <p className="mt-1 text-sm text-red-600">{panError}</p>
+                    )}
+                    {panDuplicateError && !panError && (
+                      <p className="mt-1 text-sm text-red-600">{panDuplicateError}</p>
                     )}
                   </div>
                   <div>
