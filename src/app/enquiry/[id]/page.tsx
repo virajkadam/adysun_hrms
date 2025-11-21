@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 import { db } from "@/firebase/config";
 import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -23,6 +24,7 @@ interface Enquiry {
 export default function EnquiryViewPage() {
   const params = useParams();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
+  const router = useRouter();
   const [enquiry, setEnquiry] = useState<Enquiry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,14 +49,14 @@ export default function EnquiryViewPage() {
     <DashboardLayout
       breadcrumbItems={[
         { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Enquiries', href: '/enquiry' },
+        { label: 'Enquiries', href: '/dashboard/enquiries' },
         { label: enquiry?.name || 'Anonymous', isCurrent: true },
       ]}
     >
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Enquiry Details"
-          backButton={{ href: '/enquiry' }}
+          backButton={{ onClick: () => router.back(), label: 'Back' }}
           showStats={false}
           showSearch={false}
           showFilter={false}
@@ -70,40 +72,39 @@ export default function EnquiryViewPage() {
           ) : enquiry ? (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Name</div>
+                <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-lg font-semibold text-gray-900">{enquiry.name || 'Anonymous'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Name</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Mobile</div>
-                  <div className="text-sm text-gray-700">{enquiry.mobile || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.mobile || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Mobile</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">PAN Number</div>
-                  <div className="text-sm text-gray-700">{enquiry.pan || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.pan || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">PAN Number</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Passout Year</div>
-                  <div className="text-sm text-gray-700">{enquiry.passoutYear || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.passoutYear || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Passout Year</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Technology</div>
-                  <div className="text-sm text-gray-700">{enquiry.technology || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.technology || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Technology</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Role</div>
-                  <div className="text-sm text-gray-700">{enquiry.role || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.role || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Role</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Total Work Experience</div>
-                  <div className="text-sm text-gray-700">{enquiry.totalWorkExperience || '-'}</div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">{enquiry.totalWorkExperience || '-'}</div>
+                  <div className="text-xs text-gray-500 mt-2">Total Work Experience</div>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 mb-1">Submitted On</div>
-                  <div className="text-sm text-gray-700">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-900">
                     {enquiry.createdAt
                       ? formatDateToDayMonYear(
                           typeof enquiry.createdAt === "string"
@@ -112,16 +113,15 @@ export default function EnquiryViewPage() {
                         )
                       : "-"}
                   </div>
+                  <div className="text-xs text-gray-500 mt-2">Submitted On</div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-4">
-                  <div className="text-xs text-gray-500 mb-1">Message</div>
-                  <div className="text-base text-gray-800 whitespace-pre-line bg-gray-50 rounded p-3 border border-gray-100">
-                    {enquiry.message}
-                  </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="text-base text-gray-900 whitespace-pre-line">
+                  {enquiry.message}
                 </div>
+                        <div className="text-xs text-gray-500 mt-2">Message</div>
               </div>
             </div>
           ) : null}
