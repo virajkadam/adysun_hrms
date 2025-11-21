@@ -80,6 +80,7 @@ interface TableHeaderProps {
   experienceFilterOptions?: FilterOption[];
   onClearFilters?: () => void;
   hasActiveFilters?: boolean;
+  customReloadButton?: React.ReactNode;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -131,6 +132,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   experienceFilterOptions = [],
   onClearFilters,
   hasActiveFilters = false,
+  customReloadButton,
 }) => {
   const getButtonClasses = (variant: string = 'primary', hollow: boolean = false) => {
     const baseClasses = 'px-2 sm:px-4 py-2 rounded-md flex items-center justify-center gap-1 sm:gap-2 transition-colors duration-200 text-sm sm:text-base w-full sm:w-auto';
@@ -432,6 +434,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
                         </div>
                       </div>
                     )}
+                    {customReloadButton}
                   </div>
 
                   {/* Desktop Clear Filters Button */}

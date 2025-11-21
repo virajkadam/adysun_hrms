@@ -308,15 +308,18 @@ export default function EnquiryListPage() {
           experienceFilterOptions={experienceOptions}
           onClearFilters={clearFilters}
           hasActiveFilters={!!(searchTerm || technologyFilter || roleFilter || experienceFilter)}
-          actionButtons={[
-            {
-              icon: <FiRefreshCw className={`w-4 h-4 ${isReloading ? 'animate-spin' : ''}`} />,
-              variant: 'info' as const,
-              hollow: true,
-              onClick: () => {
+          customReloadButton={
+            <button
+              onClick={() => {
                 fetchEnquiries(false);
-              }
-            },
+              }}
+              className="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white px-3 py-2 rounded-md flex items-center justify-center transition-colors duration-200"
+              title="Reload"
+            >
+              <FiRefreshCw className={`w-4 h-4 ${isReloading ? 'animate-spin' : ''}`} />
+            </button>
+          }
+          actionButtons={[
             {
               label: 'Copy Link',
               icon: <FiCopy className="w-4 h-4" />,
