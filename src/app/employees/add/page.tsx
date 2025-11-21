@@ -414,7 +414,7 @@ export default function AddEmployeePage() {
                   />
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500 mr-1">*</span> Current Address
                   </label>
@@ -429,13 +429,14 @@ export default function AddEmployeePage() {
                   )}
                 </div>
 
-                <div className="md:col-span-2">
+                <div className="md:col-span-4">
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-sm font-medium text-gray-700">
                       Permanent Address
                     </label>
-                    <label className="flex items-center text-sm text-gray-600 space-x-2">
+                    <label htmlFor="addSameAsCurrentAddress" className="flex items-center text-sm text-gray-600 space-x-2">
                       <input
+                        id="addSameAsCurrentAddress"
                         type="checkbox"
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         checked={sameAsCurrentAddress}
@@ -456,6 +457,7 @@ export default function AddEmployeePage() {
                     {...register('permanentAddress')}
                     className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black ${sameAsCurrentAddress ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                     readOnly={sameAsCurrentAddress}
+                    disabled={sameAsCurrentAddress}
                   />
                 </div>
               </div>

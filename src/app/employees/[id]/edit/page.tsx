@@ -29,11 +29,13 @@ export default function EditEmployeePage({ params }: PageParams) {
   }>>([
     { id: crypto.randomUUID(), type: '12th' }
   ]);
+  const [sameAsCurrentAddress, setSameAsCurrentAddress] = useState(false);
 
   const router = useRouter();
   const { id } = use(params);
 
-  const { register, handleSubmit, formState: { errors }, reset, watch } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
+  const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
+  const currentAddressValue = watch('currentAddress');
 
   // Helper functions for managing education entries
   // Check if we can add more entries
@@ -132,6 +134,12 @@ export default function EditEmployeePage({ params }: PageParams) {
 
     fetchEmployee();
   }, [id, reset]);
+
+  useEffect(() => {
+    if (sameAsCurrentAddress) {
+      setValue('permanentAddress', currentAddressValue || '');
+    }
+  }, [sameAsCurrentAddress, currentAddressValue, setValue]);
 
   const onSubmit = async (data: Omit<Employee, 'id'>) => {
     try {
@@ -352,7 +360,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                   </label>
                   <input type="text" placeholder="Enter department" {...register('department')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                 </div>
-                <div className="md:col-span-2">
+                <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     <span className="text-red-500">*</span> Current Address
                   </label>
@@ -361,7 +369,32 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
-                  <input type="text" placeholder="Enter permanent address" {...register('permanentAddress')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <div className="flex items-center mb-2">
+                    <input
+                      id="sameAsCurrentAddress"
+                      type="checkbox"
+                      checked={sameAsCurrentAddress}
+                      onChange={(event) => {
+                        const checked = event.target.checked;
+                        setSameAsCurrentAddress(checked);
+                        if (checked) {
+                          setValue('permanentAddress', currentAddressValue || '');
+                        }
+                      }}
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    />
+                    <label htmlFor="sameAsCurrentAddress" className="ml-2 text-sm text-gray-700">
+                      Same as Current Address
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Enter permanent address"
+                    {...register('permanentAddress')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black disabled:bg-gray-100 disabled:text-gray-500"
+                    readOnly={sameAsCurrentAddress}
+                    disabled={sameAsCurrentAddress}
+                  />
                 </div>
               </div>
             </div>
