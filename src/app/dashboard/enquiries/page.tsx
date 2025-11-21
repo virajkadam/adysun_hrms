@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -35,6 +35,9 @@ export default function EnquiryListPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -227,6 +230,35 @@ export default function EnquiryListPage() {
     setExperienceFilter("");
   };
 
+  const openDeleteModal = (enquiry: Enquiry) => {
+    setSelectedEnquiry(enquiry);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setSelectedEnquiry(null);
+    setIsDeleting(false);
+  };
+
+  const handleDeleteEnquiry = async () => {
+    if (!selectedEnquiry) return;
+    try {
+      setIsDeleting(true);
+      await deleteDoc(doc(db, "enquiries", selectedEnquiry.id));
+
+      setEnquiries(prev => prev.filter(enquiry => enquiry.id !== selectedEnquiry.id));
+      setFilteredEnquiries(prev => prev.filter(enquiry => enquiry.id !== selectedEnquiry.id));
+      toast.success("Enquiry deleted successfully");
+      setIsDeleting(false);
+      closeDeleteModal();
+    } catch (deleteError) {
+      console.error("Failed to delete enquiry:", deleteError);
+      toast.error("Failed to delete enquiry. Please try again.");
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <DashboardLayout
       breadcrumbItems={[
@@ -307,9 +339,7 @@ export default function EnquiryListPage() {
                           icon={<FiTrash2 className="w-4 h-4" />}
                           title="Delete"
                           colorClass="bg-red-100 text-red-600 hover:text-red-900"
-                          onClick={() => {
-                            console.log('Delete enquiry:', enquiry.id);
-                          }}
+                              onClick={() => openDeleteModal(enquiry)}
                           as="button"
                         />
                       </div>
@@ -460,10 +490,7 @@ export default function EnquiryListPage() {
                             icon={<FiTrash2 className="w-5 h-5" />}
                             title="Delete"
                             colorClass="bg-red-100 text-red-600 hover:text-red-900"
-                            onClick={() => {
-                              // TODO: Implement delete functionality
-                              console.log('Delete enquiry:', enquiry.id);
-                            }}
+                            onClick={() => openDeleteModal(enquiry)}
                             as="button"
                           />
                         </div>
@@ -487,6 +514,45 @@ export default function EnquiryListPage() {
         )}
       </div>
       <Toaster />
+
+      {isDeleteModalOpen && selectedEnquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Delete Enquiry</h3>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to delete the enquiry from{" "}
+              <span className="font-semibold">{selectedEnquiry.name || "Anonymous"}</span>? This action cannot be undone.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 mb-6 space-y-2">
+              <p><span className="font-medium">Email:</span> {selectedEnquiry.email || "-"}</p>
+              <p><span className="font-medium">Mobile:</span> {selectedEnquiry.mobile || "-"}</p>
+              {selectedEnquiry.technology && (
+                <p><span className="font-medium">Technology:</span> {selectedEnquiry.technology}</p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeDeleteModal}
+                className="px-4 py-2 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteEnquiry}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Enquiry"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 }
