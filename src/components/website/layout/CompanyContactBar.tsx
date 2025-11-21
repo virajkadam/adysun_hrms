@@ -79,7 +79,7 @@ export default function CompanyContactBar({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Left: Logo + Company Name */}
-          <div className="flex items-center gap-3 min-w-0">
+          {/* <div className="flex items-center gap-3 min-w-0">
             <Image
               src={logoSrc}
               alt={`${companyName} Logo`}
@@ -88,7 +88,27 @@ export default function CompanyContactBar({
               className="w-9 h-9 object-contain"
             />
             <span className={`font-semibold text-lg ${baseText} truncate`}>{companyName}</span>
-          </div>
+          </div> */}
+
+
+<Link 
+            href="/" 
+            className="flex items-center space-x-2 rounded-md flex-shrink-0 hover:opacity-80 transition-opacity"
+            aria-label="Adysun Ventures Home"
+          >
+            <Image
+              src="/adysun-logo.png"
+              alt="Adysun Ventures Logo"
+              width={40}
+              height={40}
+              className="w-10 h-10 flex-shrink-0 drop-shadow-sm"
+            />
+            <div className="sm:block flex-shrink-0">
+              <div className="text-base lg:text-lg font-bold text-dark-900 drop-shadow-sm">ADYSUN VENTURES</div>
+              <div className="text-xs text-black drop-shadow-sm text-white">Inspire. Imagine. Implement.</div>
+            </div>
+          </Link>
+
 
           {/* Middle: Contact */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-2">
