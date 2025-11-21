@@ -148,7 +148,7 @@ export default function ProfilePage() {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{user?.name}</h1>
                 <p className="text-gray-600">
-                  {isAdmin ? 'Administrator' : 'Employee'}
+                  {isAdmin ? 'Admin' : 'Employee'}
                 </p>
                 <div className="flex items-center mt-2">
                   <span
@@ -168,57 +168,48 @@ export default function ProfilePage() {
           {/* Profile Information */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Full Name */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
+            {/* <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-900 font-semibold text-lg">{user?.name}</p>
                 <FiUser className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500">Full Name</p>
-                  <p className="text-gray-900 font-medium">{user?.name}</p>
-                </div>
               </div>
-            </div>
+              <p className="text-sm text-gray-500 mt-2">Full Name</p>
+            </div> */}
 
             {/* Email Address */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-900 font-semibold text-lg">{user?.email || 'Not provided'}</p>
                 <FiMail className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500">Email Address</p>
-                  <p className="text-gray-900 font-medium">{user?.email || 'Not provided'}</p>
-                </div>
               </div>
+              <p className="text-sm text-gray-500 mt-2">Email Address</p>
             </div>
 
             {/* Phone Number */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-900 font-semibold text-lg">{getUserPhone()}</p>
                 <FiPhone className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500">Phone Number</p>
-                  <p className="text-gray-900 font-medium">{getUserPhone()}</p>
-                </div>
               </div>
+              <p className="text-sm text-gray-500 mt-2">Phone Number</p>
             </div>
 
             {/* Account Created */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-900 font-semibold text-lg">
+                  {getUserCreatedAt()}
+                </p>
                 <FiCalendar className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-sm text-gray-500">Account Created</p>
-                  <p className="text-gray-900 font-medium">
-                    {getUserCreatedAt()}
-                  </p>
-                </div>
               </div>
+              <p className="text-sm text-gray-500 mt-2">Account Created</p>
             </div>
 
 
             <div className="bg-gray-50 rounded-lg p-4">
-              <div>
-                <p className="text-sm text-gray-500">Account Status</p>
+              <div className="flex items-center justify-between">
                 <span
-                  className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                  className={`px-3 py-1 text-sm font-semibold rounded-full ${
                     isUserActive()
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'
@@ -226,7 +217,9 @@ export default function ProfilePage() {
                 >
                   {getUserStatus()}
                 </span>
+                <FiShield className="w-5 h-5 text-gray-400" />
               </div>
+              <p className="text-sm text-gray-500 mt-2">Account Status</p>
             </div>
           </div>
 
@@ -235,24 +228,24 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Session Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-gray-500">Login Time</p>
-                <p className="text-gray-900 font-medium">
+                <p className="text-gray-900 font-semibold text-lg">
                   {new Date().toLocaleString()}
                 </p>
+                <p className="text-sm text-gray-500 mt-2">Login Time</p>
               </div>
               
               <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-gray-500">Session Duration</p>
-                <p className="text-gray-900 font-medium">
+                <p className="text-gray-900 font-semibold text-lg">
                   Active
                 </p>
+                <p className="text-sm text-gray-500 mt-2">Session Duration</p>
               </div>
               
               <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-gray-500">Last Activity</p>
-                <p className="text-gray-900 font-medium">
+                <p className="text-gray-900 font-semibold text-lg">
                   Just now
                 </p>
+                <p className="text-sm text-gray-500 mt-2">Last Activity</p>
               </div>
             </div>
           </div>
