@@ -39,11 +39,10 @@ export default function EnquiryListPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isReloading, setIsReloading] = useState(false);
-  
+
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
   const [technologyFilter, setTechnologyFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
   const [experienceFilter, setExperienceFilter] = useState("");
 
   // Filter options from the candidate enquiry form
@@ -75,29 +74,7 @@ export default function EnquiryListPage() {
     { value: "Other", label: "Other" },
   ];
 
-  const roleOptions = [
-    { value: "", label: "All Roles" },
-    { value: "Frontend Developer", label: "Frontend Developer" },
-    { value: "Backend Developer", label: "Backend Developer" },
-    { value: "Full Stack Developer", label: "Full Stack Developer" },
-    { value: "Mobile Developer", label: "Mobile Developer" },
-    { value: "DevOps Engineer", label: "DevOps Engineer" },
-    { value: "Data Scientist", label: "Data Scientist" },
-    { value: "Data Engineer", label: "Data Engineer" },
-    { value: "Machine Learning Engineer", label: "Machine Learning Engineer" },
-    { value: "UI/UX Designer", label: "UI/UX Designer" },
-    { value: "Product Manager", label: "Product Manager" },
-    { value: "Project Manager", label: "Project Manager" },
-    { value: "QA Engineer", label: "QA Engineer" },
-    { value: "Software Architect", label: "Software Architect" },
-    { value: "System Administrator", label: "System Administrator" },
-    { value: "Database Administrator", label: "Database Administrator" },
-    { value: "Security Engineer", label: "Security Engineer" },
-    { value: "Business Analyst", label: "Business Analyst" },
-    { value: "Technical Lead", label: "Technical Lead" },
-    { value: "Team Lead", label: "Team Lead" },
-    { value: "Other", label: "Other" },
-  ];
+
 
   const experienceOptions = [
     { value: "", label: "All Exp." },
@@ -164,7 +141,6 @@ export default function EnquiryListPage() {
         enquiry.email?.toLowerCase().includes(searchLower) ||
         enquiry.pan?.toLowerCase().includes(searchLower) ||
         enquiry.technology?.toLowerCase().includes(searchLower) ||
-        enquiry.role?.toLowerCase().includes(searchLower) ||
         enquiry.message?.toLowerCase().includes(searchLower)
       );
     }
@@ -172,11 +148,6 @@ export default function EnquiryListPage() {
     // Technology filter
     if (technologyFilter) {
       filtered = filtered.filter((enquiry) => enquiry.technology === technologyFilter);
-    }
-
-    // Role filter
-    if (roleFilter) {
-      filtered = filtered.filter((enquiry) => enquiry.role === roleFilter);
     }
 
     // Experience filter
@@ -194,17 +165,17 @@ export default function EnquiryListPage() {
         // Firestore timestamp object
         return enquiry.createdAt.seconds * 1000 + enquiry.createdAt.nanoseconds / 1000000;
       };
-      
+
       const dateA = getDateValue(a);
       const dateB = getDateValue(b);
-      
+
       // Sort in descending order (newest first)
       return dateB - dateA;
     });
 
     setFilteredEnquiries(filtered);
     setCurrentPage(1); // Reset to first page when filtering
-  }, [enquiries, searchTerm, technologyFilter, roleFilter, experienceFilter]);
+  }, [enquiries, searchTerm, technologyFilter, experienceFilter]);
 
   if (authLoading) {
     return (
@@ -243,7 +214,6 @@ export default function EnquiryListPage() {
   const clearFilters = () => {
     setSearchTerm("");
     setTechnologyFilter("");
-    setRoleFilter("");
     setExperienceFilter("");
   };
 
@@ -300,14 +270,11 @@ export default function EnquiryListPage() {
           technologyFilterValue={technologyFilter}
           onTechnologyFilterChange={setTechnologyFilter}
           technologyFilterOptions={technologyOptions}
-          roleFilterValue={roleFilter}
-          onRoleFilterChange={setRoleFilter}
-          roleFilterOptions={roleOptions}
           experienceFilterValue={experienceFilter}
           onExperienceFilterChange={setExperienceFilter}
           experienceFilterOptions={experienceOptions}
           onClearFilters={clearFilters}
-          hasActiveFilters={!!(searchTerm || technologyFilter || roleFilter || experienceFilter)}
+          hasActiveFilters={!!(searchTerm || technologyFilter || experienceFilter)}
           customReloadButton={
             <button
               onClick={() => {
@@ -333,7 +300,7 @@ export default function EnquiryListPage() {
             }
           ]}
         />
-        
+
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading...</div>
         ) : error ? (
@@ -367,49 +334,23 @@ export default function EnquiryListPage() {
                           icon={<FiTrash2 className="w-4 h-4" />}
                           title="Delete"
                           colorClass="bg-red-100 text-red-600 hover:text-red-900"
-                              onClick={() => openDeleteModal(enquiry)}
+                          onClick={() => openDeleteModal(enquiry)}
                           as="button"
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
                         <span className="text-gray-500">Mobile:</span>
                         <p className="text-gray-900">{enquiry.mobile || "-"}</p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Email:</span>
-                        <p className="text-gray-900">{enquiry.email || "-"}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">PAN:</span>
-                        <p className="text-gray-900">{enquiry.pan || "-"}</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Role:</span>
-                        <p className="text-gray-900">{enquiry.role || "-"}</p>
-                      </div>
-                      <div>
                         <span className="text-gray-500">Experience:</span>
                         <p className="text-gray-900">{enquiry.totalWorkExperience || "-"}</p>
                       </div>
-                      <div>
-                        <span className="text-gray-500">Date:</span>
-                        <p className="text-gray-900">
-                          {enquiry.createdAt
-                            ? formatDateToDayMonYear(
-                                typeof enquiry.createdAt === "string"
-                                  ? enquiry.createdAt
-                                  : new Date(
-                                      enquiry.createdAt.seconds * 1000
-                                    )
-                              )
-                            : "-"}
-                        </p>
-                      </div>
                     </div>
-                    
+
                     {enquiry.message && (
                       <div className="mt-3 pt-3 border-t border-gray-100">
                         <span className="text-gray-500 text-sm">Message:</span>
@@ -433,22 +374,10 @@ export default function EnquiryListPage() {
                       Mobile
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      PAN
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Technology
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Experience
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -470,40 +399,12 @@ export default function EnquiryListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {enquiry.email || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {enquiry.pan || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
                           {enquiry.technology || "-"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {enquiry.role || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
                           {enquiry.totalWorkExperience || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {enquiry.createdAt
-                            ? formatDateToDayMonYear(
-                                typeof enquiry.createdAt === "string"
-                                  ? enquiry.createdAt
-                                  : new Date(
-                                      enquiry.createdAt.seconds * 1000
-                                    )
-                              )
-                            : "-"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
