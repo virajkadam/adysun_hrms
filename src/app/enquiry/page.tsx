@@ -1,30 +1,25 @@
 import type { Metadata } from "next";
 import EnquiryFormClient from "./EnquiryFormClient";
+import { enquiryMetaConfig } from "./metaConfig";
+
+const { title, description, keywords, canonical, image } = enquiryMetaConfig;
 
 export const metadata: Metadata = {
-  title: "Adysun Ventures | Candidate Enquiry",
-  description:
-    "Submit your enquiry to Adysun Ventures to explore career opportunities, share your profile, and connect with our HR team.",
-  keywords: [
-    "Adysun Ventures enquiry",
-    "candidate enquiry",
-    "HR enquiry",
-    "job enquiry",
-    "Adysun careers",
-  ],
+  title,
+  description,
+  keywords,
   alternates: {
-    canonical: "https://www.adysunventures.com/enquiry",
+    canonical,
   },
   openGraph: {
-    title: "Adysun Ventures | Candidate Enquiry",
-    description:
-      "Submit your enquiry to Adysun Ventures to explore career opportunities, share your profile, and connect with our HR team.",
+    title,
+    description,
     type: "website",
-    url: "https://www.adysunventures.com/enquiry",
+    url: canonical,
     siteName: "Adysun Ventures",
     images: [
       {
-        url: "https://www.adysunventures.com/adysun-logo.png",
+        url: image,
         width: 1200,
         height: 630,
         alt: "Adysun Ventures",
@@ -33,10 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adysun Ventures | Candidate Enquiry",
-    description:
-      "Submit your enquiry to Adysun Ventures to explore career opportunities, share your profile, and connect with our HR team.",
-    images: ["https://www.adysunventures.com/adysun-logo.png"],
+    title,
+    description,
+    images: [image],
   },
   robots: {
     index: true,
