@@ -8,25 +8,32 @@ export default function IndustriesPage() {
   // Industry solutions
   const industrySolutions = [
     {
-      title: "E-Commerce Solutions",
-      description: "Comprehensive e-commerce platforms and retail technology solutions for modern businesses.",
+      title: "E-commerce",
+      description: "Comprehensive digital commerce platforms with secure, scalable store fronts.",
       image: "/assets/images/content/eCommerce.png",
       link: "/industries/ecommerce",
-      features: ["Online Store Development", "Payment Gateway Integration", "Inventory Management", "Customer Analytics"]
+      features: ["Omnichannel Storefronts", "Payment Gateway Integration", "Inventory Sync", "Customer Analytics"]
     },
     {
-      title: "Transportation & Logistics",
-      description: "Advanced logistics and fleet management technology solutions for transportation companies.",
-      image: "/assets/images/content/transportation.png",
-      link: "/industries/transportation",
-      features: ["Fleet Management Systems", "Route Optimization", "Real-time Tracking", "Supply Chain Solutions"]
-    },
-    {
-      title: "Trading Solutions",
-      description: "High-performance solutions for financial markets and trading platforms.",
+      title: "Stock Exchange",
+      description: "Market-grade solutions for brokers, exchanges, and regulatory compliant trading.",
       image: "/assets/images/content/machine.png",
       link: "/industries/stock-exchange",
-      features: ["Trading Platforms", "Market Analysis Tools", "Risk Management", "Compliance Systems"]
+      features: ["Matching Engines", "Surveillance Dashboards", "Market Data Feeds", "Regulatory Reporting"]
+    },
+    {
+      title: "Algo Trading",
+      description: "Low-latency algorithmic trading platforms with automated strategy orchestration.",
+      image: "/assets/images/content/machine.png",
+      link: "/industries/algo-trading",
+      features: ["Strategy Backtesting", "Co-location Support", "Risk Guardrails", "Real-time Analytics"]
+    },
+    {
+      title: "Crypto Currency",
+      description: "Secure digital asset infrastructure for exchanges, wallets, and DeFi products.",
+      image: "/assets/images/content/machine.png",
+      link: "/industries/crypto-currency",
+      features: ["Wallet Management", "KYC / AML Workflows", "Cold Storage Integrations", "DeFi Connectivity"]
     }
   ];
 
@@ -56,7 +63,7 @@ export default function IndustriesPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {industrySolutions.map((industry, index) => (
               <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="h-48 overflow-hidden">
