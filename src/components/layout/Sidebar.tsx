@@ -63,7 +63,7 @@ const Sidebar = () => {
   // Add Enquiries link for admins only
   if (currentAdmin) {
     menuItems.push({
-      path: '/enquiry',
+      path: '/dashboard/enquiries',
       name: 'Enquiries',
       icon: <FiMail className="w-5 h-5" />
     });
@@ -137,7 +137,7 @@ const Sidebar = () => {
                   </Link>
                   
                   {/* Add separator after Enquiries for admin users */}
-                  {currentAdmin && item.path === '/enquiry' && (
+                  {currentAdmin && item.path === '/dashboard/enquiries' && (
                     <div className="my-2 border-t border-gray-600"></div>
                   )}
                 </li>
