@@ -218,10 +218,8 @@ export default function EmployeeDashboardPage() {
           </div>
         )}
       </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-        {/* Attendance Card */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+      {/* Attendance Card */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Today's Attendance</h2>
           {todayAttendanceLoading ? (
             <div className="text-center py-4">
@@ -312,7 +310,7 @@ export default function EmployeeDashboardPage() {
               )}
             </div>
           )}
-        </div>
+        </div>  
       </div>
     </EmployeeLayout>
   );
