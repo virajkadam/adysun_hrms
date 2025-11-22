@@ -3,17 +3,30 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { FiUser, FiCalendar, FiLogOut, FiFileText } from 'react-icons/fi';
+import { FiUser, FiCalendar, FiLogOut, FiFileText, FiLogIn, FiCheck, FiClock } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { getEmployeeSelf } from '@/utils/firebaseUtils';
 import { Employee } from '@/types';
+import { useAttendanceMarking } from '@/hooks/useAttendanceMarking';
 
 export default function EmployeeDashboardPage() {
   const { currentEmployee, currentUserData, logout } = useAuth();
   const router = useRouter();
   const [fullEmployeeData, setFullEmployeeData] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Attendance logic hook
+  const {
+    todayAttendance,
+    todayAttendanceLoading,
+    employmentId,
+    handleCheckIn,
+    handleCheckOut,
+    calculateTodayHours,
+    checkInMutation,
+    checkOutMutation
+  } = useAttendanceMarking();
   
   useEffect(() => {
     // Check if user is authenticated
@@ -129,7 +142,7 @@ export default function EmployeeDashboardPage() {
       <Toaster position="top-center" />
 
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 text-white mb-8">
+      {/* <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-8 text-white mb-8">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold mb-2">Welcome, {employee?.name}! 👋</h2>
@@ -139,7 +152,7 @@ export default function EmployeeDashboardPage() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -163,6 +176,7 @@ export default function EmployeeDashboardPage() {
       </div>
 
       {/* Employee Information Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Employee Information</h2>
         {loading ? (
@@ -187,7 +201,7 @@ export default function EmployeeDashboardPage() {
               <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
               <p className="text-sm text-gray-600">Phone</p>
             </div>
-            <div>
+            {/* <div>
               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                 fullEmployeeData.status === 'active' 
                   ? 'bg-green-100 text-green-800' 
@@ -196,13 +210,109 @@ export default function EmployeeDashboardPage() {
                 {fullEmployeeData.status.toUpperCase()}
               </span>
               <p className="text-sm text-gray-600 mt-1">Status</p>
-            </div>
+            </div> */}
           </div>
         ) : (
           <div className="text-center py-4">
             <p className="text-red-500">Failed to load employee information</p>
           </div>
         )}
+      </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+        {/* Attendance Card */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Today's Attendance</h2>
+          {todayAttendanceLoading ? (
+            <div className="text-center py-4">
+              <p className="text-gray-500">Loading attendance...</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Status Display */}
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Check In</p>
+                  <p className="font-medium text-gray-900">
+                    {todayAttendance?.checkInTime || '--'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Check Out</p>
+                  <p className="font-medium text-gray-900">
+                    {todayAttendance?.checkOutTime || '--'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Total Hours</p>
+                  <p className="font-medium text-gray-900">
+                    {calculateTodayHours().toFixed(2)} hrs
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Status</p>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    todayAttendance?.status === 'present' 
+                      ? 'bg-green-100 text-green-800'
+                      : todayAttendance?.status === 'late'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : todayAttendance?.status === 'half-day'
+                      ? 'bg-orange-100 text-orange-800'
+                      : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {todayAttendance?.status || 'Not checked in'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {!todayAttendance?.isCheckedIn ? (
+                  <button
+                    onClick={handleCheckIn}
+                    disabled={checkInMutation.isPending || !employmentId}
+                    className="flex-1 px-4 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors font-medium"
+                  >
+                    <FiLogIn className="w-5 h-5" />
+                    {checkInMutation.isPending ? 'Checking In...' : 'Check In'}
+                  </button>
+                ) : (
+                  <>
+                    <div className="flex-1 px-4 py-3 bg-green-100 text-green-800 rounded-md flex items-center justify-center gap-2 font-medium">
+                      <FiCheck className="w-5 h-5" />
+                      Checked In
+                    </div>
+                    {!todayAttendance?.checkOutTime ? (
+                      <button
+                        onClick={handleCheckOut}
+                        disabled={checkOutMutation.isPending}
+                        className="flex-1 px-4 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors font-medium"
+                      >
+                        <FiLogOut className="w-5 h-5" />
+                        {checkOutMutation.isPending ? 'Checking Out...' : 'Check Out'}
+                      </button>
+                    ) : (
+                      <div className="flex-1 px-4 py-3 bg-red-100 text-red-800 rounded-md flex items-center justify-center gap-2 font-medium">
+                        <FiCheck className="w-5 h-5" />
+                        Checked Out
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Real-time hours indicator */}
+              {todayAttendance?.isCheckedIn && !todayAttendance?.checkOutTime && (
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                    <FiClock className="w-4 h-4" />
+                    <span>Working hours: <span className="font-semibold text-gray-900">{calculateTodayHours().toFixed(2)} hrs</span></span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </EmployeeLayout>
   );
