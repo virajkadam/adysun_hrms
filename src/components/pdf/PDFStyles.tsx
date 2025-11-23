@@ -20,34 +20,8 @@ Font.register({
   ],
 });
 
-// Register Lato font for offer letter
-// Using a reliable CDN source for Lato font
-try {
-  Font.register({
-    family: 'Lato',
-    fonts: [
-      {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2',
-      },
-      {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ.woff2',
-        fontWeight: 'bold',
-      },
-      {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6u8w4BMUTPHjxsAXC-v.woff2',
-        fontStyle: 'italic',
-      },
-      {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6u_w4BMUTPHjxsI5wq_FQft1dw.woff2',
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-      },
-    ],
-  });
-} catch (error) {
-  console.warn('Lato font registration failed, will use fallback:', error);
-  // Font registration will fallback to system fonts
-}
+// Lato font removed - using Calibri instead (already registered and working)
+// Calibri provides similar professional appearance and is reliable
 
 // Monospace font for fixed-width formatting
 Font.register({
@@ -130,7 +104,7 @@ export const offerLetterStyles = StyleSheet.create({
     paddingLeft: 72,
     paddingRight: 54,
     paddingBottom: 72,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     fontSize: 12,
     lineHeight: 1.0,
     color: '#000000',
@@ -149,17 +123,17 @@ export const offerLetterStyles = StyleSheet.create({
     color: '#FF0000',
     marginBottom: 4,
     textTransform: 'uppercase',
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   companyContact: {
     fontSize: 11,
     marginBottom: 2,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   companyAddress: {
     fontSize: 11,
     marginBottom: 4,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   companyLogo: {
     width: 60,
@@ -173,7 +147,7 @@ export const offerLetterStyles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 4,
     lineHeight: 1.0,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     color: '#000000',
   },
   // List item styles
@@ -184,7 +158,7 @@ export const offerLetterStyles = StyleSheet.create({
     paddingBottom: 0,
     lineHeight: 1.0,
     fontSize: 11,
-    fontFamily: 'Arial',
+    fontFamily: 'Calibri',
   },
   listItemNested: {
     marginLeft: 36,
@@ -193,12 +167,12 @@ export const offerLetterStyles = StyleSheet.create({
     paddingBottom: 0,
     lineHeight: 1.0,
     fontSize: 11,
-    fontFamily: 'Arial',
+    fontFamily: 'Calibri',
   },
   // Text styles
   bodyText: {
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     lineHeight: 1.0,
     paddingTop: 12,
     paddingBottom: 12,
@@ -206,13 +180,13 @@ export const offerLetterStyles = StyleSheet.create({
   },
   bodyTextBold: {
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     fontWeight: 'bold',
     lineHeight: 1.0,
   },
   bodyTextItalic: {
     fontSize: 12,
-    fontFamily: 'Arial',
+    fontFamily: 'Calibri',
     fontStyle: 'italic',
     color: '#666666',
     lineHeight: 1.0,
@@ -225,13 +199,13 @@ export const offerLetterStyles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 14,
     paddingBottom: 4,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   // Date styles
   dateText: {
     fontSize: 12,
     fontWeight: 'bold',
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     paddingTop: 12,
     paddingBottom: 12,
   },
@@ -262,12 +236,12 @@ export const offerLetterStyles = StyleSheet.create({
     borderRightColor: '#000000',
     borderRightStyle: 'solid',
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   tableCellLast: {
     padding: 5,
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
   },
   tableCellBold: {
     padding: 5,
@@ -275,13 +249,13 @@ export const offerLetterStyles = StyleSheet.create({
     borderRightColor: '#000000',
     borderRightStyle: 'solid',
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     fontWeight: 'bold',
   },
   tableCellBoldLast: {
     padding: 5,
     fontSize: 12,
-    fontFamily: 'Lato',
+    fontFamily: 'Calibri',
     fontWeight: 'bold',
   },
   // Watermark styles
