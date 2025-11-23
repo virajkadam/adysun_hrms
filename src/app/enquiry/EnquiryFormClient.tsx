@@ -480,7 +480,7 @@ export default function EnquirySubmitPage() {
             }
           }
           .cta-button {
-            animation: pulse 2s ease-out infinite, bounce 2.5s ease-in-out infinite;
+            animation: pulse 1.2s ease-out infinite, bounce 2.5s ease-in-out infinite;
             background: rgba(255, 255, 255, 0.25);
             position: relative;
             overflow: hidden;
