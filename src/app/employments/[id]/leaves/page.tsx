@@ -12,6 +12,7 @@ import {
   FiMapPin,
   FiCheck,
   FiX,
+  FiTrash2,
 } from "react-icons/fi";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Employment, Employee, LeaveRecord } from "@/types";
@@ -21,6 +22,11 @@ import { useEmployment } from "@/hooks/useEmployments";
 import { useEmployee } from "@/hooks/useEmployees";
 import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import { updateLeaveRequest } from "@/utils/firebaseUtils";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queryKeys";
 
 export default function LeavesPage({
   params,
@@ -29,6 +35,10 @@ export default function LeavesPage({
 }) {
   const router = useRouter();
   const { id } = use(params);
+  const queryClient = useQueryClient();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [leaveToDelete, setLeaveToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Use Tanstack Query for employment data
   const { data: employment, isLoading, isError, error } = useEmployment(id);
@@ -111,11 +121,58 @@ export default function LeavesPage({
       
       toast.success(`Leave request ${action === 'approve' ? 'approved' : 'rejected'} successfully`, { id: 'leave-action' });
       
-      // Refresh the page to show updated data
-      window.location.reload();
+      // Silently refresh the data without page reload
+      queryClient.invalidateQueries({ queryKey: queryKeys.employments.detail(id) });
     } catch (error) {
       console.error(`Error ${action}ing leave request:`, error);
       toast.error(`Failed to ${action} leave request`, { id: 'leave-action' });
+    }
+  };
+
+  // Handle delete leave request
+  const handleDeleteLeave = (leaveId: string) => {
+    setLeaveToDelete(leaveId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteLeave = async () => {
+    if (!leaveToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      toast.loading('Deleting leave request...', { id: 'delete-leave' });
+
+      // Get employment document
+      const employmentRef = doc(db, 'employments', id);
+      const employmentDoc = await getDoc(employmentRef);
+
+      if (!employmentDoc.exists()) {
+        throw new Error('Employment record not found.');
+      }
+
+      const employmentData = employmentDoc.data();
+      const existingLeaves = employmentData.leaves || [];
+
+      // Remove the leave from the array
+      const updatedLeaves = existingLeaves.filter((leave: any) => leave.id !== leaveToDelete);
+
+      // Update the employment document
+      await updateDoc(employmentRef, {
+        leaves: updatedLeaves,
+        updatedAt: new Date().toISOString(),
+      });
+
+      toast.success('Leave request deleted successfully', { id: 'delete-leave' });
+      setIsDeleteModalOpen(false);
+      setLeaveToDelete(null);
+      
+      // Silently refresh the data without page reload
+      queryClient.invalidateQueries({ queryKey: queryKeys.employments.detail(id) });
+    } catch (error: any) {
+      console.error('Error deleting leave request:', error);
+      toast.error(error.message || 'Failed to delete leave request', { id: 'delete-leave' });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -461,29 +518,39 @@ export default function LeavesPage({
                             {leave.reason}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {leave.status === 'pending' && (
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => handleLeaveAction(leave.id, 'approve')}
-                                  className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                                >
-                                  <FiCheck className="w-3 h-3 mr-1" />
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => handleLeaveAction(leave.id, 'reject')}
-                                  className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                >
-                                  <FiX className="w-3 h-3 mr-1" />
-                                  Reject
-                                </button>
-                              </div>
-                            )}
-                            {leave.status !== 'pending' && (
-                              <span className="text-xs text-gray-500">
-                                {leave.approvedAt ? `Processed on ${formatDateToDayMonYear(leave.approvedAt)}` : '-'}
-                              </span>
-                            )}
+                            <div className="flex items-center space-x-2">
+                              {leave.status === 'pending' && (
+                                <>
+                                  <button
+                                    onClick={() => handleLeaveAction(leave.id, 'approve')}
+                                    className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                  >
+                                    <FiCheck className="w-3 h-3 mr-1" />
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleLeaveAction(leave.id, 'reject')}
+                                    className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                  >
+                                    <FiX className="w-3 h-3 mr-1" />
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                              {leave.status !== 'pending' && (
+                                <span className="text-xs text-gray-500 mr-2">
+                                  {leave.approvedAt ? `Processed on ${formatDateToDayMonYear(leave.approvedAt)}` : '-'}
+                                </span>
+                              )}
+                              <button
+                                onClick={() => handleDeleteLeave(leave.id)}
+                                className="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                title="Delete leave request"
+                              >
+                                <FiTrash2 className="w-3 h-3" />
+                                Delete
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -495,6 +562,22 @@ export default function LeavesPage({
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Leave Request"
+        message="Are you sure you want to delete this leave request? This action cannot be undone."
+        confirmText={isDeleting ? "Deleting..." : "Yes, Delete"}
+        cancelText="Cancel"
+        onConfirm={confirmDeleteLeave}
+        onCancel={() => {
+          setIsDeleteModalOpen(false);
+          setLeaveToDelete(null);
+        }}
+        variant="danger"
+        disabled={isDeleting}
+      />
     </DashboardLayout>
   );
 }
