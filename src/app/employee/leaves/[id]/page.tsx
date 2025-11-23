@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiCheck, FiX, FiClock } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { getEmployeeLeaveById } from '@/utils/firebaseUtils';
@@ -182,14 +182,14 @@ export default function LeaveDetailPage({ params }: PageParams) {
                 <p className="text-lg font-medium text-gray-900">
                   {formatDateToDayMonYear(leaveData.startDate)}
                 </p>
-                <p className="text-sm text-gray-600">Start Date</p>
+                <p className="text-sm text-gray-600">Leave Start Date</p>
               </div>
 
               <div>
                 <p className="text-lg font-medium text-gray-900">
                   {formatDateToDayMonYear(leaveData.endDate)}
                 </p>
-                <p className="text-sm text-gray-600">End Date</p>
+                <p className="text-sm text-gray-600">Leave End Date</p>
               </div>
 
               <div>
@@ -202,9 +202,20 @@ export default function LeaveDetailPage({ params }: PageParams) {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-lg font-medium text-gray-900">
-                  {leaveData.status.charAt(0).toUpperCase() + leaveData.status.slice(1)}
-                </p>
+                <div className="flex items-center gap-2">
+                  {leaveData.status === 'approved' && (
+                    <FiCheck className="w-5 h-5 text-green-600" />
+                  )}
+                  {leaveData.status === 'rejected' && (
+                    <FiX className="w-5 h-5 text-red-600" />
+                  )}
+                  {leaveData.status === 'pending' && (
+                    <FiClock className="w-5 h-5 text-yellow-600" />
+                  )}
+                  <p className="text-lg font-medium text-gray-900">
+                    {leaveData.status.charAt(0).toUpperCase() + leaveData.status.slice(1)}
+                  </p>
+                </div>
                 <p className="text-sm text-gray-600">Status</p>
               </div>
 
