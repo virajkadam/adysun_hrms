@@ -41,6 +41,7 @@ const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
 export default function EmployeesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('all');
+  const [employmentStatusFilter, setEmploymentStatusFilter] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
@@ -48,7 +49,7 @@ export default function EmployeesPage() {
 
   // Use Tanstack Query for employee data
   const {
-    data: employees = [],
+    data: employees = [], 
     isLoading,
     isError,
     error,
@@ -124,12 +125,17 @@ export default function EmployeesPage() {
       employee.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         employee.phone?.includes(searchTerm);
       
-      const matchesFilter = 
+      const matchesStatusFilter = 
         filterValue === 'all' || 
         (filterValue === 'active' && employee.status === 'active') ||
         (filterValue === 'inactive' && employee.status === 'inactive');
       
-      return matchesSearch && matchesFilter;
+      const matchesEmploymentStatusFilter =
+        employmentStatusFilter === 'all' ||
+        (employmentStatusFilter === 'working' && employee.employmentStatus === 'working') ||
+        (employmentStatusFilter === 'resigned' && employee.employmentStatus === 'resigned');
+      
+      return matchesSearch && matchesStatusFilter && matchesEmploymentStatusFilter;
     })
     .sort((a, b) => {
       // Sort by createdAt (newest first), fallback to updatedAt, then joinDate
@@ -260,6 +266,20 @@ export default function EmployeesPage() {
           showFilter={true}
           filterValue={filterValue}
           onFilterChange={setFilterValue}
+          filterOptions={[
+            { value: 'all', label: 'All Status' },
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' }
+          ]}
+          showSecondFilter={true}
+          secondFilterValue={employmentStatusFilter}
+          onSecondFilterChange={setEmploymentStatusFilter}
+          secondFilterOptions={[
+            { value: 'all', label: 'All Employee Status' },
+            { value: 'working', label: 'Working' },
+            { value: 'resigned', label: 'Resigned' }
+          ]}
+          secondFilterLabel="Employment Status"
           backButton={{ href: '/dashboard' }}
           actionButtons={[
             {
@@ -290,12 +310,17 @@ export default function EmployeesPage() {
           </div>
         ) : filteredEmployees.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
-            {searchTerm && filterValue === 'all' && 'No employees match your search'}
-            {searchTerm && filterValue === 'active' && 'No active employees match your search'}
-            {searchTerm && filterValue === 'inactive' && 'No inactive employees match your search'}
-            {!searchTerm && filterValue === 'active' && 'No active employees found'}
-            {!searchTerm && filterValue === 'inactive' && 'No inactive employees found'}
-            {!searchTerm && filterValue === 'all' && 'No employees found. Add your first employee!'}
+            {searchTerm && filterValue === 'all' && employmentStatusFilter === 'all' && 'No employees match your search'}
+            {searchTerm && filterValue === 'active' && employmentStatusFilter === 'all' && 'No active employees match your search'}
+            {searchTerm && filterValue === 'inactive' && employmentStatusFilter === 'all' && 'No inactive employees match your search'}
+            {searchTerm && employmentStatusFilter === 'working' && 'No working employees match your search'}
+            {searchTerm && employmentStatusFilter === 'resigned' && 'No resigned employees match your search'}
+            {!searchTerm && filterValue === 'active' && employmentStatusFilter === 'all' && 'No active employees found'}
+            {!searchTerm && filterValue === 'inactive' && employmentStatusFilter === 'all' && 'No inactive employees found'}
+            {!searchTerm && employmentStatusFilter === 'working' && 'No working employees found'}
+            {!searchTerm && employmentStatusFilter === 'resigned' && 'No resigned employees found'}
+            {!searchTerm && filterValue === 'all' && employmentStatusFilter === 'all' && 'No employees found. Add your first employee!'}
+            {!searchTerm && filterValue !== 'all' && employmentStatusFilter !== 'all' && 'No employees match the selected filters'}
           </div>
         ) : (
           <div className="overflow-x-auto relative max-h-[60vh] overflow-y-auto">
