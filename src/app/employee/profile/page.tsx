@@ -454,16 +454,6 @@ export default function EmployeeProfilePage() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h3 className="font-medium text-blue-900 mb-2">View My Salaries</h3>
-                <p className="text-sm text-blue-700 mb-3">Check your salary history and current payments</p>
-                <button
-                  onClick={() => router.push('/employee/salaries')}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  View Salaries →
-                </button>
-              </div>
               
               <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                 <h3 className="font-medium text-green-900 mb-2">My Attendance</h3>
