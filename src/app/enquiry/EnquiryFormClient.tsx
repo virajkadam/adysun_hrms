@@ -18,6 +18,7 @@ interface EnquiryFormData {
   technology: string;
   role: string;
   totalWorkExperience: string;
+  interestedIn: string;
   message: string;
 }
 
@@ -192,6 +193,7 @@ export default function EnquirySubmitPage() {
     technology: "",
     role: "",
     totalWorkExperience: "",
+    interestedIn: "",
     message: "",
   });
   const [loading, setLoading] = useState(false);
@@ -231,6 +233,12 @@ export default function EnquirySubmitPage() {
 
     if (!formData.message.trim()) {
       setError("Message is required");
+      return;
+    }
+
+    // Validate Interested In field
+    if (!formData.interestedIn.trim()) {
+      setError("Please select an option for Interested In");
       return;
     }
 
@@ -300,6 +308,7 @@ export default function EnquirySubmitPage() {
         technology: formData.technology.trim() || null,
         role: formData.role.trim() || null,
         totalWorkExperience: formData.totalWorkExperience.trim() || null,
+        interestedIn: formData.interestedIn.trim(),
         message: formData.message.trim(),
         createdAt: serverTimestamp(),
       });
@@ -314,6 +323,7 @@ export default function EnquirySubmitPage() {
         technology: "",
         role: "",
         totalWorkExperience: "",
+        interestedIn: "",
         message: "",
       });
     } catch (error: unknown) {
@@ -841,6 +851,26 @@ export default function EnquirySubmitPage() {
                       <option value="13+ years">13+ years</option>
                     </select>
                   </div>
+                  <div>
+                    <label
+                      htmlFor="interestedIn"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      <span className="text-red-500">*</span> Interested In
+                    </label>
+                    <select
+                      id="interestedIn"
+                      name="interestedIn"
+                      value={formData.interestedIn}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Option</option>
+                      <option value="Fulltime Job">Fulltime Job</option>
+                      <option value="Internship">Internship</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -878,14 +908,14 @@ export default function EnquirySubmitPage() {
                   >
                     {loading ? "Submitting..." : "Submit Enquiry"}
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() => setSuccess(true)}
                     className="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600 text-sm font-medium border-2 border-orange-600"
                     title="Test button to preview success screen"
                   >
                     🧪 Test Success UI
-                  </button>
+                  </button> */}
                 </div>
               </form>
             </div>
