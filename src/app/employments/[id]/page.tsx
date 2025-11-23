@@ -380,7 +380,10 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
               </div>
 
               {/* Leaves Card */}
-              <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <div className="bg-white p-4 rounded-lg border border-gray-200 relative overflow-visible">
+                {leaveStats.pendingLeaves > 0 && (
+                  <div className="absolute -top-1.5 -left-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
+                )}
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiCalendar className="mr-2" /> Leaves
