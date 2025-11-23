@@ -191,7 +191,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
           companyLogo={formData.companyLogo}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         {/* Letter Title */}
@@ -239,7 +239,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -255,7 +255,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
           companyLogo={formData.companyLogo}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         {/* Letter Title */}
@@ -290,7 +290,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -306,7 +306,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
           companyLogo={formData.companyLogo}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         {/* Additional Terms Continuation */}
@@ -384,7 +384,7 @@ const OfferLetterPDF = ({ formData }) => {
           companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={formData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor={formData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
     </Document>
@@ -406,11 +406,13 @@ function OfferLetterV2() {
     salaryComponentsV2: null,
     companyName: "",
     companyAddressLine1: "",
-    companyColor: "",
     companyEmail: "",
     companyPhone: "",
     companyWebsite: "",
-    companyLogo: ""
+    companyLogo: "",
+    signatureLogo: "",
+    hrDesignation: "",
+    hrEmail: ""
   });
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showPDF, setShowPDF] = useState(false);
@@ -499,11 +501,13 @@ function OfferLetterV2() {
           ...prev,
           companyName: value,
           companyAddressLine1: selectedCompany.address,
-          companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,
-          companyLogo: selectedCompany.logo
+          companyLogo: selectedCompany.logo || "",
+          signatureLogo: selectedCompany.signatureLogo || "",
+          hrDesignation: selectedCompany.hrDesignation || "",
+          hrEmail: selectedCompany.hrEmail || selectedCompany.email || ""
         }));
       } else if (value === "") {
         // Clear company data when "Select Company (Optional)" is selected
@@ -511,11 +515,13 @@ function OfferLetterV2() {
           ...prev,
           companyName: "",
           companyAddressLine1: "",
-          companyColor: "",
           companyEmail: "",
           companyPhone: "",
           companyWebsite: "",
-          companyLogo: ""
+          companyLogo: "",
+          signatureLogo: "",
+          hrDesignation: "",
+          hrEmail: ""
         }));
       }
     } else if (name === "employeeName") {
@@ -600,11 +606,13 @@ function OfferLetterV2() {
           ...finalFormData,
           companyName: 'Sample Company Name',
           companyAddressLine1: 'Sample Company Address',
-          companyColor: '#FF0000',
           companyEmail: 'sample@company.com',
           companyPhone: '+91 1234567890',
           companyWebsite: 'www.samplecompany.com',
-          companyLogo: ''
+          companyLogo: '',
+          signatureLogo: '',
+          hrDesignation: 'Head - HR Department',
+          hrEmail: 'sample@company.com'
         };
         toast('Using sample company data for PDF generation');
       }

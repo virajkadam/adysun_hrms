@@ -9,7 +9,7 @@ interface CompanyHeaderProps {
   companyPhone: string;
   companyWebsite: string;
   companyLogo?: string;
-  companyColor: string;
+  companyColor?: string;
 }
 
 // Company Header Component
@@ -119,7 +119,7 @@ interface FooterProps {
   companyAddress: string;
   companyPhone: string;
   companyWebsite: string;
-  companyColor: string;
+  companyColor?: string;
 }
 
 // Footer Component

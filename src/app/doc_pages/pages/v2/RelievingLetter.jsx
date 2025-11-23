@@ -166,13 +166,13 @@ const RelievingLetterPDF = ({ formData }) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       borderBottomWidth: 1,
-      borderBottomColor: safeFormData.companyColor || '#FF0000',
+      borderBottomColor: '#0066cc',
       paddingBottom: 5,
       marginBottom: 10, // Reduced margin
     }}>
       <View>
         <Text style={{
-          color: safeFormData.companyColor || '#FF0000',
+          color: '#0066cc',
           fontSize: 13, // Reduced size
           fontWeight: 'bold',
           fontFamily: 'Calibri',
@@ -204,7 +204,7 @@ const RelievingLetterPDF = ({ formData }) => {
       left: 50,
       right: 50,
       borderTopWidth: 1,
-      borderTopColor: safeFormData.companyColor || '#FF0000',
+      borderTopColor: '#0066cc',
       paddingTop: 5,
       textAlign: 'center',
     }}>
@@ -387,7 +387,7 @@ const RelievingLetterPDF = ({ formData }) => {
           left: 50,
           right: 50,
           borderTopWidth: 1,
-          borderTopColor: safeFormData.companyColor || '#FF0000',
+          borderTopColor: '#0066cc',
           paddingTop: 5,
           textAlign: 'center',
         }}>
@@ -415,7 +415,6 @@ function RelievingLetterV2() {
     joiningDate: "",
     companyName: "",
     companyAddressLine1: "",
-    companyColor: "",
     companyEmail: "",
     companyPhone: "",
     companyWebsite: "",
@@ -504,7 +503,6 @@ function RelievingLetterV2() {
           ...prev,
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
-          companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,

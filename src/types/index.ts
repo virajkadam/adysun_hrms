@@ -305,24 +305,11 @@ export interface Company {
   mobile: string;
   email: string;
   website: string;
-  cin: string;
   logo: string;
+  signatureLogo?: string;
   hrName: string;
-  hrMobile: string;
-  color: string;
-  gstin?: string;
-  pan?: string;
-  bankDetails?: {
-    accountName: string;
-    accountNumber: string;
-    bankName: string;
-    ifscCode: string;
-    branch: string;
-  };
-  signatory?: {
-    name: string;
-    designation: string;
-  };
+  hrDesignation: string;
+  hrEmail?: string;
 } 
 
 // Simplify the Salary interface to only include essential fields

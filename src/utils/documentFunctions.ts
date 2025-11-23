@@ -70,24 +70,11 @@ export const getCompany = async (id: string): Promise<Company> => {
         mobile: '+91 9876543210',
         email: 'contact@adysun.com',
         website: 'www.adysun.com',
-        gstin: 'GST12345678',
-        pan: 'ABCDE1234F',
-        cin: 'U12345AB2023PTC123456',
-        bankDetails: {
-          accountName: 'Adysun Technologies Pvt Ltd',
-          accountNumber: '12345678901234',
-          bankName: 'HDFC Bank',
-          ifscCode: 'HDFC0001234',
-          branch: 'Main Branch',
-        },
-        signatory: {
-          name: 'John Doe',
-          designation: 'Director',
-        },
         logo: '',
+        signatureLogo: '',
         hrName: 'HR Manager',
-        hrMobile: '+91 9876543210',
-        color: '#0066cc'
+        hrDesignation: 'Head - HR Department',
+        hrEmail: 'contact@adysun.com'
       };
       
       // Add the company to the database

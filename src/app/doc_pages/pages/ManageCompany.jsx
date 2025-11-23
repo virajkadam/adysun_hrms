@@ -15,11 +15,11 @@ const ManageCompany = () => {
     mobile: "",
     email: "",
     website: "",
-    cin: "",
     logo: "",
+    signatureLogo: "",
     hrName: "",
-    hrMobile: "",
-    color:"",
+    hrDesignation: "",
+    hrEmail: "",
   });
   const [editId, setEditId] = useState(null);
   const [isListView, setIsListView] = useState(true);
@@ -70,11 +70,11 @@ const ManageCompany = () => {
         mobile: "",
         email: "",
         website: "",
-        cin: "",
         logo: "",
+        signatureLogo: "",
         hrName: "",
-        hrMobile: "",
-        color:"",
+        hrDesignation: "",
+        hrEmail: "",
       });
       setEditId(null);
       setIsListView(true);
@@ -231,24 +231,30 @@ const ManageCompany = () => {
               className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             
-            <label htmlFor="cin" className="text-gray-700">CIN</label>
-            <input
-              type="text"
-              name="cin"
-              id="cin"
-              value={formData.cin}
-              onChange={handleChange}
-              placeholder="CIN"
-              className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            
             <label htmlFor="logo" className="text-gray-700">Logo</label>
             <input
               type="file"
               accept="image/*"
               onChange={handleImageChange}
               id="logo"
+              className="p-3 border border-gray-300 rounded-md"
+            />
+            
+            <label htmlFor="signatureLogo" className="text-gray-700">Signature Logo</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setFormData({ ...formData, signatureLogo: reader.result });
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+              id="signatureLogo"
               className="p-3 border border-gray-300 rounded-md"
             />
             
@@ -264,35 +270,28 @@ const ManageCompany = () => {
               required
             />
             
-            <label htmlFor="hrMobile" className="text-gray-700">HR Mobile Number</label>
+            <label htmlFor="hrDesignation" className="text-gray-700">HR Designation</label>
             <input
-              type="tel"
-              name="hrMobile"
-              id="hrMobile"
-              value={formData.hrMobile}
+              type="text"
+              name="hrDesignation"
+              id="hrDesignation"
+              value={formData.hrDesignation}
               onChange={handleChange}
-              placeholder="HR Mobile Number"
+              placeholder="HR Designation (e.g., Head - HR Department)"
               className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
-        
-            <label htmlFor="color" className="text-gray-700">Color</label>
-            <select
-              name="color"
-              id="color"
-              value={formData.color}
+            
+            <label htmlFor="hrEmail" className="text-gray-700">HR Email</label>
+            <input
+              type="email"
+              name="hrEmail"
+              id="hrEmail"
+              value={formData.hrEmail}
               onChange={handleChange}
+              placeholder="HR Email (optional, will use company email if not provided)"
               className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select a color</option>
-              <option value="red">Red</option>
-              <option value="blue">Blue</option>
-              <option value="green">Green</option>
-              <option value="yellow">Yellow</option>
-              <option value="purple">Purple</option>
-              <option value="pink">Pink</option>
-            </select>
+            />
 
             <button
               type="submit"

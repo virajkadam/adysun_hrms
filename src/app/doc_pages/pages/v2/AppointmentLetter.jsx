@@ -377,7 +377,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={{marginTop: 10}}>
@@ -431,7 +431,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -447,7 +447,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={{marginTop: 10}}>
@@ -497,7 +497,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -513,7 +513,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={{marginTop: 10}}>
@@ -550,7 +550,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -566,7 +566,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={{marginTop: 10}}>
@@ -619,7 +619,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -635,7 +635,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={{marginTop: 10}}>
@@ -680,7 +680,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -696,7 +696,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={commonStyles.contentContainer}>
@@ -754,7 +754,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
 
@@ -770,7 +770,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyLogo={safeFormData.companyLogo}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
         
         <View style={commonStyles.contentContainer}>
@@ -835,7 +835,7 @@ const AppointmentLetterPDF = ({ formData }) => {
           companyAddress={safeFormData.companyAddressLine1 || 'COMPANY ADDRESS'}
           companyPhone={safeFormData.companyPhone || 'PHONE NUMBER'}
           companyWebsite={safeFormData.companyWebsite || 'WEBSITE'}
-          companyColor={safeFormData.companyColor || '#FF0000'}
+          companyColor="#0066cc"
         />
       </Page>
     </Document>
@@ -950,7 +950,6 @@ function AppointmentLetterV2() {
           ...prev,
           companyName: selectedCompany.name,
           companyAddressLine1: selectedCompany.address,
-          companyColor: selectedCompany.serverColor,
           companyEmail: selectedCompany.email,
           companyPhone: selectedCompany.mobile,
           companyWebsite: selectedCompany.website,
