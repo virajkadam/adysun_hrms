@@ -15,6 +15,7 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [localEmployeeData, setLocalEmployeeData] = useState<any>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -39,6 +40,51 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Listen for localStorage changes and custom events to update employee data
+  useEffect(() => {
+    // Function to update employee data from localStorage
+    const updateEmployeeData = () => {
+      if (currentEmployee) {
+        try {
+          const storedData = localStorage.getItem('employeeData');
+          if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            setLocalEmployeeData(parsedData);
+          }
+        } catch (error) {
+          console.error('Error reading employee data from localStorage:', error);
+        }
+      }
+    };
+
+    // Initial load
+    updateEmployeeData();
+
+    // Listen for storage events (when localStorage changes in other tabs/windows)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'employeeData') {
+        updateEmployeeData();
+      }
+    };
+
+    // Listen for custom event (when profile is updated in same tab)
+    const handleProfileUpdate = () => {
+      updateEmployeeData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+
+    // Also poll for changes (in case storage event doesn't fire in same tab)
+    const interval = setInterval(updateEmployeeData, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+      clearInterval(interval);
+    };
+  }, [currentEmployee]);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -59,11 +105,6 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
 
   // Get user information
   const getUserInfo = () => {
-    // Debug: Log the currentEmployee object to see what's available
-    if (currentEmployee) {
-      console.log('Current Employee Data:', currentEmployee);
-    }
-    
     if (currentAdmin) {
       return {
         name: currentAdmin.name || 'Admin User',
@@ -71,14 +112,16 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
         employeeId: null
       };
     } else if (currentEmployee) {
+      // Use localEmployeeData if available (most up-to-date), otherwise fall back to currentEmployee
+      const employee = localEmployeeData || currentEmployee;
+      
       // Try multiple sources to get the employeeId
       let employeeId = null;
       
       try {
-        // 1. First check if employeeId exists in currentEmployee
-        if ((currentEmployee as any).employeeId) {
-          employeeId = (currentEmployee as any).employeeId;
-          console.log('Found employeeId in currentEmployee:', employeeId);
+        // 1. First check if employeeId exists in localEmployeeData or currentEmployee
+        if ((employee as any)?.employeeId) {
+          employeeId = (employee as any).employeeId;
         } 
         // 2. Try to get from localStorage
         else {
@@ -87,13 +130,6 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
             const parsedData = JSON.parse(storedEmployeeData);
             if (parsedData.employeeId) {
               employeeId = parsedData.employeeId;
-              console.log('Found employeeId in localStorage:', employeeId);
-              
-              // If we found employeeId in localStorage but not in currentEmployee,
-              // let's update currentEmployee for future reference
-              if (!(currentEmployee as any).employeeId) {
-                (currentEmployee as any).employeeId = employeeId;
-              }
             }
           }
         }
@@ -105,28 +141,20 @@ const Header = ({ variant = 'protected' }: HeaderProps) => {
             const parsedData = JSON.parse(fullEmployeeData);
             if (parsedData.employeeId) {
               employeeId = parsedData.employeeId;
-              console.log('Found employeeId in fullEmployeeData:', employeeId);
-              
-              // Update currentEmployee
-              if (!(currentEmployee as any).employeeId) {
-                (currentEmployee as any).employeeId = employeeId;
-              }
             }
           }
         }
         
         // 4. As a last resort, check if there's a hardcoded value in the dashboard
-        // This is a temporary solution until the proper data flow is fixed
         if (!employeeId && window && (window as any).employeeDashboardData) {
           employeeId = (window as any).employeeDashboardData.employeeId;
-          console.log('Found employeeId in window.employeeDashboardData:', employeeId);
         }
       } catch (error) {
         console.error('Error retrieving employee ID:', error);
       }
       
       return {
-        name: currentEmployee.name || 'Employee User',
+        name: employee.name || currentEmployee.name || 'Employee User',
         type: 'Employee',
         employeeId: employeeId
       };

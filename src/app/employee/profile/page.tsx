@@ -2,17 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiLogOut, FiEdit, FiKey, FiMapPin, FiBriefcase, FiDollarSign } from 'react-icons/fi';
+import { FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiLogOut, FiEdit, FiKey, FiMapPin, FiBriefcase, FiDollarSign, FiX, FiSave } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
+import { updateUserProfile, validateProfileData } from '@/utils/profileUtils';
+import { updateEmployee, getEmployeeSelf } from '@/utils/firebaseUtils';
 
 export default function EmployeeProfilePage() {
   const { currentUserData, currentEmployee, logout } = useAuth();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [employeeData, setEmployeeData] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    currentAddress: '',
+    permanentAddress: '',
+    dateOfBirth: '',
+    homeTown: ''
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Redirect if not authenticated or not an employee
   useEffect(() => {
@@ -20,6 +35,13 @@ export default function EmployeeProfilePage() {
       router.push('/login');
     }
   }, [currentUserData, router]);
+
+  // Initialize employee data
+  useEffect(() => {
+    if (currentEmployee) {
+      setEmployeeData(currentEmployee);
+    }
+  }, [currentEmployee]);
 
   const handleLogout = async () => {
     try {
@@ -33,6 +55,133 @@ export default function EmployeeProfilePage() {
     } finally {
       setIsLoggingOut(false);
     }
+  };
+
+  // Initialize form data when opening edit modal
+  useEffect(() => {
+    if (isEditModalOpen) {
+      const employee = employeeData || currentEmployee;
+      if (employee) {
+        const emp = employee as any;
+        setFormData({
+          name: employee.name || '',
+          email: employee.email || '',
+          phone: employee.phone || '',
+          currentAddress: emp.currentAddress || '',
+          permanentAddress: emp.permanentAddress || '',
+          dateOfBirth: emp.dateOfBirth || '',
+          homeTown: emp.homeTown || ''
+        });
+        setErrors({});
+      }
+    }
+  }, [isEditModalOpen, employeeData, currentEmployee]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error for this field
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!currentUserData || !currentEmployee) return;
+
+    // Validate basic profile data
+    const validation = validateProfileData({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone
+    });
+
+    if (!validation.isValid) {
+      setErrors(validation.errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Prepare update data
+      const updateData: any = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim()
+      };
+
+      // Add additional fields if provided
+      if (formData.currentAddress) updateData.currentAddress = formData.currentAddress.trim();
+      if (formData.permanentAddress) updateData.permanentAddress = formData.permanentAddress.trim();
+      if (formData.dateOfBirth) updateData.dateOfBirth = formData.dateOfBirth;
+      if (formData.homeTown) updateData.homeTown = formData.homeTown.trim();
+
+      // Update basic profile (name, email, phone) using updateUserProfile
+      await updateUserProfile(currentUserData.id, {
+        name: updateData.name,
+        email: updateData.email,
+        phone: updateData.phone
+      }, 'employee');
+
+      // Update additional fields using updateEmployee
+      const additionalData: any = {};
+      if (updateData.currentAddress !== undefined) additionalData.currentAddress = updateData.currentAddress;
+      if (updateData.permanentAddress !== undefined) additionalData.permanentAddress = updateData.permanentAddress;
+      if (updateData.dateOfBirth) additionalData.dateOfBirth = updateData.dateOfBirth;
+      if (updateData.homeTown) additionalData.homeTown = updateData.homeTown;
+
+      if (Object.keys(additionalData).length > 0) {
+        await updateEmployee(currentUserData.id, additionalData);
+      }
+
+      // Fetch updated employee data from Firebase
+      const updatedEmployeeData = await getEmployeeSelf(currentUserData.id);
+
+      // Update localStorage with fresh data from Firebase
+      const storedData = localStorage.getItem('employeeData');
+      if (storedData) {
+        const userData = JSON.parse(storedData);
+        const mergedData = {
+          ...userData,
+          ...updatedEmployeeData,
+          name: updateData.name,
+          email: updateData.email,
+          phone: updateData.phone
+        };
+        localStorage.setItem('employeeData', JSON.stringify(mergedData));
+      }
+
+      // Update fullEmployeeData in localStorage if it exists
+      localStorage.setItem('fullEmployeeData', JSON.stringify(updatedEmployeeData));
+
+      // Update local state with fresh data
+      setEmployeeData(updatedEmployeeData);
+
+      // Dispatch custom event to notify Header and other components of profile update
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('profileUpdated'));
+      }
+
+      toast.success('Profile updated successfully!');
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to update profile');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsEditModalOpen(false);
+    setErrors({});
   };
 
   // Show loading if no user data
@@ -52,16 +201,19 @@ export default function EmployeeProfilePage() {
     );
   }
 
+  // Use employeeData if available, otherwise fall back to currentEmployee
+  const displayEmployee = employeeData || currentEmployee;
+
   const getUserStatus = () => {
-    return currentEmployee.status === 'active' ? 'Active' : 'Inactive';
+    return displayEmployee?.status === 'active' ? 'Active' : 'Inactive';
   };
 
   const isUserActive = () => {
-    return currentEmployee.status === 'active';
+    return displayEmployee?.status === 'active';
   };
 
   const getUserCreatedAt = () => {
-    const createdAt = currentEmployee?.createdAt;
+    const createdAt = displayEmployee?.createdAt;
     if (!createdAt) return 'Unknown';
     
     try {
@@ -98,27 +250,27 @@ export default function EmployeeProfilePage() {
           showSearch={false}
           showFilter={false}
           headerClassName="px-6 py-6"
-          // actionButtons={[
-          //   {
-          //     label: 'Edit Profile',
-          //     icon: <FiEdit />,
-          //     variant: 'primary' as const,
-          //     href: '/employee/profile/edit'
-          //   },
-          //   {
-          //     label: 'Change Password',
-          //     icon: <FiKey />,
-          //     variant: 'secondary' as const,
-          //     href: '/employee/profile/password'
-          //   },
-          //   {
-          //     label: 'Logout',
-          //     icon: <FiLogOut />,
-          //     variant: 'danger' as const,
-          //     onClick: handleLogout,
-          //     disabled: isLoggingOut
-          //   }
-          // ]}
+          actionButtons={[
+            {
+              label: 'Edit Profile',
+              icon: <FiEdit />,
+              variant: 'primary' as const,
+              onClick: () => setIsEditModalOpen(true)
+            },
+            // {
+            //   label: 'Change Password',
+            //   icon: <FiKey />,
+            //   variant: 'secondary' as const,
+            //   href: '/employee/profile/password'
+            // },
+            // {
+            //   label: 'Logout',
+            //   icon: <FiLogOut />,
+            //   variant: 'danger' as const,
+            //   onClick: handleLogout,
+            //   disabled: isLoggingOut
+            // }
+          ]}
           backButton={{
             href: '/employee-dashboard',
             label: 'Back'
@@ -134,7 +286,7 @@ export default function EmployeeProfilePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">{currentEmployee.name || '-'}</p>
+                <p className="text-lg font-medium text-gray-900">{displayEmployee?.name || '-'}</p>
                 <p className="text-sm text-gray-500">Full Name</p>
               </div>
               
@@ -142,9 +294,9 @@ export default function EmployeeProfilePage() {
                 <p className="text-lg font-medium text-gray-900">
                   {(() => {
                     // Try multiple sources to get the employeeId
-                    let employeeId = (currentEmployee as any).employeeId;
+                    let employeeId = (displayEmployee as any)?.employeeId;
                     
-                    // If not found in currentEmployee, try localStorage
+                    // If not found, try localStorage
                     if (!employeeId) {
                       try {
                         const fullEmployeeData = localStorage.getItem('fullEmployeeData');
@@ -152,8 +304,6 @@ export default function EmployeeProfilePage() {
                           const parsedData = JSON.parse(fullEmployeeData);
                           if (parsedData.employeeId) {
                             employeeId = parsedData.employeeId;
-                            // Update currentEmployee for future reference
-                            (currentEmployee as any).employeeId = employeeId;
                           }
                         }
                       } catch (error) {
@@ -168,12 +318,12 @@ export default function EmployeeProfilePage() {
               </div>
                
                <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">{currentEmployee.email || '-'}</p>
+                 <p className="text-lg font-medium text-gray-900">{displayEmployee?.email || '-'}</p>
                  <p className="text-sm text-gray-500">Email</p>
                </div>
                
                <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">{currentEmployee.phone || '-'}</p>
+                 <p className="text-lg font-medium text-gray-900">{displayEmployee?.phone || '-'}</p>
                  <p className="text-sm text-gray-500">Phone</p>
                </div>
                
@@ -201,7 +351,7 @@ export default function EmployeeProfilePage() {
               </div>
               
                              <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">-</p>
+                 <p className="text-lg font-medium text-gray-900">{(displayEmployee as any)?.dateOfBirth || '-'}</p>
                  <p className="text-sm text-gray-500">Date of Birth</p>
                </div>
             </div>
@@ -215,12 +365,12 @@ export default function EmployeeProfilePage() {
             
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">-</p>
+                 <p className="text-lg font-medium text-gray-900">{(displayEmployee as any)?.currentAddress || '-'}</p>
                  <p className="text-sm text-gray-500">Current Address</p>
                </div>
                
                <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">-</p>
+                 <p className="text-lg font-medium text-gray-900">{(displayEmployee as any)?.permanentAddress || '-'}</p>
                  <p className="text-sm text-gray-500">Permanent Address</p>
                </div>
              </div>
@@ -239,13 +389,13 @@ export default function EmployeeProfilePage() {
                </div>
                
                <div className="bg-white rounded-lg shadow p-3">
-                 <p className="text-lg font-medium text-gray-900">-</p>
+                 <p className="text-lg font-medium text-gray-900">{(displayEmployee as any)?.homeTown || '-'}</p>
                  <p className="text-sm text-gray-500">Home Town</p>
                </div>
                
                <div className="bg-white rounded-lg shadow p-3">
                  <p className="text-lg font-medium text-gray-900">
-                   {currentEmployee.status === 'active' ? 'Yes' : 'No'}
+                   {displayEmployee?.status === 'active' ? 'Yes' : 'No'}
                  </p>
                  <p className="text-sm text-gray-500">Is Active</p>
                </div>
@@ -314,6 +464,170 @@ export default function EmployeeProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-gray-900">Edit Profile</h2>
+              <button
+                onClick={handleCancel}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <FiUser className="mr-2" /> Personal Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        errors.name ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      required
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        errors.email ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      required
+                    />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        errors.phone ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      required
+                    />
+                    {errors.phone && (
+                      <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Home Town
+                    </label>
+                    <input
+                      type="text"
+                      name="homeTown"
+                      value={formData.homeTown}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                  <FiMapPin className="mr-2" /> Contact Information
+                </h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Current Address
+                    </label>
+                    <textarea
+                      name="currentAddress"
+                      value={formData.currentAddress}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Permanent Address
+                    </label>
+                    <textarea
+                      name="permanentAddress"
+                      value={formData.permanentAddress}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  <FiSave className="w-4 h-4" />
+                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </EmployeeLayout>
   );
 } 
