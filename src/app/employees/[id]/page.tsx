@@ -326,7 +326,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 <p className="text-lg font-medium text-gray-900">{employee.homeTown || '-'}</p>
                 <p className="text-sm text-gray-500">Home Town</p>
               </div>
-              
+
               <div className="bg-white rounded-lg shadow p-3">
                 <span
                   className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -649,7 +649,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
               <FiBook className="mr-2" /> Audit Trail
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-3">
                 <p className="text-lg font-medium text-gray-900">{createdByAdmin || 'Unknown'}</p>
                 <p className="text-sm text-gray-500">Created By</p>
