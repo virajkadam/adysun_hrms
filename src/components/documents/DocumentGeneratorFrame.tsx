@@ -81,11 +81,11 @@ const DocumentGeneratorFrame: React.FC<DocumentGeneratorFrameProps> = ({
 
   return (
     <DashboardLayout breadcrumbItems={breadcrumbItems}>
-      <div className="bg-white rounded-lg shadow-sm p-4">
+      {/* <div className="bg-white rounded-lg shadow-sm p-4"> */}
         <div className="document-container w-full">
           {renderDocumentComponent()}
         </div>
-      </div>
+      {/* </div> */}
     </DashboardLayout>
   );
 };

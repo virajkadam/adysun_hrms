@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { FiArrowLeft, FiDownload } from 'react-icons/fi';
+import { FiDownload } from 'react-icons/fi';
+import TableHeader from '@/components/ui/TableHeader';
 import { 
   Document, 
   Page, 
@@ -572,17 +572,21 @@ function OfferLetterV2() {
   return (
     <div className="container mx-auto p-4">
       <Toaster position="top-center" />
-      <div className="mb-4">
-        <Link href="/dashboard/documents" className="text-blue-600 hover:underline flex items-center gap-1">
-          <FiArrowLeft size={16} /> Back to Documents
-        </Link>
-      </div>
-
-      {/* Form Section */}
-      <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Enter Offer Letter Details</h2>
+      
+      <div className="bg-white rounded-lg shadow-lg mb-8">
+        <TableHeader
+          title="Enter Offer Letter Details"
+          backButton={{ href: '/dashboard/documents', label: 'Back' }}
+          showStats={false}
+          showSearch={false}
+          showFilter={false}
+          headerClassName="px-8 pt-8 mb-0"
+          searchValue=""
+          onSearchChange={() => {}}
+        />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="px-8 pb-8 mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-group">
             <label className="block mb-2 text-sm font-medium text-slate-800">Employee</label>
             <select
@@ -612,16 +616,17 @@ function OfferLetterV2() {
               ))}
             </select>
           </div>
-        </div>
-        
-        <div className="mt-6">
-          <button
-            onClick={handleGenerateDocument}
-            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
-          >
-            <FiDownload size={18} className="mr-2" />
-            <span>Generate Offer Letter</span>
-          </button>
+          </div>
+          
+          <div className="mt-6">
+            <button
+              onClick={handleGenerateDocument}
+              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 shadow-lg hover:shadow-md transition-all duration-200"
+            >
+              <FiDownload size={18} className="mr-2" />
+              <span>Generate Offer Letter</span>
+            </button>
+          </div>
         </div>
       </div>
       
