@@ -18,6 +18,7 @@ export default function EmployeeProfilePage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [employeeData, setEmployeeData] = useState<any>(null);
+  const [sameAsCurrentAddress, setSameAsCurrentAddress] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -63,15 +64,20 @@ export default function EmployeeProfilePage() {
       const employee = employeeData || currentEmployee;
       if (employee) {
         const emp = employee as any;
+        const currentAddr = emp.currentAddress || '';
+        const permanentAddr = emp.permanentAddress || '';
+        const addressesMatch = currentAddr && currentAddr === permanentAddr;
+        
         setFormData({
           name: employee.name || '',
           email: employee.email || '',
           phone: employee.phone || '',
-          currentAddress: emp.currentAddress || '',
-          permanentAddress: emp.permanentAddress || '',
+          currentAddress: currentAddr,
+          permanentAddress: permanentAddr,
           dateOfBirth: emp.dateOfBirth || '',
           homeTown: emp.homeTown || ''
         });
+        setSameAsCurrentAddress(addressesMatch);
         setErrors({});
       }
     }
@@ -79,7 +85,14 @@ export default function EmployeeProfilePage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [name]: value };
+      // If current address changes and checkbox is checked, update permanent address too
+      if (name === 'currentAddress' && sameAsCurrentAddress) {
+        updated.permanentAddress = value;
+      }
+      return updated;
+    });
     // Clear error for this field
     if (errors[name]) {
       setErrors(prev => {
@@ -87,6 +100,18 @@ export default function EmployeeProfilePage() {
         delete newErrors[name];
         return newErrors;
       });
+    }
+  };
+
+  const handleSameAsCurrentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setSameAsCurrentAddress(checked);
+    if (checked) {
+      // Copy current address to permanent address
+      setFormData(prev => ({
+        ...prev,
+        permanentAddress: prev.currentAddress
+      }));
     }
   };
 
@@ -182,6 +207,7 @@ export default function EmployeeProfilePage() {
   const handleCancel = () => {
     setIsEditModalOpen(false);
     setErrors({});
+    setSameAsCurrentAddress(false);
   };
 
   // Show loading if no user data
@@ -591,15 +617,30 @@ export default function EmployeeProfilePage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Permanent Address
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Permanent Address
+                      </label>
+                      <label className="flex items-center text-sm text-gray-600 space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={sameAsCurrentAddress}
+                          onChange={handleSameAsCurrentChange}
+                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <span>Same as current address</span>
+                      </label>
+                    </div>
                     <textarea
                       name="permanentAddress"
                       value={formData.permanentAddress}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      disabled={sameAsCurrentAddress}
+                      readOnly={sameAsCurrentAddress}
+                      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        sameAsCurrentAddress ? 'bg-gray-100 cursor-not-allowed' : ''
+                      }`}
                     />
                   </div>
                 </div>
