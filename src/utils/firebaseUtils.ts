@@ -1122,6 +1122,78 @@ export const getEmployeeSelf = async (employeeId: string) => {
   }
 };
 
+/**
+ * Update employee's own profile data (for employee self-service)
+ * @param employeeId - The employee ID (must match logged-in employee)
+ * @param employeeData - Partial employee data to update
+ * @returns Updated employee data
+ */
+export const updateEmployeeSelf = async (employeeId: string, employeeData: Partial<Employee>) => {
+  try {
+    console.log('🔄 Starting employee self-update process...');
+    
+    // Check for employee session
+    const employeeSessionId = localStorage.getItem('employeeSessionId');
+    const employeeDataStorage = localStorage.getItem('employeeData');
+    
+    console.log('🔐 === EMPLOYEE SESSION CHECK ===');
+    console.log('🔑 Employee Session ID:', employeeSessionId);
+    console.log('👤 Employee Data:', employeeDataStorage ? '✅ Found' : '❌ Not found');
+    
+    if (!employeeSessionId || !employeeDataStorage) {
+      console.log('❌ CRITICAL: No employee session found!');
+      throw new Error('No employee session found. Please log in as employee first.');
+    }
+    
+    const currentEmployee = JSON.parse(employeeDataStorage);
+    
+    // Security check: Employee can only update their own data
+    if (currentEmployee.id !== employeeId) {
+      console.log('❌ SECURITY: Employee trying to update other employee data!');
+      throw new Error('Access denied. You can only update your own data.');
+    }
+    
+    console.log('✅ Employee session validated');
+    
+    // Get current employee data to preserve password if not being updated
+    const currentEmployeeData = await getEmployeeSelf(employeeId);
+    
+    // Prepare update data with employee audit fields (no admin session needed)
+    const updateDataWithAudit = {
+      ...employeeData,
+      updatedAt: new Date().toISOString(),
+      updatedBy: employeeId, // Employee updating their own profile
+    };
+    
+    // If password is not being updated, preserve existing password
+    if (!employeeData.password && currentEmployeeData.password) {
+      updateDataWithAudit.password = currentEmployeeData.password;
+    }
+    
+    // Don't allow employees to update sensitive fields
+    delete (updateDataWithAudit as any).status;
+    delete (updateDataWithAudit as any).is_resigned;
+    delete (updateDataWithAudit as any).employmentStatus;
+    delete (updateDataWithAudit as any).resignedDate;
+    delete (updateDataWithAudit as any).lastWorkingDay;
+    
+    console.log('📋 Employee self-update data:', updateDataWithAudit);
+    
+    // Sanitize data before sending to Firestore
+    const sanitizedData = sanitizeForFirestore(updateDataWithAudit);
+    console.log('🧹 Sanitized data for self-update (removed undefined values)');
+    
+    const employeeRef = doc(db, 'employees', employeeId);
+    await updateDoc(employeeRef, sanitizedData);
+    
+    console.log('✅ Employee self-update successful');
+    return { id: employeeId, ...updateDataWithAudit };
+  } catch (error) {
+    console.error('Error updating employee self:', error);
+    throw error;
+  }
+};
+
 // Function for employee to access their own employment data
 export const getEmployeeSelfEmployment = async (employeeId: string) => {
   try {

@@ -9,7 +9,7 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { updateUserProfile, validateProfileData } from '@/utils/profileUtils';
-import { updateEmployee, getEmployeeSelf } from '@/utils/firebaseUtils';
+import { updateEmployeeSelf, getEmployeeSelf } from '@/utils/firebaseUtils';
 
 export default function EmployeeProfilePage() {
   const { currentUserData, currentEmployee, logout } = useAuth();
@@ -155,7 +155,7 @@ export default function EmployeeProfilePage() {
         phone: updateData.phone
       }, 'employee');
 
-      // Update additional fields using updateEmployee
+      // Update additional fields using updateEmployeeSelf (for employee self-service)
       const additionalData: any = {};
       if (updateData.currentAddress !== undefined) additionalData.currentAddress = updateData.currentAddress;
       if (updateData.permanentAddress !== undefined) additionalData.permanentAddress = updateData.permanentAddress;
@@ -163,7 +163,7 @@ export default function EmployeeProfilePage() {
       if (updateData.homeTown) additionalData.homeTown = updateData.homeTown;
 
       if (Object.keys(additionalData).length > 0) {
-        await updateEmployee(currentUserData.id, additionalData);
+        await updateEmployeeSelf(currentUserData.id, additionalData);
       }
 
       // Fetch updated employee data from Firebase
@@ -434,7 +434,7 @@ export default function EmployeeProfilePage() {
               <FiShield className="mr-2" /> Account Information
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-3">
                 <p className="text-lg font-medium text-gray-900">{currentUserData.email}</p>
                 <p className="text-sm text-gray-500">Login Email</p>

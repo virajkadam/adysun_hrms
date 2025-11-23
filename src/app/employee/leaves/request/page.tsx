@@ -164,7 +164,7 @@ export default function RequestLeavePage() {
               
               <div>
                 <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
-                  <span className="text-red-500 mr-1">*</span>From Date 
+                  <span className="text-red-500 mr-1">*</span>Leave Start Date
                 </label>
                 <input
                   type="date"
@@ -179,7 +179,7 @@ export default function RequestLeavePage() {
               
               <div>
                 <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
-                  <span className="text-red-500 mr-1">*</span>To Date 
+                  <span className="text-red-500 mr-1">*</span>Leave To Date 
                 </label>
                 <input
                   type="date"
