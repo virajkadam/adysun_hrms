@@ -172,7 +172,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
       } else if (userData.userType === 'employee') {
         // Employee authentication
-        if (userData.status === 'active' && userData.password === password) {
+        // Check if employee is resigned
+        if (userData.is_resigned) {
+          console.log('❌ Employee account is resigned!');
+          throw new Error('This account has been resigned. Please contact administrator.');
+        }
+        
+        if (userData.status === 'active' && !userData.is_resigned && userData.password === password) {
           console.log('✅ Employee password match successful!');
           
           // Store employee data in localStorage for persistence

@@ -117,6 +117,12 @@ export interface Employee {
   status: 'active' | 'inactive';
   imageUrl?: string;
   
+  // Resignation tracking
+  employmentStatus?: 'working' | 'resigned'; // Working/Resigned dropdown value
+  resignedDate?: string; // Auto-filled date when set to resigned
+  lastWorkingDay?: string; // Manual input for last working day
+  is_resigned?: boolean; // Boolean flag for login check (default: false)
+  
   // Salary information for offer letter
   salary?: number;
   

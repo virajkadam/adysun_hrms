@@ -908,6 +908,7 @@ export const checkEmployeeByPhone = async (phoneNumber: string) => {
         phone: employeeData.phone || '',
         password: employeeData.password || '', // Assuming employees have password field
         status: employeeData.status || 'inactive',
+        is_resigned: employeeData.is_resigned || false,
         createdAt: employeeData.createdAt,
         isEmployee: true,
         isAdmin: false,
@@ -973,6 +974,63 @@ export const addPasswordToEmployees = async () => {
     return updatePromises.length;
   } catch (error) {
     console.error('Error adding passwords to employees:', error);
+    throw error;
+  }
+};
+
+// Function to add resignation fields to existing employees (for migration)
+// IMPORTANT: This function is idempotent - safe to run multiple times.
+// It only adds default values if fields are completely missing (undefined/null).
+// It will NEVER overwrite existing values, so resigned employees stay resigned.
+export const migrateEmployeesWithResignationFields = async () => {
+  try {
+    console.log('🔄 Starting resignation fields migration for employees...');
+    
+    const querySnapshot = await getDocs(collection(db, 'employees'));
+    const updatePromises: Promise<any>[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      const employeeData = doc.data();
+      const updates: any = {};
+      let needsUpdate = false;
+      
+      // Only add is_resigned: false if the field is completely missing (undefined or null)
+      // This ensures we NEVER overwrite existing values (e.g., if someone is already resigned)
+      if (employeeData.is_resigned === undefined || employeeData.is_resigned === null) {
+        updates.is_resigned = false;
+        needsUpdate = true;
+        console.log(`📝 Adding is_resigned: false to employee: ${employeeData.name || doc.id}`);
+      } else {
+        console.log(`✓ Employee ${employeeData.name || doc.id} already has is_resigned: ${employeeData.is_resigned} (skipping)`);
+      }
+      
+      // Only add employmentStatus: 'working' if the field is completely missing (undefined or null)
+      // This ensures we NEVER overwrite existing values (e.g., if someone is already resigned)
+      if (employeeData.employmentStatus === undefined || employeeData.employmentStatus === null) {
+        updates.employmentStatus = 'working';
+        needsUpdate = true;
+        console.log(`📝 Adding employmentStatus: 'working' to employee: ${employeeData.name || doc.id}`);
+      } else {
+        console.log(`✓ Employee ${employeeData.name || doc.id} already has employmentStatus: ${employeeData.employmentStatus} (skipping)`);
+      }
+      
+      if (needsUpdate) {
+        updates.updatedAt = new Date().toISOString();
+        updatePromises.push(updateDoc(doc.ref, updates));
+      }
+    });
+    
+    if (updatePromises.length > 0) {
+      await Promise.all(updatePromises);
+      console.log(`✅ Successfully updated ${updatePromises.length} employees with resignation fields`);
+      console.log('ℹ️ Migration is idempotent - safe to run multiple times without overwriting existing values');
+    } else {
+      console.log('ℹ️ All employees already have resignation fields - no updates needed');
+    }
+    
+    return updatePromises.length;
+  } catch (error) {
+    console.error('Error adding resignation fields to employees:', error);
     throw error;
   }
 };

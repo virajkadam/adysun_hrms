@@ -36,6 +36,7 @@ export default function EditEmployeePage({ params }: PageParams) {
 
   const { register, handleSubmit, formState: { errors }, reset, watch, setValue } = useForm<Omit<Employee, 'id'> & { confirmPassword?: string }>();
   const currentAddressValue = watch('currentAddress');
+  const employmentStatus = watch('employmentStatus');
 
   // Helper functions for managing education entries
   // Check if we can add more entries
@@ -141,6 +142,14 @@ export default function EditEmployeePage({ params }: PageParams) {
     }
   }, [sameAsCurrentAddress, currentAddressValue, setValue]);
 
+  // Auto-fill resignedDate when employmentStatus changes to "resigned"
+  useEffect(() => {
+    if (employmentStatus === 'resigned') {
+      const currentDate = new Date().toISOString().split('T')[0];
+      setValue('resignedDate', currentDate);
+    }
+  }, [employmentStatus, setValue]);
+
   const onSubmit = async (data: Omit<Employee, 'id'>) => {
     try {
       setIsSubmitting(true);
@@ -189,6 +198,9 @@ export default function EditEmployeePage({ params }: PageParams) {
         (entry.diplomaData && Object.values(entry.diplomaData).some(v => v))
       );
 
+      // Set is_resigned based on employmentStatus
+      const isResigned = data.employmentStatus === 'resigned';
+      
       // Normalize PAN to uppercase and include new education structure
       const updatedData = {
         ...data,
@@ -197,6 +209,7 @@ export default function EditEmployeePage({ params }: PageParams) {
         twelthStandard: undefined,
         diploma: undefined,
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
+        is_resigned: isResigned,
       };
       
       await updateEmployee(id, updatedData);
@@ -349,7 +362,54 @@ export default function EditEmployeePage({ params }: PageParams) {
                     <p className="mt-1 text-sm text-red-600">{errors.employeeType.message}</p>
                   )}
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Employment Status
+                  </label>
+                  <select
+                    {...register('employmentStatus')}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  >
+                    <option value="working">Working</option>
+                    <option value="resigned">Resigned</option>
+                  </select>
+                </div>
               </div>
+
+              {/* Conditional fields for resigned employees */}
+              {employmentStatus === 'resigned' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Resigned Date
+                    </label>
+                    <input
+                      type="date"
+                      {...register('resignedDate')}
+                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    {errors.resignedDate && (
+                      <p className="mt-1 text-sm text-red-600">{errors.resignedDate.message}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <span className="text-red-500">*</span> Last Working Day
+                    </label>
+                    <input
+                      type="date"
+                      {...register('lastWorkingDay', {
+                        required: employmentStatus === 'resigned' ? 'Last working day is required' : false
+                      })}
+                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    {errors.lastWorkingDay && (
+                      <p className="mt-1 text-sm text-red-600">{errors.lastWorkingDay.message}</p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Contact Information */}

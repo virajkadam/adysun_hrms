@@ -49,6 +49,8 @@ export default function AddEmployeePage() {
     defaultValues: {
       status: 'active',
       employeeType: 'internal', // Default to internal
+      is_resigned: false,
+      employmentStatus: 'working',
     }
   });
   const [sameAsCurrentAddress, setSameAsCurrentAddress] = useState(false);
@@ -167,6 +169,8 @@ export default function AddEmployeePage() {
         secondaryEducation,
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
         status: 'active' as const,
+        is_resigned: false,
+        employmentStatus: 'working' as const,
         password: data.password || `${data.phone.slice(-5)}@#$$`,
         createdAt: currentTimestamp,
         createdBy: adminId,
