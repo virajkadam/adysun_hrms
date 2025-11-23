@@ -263,8 +263,9 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
         />
 
         {employee && (
-          <div className="px-6 pb-6">
+          <div className="px-6 pb-6 mt-6">
             {/* Employee Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="bg-white p-4 rounded-lg mb-6 border border-gray-200">
               <div className="flex items-center">
                 <div className="flex-shrink-0 mr-4">
@@ -290,9 +291,8 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
                 </div>
               </div>
             </div>
-
-            {/* Attendance Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+             {/* Attendance Overview */}
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="bg-white rounded-lg shadow p-5">
                 <p className="text-lg font-medium text-gray-900">{attendanceStats.attendanceRate}%</p>
                 <p className="text-sm text-gray-500">Attendance Rate</p>
@@ -313,6 +313,9 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
                 <p className="text-sm text-gray-500">Late Days</p>
               </div>
             </div>
+            </div>
+
+           
 
             {/* Recent Attendance Records */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
