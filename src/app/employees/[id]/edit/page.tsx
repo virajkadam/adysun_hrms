@@ -142,11 +142,14 @@ export default function EditEmployeePage({ params }: PageParams) {
     }
   }, [sameAsCurrentAddress, currentAddressValue, setValue]);
 
-  // Auto-fill resignedDate when employmentStatus changes to "resigned"
+  // Auto-fill resignedDate and update status when employmentStatus changes
   useEffect(() => {
     if (employmentStatus === 'resigned') {
       const currentDate = new Date().toISOString().split('T')[0];
       setValue('resignedDate', currentDate);
+      setValue('status', 'inactive');
+    } else if (employmentStatus === 'working') {
+      setValue('status', 'active');
     }
   }, [employmentStatus, setValue]);
 
@@ -198,8 +201,11 @@ export default function EditEmployeePage({ params }: PageParams) {
         (entry.diplomaData && Object.values(entry.diplomaData).some(v => v))
       );
 
-      // Set is_resigned based on employmentStatus
+      // Set is_resigned and status based on employmentStatus
       const isResigned = data.employmentStatus === 'resigned';
+      // When employee is resigned, automatically set status to inactive
+      // When employee is working, set status to active
+      const employeeStatus: 'active' | 'inactive' = isResigned ? 'inactive' : 'active';
       
       // Normalize PAN to uppercase and include new education structure
       const updatedData = {
@@ -210,6 +216,7 @@ export default function EditEmployeePage({ params }: PageParams) {
         diploma: undefined,
         panCard: data.panCard ? data.panCard.toUpperCase() : undefined,
         is_resigned: isResigned,
+        status: employeeStatus,
       };
       
       await updateEmployee(id, updatedData);
