@@ -20,6 +20,35 @@ Font.register({
   ],
 });
 
+// Register Lato font for offer letter
+// Using a reliable CDN source for Lato font
+try {
+  Font.register({
+    family: 'Lato',
+    fonts: [
+      {
+        src: 'https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXg.woff2',
+      },
+      {
+        src: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ.woff2',
+        fontWeight: 'bold',
+      },
+      {
+        src: 'https://fonts.gstatic.com/s/lato/v24/S6u8w4BMUTPHjxsAXC-v.woff2',
+        fontStyle: 'italic',
+      },
+      {
+        src: 'https://fonts.gstatic.com/s/lato/v24/S6u_w4BMUTPHjxsI5wq_FQft1dw.woff2',
+        fontWeight: 'bold',
+        fontStyle: 'italic',
+      },
+    ],
+  });
+} catch (error) {
+  console.warn('Lato font registration failed, will use fallback:', error);
+  // Font registration will fallback to system fonts
+}
+
 // Monospace font for fixed-width formatting
 Font.register({
   family: 'Courier',
@@ -94,116 +123,183 @@ export const commonStyles = StyleSheet.create({
   },
 });
 
-// Specific styles for offer letter
+// Specific styles for offer letter - matching 5-page template
 export const offerLetterStyles = StyleSheet.create({
   page: {
-    padding: 40,
-    fontFamily: 'Calibri',
+    paddingTop: 72,
+    paddingLeft: 72,
+    paddingRight: 54,
+    paddingBottom: 72,
+    fontFamily: 'Lato',
     fontSize: 12,
-    lineHeight: 1.5,
+    lineHeight: 1.0,
     color: '#000000',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 15,
-    paddingBottom: 10,
+  // Company header styles
+  companyHeader: {
+    marginBottom: 12,
+    paddingBottom: 8,
     borderBottomWidth: 1,
+    borderBottomColor: '#000000',
     borderBottomStyle: 'solid',
-  },
-  companyInfo: {
-    flexDirection: 'column',
   },
   companyName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#FF0000',
+    marginBottom: 4,
     textTransform: 'uppercase',
-  },
-  companyAddress: {
-    fontSize: 10,
-    marginBottom: 2,
-    textTransform: 'capitalize',
+    fontFamily: 'Lato',
   },
   companyContact: {
-    fontSize: 10,
+    fontSize: 11,
     marginBottom: 2,
+    fontFamily: 'Lato',
   },
-  logo: {
+  companyAddress: {
+    fontSize: 11,
+    marginBottom: 4,
+    fontFamily: 'Lato',
+  },
+  companyLogo: {
     width: 60,
-    height: 'auto',
+    height: 60,
   },
-  letterTitle: {
+  // Section heading styles
+  sectionHeading: {
     fontSize: 14,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
+    textDecoration: 'underline',
+    paddingTop: 14,
+    paddingBottom: 4,
+    lineHeight: 1.0,
+    fontFamily: 'Lato',
+    color: '#000000',
   },
-  dateSection: {
-    marginBottom: 8,
-  },
-  toSection: {
-    marginBottom: 8,
-  },
-  letterContent: {
-    marginBottom: 20,
-    textAlign: 'justify',
-  },
-  paragraph: {
-    marginBottom: 7,
-    textAlign: 'justify',
-  },
-  signature: {
-    marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  signatureBox: {
-    width: '45%',
-  },
-  signatureLine: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#000',
-    borderBottomStyle: 'solid',
-    marginTop: 30,
-    marginBottom: 5,
-  },
-  signatureText: {
+  // List item styles
+  listItem: {
+    marginLeft: 36,
+    paddingTop: 12,
+    paddingLeft: 0,
+    paddingBottom: 0,
+    lineHeight: 1.0,
     fontSize: 11,
+    fontFamily: 'Arial',
   },
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 40,
-    right: 40,
-    borderTopWidth: 1,
-    borderTopStyle: 'solid',
-    paddingTop: 5,
-    fontSize: 10,
+  listItemNested: {
+    marginLeft: 36,
+    paddingTop: 0,
+    paddingLeft: 0,
+    paddingBottom: 0,
+    lineHeight: 1.0,
+    fontSize: 11,
+    fontFamily: 'Arial',
   },
-  salaryTable: {
-    marginVertical: 8,
+  // Text styles
+  bodyText: {
+    fontSize: 12,
+    fontFamily: 'Lato',
+    lineHeight: 1.0,
+    paddingTop: 12,
+    paddingBottom: 12,
+    textAlign: 'left',
+  },
+  bodyTextBold: {
+    fontSize: 12,
+    fontFamily: 'Lato',
+    fontWeight: 'bold',
+    lineHeight: 1.0,
+  },
+  bodyTextItalic: {
+    fontSize: 12,
+    fontFamily: 'Arial',
+    fontStyle: 'italic',
+    color: '#666666',
+    lineHeight: 1.0,
+  },
+    // Title styles
+  letterTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textDecoration: 'underline',
+    textAlign: 'center',
+    paddingTop: 14,
+    paddingBottom: 4,
+    fontFamily: 'Lato',
+  },
+  // Date styles
+  dateText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    fontFamily: 'Lato',
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+  // Table styles
+  table: {
+    width: '100%',
+    marginTop: 8,
+    marginBottom: 8,
   },
   tableRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    borderBottomStyle: 'solid',
-    paddingVertical: 5,
-  },
-  tableRowTotal: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderTopWidth: 2,
-    borderTopColor: '#000',
+    borderTopWidth: 1,
+    borderTopColor: '#000000',
     borderTopStyle: 'solid',
-    borderBottomWidth: 2,
-    borderBottomColor: '#000',
+    borderLeftWidth: 1,
+    borderLeftColor: '#000000',
+    borderLeftStyle: 'solid',
+    borderRightWidth: 1,
+    borderRightColor: '#000000',
+    borderRightStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
     borderBottomStyle: 'solid',
-    paddingVertical: 5,
+  },
+  tableCell: {
+    padding: 5,
+    borderRightWidth: 1,
+    borderRightColor: '#000000',
+    borderRightStyle: 'solid',
+    fontSize: 12,
+    fontFamily: 'Lato',
+  },
+  tableCellLast: {
+    padding: 5,
+    fontSize: 12,
+    fontFamily: 'Lato',
+  },
+  tableCellBold: {
+    padding: 5,
+    borderRightWidth: 1,
+    borderRightColor: '#000000',
+    borderRightStyle: 'solid',
+    fontSize: 12,
+    fontFamily: 'Lato',
     fontWeight: 'bold',
+  },
+  tableCellBoldLast: {
+    padding: 5,
+    fontSize: 12,
+    fontFamily: 'Lato',
+    fontWeight: 'bold',
+  },
+  // Watermark styles
+  watermark: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  watermarkImage: {
+    width: '80%',
+    height: 'auto',
+    opacity: 0.15,
   },
 });
 

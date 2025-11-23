@@ -16,376 +16,454 @@ import {
 import { db } from '@/firebase/config';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import toast, { Toaster } from 'react-hot-toast';
+import { offerLetterStyles } from '@/components/pdf/PDFStyles';
 
-// Import our custom PDF components and styles
-import { 
-  offerLetterStyles,
-  commonStyles 
-} from '@/components/pdf/PDFStyles';
-import { 
-  CompanyHeader, 
-  LetterTitle,
-  FormattedDate,
-  Addressee,
-  Paragraph,
-  Signature,
-  Footer,
-  SalaryTable,
-} from '@/components/pdf/PDFComponents';
-import { 
-  calculateSalaryComponentsV2,
-  formatIndianCurrency,
-  numberToWords
-} from '@/components/pdf/SalaryUtils';
-
-// Create watermark styles
-const watermarkStyles = StyleSheet.create({
-  watermarkContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: -1,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  watermarkImage: {
-    width: '70%',
-    height: 'auto',
-    opacity: 0.17,
+// Hardcoded data for now (will be connected to actual data later)
+const HARDCODED_DATA = {
+  companyName: 'ADYSUN VENTURES PVT. LTD.',
+  companyContact: '9579537523 | hr@adysunventures.com | AdysunVentures.com',
+  companyAddress: 'Adysun Ventures Pvt. Ltd., S no 47, Workplex, Pune-Satara Rd, Opp City Pride Theater, Near Bhapkar petrol pump, Pune, Maharashtra - 411009',
+  employeeName: 'Mr. Arnab Kumar Baishya',
+  employeeFirstName: 'Arnab',
+  employeeAddress: [
+    'C/O: Apurba Kumar Baishya,',
+    'H.No.-5, Ananda Nagar,',
+    'Six Mile, Khanapara,',
+    'Kamrup Metro, Assam-781022'
+  ],
+  designation: 'Software Engineer',
+  joiningDate: '01 Aug 2024',
+  letterDate: '19-July-2024',
+  ctc: '₹4,00,000',
+  fixedCompensation: '₹3,00,000',
+  variablePay: '₹1,00,000',
+  hrName: 'Prachi Jadhav',
+  hrDesignation: 'Head - HR Department',
+  hrEmail: 'hr@adysunventures.com',
+  salaryBreakdown: {
+    basic: { monthly: '5,400', annual: '64,800' },
+    hra: { monthly: '2,000', annual: '24,000' },
+    conveyance: { monthly: '800', annual: '9,600' },
+    otherAllowances: { monthly: '7,000', annual: '84,000' },
+    grossSalary: { monthly: '15,200', annual: '1,82,400' },
+    professionalTax: { monthly: '200', annual: '2,400' },
+    totalDeductions: { monthly: '200', annual: '2,400' },
+    netInHand: { monthly: '15,000', annual: '1,80,000' },
+    variableIncentive: { monthly: '', annual: '2,20,000' },
+    totalCTC: { monthly: '33,533', annual: '4,00,000' }
   }
-});
-
-// Document style overrides to standardize font sizes
-const documentStyles = StyleSheet.create({
-  // Base text style with 12pt font
-  text: {
-    fontSize: 12,
-    fontFamily: 'Calibri',
-  },
-  // Bold text with 12pt font
-  boldText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    fontFamily: 'Calibri',
-  },
-  // Section headers with 14pt font
-  sectionHeader: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    fontFamily: 'Calibri',
-    textAlign: 'center',
-    marginVertical: 8,
-  },
-  // Document title with 16pt font
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Calibri',
-    textAlign: 'center',
-    marginVertical: 10,
-  },
-  // Footer text with 10pt font
-  footerText: {
-    fontSize: 10,
-    fontFamily: 'Calibri',
-  },
-  // Company name in header with 18pt font
-  companyName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'Calibri',
-    textTransform: 'uppercase',
-  },
-  // Address text with 10pt font
-  addressText: {
-    fontSize: 10,
-    fontFamily: 'Calibri',
-  },
-  // Standard page styling
-  page: {
-    ...offerLetterStyles.page,
-    fontSize: 12, // Update base font size
-    paddingBottom: 60, // Add more padding at the bottom to prevent footer overlap
-  }
-});
+};
 
 // Watermark Component
 const Watermark = ({ logoSrc }) => {
-  // Only render if logo exists
   if (!logoSrc) return null;
   
   return (
-    <View style={watermarkStyles.watermarkContainer}>
-      <Image src={logoSrc} style={watermarkStyles.watermarkImage} />
+    <View style={offerLetterStyles.watermark}>
+      <Image src={logoSrc} style={offerLetterStyles.watermarkImage} />
     </View>
   );
 };
 
 // Offer Letter PDF Document Component
 const OfferLetterPDF = ({ formData }) => {
-  // Format salary values to ensure they display correctly
-  const formatSalaryValues = () => {
-    if (!formData.salaryComponentsV2) {
-      // If no salary data available, return zeros 
-      // This is just structural - not default values
-      return [
-        { label: 'Basic', value: '0.00' },
-        { label: 'Dearness Allowance', value: '0.00' },
-        { label: 'Conveyance Allowance', value: '0.00' },
-        { label: 'Other Allowance', value: '0.00' },
-        { total: '0.00' },
-      ];
-    }
-    
-    try {
-      // Format with exact spacing and formatting as in current PDF
-      // Use actual values from the employee record with no defaults
-      return [
-        {
-          label: 'Basic',
-          value: formatIndianCurrency(formData.salaryComponentsV2.annual.basic || 0),
-        },
-        {
-          label: 'Dearness Allowance',
-          value: formatIndianCurrency(formData.salaryComponentsV2.annual.dearnessAllowance || 0),
-        },
-        {
-          label: 'Conveyance Allowance',
-          value: formatIndianCurrency(formData.salaryComponentsV2.annual.conveyanceAllowance || 0),
-        },
-        {
-          label: 'Other Allowance',
-          value: formatIndianCurrency(formData.salaryComponentsV2.annual.otherAllowance || 0),
-        },
-        {
-          total: formatIndianCurrency(formData.lpa ? formData.lpa * 100000 : 0),
-        },
-      ];
-    } catch (error) {
-      console.error("Error formatting salary values:", error);
-      // Return zeros if there's an error, not defaults
-      return [
-        { label: 'Basic', value: '0.00' },
-        { label: 'Dearness Allowance', value: '0.00' },
-        { label: 'Conveyance Allowance', value: '0.00' },
-        { label: 'Other Allowance', value: '0.00' },
-        { total: '0.00' },
-      ];
-    }
-  };
+  // Use hardcoded data for now
+  const data = HARDCODED_DATA;
+  const companyLogo = formData?.companyLogo || '';
+  const signatureLogo = formData?.signatureLogo || '';
 
   return (
     <Document>
-      {/* Page 1 - Joining Cum Appointment Letter */}
-      <Page size="A4" style={documentStyles.page}>
+      {/* Page 1 - Header, Date, Address, Title, Greeting, Opening */}
+      <Page size="A4" style={offerLetterStyles.page}>
         {/* Watermark */}
-        <Watermark logoSrc={formData.companyLogo} />
+        <Watermark logoSrc={companyLogo} />
         
         {/* Company Header */}
-        <CompanyHeader 
-          companyName={formData.companyName || 'COMPANY NAME'} 
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'} 
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyLogo={formData.companyLogo}
-          companyColor="#0066cc"
-        />
-        
-        {/* Letter Title */}
-        <Text style={documentStyles.sectionHeader}>Joining Cum Appointment Letter</Text>
-        
-        {/* Letter Date */}
-        <Text style={documentStyles.text}>Date: {new Date(formData.joiningDate || new Date()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
-        
-        {/* Addressee */}
-        <View style={{ marginBottom: 8 }}>
-          <Text style={documentStyles.text}>Dear {formData.employeeName || 'EMPLOYEE NAME'},</Text>
-        </View>
-        
-        {/* Letter Content */}
-        <View style={offerLetterStyles.letterContent}>
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            We Pleased In Appointing You As {formData.designation || 'DESIGNATION'} In {formData.companyName || 'COMPANY NAME'}, 
-            at Our Office In Our Organization, Effective From {formData.joiningDate ? new Date(formData.joiningDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'DD MMM YYYY'} On The Following Terms And Conditions:
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            You will be placed in the appropriate responsibility level of the Company, and will be entitled to compensation (salary and other applicable benefits) as discussed. Compensation will be governed by the rules of the Company on the subject, as applicable and/or amended hereafter.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            You will be eligible to the benefits of the Company's Leave Rules on your confirmation in the Company's Service as discussed. During the period of your employment you will devote full time to the work of the Company. Further, you will not take any other employment or assignment or any office honorary or for any consideration in cash or in kind or otherwise, without the prior written permission of the Company.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            You will be on a Probation period for the Three months based on your performance. During the probation period your services can be terminated with seven day's notice on either side and without any reasons whatsoever. If your services are found satisfactory during the probation period, you will be confirmed in the present position and thereafter your services can be terminated on one month's notice on either side. The period of probation can be extended at the discretion of the Management and you will continue to be on probation till an order of confirmation has been issued in writing.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            {formData.lpa && formData.lpa > 0 ? (
-              `Your salary package will be Rs. ${formatIndianCurrency(formData.lpa * 100000)}/- (${numberToWords(formData.lpa)} Lakh Rupees Only) and no other allowance is provided in that period.`
-            ) : (
-              `Your salary package will be as per company policy and no other allowance is provided in that period.`
+        <View style={offerLetterStyles.companyHeader}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <View style={{ flex: 1 }}>
+              <Text style={offerLetterStyles.companyName}>{data.companyName}</Text>
+              <Text style={offerLetterStyles.companyContact}>{data.companyContact}</Text>
+              <Text style={offerLetterStyles.companyAddress}>{data.companyAddress}</Text>
+            </View>
+            {companyLogo && (
+              <Image src={companyLogo} style={offerLetterStyles.companyLogo} />
             )}
-          </Text>
+          </View>
         </View>
         
-        {/* Footer */}
-        <Footer
-          companyName={formData.companyName || 'COMPANY NAME'}
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor="#0066cc"
-        />
-      </Page>
-
-      {/* Page 2 - Split of Additional Terms and Salary Annexure to fit content properly */}
-      <Page size="A4" style={documentStyles.page}>
-        {/* Watermark */}
-        <Watermark logoSrc={formData.companyLogo} />
+        {/* Date */}
+        <Text style={offerLetterStyles.dateText}>Date: {data.letterDate}</Text>
         
-        {/* Company Header */}
-        <CompanyHeader 
-          companyName={formData.companyName || 'COMPANY NAME'} 
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyLogo={formData.companyLogo}
-          companyColor="#0066cc"
-        />
+        {/* Recipient Address */}
+        <View style={{ marginTop: 8, marginBottom: 8 }}>
+          <Text style={offerLetterStyles.bodyTextBold}>{data.employeeName}</Text>
+          {data.employeeAddress.map((line, index) => (
+            <Text key={index} style={offerLetterStyles.bodyText}>{line}</Text>
+          ))}
+        </View>
         
         {/* Letter Title */}
-        <Text style={documentStyles.sectionHeader}>Additional Terms</Text>
+        <Text style={offerLetterStyles.letterTitle}>LETTER OF APPOINTMENT</Text>
         
-        {/* Letter Content */}
-        <View style={offerLetterStyles.letterContent}>
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            You will not disclose any of our technical or other important information which might come into your possession during the continuation of your service with us shall not be disclosed, divulged or made public by you even thereafter.
+        {/* Greeting */}
+        <Text style={offerLetterStyles.bodyText}>Dear {data.employeeFirstName},</Text>
+        
+        {/* Opening Paragraphs */}
+        <View style={{ marginTop: 12 }}>
+          <Text style={offerLetterStyles.bodyText}>
+            We are pleased to extend this formal appointment as a symbol of our mutual commitment to integrity, excellence, and professional growth. This letter marks the beginning of your journey with <Text style={offerLetterStyles.bodyTextBold}>{data.companyName}</Text>, where we strive to build a future founded on vision, discipline, and respect.
           </Text>
           
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            If you conceive any new or advanced method of improving designs / processes / formulae / systems, etc. related to the interest / business of the Company, such developments will be fully communicated to the company and will be and will remain the sole right/property of the Company. Also includes Technology, Software packages license, Company's policy, Company's platform & Trade Mark and Company's human assets profile. Also the usage of personal USB Drives and CD-ROM's are strictly prohibited.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            If any declaration given or information furnished by you, to the Company proves to be false, or if you are found to have willfully suppressed any material information, in such cases you will be liable to removal from services without any notice.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            During the probationary period and any extension thereof, your service may be terminated on either side by giving one week's notice or salary in lieu thereof. Upon confirmation the services can be terminated from either side by giving one-month (30 Days) notice or salary in lieu thereof. Upon termination of employment you will immediately hand over to the Company all correspondence, specifications, formulae, books, documents, market data, cost data, drawings, affects or records belonging to the Company or relating to its business and shall not retain or make copies of these items.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            If at any time in our opinion which is final in this matter you are found non-performer or guilty of fraud, dishonest, disobedience, disorderly behavior, negligence, indiscipline, absence from duty without permission or any other conduct considered by us deterrent to our interest or of violation of one or more terms of this letter, your services may be terminated without notice.
+          <Text style={offerLetterStyles.bodyText}>
+            You are hereby appointed to the position of <Text style={offerLetterStyles.bodyTextBold}>{data.designation}</Text>, effective from <Text style={offerLetterStyles.bodyTextBold}>{data.joiningDate}</Text>. Please note, this offer shall be considered null and void should you fail to commence employment on or before the aforementioned date.
           </Text>
         </View>
-        
-        {/* Footer */}
-        <Footer
-          companyName={formData.companyName || 'COMPANY NAME'}
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor="#0066cc"
-        />
       </Page>
 
-      {/* Page 3 - Continuation of Additional Terms and Salary Annexure */}
-      <Page size="A4" style={documentStyles.page}>
-        {/* Watermark */}
-        <Watermark logoSrc={formData.companyLogo} />
+      {/* Page 2 - Pre-Employment, Responsibilities, Confidentiality, IP Rights */}
+      <Page size="A4" style={offerLetterStyles.page}>
+        <Watermark logoSrc={companyLogo} />
         
-        {/* Company Header */}
-        <CompanyHeader 
-          companyName={formData.companyName || 'COMPANY NAME'} 
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyLogo={formData.companyLogo}
-          companyColor="#0066cc"
-        />
-        
-        {/* Additional Terms Continuation */}
-        <View style={{marginBottom: 10}}>
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            You will be responsible for safekeeping and return in good condition and order of all Company property which may be in your use, custody or charge.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            All legal matters are subject to Pune Jurisdiction.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            Please confirm your acceptance of the appointment on the above terms and conditions by signing and returning this letter to us for our records.
-          </Text>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            Enclosure:- Attaching herewith your salary annexure.
-          </Text>
+        {/* Pre-Employment Formalities */}
+        <Text style={offerLetterStyles.sectionHeading}>Pre-Employment Formalities</Text>
+        <Text style={offerLetterStyles.bodyText}>
+          The continuation of your employment is contingent upon submission of the following documents:
+        </Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>Relieving letter from your previous employer</Text>
+          <Text style={offerLetterStyles.listItemNested}>Last 3 months' pay slips (digital copy)</Text>
+          <Text style={offerLetterStyles.listItemNested}>Last 3 months' bank statements reflecting salary credits</Text>
+          <Text style={offerLetterStyles.listItemNested}>Scanned copy of Aadhaar card or Passport</Text>
+          <Text style={offerLetterStyles.listItemNested}>Valid residential proof (e.g., electricity bill, property tax receipt)</Text>
+          <Text style={offerLetterStyles.listItemNested}>Valid email ID and mobile contact number</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Four (4) recent passport-size photographs with a white background</Text>
         </View>
         
-        {/* Salary Annexure Section */}
-        <View style={{marginTop: 10}}>
-          <Text style={documentStyles.sectionHeader}>Salary Annexure</Text>
-          
-          {/* Date - Use current date instead of hardcoded value */}
-          <Text style={documentStyles.text}>Date: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</Text>
-          
-          {/* Addressee */}
-          <View style={{ marginBottom: 8 }}>
-            <Text style={documentStyles.text}>Dear {formData.employeeName || 'EMPLOYEE NAME'},</Text>
-          </View>
-          
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            As per mentioned in the offer letter, here with attaching your salary structure which includes your Basic salary and other benefits received by you from the company.
+        {/* Responsibilities and Expectations */}
+        <Text style={offerLetterStyles.sectionHeading}>Responsibilities and Expectations</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>You are expected to execute duties as assigned, including any future assignments, promotions, or departmental transitions.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Working hours and shift timings may vary depending on business needs.</Text>
+          <Text style={offerLetterStyles.listItemNested}>In case of illness or emergency, the management must be informed promptly.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Any fraudulent activity or damage to company assets must be reported without delay.</Text>
+        </View>
+        
+        {/* Confidentiality and Data Ethics */}
+        <Text style={offerLetterStyles.sectionHeading}>Confidentiality and Data Ethics</Text>
+        <Text style={offerLetterStyles.bodyText}>
+          Throughout and post your tenure, you shall:
+        </Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>Maintain absolute confidentiality over proprietary, personal, strategic, technical, and financial information.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Refrain from sharing, misusing, duplicating, or disclosing such data without written authorization.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Not exploit any intellectual or operational asset of the company for personal or third-party benefit.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Acknowledge that all such information is and remains the exclusive property of {data.companyName}.</Text>
+        </View>
+        
+        {/* Intellectual Property Rights */}
+        <Text style={offerLetterStyles.sectionHeading}>Intellectual Property Rights</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>
+            All intellectual contributions made by you during the course of employment—arising from company work or resources—shall be deemed the exclusive property of <Text style={offerLetterStyles.bodyTextBold}>{data.companyName}</Text>.
           </Text>
-          
-          <Text style={[documentStyles.boldText, {marginTop: 8, marginBottom: 4}]}>
-            Your salary structure as follows:
+          <Text style={offerLetterStyles.listItemNested}>You are obligated to report such innovations and assign all rights, titles, and interests to the company.</Text>
+          <Text style={offerLetterStyles.listItemNested}>No separate compensation shall be claimable for such assignment, as it is inherent in your remuneration</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>You shall offer full cooperation in registering or protecting any such intellectual property, both during and after employment.</Text>
+        </View>
+      </Page>
+
+      {/* Page 3 - Conflict of Interest, General Terms, Jurisdiction, Probationary Terms */}
+      <Page size="A4" style={offerLetterStyles.page}>
+        <Watermark logoSrc={companyLogo} />
+        
+        {/* Conflict of Interest & Ethical Compliance */}
+        <Text style={offerLetterStyles.sectionHeading}>Conflict of Interest & Ethical Compliance</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>You must refrain from engaging in any external business, employment, or consulting activities that conflict with the interests of {data.companyName}.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Any actual or potential conflict must be reported immediately for review and resolution.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Acceptance of gifts, favors, or commissions from individuals or entities conducting business with the company is strictly prohibited.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Use of company resources must reflect integrity and alignment with corporate objectives.</Text>
+        </View>
+        
+        {/* General Terms */}
+        <Text style={offerLetterStyles.sectionHeading}>General Terms</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>All official communications shall be in English and delivered via hand, email, courier, or registered post.</Text>
+          <Text style={offerLetterStyles.listItemNested}>If any provision of this letter is held unenforceable, the remaining provisions shall continue in full force and effect.</Text>
+          <Text style={offerLetterStyles.listItemNested}>Disparagement or defamation of the company or its affiliates shall attract disciplinary or legal action.</Text>
+          <Text style={offerLetterStyles.listItemNested}>This document, along with any annexures, constitutes the entire agreement and supersedes any prior discussions or arrangements.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>{data.companyName} reserves the right to seek injunctive relief in case of breach of obligations.</Text>
+        </View>
+        
+        {/* Jurisdiction */}
+        <Text style={offerLetterStyles.sectionHeading}>Jurisdiction</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>This letter shall be governed by the applicable laws of India. Any disputes shall fall under the exclusive jurisdiction of competent courts.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>You are required to devote your full working time and attention solely to the business interests. Any concurrent employment or freelance engagements shall render this appointment liable for immediate termination and legal recourse.</Text>
+        </View>
+        
+        {/* Probationary Terms */}
+        <Text style={offerLetterStyles.sectionHeading}>Probationary Terms</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>Your appointment is subject to a probationary period of three (3) months. The duration may be extended or shortened at the sole discretion of the management, contingent upon performance and conduct.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Leave shall not be availed during the probation period. Any such absence, if unavoidable, shall be adjusted against paid leave, subject to management approval.</Text>
+        </View>
+        
+        {/* Joining and Probation Period */}
+        <Text style={offerLetterStyles.sectionHeading}>Joining and Probation Period</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={[offerLetterStyles.listItem, { paddingBottom: 12 }]}>
+            The initial <Text style={offerLetterStyles.bodyTextBold}>probation period will be for 3 months</Text> from your joining date. Based on satisfactory performance, your employment will be confirmed thereafter.
           </Text>
-          
-          {/* Salary Table with updated styles */}
-          <View style={{width: '100%', marginVertical: 8}}>
-            <Text style={[documentStyles.boldText, {marginBottom: 4}]}>Compensation Heads</Text>
-            
-            {formatSalaryValues().slice(0, -1).map((item, index) => (
-              <View key={index} style={{flexDirection: 'row', justifyContent: 'space-between', borderBottom: '1pt solid #ddd', paddingVertical: 4}}>
-                <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri'}}>{item.label}</Text>
-                <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri'}}>: Rs. {item.value}</Text>
-              </View>
-            ))}
-            
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 4, borderTop: '2pt solid #000', borderBottom: '2pt solid #000', paddingVertical: 4, fontWeight: 'bold'}}>
-              <Text style={{flex: 3, fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>Annual Total</Text>
-              <Text style={{flex: 2, textAlign: 'right', fontSize: 12, fontFamily: 'Calibri', fontWeight: 'bold'}}>: Rs. {formatSalaryValues()[formatSalaryValues().length - 1].total}</Text>
+        </View>
+      </Page>
+
+      {/* Page 4 - Notice Period, Compensation Structure, CTC Breakdown */}
+      <Page size="A4" style={offerLetterStyles.page}>
+        <Watermark logoSrc={companyLogo} />
+        
+        {/* Notice Period */}
+        <Text style={offerLetterStyles.sectionHeading}>Notice Period</Text>
+        <View style={{ marginLeft: 36 }}>
+          <Text style={offerLetterStyles.listItem}>You are required to serve a notice period of 30 days in case of resignation.</Text>
+          <Text style={[offerLetterStyles.listItemNested, { paddingBottom: 12 }]}>Failure to serve the full notice period may result in salary deductions or forfeiture of dues and legal action.</Text>
+        </View>
+        
+        {/* Compensation Structure */}
+        <Text style={offerLetterStyles.sectionHeading}>Compensation Structure</Text>
+        <Text style={offerLetterStyles.bodyText}>
+          Your total <Text style={offerLetterStyles.bodyTextBold}>Annual Cost to Company (CTC)</Text> will be {data.ctc}, broken down as follows:
+        </Text>
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 8 }]}>
+          <Text style={offerLetterStyles.bodyTextBold}>A. Fixed Compensation:</Text> {data.fixedCompensation} per annum
+        </Text>
+        <Text style={offerLetterStyles.bodyText}>
+          <Text style={offerLetterStyles.bodyTextBold}>B. Performance-Based Variable Pay:</Text> {data.variablePay} per annum
+        </Text>
+        <Text style={[offerLetterStyles.bodyTextItalic, { marginTop: 4, marginBottom: 12 }]}>
+          (Payable annually based on performance parameters set by the company)
+        </Text>
+        
+        {/* CTC Breakdown Table */}
+        <Text style={offerLetterStyles.sectionHeading}>CTC Breakdown – Annual and Monthly</Text>
+        
+        {/* Table */}
+        <View style={{ marginTop: 8 }}>
+          {/* Table Header */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Component</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 3 }]}>
+              <Text>Monthly (₹)</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBoldLast, { flex: 3 }]}>
+              <Text>Annual (₹)</Text>
             </View>
           </View>
           
-          <Text style={[documentStyles.text, {marginBottom: 6, textAlign: 'justify'}]}>
-            We expect you to keep up your performance in the years to come and grow with the organization and we will expect you will get happy and enthusiastic environment for work at the organization.
-          </Text>
+          {/* Basic Salary */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>Basic Salary</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.basic.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.basic.annual}</Text>
+            </View>
+          </View>
           
-          <Text style={[documentStyles.text, {marginTop: 8}]}>Wish you all the best.</Text>
+          {/* HRA */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>HRA</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.hra.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.hra.annual}</Text>
+            </View>
+          </View>
           
-          {/* Signature */}
-          <View style={{marginTop: 15}}>
-            <Text style={documentStyles.text}>Signature</Text>
-            <Text style={[documentStyles.text, {marginTop: 15}]}>Head - HR Dept</Text>
+          {/* Conveyance Allowance */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>Conveyance Allowance</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.conveyance.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.conveyance.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Other Allowances */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>Other Allowances</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.otherAllowances.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.otherAllowances.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Gross Salary */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Gross Salary</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.grossSalary.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBoldLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.grossSalary.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Deductions Header */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Deductions</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text></Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text></Text>
+            </View>
+          </View>
+          
+          {/* Professional Tax */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>Professional Tax (est.)</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.professionalTax.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.professionalTax.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Total Deductions */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Total Deductions</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.totalDeductions.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBoldLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.totalDeductions.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Net In-Hand Salary */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Net In-Hand Salary</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.netInHand.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBoldLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.netInHand.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Additional Benefits Header */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Additional Benefits</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text></Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text></Text>
+            </View>
+          </View>
+          
+          {/* Variable Incentive */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCell, { flex: 4 }]}>
+              <Text>Ann. Perfr. Incentive (Variable)</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCell, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.variableIncentive.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.variableIncentive.annual}</Text>
+            </View>
+          </View>
+          
+          {/* Total CTC */}
+          <View style={offerLetterStyles.tableRow}>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 4 }]}>
+              <Text>Total CTC</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBold, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.totalCTC.monthly}</Text>
+            </View>
+            <View style={[offerLetterStyles.tableCellBoldLast, { flex: 3 }]}>
+              <Text>{data.salaryBreakdown.totalCTC.annual}</Text>
+            </View>
           </View>
         </View>
         
-        {/* Footer */}
-        <Footer
-          companyName={formData.companyName || 'COMPANY NAME'}
-          companyAddress={formData.companyAddressLine1 || 'COMPANY ADDRESS'}
-          companyPhone={formData.companyPhone || 'PHONE NUMBER'}
-          companyWebsite={formData.companyWebsite || 'WEBSITE'}
-          companyColor="#0066cc"
-        />
+        {/* Note */}
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 12 }]}>
+          Note: There is currently <Text style={offerLetterStyles.bodyTextBold}>no deduction for Provident Fund (PF)</Text>.
+        </Text>
+      </Page>
+
+      {/* Page 5 - Acknowledgement & Acceptance */}
+      <Page size="A4" style={offerLetterStyles.page}>
+        <Watermark logoSrc={companyLogo} />
+        
+        {/* Acknowledgement And Acceptance */}
+        <Text style={offerLetterStyles.sectionHeading}>Acknowledgement And Acceptance</Text>
+        <Text style={offerLetterStyles.bodyText}>
+          I, the undersigned, hereby acknowledge that I have read, understood, and agreed to the terms and conditions outlined in this appointment letter. I accept the offer of employment with {data.companyName} and confirm my commitment to fulfill all responsibilities entrusted to me with sincerity and integrity.
+        </Text>
+        
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 12 }]}>
+          Candidate Name: <Text style={offerLetterStyles.bodyTextBold}>{data.employeeName}</Text>
+        </Text>
+        
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 8 }]}>
+          Signature: _________________________
+        </Text>
+        
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 8 }]}>
+          Date: _________________________
+        </Text>
+        
+        <Text style={[offerLetterStyles.bodyText, { marginTop: 12 }]}>
+          Warm regards,
+        </Text>
+        
+        {/* Signature Image */}
+        {signatureLogo && (
+          <View style={{ marginTop: 8, marginBottom: 8 }}>
+            <Image src={signatureLogo} style={{ width: 120, height: 60 }} />
+          </View>
+        )}
+        
+        {/* HR Details */}
+        <Text style={offerLetterStyles.bodyTextBold}>{data.hrName}</Text>
+        <Text style={offerLetterStyles.bodyText}>{data.hrDesignation}</Text>
+        <Text style={offerLetterStyles.bodyText}>{data.hrEmail}</Text>
       </Page>
     </Document>
   );
@@ -448,33 +526,22 @@ function OfferLetterV2() {
 
   const fetchCandidates = async () => {
     try {
-      // Try fetching from 'employees' collection
       const querySnapshot = await getDocs(collection(db, 'employees'));
       const employeesList = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      console.log("Fetched Employees:", employeesList);
       setCandidates(employeesList);
       
-      // Now fetch all employments for these employees
       const employmentData = {};
       for (const employee of employeesList) {
         try {
-          // Query employments for this employee
           const q = query(collection(db, 'employments'), where('employeeId', '==', employee.id));
           const empSnapshot = await getDocs(q);
           
           if (!empSnapshot.empty) {
-            // Get the most recent employment (usually there will be just one)
             const employmentsList = empSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Sort by startDate (descending) to get the most recent employment first
             const sortedEmployments = employmentsList.sort((a, b) => {
               return new Date(b.startDate) - new Date(a.startDate);
             });
-            
             employmentData[employee.id] = sortedEmployments[0];
-            console.log(`Found employment for ${employee.name}:`, sortedEmployments[0]);
-          } else {
-            console.log(`No employment found for employee: ${employee.name}`);
           }
         } catch (err) {
           console.error(`Error fetching employment for employee ${employee.id}:`, err);
@@ -482,10 +549,6 @@ function OfferLetterV2() {
       }
       
       setEmployments(employmentData);
-      
-      if (employeesList.length === 0) {
-        console.warn("No employees found in the database. Please add employees in the admin dashboard first.");
-      }
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -510,7 +573,6 @@ function OfferLetterV2() {
           hrEmail: selectedCompany.hrEmail || selectedCompany.email || ""
         }));
       } else if (value === "") {
-        // Clear company data when "Select Company (Optional)" is selected
         setFormData(prev => ({
           ...prev,
           companyName: "",
@@ -527,40 +589,19 @@ function OfferLetterV2() {
     } else if (name === "employeeName") {
       const selectedEmployee = candidates.find(employee => employee.id === value);
       if (selectedEmployee) {
-        console.log("Selected Employee:", selectedEmployee);
-        
-        // Get the employment details for this employee
         const employmentDetails = employments[selectedEmployee.id];
-        console.log("Employment details:", employmentDetails);
-        
         let employeeSalary;
         let joiningDate;
         let employeeDesignation;
         
         if (employmentDetails) {
-          // If we have employment details, use those for salary, joining date, etc.
           employeeSalary = employmentDetails.salary || employmentDetails.ctc;
           joiningDate = employmentDetails.joiningDate || employmentDetails.startDate;
           employeeDesignation = employmentDetails.jobTitle || employmentDetails.designation;
         } else {
-          // Fallback to employee record if no employment details
           employeeSalary = selectedEmployee.salary;
           joiningDate = selectedEmployee.joinDate;
           employeeDesignation = selectedEmployee.position || selectedEmployee.jobTitle;
-        }
-        
-        // Calculate LPA from annual salary if it exists
-        const employeeLPA = employeeSalary ? (employeeSalary / 100000) : 0;
-        
-        // Calculate salary components - handle errors gracefully
-        let salaryComponentsV2 = null;
-        try {
-          if (employeeLPA > 0) {
-            salaryComponentsV2 = calculateSalaryComponentsV2(employeeLPA);
-          }
-        } catch (error) {
-          console.error('Error calculating salary components:', error);
-          salaryComponentsV2 = null;
         }
         
         setFormData(prev => ({
@@ -569,8 +610,6 @@ function OfferLetterV2() {
           employeeName: selectedEmployee.name,
           designation: employeeDesignation || "",
           joiningDate: joiningDate || new Date().toISOString().split('T')[0],
-          lpa: employeeLPA,
-          salaryComponentsV2
         }));
       }
     }
@@ -578,29 +617,16 @@ function OfferLetterV2() {
 
   const handleGenerateDocument = () => {
     try {
-      // Validate form - only employee is required
       if (!formData.employeeId) {
         toast.error('Please select an employee');
         return;
       }
       
-      // Ensure employeeName is set (should be set when employee is selected)
-      if (!formData.employeeName) {
-        const selectedEmployee = candidates.find(emp => emp.id === formData.employeeId);
-        if (!selectedEmployee) {
-          toast.error('Employee data not found. Please select an employee again.');
-          return;
-        }
-      }
-      
-      // Prepare form data with sample company if needed
       let finalFormData = { 
         ...formData,
-        // Ensure employeeName is set
         employeeName: formData.employeeName || candidates.find(emp => emp.id === formData.employeeId)?.name || 'Employee'
       };
       
-      // Set sample company data if no company is selected
       if (!formData.companyName || formData.companyName === "") {
         finalFormData = {
           ...finalFormData,
@@ -617,28 +643,11 @@ function OfferLetterV2() {
         toast('Using sample company data for PDF generation');
       }
       
-      // Ensure required fields have default values
-      if (!finalFormData.joiningDate) {
-        finalFormData.joiningDate = new Date().toISOString().split('T')[0];
-      }
-      if (!finalFormData.designation) {
-        finalFormData.designation = 'Employee';
-      }
-      if (finalFormData.lpa === undefined || finalFormData.lpa === null) {
-        finalFormData.lpa = 0;
-      }
-      
-      console.log('Generating PDF with formData:', finalFormData);
-      
-      // Update form data with final values (including sample company if needed)
       setFormData(finalFormData);
-      
-      // Generate the PDF - React will batch the state updates
       setShowPDF(true);
       toast.success('Offer letter generated successfully!');
     } catch (error) {
       console.error('Error generating offer letter:', error);
-      console.error('Error details:', error.message, error.stack);
       toast.error(`Failed to generate offer letter: ${error.message || 'Unknown error'}`);
     }
   };
@@ -710,18 +719,14 @@ function OfferLetterV2() {
         </div>
       </div>
       
-      {/* PDF Preview Section - only show when Generate button is clicked */}
+      {/* PDF Preview Section */}
       {showPDF && (
         <div className="bg-white rounded-lg shadow-lg p-4 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-bold text-gray-800">PDF Preview</h3>
             
             <PDFDownloadLink
-              document={
-                <OfferLetterPDF 
-                  formData={formData}
-                />
-              }
+              document={<OfferLetterPDF formData={formData} />}
               fileName={`OfferLetter_${formData.employeeName || 'Employee'}.pdf`}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               onClick={handleDownloadSuccess}
@@ -732,9 +737,7 @@ function OfferLetterV2() {
           
           <div className="border rounded-lg" style={{ height: '80vh' }}>
             <PDFViewer width="100%" height="100%" className="rounded-lg">
-              <OfferLetterPDF 
-                formData={formData}
-              />
+              <OfferLetterPDF formData={formData} />
             </PDFViewer>
           </div>
         </div>
@@ -743,4 +746,4 @@ function OfferLetterV2() {
   );
 }
 
-export default OfferLetterV2; 
+export default OfferLetterV2;
