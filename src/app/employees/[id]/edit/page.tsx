@@ -382,41 +382,45 @@ export default function EditEmployeePage({ params }: PageParams) {
                     <option value="resigned">Resigned</option>
                   </select>
                 </div>
-              </div>
 
-              {/* Conditional fields for resigned employees */}
-              {employmentStatus === 'resigned' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-200">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Resigned Date
-                    </label>
-                    <input
-                      type="date"
-                      {...register('resignedDate')}
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    {errors.resignedDate && (
-                      <p className="mt-1 text-sm text-red-600">{errors.resignedDate.message}</p>
-                    )}
+                {/* Conditional fields for resigned employees - nested grid with cols-8 */}
+                {employmentStatus === 'resigned' && (
+                  <div className="md:col-span-4">
+                    <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <span className="text-red-500">*</span> Resigned Date
+                        </label>
+                        <input
+                          type="date"
+                          {...register('resignedDate', {
+                            required: employmentStatus === 'resigned' ? 'Resigned date is required' : false
+                          })}
+                          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {errors.resignedDate && (
+                          <p className="mt-1 text-sm text-red-600">{errors.resignedDate.message}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <span className="text-red-500">*</span> Last Working Day
+                        </label>
+                        <input
+                          type="date"
+                          {...register('lastWorkingDay', {
+                            required: employmentStatus === 'resigned' ? 'Last working day is required' : false
+                          })}
+                          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        {errors.lastWorkingDay && (
+                          <p className="mt-1 text-sm text-red-600">{errors.lastWorkingDay.message}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      <span className="text-red-500">*</span> Last Working Day
-                    </label>
-                    <input
-                      type="date"
-                      {...register('lastWorkingDay', {
-                        required: employmentStatus === 'resigned' ? 'Last working day is required' : false
-                      })}
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    {errors.lastWorkingDay && (
-                      <p className="mt-1 text-sm text-red-600">{errors.lastWorkingDay.message}</p>
-                    )}
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Contact Information */}
