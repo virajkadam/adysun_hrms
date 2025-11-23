@@ -994,9 +994,9 @@ export const migrateEmployeesWithResignationFields = async () => {
       const updates: any = {};
       let needsUpdate = false;
       
-      // Only add is_resigned: false if the field is completely missing (undefined or null)
+      // Only add is_resigned: false if the field is completely missing (undefined, null, or empty string)
       // This ensures we NEVER overwrite existing values (e.g., if someone is already resigned)
-      if (employeeData.is_resigned === undefined || employeeData.is_resigned === null) {
+      if (employeeData.is_resigned === undefined || employeeData.is_resigned === null || employeeData.is_resigned === '') {
         updates.is_resigned = false;
         needsUpdate = true;
         console.log(`📝 Adding is_resigned: false to employee: ${employeeData.name || doc.id}`);
@@ -1004,14 +1004,25 @@ export const migrateEmployeesWithResignationFields = async () => {
         console.log(`✓ Employee ${employeeData.name || doc.id} already has is_resigned: ${employeeData.is_resigned} (skipping)`);
       }
       
-      // Only add employmentStatus: 'working' if the field is completely missing (undefined or null)
-      // This ensures we NEVER overwrite existing values (e.g., if someone is already resigned)
-      if (employeeData.employmentStatus === undefined || employeeData.employmentStatus === null) {
+      // Only add employmentStatus: 'working' if the field is completely missing or invalid
+      // Check for undefined, null, empty string, or any value that's not 'working' or 'resigned'
+      // IMPORTANT: Only set to 'working' if the field is missing/invalid, NOT if it's already 'resigned'
+      const validStatuses = ['working', 'resigned'];
+      const currentStatus = employeeData.employmentStatus;
+      
+      if (
+        currentStatus === undefined || 
+        currentStatus === null || 
+        currentStatus === '' ||
+        !validStatuses.includes(currentStatus)
+      ) {
+        // Only set to 'working' if status is missing/invalid
+        // If status is already 'resigned', keep it as 'resigned'
         updates.employmentStatus = 'working';
         needsUpdate = true;
         console.log(`📝 Adding employmentStatus: 'working' to employee: ${employeeData.name || doc.id}`);
       } else {
-        console.log(`✓ Employee ${employeeData.name || doc.id} already has employmentStatus: ${employeeData.employmentStatus} (skipping)`);
+        console.log(`✓ Employee ${employeeData.name || doc.id} already has employmentStatus: ${currentStatus} (skipping)`);
       }
       
       if (needsUpdate) {
