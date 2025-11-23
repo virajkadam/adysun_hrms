@@ -146,7 +146,7 @@ export default function RequestLeavePage() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label htmlFor="leaveType" className="block text-sm font-medium text-gray-700 mb-2">
-                  Leave Type
+                  <span className="text-red-500 mr-1">*</span>Leave Type 
                 </label>
                 <select
                   id="leaveType"
@@ -164,7 +164,7 @@ export default function RequestLeavePage() {
               
               <div>
                 <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
-                  From Date
+                  <span className="text-red-500 mr-1">*</span>From Date 
                 </label>
                 <input
                   type="date"
@@ -179,7 +179,7 @@ export default function RequestLeavePage() {
               
               <div>
                 <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-2">
-                  To Date
+                  <span className="text-red-500 mr-1">*</span>To Date 
                 </label>
                 <input
                   type="date"
@@ -192,21 +192,21 @@ export default function RequestLeavePage() {
                 />
               </div>
               
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Total Days
                 </label>
                 <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
                   {calculateTotalDays()} day{calculateTotalDays() !== 1 ? 's' : ''}
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Reason Input */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-4">
                 <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-2">
-                  Reason for Leave
+                  <span className="text-red-500 mr-1">*</span>Reason for Leave 
                 </label>
                 <textarea
                   id="reason"
