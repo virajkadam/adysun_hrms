@@ -108,13 +108,6 @@ export default function EmployeeDashboardPage() {
 
   const cards = [
     {
-      title: 'My Profile',
-      description: 'View and update your personal information',
-      icon: <FiUser className="w-8 h-8 text-blue-500" />,
-      link: '/employee/profile',
-      color: 'bg-blue-50'
-    },
-    {
       title: 'Attendance',
       description: 'View your attendance records',
       icon: <FiCalendar className="w-8 h-8 text-purple-500" />,
@@ -134,6 +127,13 @@ export default function EmployeeDashboardPage() {
       icon: <FiFileText className="w-8 h-8 text-orange-500" />,
       link: '/employee/documents',
       color: 'bg-orange-50'
+    },
+    {
+      title: 'My Profile',
+      description: 'View and update your personal information',
+      icon: <FiUser className="w-8 h-8 text-blue-500" />,
+      link: '/employee/profile',
+      color: 'bg-blue-50'
     },
   ];
 
@@ -186,16 +186,16 @@ export default function EmployeeDashboardPage() {
         ) : fullEmployeeData ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.employeeId || 'Not Assigned'}</p>
-              <p className="text-sm text-gray-600">Employee ID</p>
-            </div>
-            <div>
               <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
               <p className="text-sm text-gray-600">Name</p>
             </div>
+           
             <div>
               <p className="font-medium text-gray-900">{fullEmployeeData.email}</p>
               <p className="text-sm text-gray-600">Email</p>
+            </div> <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.employeeId || 'Not Assigned'}</p>
+              <p className="text-sm text-gray-600">Employee ID</p>
             </div>
             <div>
               <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
@@ -211,6 +211,10 @@ export default function EmployeeDashboardPage() {
               </span>
               <p className="text-sm text-gray-600 mt-1">Status</p>
             </div> */}
+            <div>
+              <p className="font-medium text-gray-900">{fullEmployeeData.currentAddress || 'Not Assigned'}</p>
+              <p className="text-sm text-gray-600">Current Address</p>
+            </div>
           </div>
         ) : (
           <div className="text-center py-4">
@@ -230,25 +234,24 @@ export default function EmployeeDashboardPage() {
               {/* Status Display */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Check In</p>
                   <p className="font-medium text-gray-900">
                     {todayAttendance?.checkInTime || '--'}
                   </p>
+                  <p className="text-sm text-gray-600 mb-1">Check In</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Check Out</p>
                   <p className="font-medium text-gray-900">
                     {todayAttendance?.checkOutTime || '--'}
                   </p>
+                  <p className="text-sm text-gray-600 mb-1">Check Out</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Hours</p>
                   <p className="font-medium text-gray-900">
                     {calculateTodayHours().toFixed(2)} hrs
                   </p>
+                  <p className="text-sm text-gray-600 mb-1">Total Hours</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Status</p>
                   <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                     todayAttendance?.status === 'present' 
                       ? 'bg-green-100 text-green-800'
@@ -258,8 +261,9 @@ export default function EmployeeDashboardPage() {
                       ? 'bg-orange-100 text-orange-800'
                       : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {todayAttendance?.status || 'Not checked in'}
+                    {todayAttendance?.status.toUpperCase() || 'Not checked in'}
                   </span>
+                  <p className="text-sm text-gray-600 mb-1">Status</p>
                 </div>
               </div>
 
