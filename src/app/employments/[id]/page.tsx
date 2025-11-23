@@ -315,7 +315,10 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           <div className="px-6 pb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {/* Employee Information Card */}
-              <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <Link 
+                href={`/employees/${employment.employeeId}`}
+                className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200 cursor-pointer block"
+              >
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiUser className="mr-2" /> Employee Information
@@ -347,20 +350,20 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     <p className="text-sm text-gray-600">{employment.department || employee.department}</p>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Attendance Card */}
-              <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <Link
+                href={`/employments/${id}/attendance`}
+                className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200 cursor-pointer block"
+              >
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiCalendar className="mr-2" /> Attendance
                   </h2>
-                  <Link
-                    href={`/employments/${id}/attendance`}
-                    className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
-                  >
+                  <div className="text-blue-600 flex items-center gap-1">
                     <FiCalendar size={16} /> View Details
-                  </Link>
+                  </div>
                 </div>
                 
                 <div className="text-center">
@@ -377,10 +380,13 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     </p>
                   )}
                 </div>
-              </div>
+              </Link>
 
               {/* Leaves Card */}
-              <div className="bg-white p-4 rounded-lg border border-gray-200 relative overflow-visible">
+              <Link
+                href={`/employments/${id}/leaves`}
+                className="bg-white p-4 rounded-lg border border-gray-200 relative overflow-visible hover:shadow-md transition-shadow duration-200 cursor-pointer block"
+              >
                 {leaveStats.pendingLeaves > 0 && (
                   <div className="absolute -top-1.5 -left-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
                 )}
@@ -388,12 +394,9 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center">
                     <FiCalendar className="mr-2" /> Leaves
                   </h2>
-                  <Link
-                    href={`/employments/${id}/leaves`}
-                    className="text-green-600 hover:text-green-800 flex items-center gap-1"
-                  >
+                  <div className="text-green-600 flex items-center gap-1">
                     <FiCalendar size={16} /> View Details
-                  </Link>
+                  </div>
                 </div>
                 
                 <div className="text-center">
@@ -410,7 +413,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     </p>
                   )}
                 </div>
-              </div>
+              </Link>
             </div>
 
             {/* Detailed Attendance Summary */}
