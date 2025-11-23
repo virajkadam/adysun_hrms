@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 interface SocialMediaLinksProps {
   variant?: 'footer' | 'login';
   title?: string;
@@ -7,6 +9,19 @@ interface SocialMediaLinksProps {
 
 const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMediaLinksProps) => {
   const socialLinks = [
+    {
+      href : '/',
+      title: 'Website',
+      icon: (
+        <Image
+          src="/adysun-logo-icon.png"
+          alt="Adysun Ventures Logo"
+          width={30}
+          height={30}
+          className="object-contain"
+        />
+      )
+    },
     {
       href: 'https://x.com/adysunventures',
       title: 'Twitter',
@@ -66,8 +81,10 @@ const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMed
             <a
               key={link.href}
               href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...(link.title !== 'Website' && {
+                target: "_blank",
+                rel: "noopener noreferrer"
+              })}
               title={link.title}
               className="flex justify-center items-center w-10 h-10 border-2 border-orange-500 hover:border-orange-600 text-orange-500 hover:text-orange-600 rounded-full transition-colors"
             >
@@ -95,8 +112,10 @@ const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMed
             <li key={link.href}>
               <a
                 href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                {...(link.href !== 'https://adysunventures.com' && {
+                  target: "_blank",
+                  rel: "noopener noreferrer"
+                })}
                 title={link.title}
                 className="flex justify-center items-center w-10 h-10 border-2 border-orange-500 hover:border-orange-600 text-orange-500 hover:text-orange-600 rounded-full transition-colors"
               >
