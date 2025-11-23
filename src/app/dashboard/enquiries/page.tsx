@@ -119,33 +119,33 @@ export default function EnquiryListPage() {
     } else {
       setIsReloading(true);
     }
-    try {
-      const q = query(collection(db, "enquiries"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      const data: Enquiry[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Enquiry[];
-      setEnquiries(data);
-      setFilteredEnquiries(data);
+      try {
+        const q = query(collection(db, "enquiries"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        const data: Enquiry[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Enquiry[];
+        setEnquiries(data);
+        setFilteredEnquiries(data);
       if (!showLoading) {
         toast.success('Enquiries refreshed');
       }
-    } catch (err: unknown) {
-      console.error("Error fetching enquiries:", err);
+      } catch (err: unknown) {
+        console.error("Error fetching enquiries:", err);
       if (showLoading) {
         setError("Failed to load enquiries");
       } else {
         toast.error("Failed to refresh enquiries");
       }
-    } finally {
+      } finally {
       if (showLoading) {
         setLoading(false);
       } else {
         setIsReloading(false);
       }
-    }
-  };
+      }
+    };
 
   useEffect(() => {
     fetchEnquiries(true);
