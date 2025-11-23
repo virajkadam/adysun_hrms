@@ -581,6 +581,15 @@ export default function EmployeeAttendancePage() {
           onCheckIn={handleCheckIn}
           onCheckOut={handleCheckOut}
           isMarkingAttendance={checkInMutation.isPending || checkOutMutation.isPending}
+          actionButtons={[
+            {
+              label: 'Apply Leave',
+              icon: <FiCalendar className="w-4 h-4" />,
+              variant: 'info' as const,
+              href: '/employee/leaves/request'
+            }
+          ]}
+          actionButtonsBeforeAttendance={true}
           showCustomFilters={true}
           technologyFilterValue={dateFilter}
           onTechnologyFilterChange={(value) => setDateFilter(value)}

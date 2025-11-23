@@ -81,6 +81,7 @@ interface TableHeaderProps {
   onClearFilters?: () => void;
   hasActiveFilters?: boolean;
   customReloadButton?: React.ReactNode;
+  actionButtonsBeforeAttendance?: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
@@ -133,6 +134,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   onClearFilters,
   hasActiveFilters = false,
   customReloadButton,
+  actionButtonsBeforeAttendance = false,
 }) => {
   const getButtonClasses = (variant: string = 'primary', hollow: boolean = false) => {
     const baseClasses = 'px-2 sm:px-4 py-2 rounded-md flex items-center justify-center gap-1 sm:gap-2 transition-colors duration-200 text-sm sm:text-base w-full sm:w-auto';
@@ -224,6 +226,44 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
           {/* Right Side - Action Buttons */}
           <div className={`${actionButtons.length === 1 ? 'flex justify-end' : 'grid grid-cols-2 gap-2'} sm:flex sm:items-center sm:gap-3 sm:flex-wrap sm:justify-end`}>
+            {/* Regular Action Buttons - Render before attendance if prop is set */}
+            {actionButtonsBeforeAttendance && actionButtons.map((button, index) => {
+              const buttonContent = (
+                <>
+                  {button.icon}
+                  {button.label && <span className="hidden sm:inline">{button.label}</span>}
+                </>
+              );
+
+              if (button.href) {
+                return (
+                  <Link
+                    key={index}
+                    href={button.href}
+                    className={`${getButtonClasses(button.variant, button.hollow)} ${
+                      button.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                    onClick={button.onClick}
+                  >
+                    {buttonContent}
+                  </Link>
+                );
+              }
+
+              return (
+                <button
+                  key={index}
+                  onClick={button.onClick}
+                  disabled={button.disabled}
+                  className={`${getButtonClasses(button.variant, button.hollow)} ${
+                    button.disabled ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {buttonContent}
+                </button>
+              );
+            })}
+            
             {/* Attendance Marking Buttons */}
             {showAttendanceMarking && attendanceData && (
               <>
@@ -262,8 +302,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
               </>
             )}
             
-            {/* Regular Action Buttons */}
-            {actionButtons.map((button, index) => {
+            {/* Regular Action Buttons - Render after attendance if prop is not set */}
+            {!actionButtonsBeforeAttendance && actionButtons.map((button, index) => {
               const buttonContent = (
                 <>
                   {button.icon}
