@@ -31,7 +31,7 @@ export interface Employee {
   name: string;
   dateOfBirth?: string;
   employeeId?: string;
-  isActive?: boolean;
+  // Note: Use 'status' field ('active' | 'inactive') as the single source of truth for employee active/inactive state
   homeTown?: string;
   employeeType: 'internal' | 'external'; // Internal/External flag
   

@@ -1,4 +1,4 @@
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit, runTransaction, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, limit, runTransaction, serverTimestamp, deleteField } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { Employee, Employment, Salary, SecondaryEducationEntry } from '../types';
 
@@ -1031,6 +1031,48 @@ export const migrateEmployeesWithResignationFields = async () => {
     return updatePromises.length;
   } catch (error) {
     console.error('Error adding resignation fields to employees:', error);
+    throw error;
+  }
+};
+
+// Function to remove isActive field from existing employees (for migration)
+// IMPORTANT: This function is idempotent - safe to run multiple times.
+// It removes the redundant isActive field from all employee documents.
+export const removeIsActiveFieldFromEmployees = async () => {
+  try {
+    console.log('🔄 Starting isActive field removal migration for employees...');
+    
+    const querySnapshot = await getDocs(collection(db, 'employees'));
+    const updatePromises: Promise<any>[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      const employeeData = doc.data();
+      
+      // Only update if isActive field exists
+      if (employeeData.isActive !== undefined) {
+        const updates: any = {
+          isActive: deleteField(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        updatePromises.push(updateDoc(doc.ref, updates));
+        console.log(`📝 Removing isActive field from employee: ${employeeData.name || doc.id}`);
+      } else {
+        console.log(`✓ Employee ${employeeData.name || doc.id} already has isActive field removed (skipping)`);
+      }
+    });
+    
+    if (updatePromises.length > 0) {
+      await Promise.all(updatePromises);
+      console.log(`✅ Successfully removed isActive field from ${updatePromises.length} employees`);
+      console.log('ℹ️ Migration is idempotent - safe to run multiple times');
+    } else {
+      console.log('ℹ️ All employees already have isActive field removed - no updates needed');
+    }
+    
+    return updatePromises.length;
+  } catch (error) {
+    console.error('Error removing isActive field from employees:', error);
     throw error;
   }
 };

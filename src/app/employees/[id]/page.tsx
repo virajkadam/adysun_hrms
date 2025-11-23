@@ -243,8 +243,8 @@ export default function EmployeeViewPage({ params }: PageParams) {
         <TableHeader
           title={`Employee Details`}
           total={1}
-          active={employee.isActive ? 1 : 0}
-          inactive={employee.isActive ? 0 : 1}
+          active={employee.status === 'active' ? 1 : 0}
+          inactive={employee.status === 'inactive' ? 1 : 0}
           searchValue=""
           onSearchChange={() => {}}
           showSearch={false}
@@ -321,6 +321,11 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 </p>
                 <p className="text-sm text-gray-500">Join Date</p>
               </div>
+
+              <div className="bg-white rounded-lg shadow p-3">
+                <p className="text-lg font-medium text-gray-900">{employee.homeTown || '-'}</p>
+                <p className="text-sm text-gray-500">Home Town</p>
+              </div>
               
               <div className="bg-white rounded-lg shadow p-3">
                 <span
@@ -335,15 +340,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 <p className="text-sm text-gray-500 mt-2">Status</p>
               </div>
               
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">{employee.isActive ? 'Yes' : 'No'}</p>
-                <p className="text-sm text-gray-500">Is Active</p>
-              </div>
               
-              <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">{employee.homeTown || '-'}</p>
-                <p className="text-sm text-gray-500">Home Town</p>
-              </div>
               
               <div className="bg-white rounded-lg shadow p-3">
                 <span
@@ -357,6 +354,41 @@ export default function EmployeeViewPage({ params }: PageParams) {
                 </span>
                 <p className="text-sm text-gray-500 mt-2">Employee Type</p>
               </div>
+              
+              <div className="bg-white rounded-lg shadow p-3">
+                {employee.employmentStatus ? (
+                  <span
+                    className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      employee.employmentStatus === 'working'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {employee.employmentStatus.charAt(0).toUpperCase() + employee.employmentStatus.slice(1)}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )}
+                <p className="text-sm text-gray-500 mt-2">Employment Status</p>
+              </div>
+              
+              {employee.employmentStatus === 'resigned' && employee.resignedDate && (
+                <div className="bg-white rounded-lg shadow p-3">
+                  <p className="text-lg font-medium text-gray-900">
+                    {formatDateToDayMonYear(employee.resignedDate)}
+                  </p>
+                  <p className="text-sm text-gray-500">Resigned Date</p>
+                </div>
+              )}
+              
+              {employee.employmentStatus === 'resigned' && employee.lastWorkingDay && (
+                <div className="bg-white rounded-lg shadow p-3">
+                  <p className="text-lg font-medium text-gray-900">
+                    {formatDateToDayMonYear(employee.lastWorkingDay)}
+                  </p>
+                  <p className="text-sm text-gray-500">Last Working Day</p>
+                </div>
+              )}
               
               <div className="bg-white rounded-lg shadow p-3">
                 <p className="text-lg font-medium text-gray-900">{employee.email || '-'}</p>
