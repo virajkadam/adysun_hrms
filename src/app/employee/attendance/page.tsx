@@ -30,6 +30,8 @@ export default function EmployeeAttendancePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [dateFilter, setDateFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   
   const router = useRouter();
   const { currentUserData } = useAuth();
@@ -419,6 +421,35 @@ export default function EmployeeAttendancePage() {
   // Sort by date (most recent first)
   combinedRecords.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  // Apply filters
+  let filteredRecords = combinedRecords;
+  
+  // Filter by date (month/year)
+  if (dateFilter) {
+    filteredRecords = filteredRecords.filter(record => {
+      const recordDate = new Date(record.date);
+      const filterDate = new Date(dateFilter);
+      return recordDate.getMonth() === filterDate.getMonth() && 
+             recordDate.getFullYear() === filterDate.getFullYear();
+    });
+  }
+  
+  // Filter by status
+  if (statusFilter !== 'all') {
+    filteredRecords = filteredRecords.filter(record => {
+      if (statusFilter === 'leave') {
+        return record.isLeave === true;
+      } else if (statusFilter === 'present') {
+        return !record.isLeave && (record.status === 'present' || record.status === 'late');
+      } else if (statusFilter === 'half-day') {
+        return !record.isLeave && record.status === 'half-day';
+      } else if (statusFilter === 'absent') {
+        return !record.isLeave && record.status === 'absent';
+      }
+      return true;
+    });
+  }
+
   // Debug logging to ensure no duplicates
   console.log('🔍 Attendance Records:', transformedAttendanceRecords.length);
   console.log('🔍 Leave Records (approved):', leaveRecords.filter(l => l.status === 'approved').length);
@@ -470,12 +501,17 @@ export default function EmployeeAttendancePage() {
   const fullDayCount = transformedAttendanceRecords.filter(r => r.status === 'present' || r.status === 'late').length;
   const leaveCount = leaveRecords.filter(leave => leave.status === 'approved').length;
 
-  // Pagination calculations
-  const totalItems = combinedRecords.length;
+  // Pagination calculations (use filtered records)
+  const totalItems = filteredRecords.length;
   const totalPages = Math.ceil(totalItems / pageSize);
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const paginatedRecords = combinedRecords.slice(startIndex, endIndex);
+  const paginatedRecords = filteredRecords.slice(startIndex, endIndex);
+  
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [dateFilter, statusFilter]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -519,7 +555,7 @@ export default function EmployeeAttendancePage() {
             return (
           <TableHeader
           title="Attendance Records"
-          total={combinedRecords.length}
+          total={filteredRecords.length}
           dropdown={
             <div className="flex items-center gap-4 text-sm">
               <span className="text-green-700">Full Day: <span className="font-medium">{fullDayCount}</span></span>
@@ -545,6 +581,35 @@ export default function EmployeeAttendancePage() {
           onCheckIn={handleCheckIn}
           onCheckOut={handleCheckOut}
           isMarkingAttendance={checkInMutation.isPending || checkOutMutation.isPending}
+          showCustomFilters={true}
+          technologyFilterValue={dateFilter}
+          onTechnologyFilterChange={(value) => setDateFilter(value)}
+          technologyFilterOptions={[
+            { value: '', label: 'All Months' },
+            ...Array.from({ length: 12 }, (_, i) => {
+              const date = new Date();
+              date.setMonth(date.getMonth() - i);
+              const monthYear = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+              return {
+                value: date.toISOString().slice(0, 7) + '-01',
+                label: monthYear
+              };
+            }).reverse()
+          ]}
+          roleFilterValue={statusFilter}
+          onRoleFilterChange={(value) => setStatusFilter(value)}
+          roleFilterOptions={[
+            { value: 'all', label: 'All Status' },
+            { value: 'present', label: 'Present' },
+            { value: 'half-day', label: 'Half Day' },
+            { value: 'absent', label: 'Absent' },
+            { value: 'leave', label: 'Leave' }
+          ]}
+          hasActiveFilters={!!dateFilter || statusFilter !== 'all'}
+          onClearFilters={() => {
+            setDateFilter('');
+            setStatusFilter('all');
+          }}
           />
             );
           })()}
