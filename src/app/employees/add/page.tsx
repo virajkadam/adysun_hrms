@@ -275,7 +275,29 @@ export default function AddEmployeePage() {
                   </label>
                   <input
                     type="date"
-                    {...register('dateOfBirth')}
+                    {...register('dateOfBirth', {
+                      required: 'Date of Birth is required',
+                      validate: {
+                        notFuture: (value) => {
+                          if (!value) return true; // Let required handle empty
+                          const selectedDate = new Date(value);
+                          // The latest valid date is Dec 31, 2025
+                          const maxValidDate = new Date("2025-12-31");
+                          // Set maxValidDate's time to the very end of the day for full safety
+                          maxValidDate.setHours(23, 59, 59, 999);
+                          if (selectedDate > maxValidDate) {
+                            return 'Date of Birth cannot be after 2025';
+                          }
+                          return true;
+                        },
+                        validDate: (value) => {
+                          if (!value) return true; // Let required handle empty
+                          const date = new Date(value);
+                          return !isNaN(date.getTime()) || 'Please enter a valid date';
+                        }
+                      }
+                    })}
+                    max="2025-12-31"
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder={watch('dateOfBirth') ? formatDateToDayMonYear(watch('dateOfBirth')) : 'Select date of birth'}
                   />
