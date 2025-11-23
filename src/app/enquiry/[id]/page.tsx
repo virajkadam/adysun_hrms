@@ -1,17 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { db } from "@/firebase/config";
 import { formatDateToDayMonYear } from "@/utils/documentUtils";
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import TableHeader from '@/components/ui/TableHeader';
+import { FiTrash2 } from 'react-icons/fi';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface Enquiry {
   id: string;
   name?: string;
   mobile?: string;
+  email?: string;
   pan?: string;
   passoutYear?: string;
   technology?: string;
@@ -29,6 +32,8 @@ export default function EnquiryViewPage() {
   const [enquiry, setEnquiry] = useState<Enquiry | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -46,6 +51,33 @@ export default function EnquiryViewPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const handleDeleteClick = () => {
+    setDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!id) {
+      toast.error('Enquiry ID not found');
+      return;
+    }
+    
+    try {
+      setIsDeleting(true);
+      toast.loading('Deleting enquiry...', { id: 'delete-enquiry' });
+      await deleteDoc(doc(db, "enquiries", id));
+      toast.success('Enquiry deleted successfully', { id: 'delete-enquiry' });
+      router.push('/dashboard/enquiries');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete enquiry';
+      toast.error(errorMessage, { id: 'delete-enquiry' });
+      setIsDeleting(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirm(false);
+  };
+
   return (
     <DashboardLayout
       breadcrumbItems={[
@@ -54,6 +86,48 @@ export default function EnquiryViewPage() {
         { label: enquiry?.name || 'Anonymous', isCurrent: true },
       ]}
     >
+      <Toaster position="top-center" />
+      
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && enquiry && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Delete Enquiry</h3>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to delete the enquiry from{" "}
+              <span className="font-semibold">{enquiry.name || "Anonymous"}</span>? This action cannot be undone.
+            </p>
+
+            <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 mb-6 space-y-2">
+              <p><span className="font-medium">Email:</span> {enquiry.email || "-"}</p>
+              <p><span className="font-medium">Mobile:</span> {enquiry.mobile || "-"}</p>
+              {enquiry.technology && (
+                <p><span className="font-medium">Technology:</span> {enquiry.technology}</p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelDelete}
+                className="px-4 py-2 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Enquiry"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Enquiry Details"
@@ -64,6 +138,15 @@ export default function EnquiryViewPage() {
           headerClassName="px-6 pt-6 mb-0"
           searchValue=""
           onSearchChange={() => {}}
+          actionButtons={[
+            {
+              label: 'Delete',
+              icon: <FiTrash2 />,
+              variant: 'danger' as const,
+              onClick: handleDeleteClick,
+              disabled: isDeleting || loading
+            }
+          ]}
         />
         <div className="px-6 pb-6">
           {loading ? (
