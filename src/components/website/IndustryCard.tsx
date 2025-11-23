@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { FiArrowRight } from 'react-icons/fi';
 
 interface IndustryCardProps {
   icon: React.ReactNode;
@@ -30,7 +31,7 @@ export default function IndustryCard({
           href={link} 
           className="text-orange-600 hover:text-orange-700 font-semibold hover:underline transition-colors"
         >
-          {linkText} →
+          {linkText} <FiArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </div>

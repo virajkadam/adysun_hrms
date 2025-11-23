@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiLogOut, FiEdit, FiKey, FiMapPin, FiBriefcase, FiDollarSign, FiX, FiSave } from 'react-icons/fi';
+import { FiUser, FiMail, FiPhone, FiCalendar, FiShield, FiLogOut, FiEdit, FiKey, FiMapPin, FiBriefcase, FiDollarSign, FiX, FiSave, FiArrowRight } from 'react-icons/fi';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { useAuth } from '@/context/AuthContext';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { updateUserProfile, validateProfileData } from '@/utils/profileUtils';
-import { updateEmployeeSelf, getEmployeeSelf } from '@/utils/firebaseUtils';
+import { updateEmployeeSelf, getEmployeeSelf, getAdminNameById, getEmployeeNameById } from '@/utils/firebaseUtils';
 
 export default function EmployeeProfilePage() {
   const { currentUserData, currentEmployee, logout } = useAuth();
@@ -29,6 +29,8 @@ export default function EmployeeProfilePage() {
     homeTown: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [createdByName, setCreatedByName] = useState<string>('-');
+  const [updatedByName, setUpdatedByName] = useState<string>('-');
 
   // Redirect if not authenticated or not an employee
   useEffect(() => {
@@ -43,6 +45,48 @@ export default function EmployeeProfilePage() {
       setEmployeeData(currentEmployee);
     }
   }, [currentEmployee]);
+
+  // Fetch created by and updated by names
+  useEffect(() => {
+    const fetchAuditNames = async () => {
+      const employee = employeeData || currentEmployee;
+      if (!employee) return;
+
+      try {
+        // Fetch created by name
+        if (employee.createdBy) {
+          const name = await getAdminNameById(employee.createdBy);
+          setCreatedByName(name);
+        } else {
+          setCreatedByName('-');
+        }
+
+        // Fetch updated by name (could be admin or employee)
+        if (employee.updatedBy) {
+          // Check if it's the same employee (self-update)
+          if (employee.updatedBy === employee.id) {
+            const name = await getEmployeeNameById(employee.updatedBy);
+            setUpdatedByName(name);
+          } else {
+            // Try admin first, then employee
+            const adminName = await getAdminNameById(employee.updatedBy);
+            if (adminName !== 'Unknown Admin') {
+              setUpdatedByName(adminName);
+            } else {
+              const empName = await getEmployeeNameById(employee.updatedBy);
+              setUpdatedByName(empName);
+            }
+          }
+        } else {
+          setUpdatedByName('-');
+        }
+      } catch (error) {
+        console.error('Error fetching audit names:', error);
+      }
+    };
+
+    fetchAuditNames();
+  }, [employeeData, currentEmployee]);
 
   const handleLogout = async () => {
     try {
@@ -238,20 +282,29 @@ export default function EmployeeProfilePage() {
     return displayEmployee?.status === 'active';
   };
 
-  const getUserCreatedAt = () => {
-    const createdAt = displayEmployee?.createdAt;
-    if (!createdAt) return 'Unknown';
+  const formatDate = (date: any): string => {
+    if (!date) return '-';
     
     try {
-      if (createdAt.toDate) {
-        return formatDateToDayMonYear(createdAt.toDate());
+      if (date.toDate) {
+        return formatDateToDayMonYear(date.toDate());
+      } else if (typeof date === 'string') {
+        return formatDateToDayMonYear(new Date(date));
       } else {
-        return formatDateToDayMonYear(createdAt);
+        return formatDateToDayMonYear(date);
       }
     } catch (error) {
       console.error('Error formatting date:', error);
-      return 'Unknown';
+      return '-';
     }
+  };
+
+  const getUserCreatedAt = () => {
+    return formatDate(displayEmployee?.createdAt);
+  };
+
+  const getUserUpdatedAt = () => {
+    return formatDate(displayEmployee?.updatedAt);
   };
 
   return (
@@ -436,46 +489,58 @@ export default function EmployeeProfilePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg shadow p-3">
-                <p className="text-lg font-medium text-gray-900">{currentUserData.email}</p>
-                <p className="text-sm text-gray-500">Login Email</p>
+                <p className="text-lg font-medium text-gray-900">{createdByName || "Admin"}</p>
+                <p className="text-sm text-gray-500">Created By</p>
               </div>
               
               <div className="bg-white rounded-lg shadow p-3">
                 <p className="text-lg font-medium text-gray-900">{getUserCreatedAt()}</p>
-                <p className="text-sm text-gray-500">Account Created</p>
+                <p className="text-sm text-gray-500">Created On</p>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow p-3">
+                <p className="text-lg font-medium text-gray-900">{updatedByName}</p>
+                <p className="text-sm text-gray-500">Updated By</p>
+              </div>
+              
+              <div className="bg-white rounded-lg shadow p-3">
+                <p className="text-lg font-medium text-gray-900">{getUserUpdatedAt()}</p>
+                <p className="text-sm text-gray-500">Updated On</p>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Quick Actions */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Quick Actions
-            </h2>
+      {/* Quick Actions */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden mt-6">
+        <div className="px-6 py-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <FiDollarSign className="mr-2" /> Quick Actions
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              
-              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                <h3 className="font-medium text-green-900 mb-2">My Attendance</h3>
-                <p className="text-sm text-green-700 mb-3">Track your attendance and working hours</p>
-                <button
-                  onClick={() => router.push('/employee/attendance')}
-                  className="text-green-600 hover:text-green-800 text-sm font-medium"
-                >
-                  View Attendance →
-                </button>
-              </div>
-              
-              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                <h3 className="font-medium text-purple-900 mb-2">My Documents</h3>
-                <p className="text-sm text-purple-700 mb-3">Access your employment documents</p>
-                <button
-                  onClick={() => router.push('/employee/documents')}
-                  className="text-purple-600 hover:text-purple-800 text-sm font-medium"
-                >
-                  View Documents →
-                </button>
-              </div>
+            <div className="bg-green-50 rounded-lg p-4 border border-green-200">
+              <h3 className="font-medium text-green-900 mb-2">My Attendance</h3>
+              <p className="text-sm text-green-700 mb-3">Track your attendance and working hours</p>
+              <button
+                onClick={() => router.push('/employee/attendance')}
+                className="text-green-600 hover:text-green-800 text-sm font-medium flex items-center gap-1"
+              >
+                View Attendance <FiArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+              <h3 className="font-medium text-purple-900 mb-2">My Documents</h3>
+              <p className="text-sm text-purple-700 mb-3">Access your employment documents</p>
+              <button
+                onClick={() => router.push('/employee/documents')}
+                className="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center gap-1"
+              >
+                View Documents <FiArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
