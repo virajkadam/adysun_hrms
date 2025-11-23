@@ -398,10 +398,12 @@ function OfferLetterV2() {
   const [employments, setEmployments] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
+    employeeId: "",
     employeeName: "",
     joiningDate: "",
     designation: "",
     lpa: "",
+    salaryComponentsV2: null,
     companyName: "",
     companyAddressLine1: "",
     companyColor: "",
@@ -503,6 +505,18 @@ function OfferLetterV2() {
           companyWebsite: selectedCompany.website,
           companyLogo: selectedCompany.logo
         }));
+      } else if (value === "") {
+        // Clear company data when "Select Company (Optional)" is selected
+        setFormData(prev => ({
+          ...prev,
+          companyName: "",
+          companyAddressLine1: "",
+          companyColor: "",
+          companyEmail: "",
+          companyPhone: "",
+          companyWebsite: "",
+          companyLogo: ""
+        }));
       }
     } else if (name === "employeeName") {
       const selectedEmployee = candidates.find(employee => employee.id === value);
@@ -532,8 +546,16 @@ function OfferLetterV2() {
         // Calculate LPA from annual salary if it exists
         const employeeLPA = employeeSalary ? (employeeSalary / 100000) : 0;
         
-        // Calculate salary components
-        const salaryComponentsV2 = calculateSalaryComponentsV2(employeeLPA);
+        // Calculate salary components - handle errors gracefully
+        let salaryComponentsV2 = null;
+        try {
+          if (employeeLPA > 0) {
+            salaryComponentsV2 = calculateSalaryComponentsV2(employeeLPA);
+          }
+        } catch (error) {
+          console.error('Error calculating salary components:', error);
+          salaryComponentsV2 = null;
+        }
         
         setFormData(prev => ({
           ...prev,
@@ -550,18 +572,66 @@ function OfferLetterV2() {
 
   const handleGenerateDocument = () => {
     try {
-      // Validate form
-      if (!formData.employeeName || !formData.companyName) {
-        toast.error('Please select both an employee and a company');
+      // Validate form - only employee is required
+      if (!formData.employeeId) {
+        toast.error('Please select an employee');
         return;
       }
       
-      // Generate the PDF
+      // Ensure employeeName is set (should be set when employee is selected)
+      if (!formData.employeeName) {
+        const selectedEmployee = candidates.find(emp => emp.id === formData.employeeId);
+        if (!selectedEmployee) {
+          toast.error('Employee data not found. Please select an employee again.');
+          return;
+        }
+      }
+      
+      // Prepare form data with sample company if needed
+      let finalFormData = { 
+        ...formData,
+        // Ensure employeeName is set
+        employeeName: formData.employeeName || candidates.find(emp => emp.id === formData.employeeId)?.name || 'Employee'
+      };
+      
+      // Set sample company data if no company is selected
+      if (!formData.companyName || formData.companyName === "") {
+        finalFormData = {
+          ...finalFormData,
+          companyName: 'Sample Company Name',
+          companyAddressLine1: 'Sample Company Address',
+          companyColor: '#FF0000',
+          companyEmail: 'sample@company.com',
+          companyPhone: '+91 1234567890',
+          companyWebsite: 'www.samplecompany.com',
+          companyLogo: ''
+        };
+        toast('Using sample company data for PDF generation');
+      }
+      
+      // Ensure required fields have default values
+      if (!finalFormData.joiningDate) {
+        finalFormData.joiningDate = new Date().toISOString().split('T')[0];
+      }
+      if (!finalFormData.designation) {
+        finalFormData.designation = 'Employee';
+      }
+      if (finalFormData.lpa === undefined || finalFormData.lpa === null) {
+        finalFormData.lpa = 0;
+      }
+      
+      console.log('Generating PDF with formData:', finalFormData);
+      
+      // Update form data with final values (including sample company if needed)
+      setFormData(finalFormData);
+      
+      // Generate the PDF - React will batch the state updates
       setShowPDF(true);
       toast.success('Offer letter generated successfully!');
     } catch (error) {
       console.error('Error generating offer letter:', error);
-      toast.error('Failed to generate offer letter');
+      console.error('Error details:', error.message, error.stack);
+      toast.error(`Failed to generate offer letter: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -575,7 +645,7 @@ function OfferLetterV2() {
       
       <div className="bg-white rounded-lg shadow-lg mb-8">
         <TableHeader
-          title="Enter Offer Letter Details"
+          title="Generate Offer Letter"
           backButton={{ href: '/dashboard/documents', label: 'Back' }}
           showStats={false}
           showSearch={false}
@@ -603,14 +673,16 @@ function OfferLetterV2() {
           </div>
           
           <div className="form-group">
-            <label className="block mb-2 text-sm font-medium text-slate-800">Company</label>
+            <label className="block mb-2 text-sm font-medium text-slate-800">
+              Company <span className="text-gray-400 text-xs">(Optional - will use sample data if not selected)</span>
+            </label>
             <select
               name="companyName"
               value={formData.companyName}
               onChange={handleInputChange}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="">Select Company</option>
+              <option value="">Select Company (Optional)</option>
               {companies.map(company => (
                 <option key={company.id} value={company.id}>{company.name}</option>
               ))}
