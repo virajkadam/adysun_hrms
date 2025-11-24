@@ -261,7 +261,7 @@ export default function EmployeeDashboardPage() {
                       ? 'bg-orange-100 text-orange-800'
                       : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {todayAttendance?.status.toUpperCase() || 'Not checked in'}
+                    {todayAttendance?.status?.toUpperCase() || 'Not checked in'}
                   </span>
                   <p className="text-sm text-gray-600 mb-1">Status</p>
                 </div>
