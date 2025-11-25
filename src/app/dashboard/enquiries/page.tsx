@@ -433,9 +433,6 @@ export default function EnquiryListPage() {
                       Mobile
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      PAN
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Technology
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -443,9 +440,6 @@ export default function EnquiryListPage() {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Experience
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -467,11 +461,6 @@ export default function EnquiryListPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {enquiry.pan || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
                           {enquiry.technology || "-"}
                         </div>
                       </td>
@@ -483,19 +472,6 @@ export default function EnquiryListPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {enquiry.totalWorkExperience || "-"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {enquiry.createdAt
-                            ? formatDateToDayMonYear(
-                                typeof enquiry.createdAt === "string"
-                                  ? enquiry.createdAt
-                                  : new Date(
-                                      enquiry.createdAt.seconds * 1000
-                                    )
-                              )
-                            : "-"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
