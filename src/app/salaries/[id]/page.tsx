@@ -13,6 +13,8 @@ import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
 import { use } from 'react';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 type PageParams = {
   params: Promise<{ id: string }>;
@@ -139,7 +141,7 @@ export default function SalaryViewPage({ params }: PageParams) {
           {/* Essential Salary Information Only */}
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Salary Information
+              <FaRupeeSign className="mr-2" /> Salary Information
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -173,7 +175,7 @@ export default function SalaryViewPage({ params }: PageParams) {
           {/* Audit Trail - Keep only essential audit info */}
           <div className="mt-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <FiDollarSign className="mr-2" /> Audit Trail
+              <FaRupeeSign className="mr-2" /> Audit Trail
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

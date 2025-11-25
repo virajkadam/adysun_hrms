@@ -13,6 +13,8 @@ import { getAdminNameById } from '@/utils/firebaseUtils';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { useQueryClient } from '@tanstack/react-query';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 type PageParams = {
   params: Promise<{ id: string }>;
@@ -260,7 +262,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
               },
               { 
                 label: 'Salary', 
-                icon: <FiDollarSign />, 
+                icon: <FaRupeeSign />, 
                 variant: 'purple' as const, 
                 href: `/salaries?employeeId=${id}` 
               },
@@ -273,7 +275,7 @@ export default function EmployeeViewPage({ params }: PageParams) {
               },
               { 
                 label: 'Salary', 
-                icon: <FiDollarSign />, 
+                icon: <FaRupeeSign />, 
                 variant: 'purple' as const, 
                 href: `/salaries/add?employeeId=${id}` 
               }

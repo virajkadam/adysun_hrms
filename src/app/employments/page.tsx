@@ -14,6 +14,8 @@ import TableHeader from '@/components/ui/TableHeader';
 import Pagination from '@/components/ui/Pagination';
 import { useEmployments, useDeleteEmployment } from '@/hooks/useEmployments';
 import { useEmployees } from '@/hooks/useEmployees';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 export default function EmploymentsPage() {
   const searchParams = useSearchParams();
@@ -371,7 +373,7 @@ export default function EmploymentsPage() {
                             href={`/employments/${employment.id}`}
                           />
                           <ActionButton
-                            icon={<FiDollarSign className="w-5 h-5" />}
+                            icon={<FaRupeeSign className="w-5 h-5" />}
                             title="View Salary Details"
                             colorClass="bg-green-100 text-green-600 hover:text-green-900"
                             href={`/employments/${employment.id}#salary`}

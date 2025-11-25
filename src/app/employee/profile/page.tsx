@@ -10,6 +10,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
 import { updateUserProfile, validateProfileData } from '@/utils/profileUtils';
 import { updateEmployeeSelf, getEmployeeSelf, getAdminNameById, getEmployeeNameById } from '@/utils/firebaseUtils';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 export default function EmployeeProfilePage() {
   const { currentUserData, currentEmployee, logout } = useAuth();
@@ -516,7 +518,7 @@ export default function EmployeeProfilePage() {
       <div className="bg-white rounded-lg shadow-sm overflow-hidden mt-6">
         <div className="px-6 py-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <FiDollarSign className="mr-2" /> Quick Actions
+            <FaRupeeSign className="mr-2" /> Quick Actions
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

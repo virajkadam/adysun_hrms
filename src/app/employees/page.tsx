@@ -12,6 +12,8 @@ import { useEmploymentsByEmployee, useEmployments } from '@/hooks/useEmployments
 import { useSalaries } from '@/hooks/useSalaries';
 import Pagination from '@/components/ui/Pagination';
 import BulkUploadModal from '@/components/ui/BulkUploadModal';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 // Component to display employee ID from employment record
 const EmployeeIdDisplay = ({ employeeId }: { employeeId: string }) => {
@@ -478,7 +480,7 @@ export default function EmployeesPage() {
                           />
                           <EmploymentActionButton employeeId={employee.id} />
                           <ActionButton
-                            icon={<FiDollarSign className="w-5 h-5" />}
+                            icon={<FaRupeeSign className="w-5 h-5" />}
                             title="View Salaries"
                             colorClass="bg-purple-100 text-purple-600 hover:text-purple-900"
                             href={`/salaries?employeeId=${employee.id}`}

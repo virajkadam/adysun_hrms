@@ -4,6 +4,7 @@ import { useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiEdit, FiUser, FiBriefcase, FiCalendar, FiDollarSign, FiMapPin, FiTrendingUp } from 'react-icons/fi';
+import { FaRupeeSign } from "react-icons/fa";
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -298,7 +299,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           actionButtons={[
             ...(hasSalaries ? [{
               label: 'View Salaries',
-              icon: <FiDollarSign />,
+              icon: <FaRupeeSign />,
               variant: 'warning' as const,
               href: `/salaries?employeeId=${employment?.employeeId}`
             }] : []),
@@ -654,7 +655,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
       {/* Salary Information */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiDollarSign className="mr-2" /> Salary Information
+          <FaRupeeSign className="mr-2" /> Salary Information
         </h2>
         
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

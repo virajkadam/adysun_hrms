@@ -17,6 +17,8 @@ import { getEmployeeNameById } from '@/utils/firebaseUtils';
 import SimpleBreadcrumb from '@/components/ui/SimpleBreadcrumb';
 import { useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import { FaRupeeSign } from "react-icons/fa";
+
 
 // Component to handle employee name display with proper Firebase integration
 const EmployeeNameDisplay = ({ employeeId }: { employeeId: string }) => {
@@ -370,7 +372,7 @@ export default function SalariesPage() {
           
           {filteredSalaries.length === 0 && !isLoading && (
             <div className="text-center py-8">
-              <FiDollarSign className="mx-auto h-8 w-8 text-gray-400" />
+              <FaRupeeSign className="mx-auto h-8 w-8 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 {employeeId ? 'No salary records found' : 'No salaries found'}
               </h3>
