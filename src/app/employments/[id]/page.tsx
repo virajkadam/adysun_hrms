@@ -15,7 +15,7 @@ import { useSalaries } from '@/hooks/useSalaries';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 
 export default function EmploymentViewPage({ params }: { params: Promise<{ id: string }> }) {
-  
+
   const router = useRouter();
   const { id } = use(params);
 
@@ -60,10 +60,10 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     const absentDays = attendance.filter((record: any) => record.status === 'absent').length;
     const lateDays = attendance.filter((record: any) => record.status === 'late').length;
     const halfDayDays = attendance.filter((record: any) => record.status === 'half-day').length;
-    
+
     const totalHours = attendance.reduce((sum: number, record: any) => sum + (record.totalHours || 0), 0);
     const averageHours = totalDays > 0 ? totalHours / totalDays : 0;
-    
+
     const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
 
     return {
@@ -100,7 +100,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     });
 
     const currentMonthDays = currentMonthAttendance.length;
-    const currentMonthPresent = currentMonthAttendance.filter((record: any) => 
+    const currentMonthPresent = currentMonthAttendance.filter((record: any) =>
       record.status === 'present' || record.status === 'late'
     ).length;
     const currentMonthRate = currentMonthDays > 0 ? Math.round((currentMonthPresent / currentMonthDays) * 100) : 0;
@@ -132,11 +132,11 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
     const pendingLeaves = leaves.filter((leave: any) => leave.status === 'pending').length;
     const approvedLeaves = leaves.filter((leave: any) => leave.status === 'approved').length;
     const rejectedLeaves = leaves.filter((leave: any) => leave.status === 'rejected').length;
-    
+
     const usedLeaves = leaves
       .filter((leave: any) => leave.status === 'approved')
       .reduce((sum: number, leave: any) => sum + (leave.totalDays || 0), 0);
-    
+
     const allocatedLeaves = employment?.totalLeaves || 0;
     const remainingLeaves = Math.max(0, allocatedLeaves - usedLeaves);
 
@@ -278,7 +278,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
       }
     >
       <Toaster position="top-center" />
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <TableHeader
           title="Employment Details"
@@ -286,7 +286,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           active={0}
           inactive={0}
           searchValue=""
-          onSearchChange={() => {}}
+          onSearchChange={() => { }}
           searchPlaceholder=""
           showStats={false}
           showSearch={false}
@@ -312,11 +312,11 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
           ]}
         />
 
-      {employee && (
+        {employee && (
           <div className="px-6 pb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               {/* Employee Information Card */}
-              <Link 
+              <Link
                 href={`/employees/${employment.employeeId}`}
                 className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200 cursor-pointer block"
               >
@@ -325,7 +325,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     <FiUser className="mr-2" /> Employee Information
                   </h2>
                 </div>
-                
+
                 <div className="flex items-center">
                   <div className="flex-shrink-0 mr-4">
                     {employee.imageUrl ? (
@@ -342,7 +342,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                       </div>
                     )}
                   </div>
-                  
+
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">{employee.name}</h3>
                     <p className="text-sm text-gray-600">{employee.email}</p>
@@ -366,7 +366,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     <FiCalendar size={16} /> View Details
                   </div>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-2">{attendanceStats.attendanceRate}%</div>
                   <p className="text-sm text-gray-600">
@@ -399,7 +399,7 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
                     <FiCalendar size={16} /> View Details
                   </div>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
                     {leaveStats.remainingLeaves}
@@ -452,315 +452,314 @@ export default function EmploymentViewPage({ params }: { params: Promise<{ id: s
               </div>
             )}
           </div>
-      )}
+        )}
 
-      <div className="px-6 pb-6">
-      {/* Job Details - MOVED TO TOP */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiMapPin className="mr-2" /> Job Details
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.jobTitle || '-'}</p>
-            <p className="text-sm text-gray-500">Job Title</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.department || '-'}</p>
-            <p className="text-sm text-gray-500">Department</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.location || '-'}</p>
-            <p className="text-sm text-gray-500">Location</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.reportingManager || '-'}</p>
-            <p className="text-sm text-gray-500">Reporting Manager</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900 capitalize">
-              {employment.employmentType ? (
-                employment.employmentType.includes('-') ?
-                  employment.employmentType.split('-').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ') :
-                  employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1)
-              ) : employment.contractType ? (
-                employment.contractType.includes('-') ?
-                  employment.contractType.split('-').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ') :
-                  employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1)
-              ) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Employment Type</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.workSchedule || '-'}</p>
-            <p className="text-sm text-gray-500">Work Schedule</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.joiningDate 
-                ? formatDateToDayMonYear(employment.joiningDate)
-                : employment.startDate 
-                  ? formatDateToDayMonYear(employment.startDate)
-                  : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Start Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.endDate ? formatDateToDayMonYear(employment.endDate) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">End Date</p>
-          </div>
-        </div>
-        
-        {/* Benefits */}
-        <div className="mt-6">
-          <h3 className="text-md font-medium text-gray-700 mb-4">Benefits</h3>
-          <div className="bg-white rounded-lg shadow p-5">
-            {employment.benefits?.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {employment.benefits.map((benefit, index) => (
-                  <span 
-                    key={index} 
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                  >
-                    {benefit}
-                  </span>
-                ))}
+        <div className="px-6 pb-6">
+          {/* Job Details - MOVED TO TOP */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <FiMapPin className="mr-2" /> Job Details
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.jobTitle || '-'}</p>
+                <p className="text-sm text-gray-500">Job Title</p>
               </div>
-            ) : (
-              <p className="text-gray-500">No benefits listed</p>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* Employment Information Section */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiBriefcase className="mr-2" /> Employment Information
-        </h2>
-        
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.employmentId || '-'}</p>
-            <p className="text-sm text-gray-500">Employment ID</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.joiningDate 
-                ? formatDateToDayMonYear(employment.joiningDate)
-                : employment.startDate 
-                  ? formatDateToDayMonYear(employment.startDate)
-                  : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Joining Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.joiningCtc 
-                ? formatCurrency(employment.joiningCtc)
-                : employment.salary
-                  ? formatCurrency(employment.salary)
-                  : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Joining CTC</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.inHandCtc ? formatCurrency(employment.inHandCtc) : '-'}</p>
-            <p className="text-sm text-gray-500">In-hand CTC</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.relievingCtc ? formatCurrency(employment.relievingCtc) : '-'}</p>
-            <p className="text-sm text-gray-500">Relieving CTC</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.isResignation ? 'Yes' : 'No'}</p>
-            <p className="text-sm text-gray-500">Resignation</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <span
-              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                employment.contractType === 'full-time'
-                  ? 'bg-green-100 text-green-800'
-                  : employment.contractType === 'part-time'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}
-            >
-                  {employment.contractType ? employment.contractType.split('-').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ') : '-'}
-            </span>
-            <p className="text-sm text-gray-500 mt-2">Contract Type</p>
-          </div>
-        </div>
-      </div>
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.department || '-'}</p>
+                <p className="text-sm text-gray-500">Department</p>
+              </div>
 
-      {/* Career Progression/Increment Details (CTP) */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FiTrendingUp className="mr-2" /> Career Progression / Increment Details
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.incrementDate ? formatDateToDayMonYear(employment.incrementDate) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Increment Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.newSalary ? formatCurrency(employment.newSalary) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Incremented Salary</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.incrementedCtc ? formatCurrency(employment.incrementedCtc) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Incremented CTC</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.incrementedInHandCtc ? formatCurrency(employment.incrementedInHandCtc) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Incremented In-hand CTC</p>
-          </div>
-        </div>
-      </div>
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.location || '-'}</p>
+                <p className="text-sm text-gray-500">Location</p>
+              </div>
 
-      {/* Salary Information */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-          <FaRupeeSign className="mr-2" /> Salary Information
-        </h2>
-        
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.salary ? formatCurrency(employment.salary) : '-'}</p>
-            <p className="text-sm text-gray-500">Salary per annum</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">
-              {employment.salaryPerMonth 
-                ? formatCurrency(employment.salaryPerMonth) 
-                : employment.salary 
-                  ? formatCurrency(employment.salary / 12)
-                  : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Salary per month</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.basic ? formatCurrency(employment.basic) : '-'}</p>
-            <p className="text-sm text-gray-500">Basic</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.da ? formatCurrency(employment.da) : '-'}</p>
-            <p className="text-sm text-gray-500">DA (Dearness Allowance)</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.hra ? formatCurrency(employment.hra) : '-'}</p>
-            <p className="text-sm text-gray-500">HRA (House Rent Allowance)</p>
-          </div>
-          
-          {(employment.pf && employment.pf > 0) && (
-            <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.pf)}</p>
-              <p className="text-sm text-gray-500">PF (Provident Fund)</p>
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.reportingManager || '-'}</p>
+                <p className="text-sm text-gray-500">Reporting Manager</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900 capitalize">
+                  {employment.employmentType ? (
+                    employment.employmentType.includes('-') ?
+                      employment.employmentType.split('-').map(word =>
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(' ') :
+                      employment.employmentType.charAt(0).toUpperCase() + employment.employmentType.slice(1)
+                  ) : employment.contractType ? (
+                    employment.contractType.includes('-') ?
+                      employment.contractType.split('-').map(word =>
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(' ') :
+                      employment.contractType.charAt(0).toUpperCase() + employment.contractType.slice(1)
+                  ) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Employment Type</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.workSchedule || '-'}</p>
+                <p className="text-sm text-gray-500">Work Shift</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.joiningDate
+                    ? formatDateToDayMonYear(employment.joiningDate)
+                    : employment.startDate
+                      ? formatDateToDayMonYear(employment.startDate)
+                      : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Start Date</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.endDate ? formatDateToDayMonYear(employment.endDate) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">End Date</p>
+              </div>
             </div>
-          )}
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.medicalAllowance ? formatCurrency(employment.medicalAllowance) : '-'}</p>
-            <p className="text-sm text-gray-500">Medical Allowance</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.transport ? formatCurrency(employment.transport) : '-'}</p>
-            <p className="text-sm text-gray-500">Transport</p>
-          </div>
-          
-          {(employment.gratuity && employment.gratuity > 0) && (
-            <div className="bg-white rounded-lg shadow p-5">
-              <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.gratuity)}</p>
-              <p className="text-sm text-gray-500">Gratuity</p>
+
+            {/* Benefits */}
+            <div className="mt-6">
+              <h3 className="text-md font-medium text-gray-700 mb-4">Benefits</h3>
+              <div className="bg-white rounded-lg shadow p-5">
+                {employment.benefits?.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {employment.benefits.map((benefit, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                      >
+                        {benefit}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No benefits listed</p>
+                )}
+              </div>
             </div>
-          )}
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.totalLeaves || '-'} {employment.totalLeaves ? 'days/year' : ''}</p>
-            <p className="text-sm text-gray-500">Total Leaves</p>
           </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.salaryCreditDate || '-'}</p>
-            <p className="text-sm text-gray-500">Salary Credit Date</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.payableDays || '-'}</p>
-            <p className="text-sm text-gray-500">Payable Days</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900 capitalize">{employment.paymentMode || '-'}</p>
-            <p className="text-sm text-gray-500">Payment Mode</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.additionalAllowance ? formatCurrency(employment.additionalAllowance) : '-'}</p>
-            <p className="text-sm text-gray-500">Additional Allowance</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900">{employment.specialAllowance ? formatCurrency(employment.specialAllowance) : '-'}</p>
-            <p className="text-sm text-gray-500">Special Allowance</p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-5">
-            <p className="text-lg font-medium text-gray-900 capitalize">
-              {employment.paymentFrequency ? (
-                employment.paymentFrequency.includes('-') ?
-                  employment.paymentFrequency.split('-').map(word => 
+
+          {/* Employment Information Section */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <FiBriefcase className="mr-2" /> Employment Information
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.employmentId || '-'}</p>
+                <p className="text-sm text-gray-500">Employment ID</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.joiningDate
+                    ? formatDateToDayMonYear(employment.joiningDate)
+                    : employment.startDate
+                      ? formatDateToDayMonYear(employment.startDate)
+                      : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Joining Date</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.joiningCtc
+                    ? formatCurrency(employment.joiningCtc)
+                    : employment.salary
+                      ? formatCurrency(employment.salary)
+                      : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Joining CTC</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.inHandCtc ? formatCurrency(employment.inHandCtc) : '-'}</p>
+                <p className="text-sm text-gray-500">In-hand CTC</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.relievingCtc ? formatCurrency(employment.relievingCtc) : '-'}</p>
+                <p className="text-sm text-gray-500">Relieving CTC</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.isResignation ? 'Yes' : 'No'}</p>
+                <p className="text-sm text-gray-500">Resignation</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <span
+                  className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${employment.contractType === 'full-time'
+                      ? 'bg-green-100 text-green-800'
+                      : employment.contractType === 'part-time'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}
+                >
+                  {employment.contractType ? employment.contractType.split('-').map(word =>
                     word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ') :
-                  employment.paymentFrequency.charAt(0).toUpperCase() + employment.paymentFrequency.slice(1)
-              ) : '-'}
-            </p>
-            <p className="text-sm text-gray-500">Payment Frequency</p>
+                  ).join(' ') : '-'}
+                </span>
+                <p className="text-sm text-gray-500 mt-2">Contract Type</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Career Progression/Increment Details (CTP) */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <FiTrendingUp className="mr-2" /> Career Progression / Increment Details
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.incrementDate ? formatDateToDayMonYear(employment.incrementDate) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Increment Date</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.newSalary ? formatCurrency(employment.newSalary) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Incremented Salary</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.incrementedCtc ? formatCurrency(employment.incrementedCtc) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Incremented CTC</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.incrementedInHandCtc ? formatCurrency(employment.incrementedInHandCtc) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Incremented In-hand CTC</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Salary Information */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <FaRupeeSign className="mr-2" /> Salary Information
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.salary ? formatCurrency(employment.salary) : '-'}</p>
+                <p className="text-sm text-gray-500">Salary per annum</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">
+                  {employment.salaryPerMonth
+                    ? formatCurrency(employment.salaryPerMonth)
+                    : employment.salary
+                      ? formatCurrency(employment.salary / 12)
+                      : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Salary per month</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.basic ? formatCurrency(employment.basic) : '-'}</p>
+                <p className="text-sm text-gray-500">Basic</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.da ? formatCurrency(employment.da) : '-'}</p>
+                <p className="text-sm text-gray-500">DA (Dearness Allowance)</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.hra ? formatCurrency(employment.hra) : '-'}</p>
+                <p className="text-sm text-gray-500">HRA (House Rent Allowance)</p>
+              </div>
+
+              {(employment.pf && employment.pf > 0) && (
+                <div className="bg-white rounded-lg shadow p-5">
+                  <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.pf)}</p>
+                  <p className="text-sm text-gray-500">PF (Provident Fund)</p>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.medicalAllowance ? formatCurrency(employment.medicalAllowance) : '-'}</p>
+                <p className="text-sm text-gray-500">Medical Allowance</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.transport ? formatCurrency(employment.transport) : '-'}</p>
+                <p className="text-sm text-gray-500">Transport</p>
+              </div>
+
+              {(employment.gratuity && employment.gratuity > 0) && (
+                <div className="bg-white rounded-lg shadow p-5">
+                  <p className="text-lg font-medium text-gray-900">{formatCurrency(employment.gratuity)}</p>
+                  <p className="text-sm text-gray-500">Gratuity</p>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.totalLeaves || '-'} {employment.totalLeaves ? 'days/year' : ''}</p>
+                <p className="text-sm text-gray-500">Total Leaves</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.salaryCreditDate || '-'}</p>
+                <p className="text-sm text-gray-500">Salary Credit Date</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.payableDays || '-'}</p>
+                <p className="text-sm text-gray-500">Payable Days</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900 capitalize">{employment.paymentMode || '-'}</p>
+                <p className="text-sm text-gray-500">Payment Mode</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.additionalAllowance ? formatCurrency(employment.additionalAllowance) : '-'}</p>
+                <p className="text-sm text-gray-500">Additional Allowance</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900">{employment.specialAllowance ? formatCurrency(employment.specialAllowance) : '-'}</p>
+                <p className="text-sm text-gray-500">Special Allowance</p>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-5">
+                <p className="text-lg font-medium text-gray-900 capitalize">
+                  {employment.paymentFrequency ? (
+                    employment.paymentFrequency.includes('-') ?
+                      employment.paymentFrequency.split('-').map(word =>
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(' ') :
+                      employment.paymentFrequency.charAt(0).toUpperCase() + employment.paymentFrequency.slice(1)
+                  ) : '-'}
+                </p>
+                <p className="text-sm text-gray-500">Payment Frequency</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    </div>
     </DashboardLayout>
   );
 } 
