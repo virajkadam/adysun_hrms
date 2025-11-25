@@ -27,11 +27,12 @@ export default function IndustryCard({
       <h4 className="text-xl text-orange-900 font-semibold text-center mb-2">{title}</h4>
       <p className="text-orange-700 text-center mb-4">{description}</p>
       <div className="text-center">
-        <Link 
-          href={link} 
-          className="text-orange-600 hover:text-orange-700 font-semibold hover:underline transition-colors"
+      <Link
+          href={link}
+          className="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold hover:underline transition-colors"
         >
-          {linkText} <FiArrowRight className="w-4 h-4" />
+          {linkText}
+          <FiArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </div>
