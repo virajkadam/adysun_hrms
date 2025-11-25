@@ -2,19 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
+import {
   MapPin, 
   Mail, 
   Phone, 
   Clock, 
   Info,
   ChevronRight,
-  Building2,
-  User,
-  CheckCircle
 } from 'lucide-react';
 import { GoogleMapsButton, GoogleSearchButton } from '../ui/HollowButton';
 import CompanyContactBar from './layout/CompanyContactBar';
@@ -110,9 +104,9 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/gallery" className={getLinkClasses('/gallery')}>
-                    <ChevronRight className={getIconClasses('/gallery')} />
-                    Gallery
+                  <Link href="/enquiry" className={getLinkClasses('/enquiry')}>
+                    <ChevronRight className={getIconClasses('/enquiry')} />
+                    Enquiry
                   </Link>
                 </li>
               </ul>
