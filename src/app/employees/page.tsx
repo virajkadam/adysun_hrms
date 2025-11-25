@@ -13,13 +13,27 @@ import { useSalaries } from '@/hooks/useSalaries';
 import Pagination from '@/components/ui/Pagination';
 import BulkUploadModal from '@/components/ui/BulkUploadModal';
 
+// Component to display employee ID from employment record
+const EmployeeIdDisplay = ({ employeeId }: { employeeId: string }) => {
+  const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
+
+  // Get the first (and only) employment
+  const employment = employments[0];
+
+  if (!employment || !employment.employmentId) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  return <span>{employment.employmentId}</span>;
+};
+
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
   const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
-  
+
   // Get the first (and only) employment
   const employment = employments[0];
-  
+
   if (!employment) {
     return (
       <div className="w-10 h-10 border border-gray-300 rounded-md p-2 flex items-center justify-center bg-gray-100 text-gray-400 cursor-not-allowed">
@@ -365,7 +379,9 @@ export default function EmployeesPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{employee.employeeId || '-'}</div>
+                      <div className="text-sm text-gray-900">
+                        <EmployeeIdDisplay employeeId={employee.id} />
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">

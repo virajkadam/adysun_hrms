@@ -61,6 +61,7 @@ export default function AddEmploymentPage() {
   
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm<EmploymentFormData>({
     defaultValues: {
+      employmentId: 'ADV',
       isResignation: false,
     }
   });
@@ -111,6 +112,16 @@ export default function AddEmploymentPage() {
       setValue('specialAllowance', specialAllowance);
     }
   }, [salary, setValue, includePF]);
+
+  // Ensure ADV prefix is maintained in employmentId
+  const employmentId = watch('employmentId');
+  useEffect(() => {
+    if (employmentId && !employmentId.startsWith('ADV')) {
+      // If user tries to remove ADV prefix, restore it
+      const suffix = employmentId.replace(/^ADV/i, '');
+      setValue('employmentId', 'ADV' + suffix);
+    }
+  }, [employmentId, setValue]);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -387,12 +398,12 @@ export default function AddEmploymentPage() {
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. EMP-001"
-                    {...register('employmentId', { 
+                    placeholder="e.g. ADV001, ADV002"
+                    {...register('employmentId', {
                       required: 'Employment ID is required',
-                      pattern: { 
-                        value: /^[A-Z0-9-]{3,10}$/i, 
-                        message: 'Please enter a valid ID format' 
+                      pattern: {
+                        value: /^ADV[A-Z0-9-]*$/i,
+                        message: 'Employment ID must start with ADV followed by numbers/letters'
                       }
                     })}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
