@@ -7,15 +7,19 @@ import { FiUser, FiCalendar, FiLogOut, FiFileText, FiLogIn, FiCheck, FiClock } f
 import toast, { Toaster } from 'react-hot-toast';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import { getEmployeeSelf } from '@/utils/firebaseUtils';
-import { Employee } from '@/types';
+import { Employee, Employment } from '@/types';
 import { useAttendanceMarking } from '@/hooks/useAttendanceMarking';
+import { getEmployeeSelfEmployment } from '@/utils/firebaseUtils';
+import { toTitleCase } from '@/utils/stringUtils';
 
 export default function EmployeeDashboardPage() {
   const { currentEmployee, currentUserData, logout } = useAuth();
   const router = useRouter();
   const [fullEmployeeData, setFullEmployeeData] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
-  
+  const [employmentData, setEmploymentData] = useState<Employment[]>([]);
+  const [employmentLoading, setEmploymentLoading] = useState(true);
+
   // Attendance logic hook
   const {
     todayAttendance,
@@ -27,55 +31,51 @@ export default function EmployeeDashboardPage() {
     checkInMutation,
     checkOutMutation
   } = useAttendanceMarking();
-  
+
+  // Get the current/active employment (assuming the first one or the one without endDate)
+  const currentEmployment = employmentData.find(emp => !emp.endDate) || employmentData[0];
+
   useEffect(() => {
     // Check if user is authenticated
     if (!currentUserData) {
       router.push('/login');
       return;
     }
-    
+
     // If user is admin, redirect to admin dashboard
     if (currentUserData.userType === 'admin') {
       router.push('/dashboard');
       return;
     }
-    
+
     // If user is not employee, redirect to login
     if (currentUserData.userType !== 'employee') {
       router.push('/login');
       return;
     }
 
-    // Fetch complete employee data
+    // Fetch complete employee data and employment info
     const fetchEmployeeData = async () => {
       try {
         if (currentUserData.userType === 'employee') {
+          // Fetch employee basic info
           const employeeData = await getEmployeeSelf(currentUserData.id);
           setFullEmployeeData(employeeData);
-          
+
           // Store full employee data in localStorage for other components to use
           localStorage.setItem('fullEmployeeData', JSON.stringify(employeeData));
-          
-          // If employeeData has employeeId but currentEmployee doesn't, update it
-          if (employeeData.employeeId && currentEmployee && !(currentEmployee as any).employeeId) {
-            console.log('Syncing employeeId to currentEmployee:', employeeData.employeeId);
-            (currentEmployee as any).employeeId = employeeData.employeeId;
-            
-            // Update the stored employee data in localStorage
-            const storedEmployeeData = localStorage.getItem('employeeData');
-            if (storedEmployeeData) {
-              const parsedData = JSON.parse(storedEmployeeData);
-              parsedData.employeeId = employeeData.employeeId;
-              localStorage.setItem('employeeData', JSON.stringify(parsedData));
-            }
-          }
-          
-          // Also make it available globally for components that might need it
-          if (typeof window !== 'undefined') {
-            (window as any).employeeDashboardData = {
-              employeeId: employeeData.employeeId
-            };
+
+          // Fetch employment basic info for the current employee
+          setEmploymentLoading(true);
+          try {
+            const employments = await getEmployeeSelfEmployment(currentUserData.id);
+            setEmploymentData(employments);
+            console.log('✅ Employment data fetched successfully:', employments.length, 'records');
+          } catch (employmentError) {
+            console.error('Error fetching employment data:', employmentError);
+            toast.error('Failed to load employment information');
+          } finally {
+            setEmploymentLoading(false);
           }
         }
       } catch (error) {
@@ -177,31 +177,28 @@ export default function EmployeeDashboardPage() {
 
       {/* Employee Information Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Employee Information</h2>
-        {loading ? (
-          <div className="text-center py-4">
-            <p className="text-gray-500">Loading employee information...</p>
-          </div>
-        ) : fullEmployeeData ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
-              <p className="text-sm text-gray-600">Name</p>
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Employee Information</h2>
+          {loading ? (
+            <div className="text-center py-4">
+              <p className="text-gray-500">Loading employee information...</p>
             </div>
-           
-            <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.email}</p>
-              <p className="text-sm text-gray-600">Email</p>
-            </div> <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.employeeId || 'Not Assigned'}</p>
-              <p className="text-sm text-gray-600">Employee ID</p>
-            </div>
-            <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
-              <p className="text-sm text-gray-600">Phone</p>
-            </div>
-            {/* <div>
+          ) : fullEmployeeData ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
+                <p className="text-sm text-gray-600">Name</p>
+              </div>
+
+              <div>
+                <p className="font-medium text-gray-900">{fullEmployeeData.email}</p>
+                <p className="text-sm text-gray-600">Email</p>
+              </div>
+              <div>
+                <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
+                <p className="text-sm text-gray-600">Phone</p>
+              </div>
+              {/* <div>
               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                 fullEmployeeData.status === 'active' 
                   ? 'bg-green-100 text-green-800' 
@@ -211,19 +208,80 @@ export default function EmployeeDashboardPage() {
               </span>
               <p className="text-sm text-gray-600 mt-1">Status</p>
             </div> */}
-            <div>
-              <p className="font-medium text-gray-900">{fullEmployeeData.currentAddress || 'Not Assigned'}</p>
-              <p className="text-sm text-gray-600">Current Address</p>
+              <div>
+                <p className="font-medium text-gray-900">{fullEmployeeData.currentAddress || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Current Address</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-4">
-            <p className="text-red-500">Failed to load employee information</p>
-          </div>
-        )}
-      </div>
-      {/* Attendance Card */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-red-500">Failed to load employee information</p>
+            </div>
+          )}
+        </div>
+
+        {/* Employment Basic Info Card */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Employment Information</h2>
+          {employmentLoading ? (
+            <div className="text-center py-4">
+              <p className="text-gray-500">Loading employment information...</p>
+            </div>
+          ) : currentEmployment ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="font-medium text-gray-900">{currentEmployment.employmentId || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Employment ID</p>
+              </div>
+
+              <div>
+                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.jobTitle || currentEmployment.designation) || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Job Title</p>
+              </div>
+
+              <div>
+                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.department) || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Department</p>
+              </div>
+
+              <div>
+                <p className="font-medium text-gray-900">{currentEmployment.joiningDate ? new Date(currentEmployment.joiningDate).toLocaleDateString() : 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Joining Date</p>
+              </div>
+
+              <div>
+                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.location) || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Location</p>
+              </div>
+
+              {currentEmployment.reportingManager && currentEmployment.reportingManager.trim() !== '' && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.reportingManager)}</p>
+                  <p className="text-sm text-gray-600">Reporting Manager</p>
+                </div>
+              )}
+
+              {currentEmployment.contractType && currentEmployment.contractType.trim() !== '' && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.contractType)}</p>
+                  <p className="text-sm text-gray-600">Contract Type</p>
+                </div>
+              )}
+
+              <div>
+                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.employmentType) || 'Not Assigned'}</p>
+                <p className="text-sm text-gray-600">Employment Type</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-red-500">Failed to load employment information</p>
+            </div>
+          )}
+        </div>
+
+        {/* Attendance Card */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Today's Attendance</h2>
           {todayAttendanceLoading ? (
             <div className="text-center py-4">
@@ -252,15 +310,14 @@ export default function EmployeeDashboardPage() {
                   <p className="text-sm text-gray-600 mb-1">Total Hours</p>
                 </div>
                 <div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                    todayAttendance?.status === 'present' 
-                      ? 'bg-green-100 text-green-800'
-                      : todayAttendance?.status === 'late'
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${todayAttendance?.status === 'present'
+                    ? 'bg-green-100 text-green-800'
+                    : todayAttendance?.status === 'late'
                       ? 'bg-yellow-100 text-yellow-800'
                       : todayAttendance?.status === 'half-day'
-                      ? 'bg-orange-100 text-orange-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
+                        ? 'bg-orange-100 text-orange-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
                     {todayAttendance?.status?.toUpperCase() || 'Not checked in'}
                   </span>
                   <p className="text-sm text-gray-600 mb-1">Status</p>
@@ -314,7 +371,7 @@ export default function EmployeeDashboardPage() {
               )}
             </div>
           )}
-        </div>  
+        </div>
       </div>
     </EmployeeLayout>
   );
