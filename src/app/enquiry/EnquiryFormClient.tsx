@@ -242,6 +242,30 @@ export default function EnquirySubmitPage() {
       return;
     }
 
+    // Validate Passout Year field
+    if (!formData.passoutYear.trim()) {
+      setError("Please select your Passout Year");
+      return;
+    }
+
+    // Validate Technology field
+    if (!formData.technology.trim()) {
+      setError("Please select a Technology");
+      return;
+    }
+
+    // Validate Role field
+    if (!formData.role.trim()) {
+      setError("Please select a Role");
+      return;
+    }
+
+    // Validate Total Work Experience field
+    if (!formData.totalWorkExperience.trim()) {
+      setError("Please select your Total Work Experience");
+      return;
+    }
+
     // Validate mobile number format
     if (formData.mobile.length !== 10) {
       setError("Mobile number must be exactly 10 digits");
@@ -267,19 +291,17 @@ export default function EnquirySubmitPage() {
       return;
     }
 
-    // Validate PAN card if provided
-    if (formData.pan.trim()) {
-      if (!validatePANFormat(formData.pan)) {
-        setError("Please enter a valid PAN number (e.g., ABCDE1234F)");
-        return;
-      }
+    // Validate PAN card (required)
+    if (!validatePANFormat(formData.pan)) {
+      setError("Please enter a valid PAN number (e.g., ABCDE1234F)");
+      return;
+    }
 
-      // Check if PAN already exists
-      const panExists = await checkPANExistsAnywhere(formData.pan.toUpperCase());
-      if (panExists) {
-        setError("This PAN number is already registered. Please use a different PAN or contact support.");
-        return;
-      }
+    // Check if PAN already exists
+    const panExists = await checkPANExistsAnywhere(formData.pan.toUpperCase());
+    if (panExists) {
+      setError("This PAN number is already registered. Please use a different PAN or contact support.");
+      return;
     }
 
     // Check if mobile already exists
@@ -649,6 +671,7 @@ export default function EnquirySubmitPage() {
                       name="pan"
                       value={formData.pan}
                       onChange={handleChange}
+                      required
                       className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                         panError || panDuplicateError ? "border-red-500" : "border-gray-300"
                       }`}
@@ -693,13 +716,14 @@ export default function EnquirySubmitPage() {
                       htmlFor="passoutYear"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Passout Year
+                      <span className="text-red-500">*</span> Passout Year
                     </label>
                     <select
                       id="passoutYear"
                       name="passoutYear"
                       value={formData.passoutYear}
                       onChange={handleChange}
+                      required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Passout Year</option>
@@ -736,13 +760,14 @@ export default function EnquirySubmitPage() {
                       htmlFor="technology"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Technology
+                      <span className="text-red-500">*</span> Technology
                     </label>
                     <select
                       id="technology"
                       name="technology"
                       value={formData.technology}
                       onChange={handleChange}
+                      required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Technology</option>
@@ -777,13 +802,14 @@ export default function EnquirySubmitPage() {
                       htmlFor="role"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Role
+                      <span className="text-red-500">*</span> Role
                     </label>
                     <select
                       id="role"
                       name="role"
                       value={formData.role}
                       onChange={handleChange}
+                      required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Role</option>
@@ -830,13 +856,14 @@ export default function EnquirySubmitPage() {
                       htmlFor="totalWorkExperience"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Total Work Experience
+                      <span className="text-red-500">*</span> Total Work Experience
                     </label>
                     <select
                       id="totalWorkExperience"
                       name="totalWorkExperience"
                       value={formData.totalWorkExperience}
                       onChange={handleChange}
+                      required
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select Experience</option>
