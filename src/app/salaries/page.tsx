@@ -277,7 +277,7 @@ export default function SalariesPage() {
               href: employeeId ? `/salaries/add?employeeId=${employeeId}` : '/salaries/add'
             }
           ]}
-          backButton={{ onClick: () => router.back() }}
+          backButton={{ onClick: () => employeeId ? router.push(`/employees/${employeeId}`) : router.push('/employees') }}
           headerClassName="px-6 pt-6 pb-6"
         />
 
