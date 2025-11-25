@@ -80,7 +80,7 @@ export default function DashboardPage() {
       title: 'Enquiry',
       count: attendanceCount,
       icon: <FiMail className="w-8 h-8 text-green-500" />,
-      link: '/enquiry',
+      link: '/dashboard/enquiries/',
       color: 'bg-green-50'
     },
   ];
