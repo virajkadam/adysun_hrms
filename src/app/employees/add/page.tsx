@@ -312,7 +312,7 @@ export default function AddEmployeePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Employee ID <span className="text-gray-500 text-xs">(Optional - Auto-generated)</span>
+                    Employee ID <span className="text-gray-500 text-xs">(Optional)</span>
                   </label>
                   <input
                     type="text"

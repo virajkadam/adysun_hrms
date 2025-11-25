@@ -214,19 +214,20 @@ export const addEmployee = async (employeeData: Omit<Employee, 'id'>) => {
   try {
     console.log('🚀 Starting employee creation process...');
     
-    // Auto-generate employee ID if not provided
+    // Handle employee ID - make it nullable if not provided
     let finalEmployeeId = employeeData.employeeId;
-    
-    if (!finalEmployeeId || finalEmployeeId.trim() === '') {
-      finalEmployeeId = await getNextEmployeeId();
-      console.log('🆔 Auto-generated Employee ID:', finalEmployeeId);
-    } else {
-      // Validate manual employee ID
+
+    if (finalEmployeeId && finalEmployeeId.trim() !== '') {
+      // Validate manual employee ID if provided
       const exists = await checkEmployeeIdExists(finalEmployeeId);
       if (exists) {
         throw new Error('Employee ID already exists. Please use a different ID.');
       }
       console.log('✅ Manual Employee ID validated:', finalEmployeeId);
+    } else {
+      // Set to undefined if not provided (skip auto-generation)
+      finalEmployeeId = undefined;
+      console.log('ℹ️ Employee ID set to undefined (no auto-generation)');
     }
     
     // Ensure password field is always present
