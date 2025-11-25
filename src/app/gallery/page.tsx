@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import WebsiteLayout from '@/components/website/WebsiteLayout';
 import SectionTitle from '@/components/website/ui/SectionTitle';
 import { Image, Camera, Building, Users, Home, Stethoscope, FileText } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
-export default function GalleryPage() {
+export default function GalleryPage() { 
+  redirect('/');
   const [activeCategory, setActiveCategory] = useState('all');
 
   const galleryCategories = [
