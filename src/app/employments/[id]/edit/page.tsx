@@ -109,6 +109,13 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
           relievingCtc: relievingCtc ? relievingCtc.toString() : '',
           benefits: employmentData.benefits?.join(', ') || '',
         });
+
+        // Initialize includePF based on existing PF value
+        if (employmentData.pf && employmentData.pf > 0) {
+          setIncludePF(true);
+        } else {
+          setIncludePF(false);
+        }
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to fetch data';
         setError(errorMessage);
@@ -659,108 +666,169 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Salary per month
+                    <span className="text-red-500 mr-1">*</span> Salary per annum (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('salaryPerMonth')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Monthly salary"
+                    placeholder="Annual salary amount"
+                    {...register('salary', {
+                      required: 'Salary is required',
+                      min: { value: 0, message: 'Salary must be positive' },
+                      valueAsNumber: true
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  />
+                  {errors.salary && (
+                    <p className="mt-1 text-sm text-red-600">{errors.salary.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <span className="text-red-500 mr-1">*</span> Salary per month (₹)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Monthly salary amount"
+                    {...register('salaryPerMonth', {
+                      required: 'Monthly salary is required',
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">Annual salary ÷ 12</p>
+                  {errors.salaryPerMonth && (
+                    <p className="mt-1 text-sm text-red-600">{errors.salaryPerMonth.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Basic
+                    <span className="text-red-500 mr-1">*</span> Basic (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('basic')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Basic pay"
+                    placeholder="Basic salary amount"
+                    {...register('basic', {
+                      required: 'Basic salary is required',
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">40% of monthly salary</p>
+                  {errors.basic && (
+                    <p className="mt-1 text-sm text-red-600">{errors.basic.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    DA (Dearness Allowance)
+                    DA (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('da')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Dearness allowance"
+                    placeholder="Dearness Allowance"
+                    {...register('da', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">10% of Basic</p>
+                  {errors.da && (
+                    <p className="mt-1 text-sm text-red-600">{errors.da.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    HRA (House Rent Allowance)
+                    HRA (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('hra')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="House rent allowance"
+                    placeholder="House Rent Allowance"
+                    {...register('hra', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">50% of Basic</p>
+                  {errors.hra && (
+                    <p className="mt-1 text-sm text-red-600">{errors.hra.message}</p>
+                  )}
                 </div>
 
                 {includePF && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      PF (Provident Fund)
+                      PF (₹)
                     </label>
                     <input
                       type="number"
-                      {...register('pf')}
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                      placeholder="Provident fund"
+                      placeholder="Provident Fund"
+                      {...register('pf', {
+                        min: { value: 0, message: 'Amount must be positive' }
+                      })}
+                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                     />
                     <p className="mt-1 text-xs text-gray-500">12% of Basic</p>
+                    {errors.pf && (
+                      <p className="mt-1 text-sm text-red-600">{errors.pf.message}</p>
+                    )}
                   </div>
                 )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Medical Allowance
+                    Medical Allowance (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('medicalAllowance')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Medical allowance"
+                    placeholder="Medical Allowance"
+                    {...register('medicalAllowance', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">Fixed ₹1,250</p>
+                  {errors.medicalAllowance && (
+                    <p className="mt-1 text-sm text-red-600">{errors.medicalAllowance.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Transport
+                    Transport (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('transport')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Transport allowance"
+                    placeholder="Transport Allowance"
+                    {...register('transport', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">Fixed ₹1,600</p>
+                  {errors.transport && (
+                    <p className="mt-1 text-sm text-red-600">{errors.transport.message}</p>
+                  )}
                 </div>
 
                 {includePF && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Gratuity
+                      Gratuity (₹)
                     </label>
                     <input
                       type="number"
-                      {...register('gratuity')}
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Gratuity"
+                      {...register('gratuity', {
+                        min: { value: 0, message: 'Amount must be positive' }
+                      })}
+                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                     />
+                    {errors.gratuity && (
+                      <p className="mt-1 text-sm text-red-600">{errors.gratuity.message}</p>
+                    )}
                   </div>
                 )}
 
@@ -770,10 +838,15 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                   </label>
                   <input
                     type="number"
-                    {...register('totalLeaves')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Total leaves per year"
+                    placeholder="Days per year"
+                    {...register('totalLeaves', {
+                      min: { value: 0, message: 'Value must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
+                  {errors.totalLeaves && (
+                    <p className="mt-1 text-sm text-red-600">{errors.totalLeaves.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -782,9 +855,9 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                   </label>
                   <input
                     type="text"
+                    placeholder="e.g. 1st of every month"
                     {...register('salaryCreditDate')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="E.g., 1st of every month"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                 </div>
 
@@ -794,9 +867,9 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                   </label>
                   <input
                     type="number"
+                    placeholder="Days"
                     {...register('payableDays')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Payable days"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                 </div>
 
@@ -804,35 +877,41 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Payment Mode
                   </label>
-                  <input
-                    type="text"
+                  <select
                     {...register('paymentMode')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="E.g., Bank Transfer, Cash"
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
+                  >
+                    <option value="bank-transfer">Bank Transfer</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="cash">Cash</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Additional Allowance (₹)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Additional Allowance"
+                    {...register('additionalAllowance', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Additional Allowance
+                    Special Allowance (₹)
                   </label>
                   <input
                     type="number"
-                    {...register('additionalAllowance')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Additional allowance"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Special Allowance
-                  </label>
-                  <input
-                    type="number"
-                    {...register('specialAllowance')}
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                    placeholder="Special allowance"
+                    placeholder="Special Allowance"
+                    {...register('specialAllowance', {
+                      min: { value: 0, message: 'Amount must be positive' }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black bg-gray-50"
                   />
                   <p className="mt-1 text-xs text-gray-500">Balancing amount</p>
                 </div>
