@@ -8,8 +8,8 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { ActionButton } from '@/components/ui/ActionButton';
 import TableHeader from '@/components/ui/TableHeader';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
-import { useEmploymentsByEmployee, useEmployments } from '@/hooks/useEmployments';
-import { useSalaries } from '@/hooks/useSalaries';
+import { useEmploymentsByEmployee } from '@/hooks/useEmployments';
+import { useSalariesByEmployee } from '@/hooks/useSalaries';
 import Pagination from '@/components/ui/Pagination';
 import BulkUploadModal from '@/components/ui/BulkUploadModal';
 import { FaRupeeSign } from "react-icons/fa";
@@ -73,6 +73,33 @@ const CurrentPackageDisplay = ({ employeeId }: { employeeId: string }) => {
   );
 };
 
+// Component to display total salary credits from salary records
+const TotalSalaryCreditsDisplay = ({ employeeId }: { employeeId: string }) => {
+  const { data: salaries = [] } = useSalariesByEmployee(employeeId);
+
+  if (!salaries || salaries.length === 0) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  // Sum up all totalSalary values from salary records
+  const totalCredits = salaries.reduce((total, salary) => {
+    return total + (salary.totalSalary || 0);
+  }, 0);
+
+  if (totalCredits === 0) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  return (
+    <span>
+      {new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR'
+      }).format(totalCredits)}
+    </span>
+  );
+};
+
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
   const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
@@ -116,18 +143,8 @@ export default function EmployeesPage() {
     refetch
   } = useEmployees();
 
-  // Fetch all employments and salaries for calculating CTC and total salary credits
-  const { data: allEmployments = [] } = useEmployments();
-  const { data: allSalaries = [] } = useSalaries();
-
   // Use mutation for delete operation
   const deleteEmployeeMutation = useDeleteEmployee();
-
-  // Helper functions to get employee data
-  const getTotalSalaryCredits = (employeeId: string): number => {
-    const employeeSalaries = allSalaries.filter(salary => salary.employeeId === employeeId);
-    return employeeSalaries.reduce((total, salary) => total + (salary.totalSalary || 0), 0);
-  };
 
   // Handle refresh with toast feedback
   const handleRefresh = async () => {
@@ -435,13 +452,7 @@ export default function EmployeesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {(() => {
-                          const totalCredits = getTotalSalaryCredits(employee.id);
-                          return totalCredits > 0 ? new Intl.NumberFormat('en-IN', {
-                            style: 'currency',
-                            currency: 'INR'
-                          }).format(totalCredits) : '-';
-                        })()}
+                        <TotalSalaryCreditsDisplay employeeId={employee.id} />
                       </div>
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-center'>{employee.status && (
