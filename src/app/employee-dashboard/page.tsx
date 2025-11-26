@@ -191,7 +191,7 @@ export default function EmployeeDashboardPage() {
               </div>
 
               <div>
-                <p className="font-medium text-gray-900">{fullEmployeeData.email}</p>
+                <p className="font-medium text-gray-900 break-words">{fullEmployeeData.email}</p>
                 <p className="text-sm text-gray-600">Email</p>
               </div>
               <div>
