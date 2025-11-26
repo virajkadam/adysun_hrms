@@ -29,6 +29,20 @@ const EmployeeIdDisplay = ({ employeeId }: { employeeId: string }) => {
   return <span>{employment.employmentId}</span>;
 };
 
+// Component to display joining date from employment record
+const JoiningDateDisplay = ({ employeeId }: { employeeId: string }) => {
+  const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
+
+  // Get the first (and only) employment
+  const employment = employments[0];
+
+  if (!employment || !employment.joiningDate) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  return <span>{formatDateToDayMonYear(employment.joiningDate)}</span>;
+};
+
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
   const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
@@ -387,7 +401,7 @@ export default function EmployeesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {employee.joinDate ? formatDateToDayMonYear(employee.joinDate) : '-'}
+                        <JoiningDateDisplay employeeId={employee.id} />
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
