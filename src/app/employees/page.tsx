@@ -43,6 +43,36 @@ const JoiningDateDisplay = ({ employeeId }: { employeeId: string }) => {
   return <span>{formatDateToDayMonYear(employment.joiningDate)}</span>;
 };
 
+// Component to display current package (CTC) from employment record
+const CurrentPackageDisplay = ({ employeeId }: { employeeId: string }) => {
+  const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
+
+  // Get the first (and only) employment
+  const employment = employments[0];
+
+  if (!employment) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  // Priority: incrementedCtc > joiningCtc > salary
+  const currentPackage = employment.incrementedCtc 
+    || employment.joiningCtc 
+    || employment.salary;
+
+  if (!currentPackage) {
+    return <span className="text-gray-400">-</span>;
+  }
+
+  return (
+    <span>
+      {new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR'
+      }).format(currentPackage)}
+    </span>
+  );
+};
+
 // Component to handle employment navigation
 const EmploymentActionButton = ({ employeeId }: { employeeId: string }) => {
   const { data: employments = [] } = useEmploymentsByEmployee(employeeId);
@@ -94,12 +124,6 @@ export default function EmployeesPage() {
   const deleteEmployeeMutation = useDeleteEmployee();
 
   // Helper functions to get employee data
-  const getEmployeeCTC = (employeeId: string): number | null => {
-    const employment = allEmployments.find(emp => emp.employeeId === employeeId);
-    // Access ctc property safely with type assertion or optional chaining
-    return (employment as any)?.ctc || null;
-  };
-
   const getTotalSalaryCredits = (employeeId: string): number => {
     const employeeSalaries = allSalaries.filter(salary => salary.employeeId === employeeId);
     return employeeSalaries.reduce((total, salary) => total + (salary.totalSalary || 0), 0);
@@ -406,13 +430,7 @@ export default function EmployeesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {(() => {
-                          const ctc = getEmployeeCTC(employee.id);
-                          return ctc ? new Intl.NumberFormat('en-IN', {
-                            style: 'currency',
-                            currency: 'INR'
-                          }).format(ctc) : '-';
-                        })()}
+                        <CurrentPackageDisplay employeeId={employee.id} />
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
