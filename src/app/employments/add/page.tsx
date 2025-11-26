@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { addEmployment, getEmployees, getAdminDataForAudit } from '@/utils/firebaseUtils';
+import { addEmployment, getEmployees, getAdminDataForAudit, checkEmploymentIdUnique } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import { FiSave, FiPlus } from 'react-icons/fi';
 import toast, { Toaster } from 'react-hot-toast';
@@ -154,6 +154,14 @@ export default function AddEmploymentPage() {
       setIsSubmitting(true);
       setError(null);
       toast.loading('Creating employment record...', { id: 'add-employment' });
+
+      // Check if employment ID is unique
+      if (data.employmentId) {
+        const { isUnique, existingEmployment } = await checkEmploymentIdUnique(data.employmentId);
+        if (!isUnique) {
+          throw new Error('Employment ID is been already used');
+        }
+      }
 
       // Get admin data for audit fields
       const { adminId, currentTimestamp } = getAdminDataForAudit();

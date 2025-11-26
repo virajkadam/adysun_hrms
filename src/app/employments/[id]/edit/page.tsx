@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FiSave } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getEmployment, updateEmployment, getEmployees } from '@/utils/firebaseUtils';
+import { getEmployment, updateEmployment, getEmployees, checkEmploymentIdUnique } from '@/utils/firebaseUtils';
 import { Employment, Employee } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
 import TableHeader from '@/components/ui/TableHeader';
@@ -23,6 +23,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
   const [error, setError] = useState<string | null>(null);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [includePF, setIncludePF] = useState(true); // Default: With PF
+  const [originalEmployment, setOriginalEmployment] = useState<Employment | null>(null);
 
   const router = useRouter();
   const { id } = use(params);
@@ -87,6 +88,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
 
         // Fetch employment data
         const employmentData = await getEmployment(id);
+        setOriginalEmployment(employmentData);
 
         // Reset form with employment data (excluding audit fields)
         const {
@@ -124,6 +126,14 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
       setError(null);
 
       toast.loading('Updating employment...', { id: 'updateEmployment' });
+
+      // Check if employment ID is unique (only if it has changed)
+      if (data.employmentId && data.employmentId !== originalEmployment?.employmentId) {
+        const { isUnique, existingEmployment } = await checkEmploymentIdUnique(data.employmentId, id);
+        if (!isUnique) {
+          throw new Error('Employment ID is been already used');
+        }
+      }
 
       // Convert benefits string to array
       const benefitsArray = typeof data.benefits === 'string'

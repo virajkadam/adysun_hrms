@@ -531,6 +531,48 @@ export const getEmployments = async () => {
   }
 };
 
+// Check if employment ID is unique (excluding current employment for updates)
+export const checkEmploymentIdUnique = async (employmentId: string, excludeId?: string) => {
+  try {
+    console.log('🔍 Checking employment ID uniqueness:', employmentId, excludeId ? `(excluding ${excludeId})` : '');
+
+    // Check for custom admin session
+    const sessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
+
+    if (!sessionId || !adminData) {
+      console.log('❌ CRITICAL: No admin session found!');
+      throw new Error('No admin session found. Please log in as admin first.');
+    }
+
+    // Query for employments with the same employmentId
+    const q = query(collection(db, 'employments'), where('employmentId', '==', employmentId));
+    const querySnapshot = await getDocs(q);
+
+    let isUnique = true;
+    let existingEmployment = null;
+
+    querySnapshot.forEach((doc) => {
+      // If excludeId is provided, skip the current employment being edited
+      if (excludeId && doc.id === excludeId) {
+        return;
+      }
+      isUnique = false;
+      existingEmployment = { id: doc.id, ...doc.data() };
+    });
+
+    console.log(`✅ Employment ID "${employmentId}" is ${isUnique ? 'unique' : 'not unique'}`);
+    if (!isUnique) {
+      console.log('📋 Existing employment:', existingEmployment);
+    }
+
+    return { isUnique, existingEmployment };
+  } catch (error) {
+    console.error('Error checking employment ID uniqueness:', error);
+    throw error;
+  }
+};
+
 export const getEmployment = async (id: string) => {
   try {
     console.log('🔍 Fetching employment with custom authentication...');
