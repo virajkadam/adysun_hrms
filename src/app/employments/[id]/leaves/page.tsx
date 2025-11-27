@@ -355,6 +355,14 @@ export default function LeavesPage({
             href: `/employments/${id}`,
             label: "Back",
           }}
+          actionButtons={[
+            {
+              label: 'Add Leave',
+              icon: <FiCalendar className="w-4 h-4" />,
+              variant: 'primary' as const,
+              href: `/dashboard/leaves/add?employeeId=${employment?.employeeId}&returnUrl=/employments/${id}/leaves`
+            }
+          ]}
         />
 
         {employee && (

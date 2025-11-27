@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, use } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FiArrowLeft, FiCalendar } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -15,7 +14,6 @@ import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { formatDurationHours } from '@/lib/utils';
 
 export default function AttendancePage({ params }: { params: Promise<{ id: string }> }) {
-  const router = useRouter();
   const { id } = use(params);
 
   // Pagination state
@@ -61,13 +59,6 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
     // Don't show error toast for attendance, just log it
     // This allows the page to render even if attendance data fails
   }
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount);
-  };
 
   // Calculate attendance statistics
   const calculateAttendanceStats = () => {
@@ -318,15 +309,8 @@ export default function AttendancePage({ params }: { params: Promise<{ id: strin
 
             {/* Recent Attendance Records */}
             <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-semibold text-gray-800">Recent Attendance Records</h2>
-                <Link
-                  href={`/dashboard/leaves/add?employeeId=${employment?.employeeId}&returnUrl=/employments/${id}/attendance`}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2 transition-colors"
-                >
-                  <FiCalendar className="w-4 h-4" />
-                  Add Leave
-                </Link>
               </div>
 
               
