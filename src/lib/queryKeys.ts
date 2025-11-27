@@ -72,6 +72,7 @@ export const queryKeys = {
     list: (filters?: string) => [...queryKeys.enquiries.lists(), { filters: filters || 'all' }] as const,
     details: () => [...queryKeys.enquiries.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.enquiries.details(), id] as const,
+    newCount: () => [...queryKeys.enquiries.all, 'newCount'] as const,
   },
   
   // Leave keys
