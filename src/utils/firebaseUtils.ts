@@ -2173,22 +2173,37 @@ export const createEmployeeLeaveRequest = async (leaveData: {
   try {
     console.log('🔍 Creating employee leave request...');
     
-    // Check for employee session
+    // Check for employee or admin session
     const employeeSessionId = localStorage.getItem('employeeSessionId');
     const employeeData = localStorage.getItem('employeeData');
+    const adminSessionId = localStorage.getItem('adminSessionId');
+    const adminData = localStorage.getItem('adminData');
     
-    if (!employeeSessionId || !employeeData) {
-      throw new Error('No employee session found. Please log in as employee first.');
+    let createdBy = leaveData.employeeId;
+    let isAdmin = false;
+    
+    // Check if admin is creating the leave
+    if (adminSessionId && adminData) {
+      const currentAdmin = JSON.parse(adminData);
+      createdBy = currentAdmin.id;
+      isAdmin = true;
+      console.log('✅ Admin session validated for leave request');
+    } 
+    // Check if employee is creating their own leave
+    else if (employeeSessionId && employeeData) {
+      const currentEmployee = JSON.parse(employeeData);
+      
+      // Security check: Employee can only create leave requests for themselves
+      if (currentEmployee.id !== leaveData.employeeId) {
+        throw new Error('Access denied. You can only create leave requests for yourself.');
+      }
+      
+      console.log('✅ Employee session validated for leave request');
+    } 
+    // No valid session found
+    else {
+      throw new Error('No valid session found. Please log in first.');
     }
-    
-    const currentEmployee = JSON.parse(employeeData);
-    
-    // Security check: Employee can only create leave requests for themselves
-    if (currentEmployee.id !== leaveData.employeeId) {
-      throw new Error('Access denied. You can only create leave requests for yourself.');
-    }
-    
-    console.log('✅ Employee session validated for leave request');
     
     // Find employment for this employee
     const employmentQuery = query(
@@ -2213,13 +2228,14 @@ export const createEmployeeLeaveRequest = async (leaveData: {
       endDate: leaveData.endDate,
       reason: leaveData.reason,
       totalDays: leaveData.totalDays,
-      status: 'pending',
+      status: isAdmin ? 'approved' : 'pending', // Auto-approve if created by admin
       appliedDate: new Date().toISOString().split('T')[0],
-      approvedBy: null,
-      approvedAt: null,
-      comments: '',
+      approvedBy: isAdmin ? createdBy : null,
+      approvedAt: isAdmin ? new Date().toISOString() : null,
+      comments: isAdmin ? 'Created by admin' : '',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      createdBy: createdBy
     };
     
     // Add new leave record to employment document
@@ -2228,7 +2244,7 @@ export const createEmployeeLeaveRequest = async (leaveData: {
     await updateDoc(doc(db, 'employments', employmentDoc.id), {
       leaves: updatedLeaves,
       updatedAt: new Date().toISOString(),
-      updatedBy: leaveData.employeeId
+      updatedBy: createdBy
     });
     
     console.log('✅ Leave request created successfully in employment document');
