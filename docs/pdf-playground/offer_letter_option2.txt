@@ -1,424 +1,564 @@
-// Hardcoded data
-const HARDCODED_DATA = {
-  companyName: 'ADYSUN VENTURES PVT. LTD.',
-  companyContact: '9579537523 | hr@adysunventures.com | AdysunVentures.com',
-  companyAddress: 'Adysun Ventures Pvt. Ltd., S no 47, Workplex, Pune-Satara Rd, Opp City Pride Theater, Near Bhapkar petrol pump, Pune, Maharashtra - 411009',
-  employeeName: 'Mr. Arnab Kumar Baishya',
-  employeeFirstName: 'Arnab',
-  employeeAddress: [
-    'C/O: Apurba Kumar Baishya,',
-    'H.No.-5, Ananda Nagar,',
-    'Six Mile, Khanapara,',
-    'Kamrup Metro, Assam-781022'
-  ],
-  designation: 'Software Engineer',
-  joiningDate: '01 Aug 2024',
-  letterDate: '19-July-2024',
-  ctc: '₹4,00,000',
-  fixedCompensation: '₹3,00,000',
-  variablePay: '₹1,00,000',
-  hrName: 'Prachi Jadhav',
-  hrDesignation: 'Head - HR Department',
-  hrEmail: 'hr@adysunventures.com',
-  salaryBreakdown: {
-    basic: { monthly: '5,400', annual: '64,800' },
-    hra: { monthly: '2,000', annual: '24,000' },
-    conveyance: { monthly: '800', annual: '9,600' },
-    otherAllowances: { monthly: '7,000', annual: '84,000' },
-    grossSalary: { monthly: '15,200', annual: '1,82,400' },
-    professionalTax: { monthly: '200', annual: '2,400' },
-    totalDeductions: { monthly: '200', annual: '2,400' },
-    netInHand: { monthly: '15,000', annual: '1,80,000' },
-    variableIncentive: { monthly: '', annual: '2,20,000' },
-    totalCTC: { monthly: '33,533', annual: '4,00,000' }
-  }
-};
+// Tailwind-like Utility Styles (No installation needed!)
+const tw = StyleSheet.create({
+  // Flexbox
+  flex: { display: 'flex' },
+  flexRow: { flexDirection: 'row' },
+  flexCol: { flexDirection: 'column' },
+  itemsCenter: { alignItems: 'center' },
+  itemsStart: { alignItems: 'flex-start' },
+  itemsEnd: { alignItems: 'flex-end' },
+  justifyCenter: { justifyContent: 'center' },
+  justifyBetween: { justifyContent: 'space-between' },
+  justifyAround: { justifyContent: 'space-around' },
+  justifyEnd: { justifyContent: 'flex-end' },
+  flex1: { flex: 1 },
+  
+  // Spacing - Padding
+  p0: { padding: 0 },
+  p1: { padding: 4 },
+  p2: { padding: 8 },
+  p3: { padding: 12 },
+  p4: { padding: 16 },
+  p5: { padding: 20 },
+  p6: { padding: 24 },
+  px2: { paddingLeft: 8, paddingRight: 8 },
+  px4: { paddingLeft: 16, paddingRight: 16 },
+  py2: { paddingTop: 8, paddingBottom: 8 },
+  py4: { paddingTop: 16, paddingBottom: 16 },
+  pt2: { paddingTop: 8 },
+  pt4: { paddingTop: 16 },
+  pb2: { paddingBottom: 8 },
+  pb4: { paddingBottom: 16 },
+  pl2: { paddingLeft: 8 },
+  pl4: { paddingLeft: 16 },
+  pr2: { paddingRight: 8 },
+  pr4: { paddingRight: 16 },
+  
+  // Spacing - Margin
+  m0: { margin: 0 },
+  m1: { margin: 4 },
+  m2: { margin: 8 },
+  m3: { margin: 12 },
+  m4: { margin: 16 },
+  m5: { margin: 20 },
+  mxAuto: { marginLeft: 'auto', marginRight: 'auto' },
+  my2: { marginTop: 8, marginBottom: 8 },
+  my4: { marginTop: 16, marginBottom: 16 },
+  mt2: { marginTop: 8 },
+  mt3: { marginTop: 12 },
+  mt4: { marginTop: 16 },
+  mb2: { marginBottom: 8 },
+  mb3: { marginBottom: 12 },
+  mb4: { marginBottom: 16 },
+  ml2: { marginLeft: 8 },
+  ml4: { marginLeft: 16 },
+  mr2: { marginRight: 8 },
+  mr4: { marginRight: 16 },
+  
+  // Typography
+  textXs: { fontSize: 10 },
+  textSm: { fontSize: 12 },
+  textBase: { fontSize: 14 },
+  textLg: { fontSize: 16 },
+  textXl: { fontSize: 18 },
+  text2xl: { fontSize: 20 },
+  text3xl: { fontSize: 24 },
+  fontBold: { fontWeight: 'bold' },
+  fontNormal: { fontWeight: 'normal' },
+  textCenter: { textAlign: 'center' },
+  textLeft: { textAlign: 'left' },
+  textRight: { textAlign: 'right' },
+  textJustify: { textAlign: 'justify' },
+  uppercase: { textTransform: 'uppercase' },
+  underline: { textDecoration: 'underline' },
+  
+  // Colors
+  textBlack: { color: '#000000' },
+  textWhite: { color: '#FFFFFF' },
+  textGray: { color: '#6B7280' },
+  textGray600: { color: '#4B5563' },
+  textGray800: { color: '#1F2937' },
+  textRed: { color: '#EF4444' },
+  textBlue: { color: '#3B82F6' },
+  textGreen: { color: '#10B981' },
+  
+  // Borders
+  border: { borderWidth: 1, borderColor: '#000000', borderStyle: 'solid' },
+  borderTop: { borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid' },
+  borderBottom: { borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' },
+  borderLeft: { borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid' },
+  borderRight: { borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid' },
+  rounded: { borderRadius: 4 },
+  
+  // Width/Height
+  wFull: { width: '100%' },
+  hFull: { height: '100%' },
+  wAuto: { width: 'auto' },
+  hAuto: { height: 'auto' },
+  
+  // Position
+  relative: { position: 'relative' },
+  absolute: { position: 'absolute' },
+  fixed: { position: 'fixed' },
+  
+  // Line Height
+  leadingNone: { lineHeight: 1 },
+  leadingTight: { lineHeight: 1.25 },
+  leadingNormal: { lineHeight: 1.5 },
+  leadingRelaxed: { lineHeight: 1.75 },
+  
+  // Opacity
+  opacity50: { opacity: 0.5 },
+  opacity75: { opacity: 0.75 },
+  opacity15: { opacity: 0.15 },
+  
+  // Additional spacing for specific values
+  pt14: { paddingTop: 14 },
+  pb10: { paddingBottom: 10 },
+  pb12: { paddingBottom: 12 },
+  pl36: { paddingLeft: 36 },
+  pr20: { paddingRight: 20 },
+  mt20: { marginTop: 20 },
+  mt25: { marginTop: 25 },
+  mb20: { marginBottom: 20 },
+  mb15: { marginBottom: 15 },
+  mb12: { marginBottom: 12 },
+  mb6: { marginBottom: 6 },
+  mb4: { marginBottom: 4 },
+  mb2: { marginBottom: 2 },
+  ml36: { marginLeft: 36 },
+  mt8: { marginTop: 8 },
+  mtNeg5: { marginTop: -5 },
+  
+  // Font families
+  fontHelvetica: { fontFamily: 'Helvetica' },
+  fontHelveticaBold: { fontFamily: 'Helvetica-Bold' },
+  
+  // Additional typography
+  text13: { fontSize: 13 },
+  leading13: { lineHeight: 1.3 },
+  leading14: { lineHeight: 1.4 },
+  letterSpacing05: { letterSpacing: 0.5 },
+  letterSpacing1: { letterSpacing: 1 },
+  
+  // Colors
+  textOrange: { color: '#FF4500' },
+  textGray333: { color: '#333333' },
+  textGray666: { color: '#666666' },
+  
+  // Border specific
+  borderBottom15: { borderBottomWidth: 1.5, borderBottomColor: '#000000', borderBottomStyle: 'solid' },
+  borderRight1: { borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid' },
+  borderAll: { borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' },
+  
+  // Z-index
+  zNeg1: { zIndex: -1 },
+  
+  // Specific widths/heights
+  w80: { width: '80%' },
+  w70: { width: 70 },
+  h70: { height: 70 },
+  w120: { width: 120 },
+  h60: { height: 60 },
+  
+  // Font style
+  italic: { fontStyle: 'italic' },
+  
+  // Page-specific padding (will combine with inline for exact values)
+  pt72: { paddingTop: 72 },
+  pb72: { paddingBottom: 72 },
+  pl72: { paddingLeft: 72 },
+  pr54: { paddingRight: 54 },
+  pr72: { paddingRight: 72 },
+});
+
+
 
 // Watermark Component
 const Watermark = ({ logoSrc }) => {
   if (!logoSrc) return null;
   
   return (
-    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: -1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Image src={logoSrc} style={{ width: '80%', height: 'auto', opacity: 0.15 }} />
+    <View style={[tw.absolute, { top: 0, left: 0, right: 0, bottom: 0 }, tw.zNeg1, tw.flex, tw.justifyCenter, tw.itemsCenter]}>
+      <Image src={logoSrc} style={[tw.w80, tw.hAuto, tw.opacity15]} />
     </View>
   );
 };
 
 // Main Offer Letter Component
 const OfferLetter = () => {
-  const data = HARDCODED_DATA;
+  
   const companyLogo = '/images/quijote1.jpg'; // Playground sample image - will be resized to 60x60
   const signatureLogo = '/images/quijote2.png'; // Playground sample image - will be resized to 120x60
 
   return (
     <Document>
       {/* Page 1 - Header, Date, Address, Title, Greeting, Opening */}
-      <Page size="A4" style={{ paddingTop: 50, paddingLeft: 72, paddingRight: 72, paddingBottom: 72, fontFamily: 'Helvetica', fontSize: 11, lineHeight: 1.4, color: '#000000' }}>
+      <Page size="A4" style={[{ paddingTop: 50, paddingLeft: 72, paddingRight: 72, paddingBottom: 72 }, tw.fontHelvetica, { fontSize: 11 }, tw.leading14, tw.textBlack]}>
         <Watermark logoSrc={companyLogo} />
         
-        <View style={{ marginBottom: 20, paddingBottom: 10, borderBottomWidth: 1.5, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <View style={{ flex: 1, paddingRight: 20 }}>
-              <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#FF4500', marginBottom: 6, fontFamily: 'Helvetica-Bold', letterSpacing: 0.5 }}>{data.companyName}</Text>
-              <Text style={{ fontSize: 10, marginBottom: 4, fontFamily: 'Helvetica', color: '#333333' }}>{data.companyContact}</Text>
-              <Text style={{ fontSize: 10, fontFamily: 'Helvetica', color: '#333333', lineHeight: 1.3 }}>{data.companyAddress}</Text>
+        <View style={[tw.mb20, tw.pb10, tw.borderBottom15]}>
+          <View style={[tw.flexRow, tw.justifyBetween, tw.itemsStart]}>
+            <View style={[tw.flex1, tw.pr20]}>
+              <Text style={[tw.text2xl, tw.fontBold, tw.textOrange, tw.mb6, tw.fontHelveticaBold, tw.letterSpacing05]}>ADYSUN VENTURES PVT. LTD.</Text>
+              <Text style={[tw.textXs, tw.mb4, tw.fontHelvetica, tw.textGray333]}>9579537523 | hr@adysunventures.com | AdysunVentures.com</Text>
+              <Text style={[tw.textXs, tw.fontHelvetica, tw.textGray333, tw.leading13]}>Adysun Ventures Pvt. Ltd., S no 47, Workplex, Pune-Satara Rd, Opp City Pride Theater, Near Bhapkar petrol pump, Pune, Maharashtra - 411009</Text>
             </View>
             {companyLogo && (
-              <Image src={companyLogo} style={{ width: 70, height: 70, marginTop: -5 }} />
+              <Image src={companyLogo} style={[tw.w70, tw.h70, tw.mtNeg5]} />
             )}
           </View>
         </View>
         
-        <Text style={{ fontSize: 11, fontWeight: 'bold', fontFamily: 'Helvetica-Bold', marginTop: 20, marginBottom: 20 }}>Date: {data.letterDate}</Text>
+        <Text style={[{ fontSize: 11 }, tw.fontBold, tw.fontHelveticaBold, tw.mt20, tw.mb20]}>Date: 19-July-2024</Text>
         
-        <View style={{ marginBottom: 20 }}>
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', fontWeight: 'bold', marginBottom: 2 }}>{data.employeeName}</Text>
-          {data.employeeAddress.map((line, index) => (
-            <Text key={index} style={{ fontSize: 11, fontFamily: 'Helvetica', lineHeight: 1.3, marginBottom: 0 }}>{line}</Text>
+        <View style={[tw.mb20]}>
+          <Text style={[{ fontSize: 11 }, tw.fontHelveticaBold, tw.fontBold, tw.mb2]}>Mr. Arnab Kumar Baishya</Text>
+          {['C/O: Apurba Kumar Baishya,', 'H.No.-5, Ananda Nagar,', 'Six Mile, Khanapara,', 'Kamrup Metro, Assam-781022'].map((line, index) => (
+            <Text key={index} style={[{ fontSize: 11 }, tw.fontHelvetica, tw.leading13, tw.m0]}>{line}</Text>
           ))}
         </View>
         
-        <Text style={{ fontSize: 13, fontWeight: 'bold', textDecoration: 'underline', textAlign: 'center', marginTop: 25, marginBottom: 20, fontFamily: 'Helvetica-Bold', letterSpacing: 1 }}>LETTER OF APPOINTMENT</Text>
+        <Text style={[tw.text13, tw.fontBold, tw.underline, tw.textCenter, tw.mt25, tw.mb20, tw.fontHelveticaBold, tw.letterSpacing1]}>LETTER OF APPOINTMENT</Text>
         
-        <Text style={{ fontSize: 11, fontFamily: 'Helvetica', lineHeight: 1.5, marginBottom: 15 }}>Dear {data.employeeFirstName},</Text>
+        <Text style={[{ fontSize: 11 }, tw.fontHelvetica, tw.leadingNormal, tw.mb15]}>Dear Arnab,</Text>
         
         <View>
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica', lineHeight: 1.5, marginBottom: 12, textAlign: 'justify' }}>
-            We are pleased to extend this formal appointment as a symbol of our mutual commitment to integrity, excellence, and professional growth. This letter marks the beginning of your journey with <Text style={{ fontFamily: 'Helvetica-Bold', fontWeight: 'bold' }}>{data.companyName}</Text>, where we strive to build a future founded on vision, discipline, and respect.
+          <Text style={[{ fontSize: 11 }, tw.fontHelvetica, tw.leadingNormal, tw.mb3, tw.textJustify]}>
+            We are pleased to extend this formal appointment as a symbol of our mutual commitment to integrity, excellence, and professional growth. This letter marks the beginning of your journey with <Text style={[tw.fontHelveticaBold, tw.fontBold]}>ADYSUN VENTURES PVT. LTD.</Text>, where we strive to build a future founded on vision, discipline, and respect.
           </Text>
           
-          <Text style={{ fontSize: 11, fontFamily: 'Helvetica', lineHeight: 1.5, textAlign: 'justify' }}>
-            You are hereby appointed to the position of <Text style={{ fontFamily: 'Helvetica-Bold', fontWeight: 'bold' }}>{data.designation}</Text>, effective from <Text style={{ fontFamily: 'Helvetica-Bold', fontWeight: 'bold' }}>{data.joiningDate}</Text>. Please note, this offer shall be considered null and void should you fail to commence employment on or before the aforementioned date.
+          <Text style={[{ fontSize: 11 }, tw.fontHelvetica, tw.leadingNormal, tw.textJustify]}>
+            You are hereby appointed to the position of <Text style={[tw.fontHelveticaBold, tw.fontBold]}>Software Engineer</Text>, effective from <Text style={[tw.fontHelveticaBold, tw.fontBold]}>01 Aug 2024</Text>. Please note, this offer shall be considered null and void should you fail to commence employment on or before the aforementioned date.
           </Text>
         </View>
       </Page>
 
       {/* Page 2 - Pre-Employment, Responsibilities, Confidentiality, IP Rights */}
-      <Page size="A4" style={{ paddingTop: 72, paddingLeft: 72, paddingRight: 54, paddingBottom: 72, fontFamily: 'Helvetica', fontSize: 12, lineHeight: 1.0, color: '#000000' }}>
+      <Page size="A4" style={[tw.pt72, tw.pl72, tw.pr54, tw.pb72, tw.fontHelvetica, tw.textSm, tw.leadingNone, tw.textBlack]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Pre-Employment Formalities</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Pre-Employment Formalities</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>
           The continuation of your employment is contingent upon submission of the following documents:
         </Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Relieving letter from your previous employer</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Last 3 months' pay slips (digital copy)</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Last 3 months' bank statements reflecting salary credits</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Scanned copy of Aadhaar card or Passport</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Valid residential proof (e.g., electricity bill, property tax receipt)</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Valid email ID and mobile contact number</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Four (4) recent passport-size photographs with a white background</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Relieving letter from your previous employer</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Last 3 months' pay slips (digital copy)</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Last 3 months' bank statements reflecting salary credits</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Scanned copy of Aadhaar card or Passport</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Valid residential proof (e.g., electricity bill, property tax receipt)</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Valid email ID and mobile contact number</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Four (4) recent passport-size photographs with a white background</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Responsibilities and Expectations</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You are expected to execute duties as assigned, including any future assignments, promotions, or departmental transitions.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Working hours and shift timings may vary depending on business needs.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>In case of illness or emergency, the management must be informed promptly.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Any fraudulent activity or damage to company assets must be reported without delay.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Responsibilities and Expectations</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You are expected to execute duties as assigned, including any future assignments, promotions, or departmental transitions.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Working hours and shift timings may vary depending on business needs.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>In case of illness or emergency, the management must be informed promptly.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Any fraudulent activity or damage to company assets must be reported without delay.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Confidentiality and Data Ethics</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Confidentiality and Data Ethics</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>
           Throughout and post your tenure, you shall:
         </Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Maintain absolute confidentiality over proprietary, personal, strategic, technical, and financial information.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Refrain from sharing, misusing, duplicating, or disclosing such data without written authorization.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Not exploit any intellectual or operational asset of the company for personal or third-party benefit.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Acknowledge that all such information is and remains the exclusive property of {data.companyName}.</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Maintain absolute confidentiality over proprietary, personal, strategic, technical, and financial information.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Refrain from sharing, misusing, duplicating, or disclosing such data without written authorization.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Not exploit any intellectual or operational asset of the company for personal or third-party benefit.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Acknowledge that all such information is and remains the exclusive property of ADYSUN VENTURES PVT. LTD..</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Intellectual Property Rights</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>
-            All intellectual contributions made by you during the course of employment—arising from company work or resources—shall be deemed the exclusive property of <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>{data.companyName}</Text>.
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Intellectual Property Rights</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>
+            All intellectual contributions made by you during the course of employment—arising from company work or resources—shall be deemed the exclusive property of <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>ADYSUN VENTURES PVT. LTD.</Text>.
           </Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You are obligated to report such innovations and assign all rights, titles, and interests to the company.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>No separate compensation shall be claimable for such assignment, as it is inherent in your remuneration</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You shall offer full cooperation in registering or protecting any such intellectual property, both during and after employment.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You are obligated to report such innovations and assign all rights, titles, and interests to the company.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>No separate compensation shall be claimable for such assignment, as it is inherent in your remuneration</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You shall offer full cooperation in registering or protecting any such intellectual property, both during and after employment.</Text>
         </View>
       </Page>
 
       {/* Page 3 - Conflict of Interest, General Terms, Jurisdiction, Probationary Terms */}
-      <Page size="A4" style={{ paddingTop: 72, paddingLeft: 72, paddingRight: 54, paddingBottom: 72, fontFamily: 'Helvetica', fontSize: 12, lineHeight: 1.0, color: '#000000' }}>
+      <Page size="A4" style={[tw.pt72, tw.pl72, tw.pr54, tw.pb72, tw.fontHelvetica, tw.textSm, tw.leadingNone, tw.textBlack]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Conflict of Interest & Ethical Compliance</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You must refrain from engaging in any external business, employment, or consulting activities that conflict with the interests of {data.companyName}.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Any actual or potential conflict must be reported immediately for review and resolution.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Acceptance of gifts, favors, or commissions from individuals or entities conducting business with the company is strictly prohibited.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Use of company resources must reflect integrity and alignment with corporate objectives.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Conflict of Interest & Ethical Compliance</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You must refrain from engaging in any external business, employment, or consulting activities that conflict with the interests of ADYSUN VENTURES PVT. LTD..</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Any actual or potential conflict must be reported immediately for review and resolution.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Acceptance of gifts, favors, or commissions from individuals or entities conducting business with the company is strictly prohibited.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Use of company resources must reflect integrity and alignment with corporate objectives.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>General Terms</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>All official communications shall be in English and delivered via hand, email, courier, or registered post.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>If any provision of this letter is held unenforceable, the remaining provisions shall continue in full force and effect.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Disparagement or defamation of the company or its affiliates shall attract disciplinary or legal action.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>This document, along with any annexures, constitutes the entire agreement and supersedes any prior discussions or arrangements.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>{data.companyName} reserves the right to seek injunctive relief in case of breach of obligations.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>General Terms</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>All official communications shall be in English and delivered via hand, email, courier, or registered post.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>If any provision of this letter is held unenforceable, the remaining provisions shall continue in full force and effect.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Disparagement or defamation of the company or its affiliates shall attract disciplinary or legal action.</Text>
+          <Text style={[tw.ml36, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>This document, along with any annexures, constitutes the entire agreement and supersedes any prior discussions or arrangements.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>ADYSUN VENTURES PVT. LTD. reserves the right to seek injunctive relief in case of breach of obligations.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Jurisdiction</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>This letter shall be governed by the applicable laws of India. Any disputes shall fall under the exclusive jurisdiction of competent courts.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You are required to devote your full working time and attention solely to the business interests. Any concurrent employment or freelance engagements shall render this appointment liable for immediate termination and legal recourse.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Jurisdiction</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>This letter shall be governed by the applicable laws of India. Any disputes shall fall under the exclusive jurisdiction of competent courts.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You are required to devote your full working time and attention solely to the business interests. Any concurrent employment or freelance engagements shall render this appointment liable for immediate termination and legal recourse.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Probationary Terms</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Your appointment is subject to a probationary period of three (3) months. The duration may be extended or shortened at the sole discretion of the management, contingent upon performance and conduct.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Leave shall not be availed during the probation period. Any such absence, if unavoidable, shall be adjusted against paid leave, subject to management approval.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Probationary Terms</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Your appointment is subject to a probationary period of three (3) months. The duration may be extended or shortened at the sole discretion of the management, contingent upon performance and conduct.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Leave shall not be availed during the probation period. Any such absence, if unavoidable, shall be adjusted against paid leave, subject to management approval.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Joining and Probation Period</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>
-            The initial <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>probation period will be for 3 months</Text> from your joining date. Based on satisfactory performance, your employment will be confirmed thereafter.
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Joining and Probation Period</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, { paddingTop: 12, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>
+            The initial <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>probation period will be for 3 months</Text> from your joining date. Based on satisfactory performance, your employment will be confirmed thereafter.
           </Text>
         </View>
       </Page>
 
       {/* Page 4 - Notice Period, Compensation Structure, CTC Breakdown */}
-      <Page size="A4" style={{ paddingTop: 72, paddingLeft: 72, paddingRight: 54, paddingBottom: 72, fontFamily: 'Helvetica', fontSize: 12, lineHeight: 1.0, color: '#000000' }}>
+      <Page size="A4" style={[tw.pt72, tw.pl72, tw.pr54, tw.pb72, tw.fontHelvetica, tw.textSm, tw.leadingNone, tw.textBlack]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Notice Period</Text>
-        <View style={{ marginLeft: 36 }}>
-          <Text style={{ marginLeft: 36, paddingTop: 12, paddingLeft: 0, paddingBottom: 0, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>You are required to serve a notice period of 30 days in case of resignation.</Text>
-          <Text style={{ marginLeft: 36, paddingTop: 0, paddingLeft: 0, paddingBottom: 12, lineHeight: 1.0, fontSize: 11, fontFamily: 'Helvetica' }}>Failure to serve the full notice period may result in salary deductions or forfeiture of dues and legal action.</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Notice Period</Text>
+        <View style={[tw.ml36]}>
+          <Text style={[tw.ml36, tw.pt3, tw.p0, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>You are required to serve a notice period of 30 days in case of resignation.</Text>
+          <Text style={[tw.ml36, { paddingTop: 0, paddingLeft: 0, paddingBottom: 12 }, tw.leadingNone, { fontSize: 11 }, tw.fontHelvetica]}>Failure to serve the full notice period may result in salary deductions or forfeiture of dues and legal action.</Text>
         </View>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Compensation Structure</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>
-          Your total <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>Annual Cost to Company (CTC)</Text> will be {data.ctc}, broken down as follows:
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Compensation Structure</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>
+          Your total <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>Annual Cost to Company (CTC)</Text> will be ₹4,00,000, broken down as follows:
         </Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 8 }}>
-          <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>A. Fixed Compensation:</Text> {data.fixedCompensation} per annum
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt2]}>
+          <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>A. Fixed Compensation:</Text> ₹3,00,000 per annum
         </Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>
-          <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>B. Performance-Based Variable Pay:</Text> {data.variablePay} per annum
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>
+          <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>B. Performance-Based Variable Pay:</Text> ₹1,00,000 per annum
         </Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontStyle: 'italic', color: '#666666', lineHeight: 1.0, marginTop: 4, marginBottom: 12 }}>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.italic, tw.textGray666, tw.leadingNone, { marginTop: 4 }, tw.mb3]}>
           (Payable annually based on performance parameters set by the company)
         </Text>
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>CTC Breakdown – Annual and Monthly</Text>
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>CTC Breakdown – Annual and Monthly</Text>
         
-        <View style={{ marginTop: 8 }}>
+        <View style={[tw.mt2]}>
           {/* Table Header */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Component</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
               <Text>Monthly (₹)</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
               <Text>Annual (₹)</Text>
             </View>
           </View>
           
           {/* Basic Salary */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>Basic Salary</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.basic.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>5,400</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.basic.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>64,800</Text>
             </View>
           </View>
           
           {/* HRA */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>HRA</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.hra.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>2,000</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.hra.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>24,000</Text>
             </View>
           </View>
           
           {/* Conveyance Allowance */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>Conveyance Allowance</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.conveyance.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>800</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.conveyance.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>9,600</Text>
             </View>
           </View>
           
           {/* Other Allowances */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>Other Allowances</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.otherAllowances.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>7,000</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.otherAllowances.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>84,000</Text>
             </View>
           </View>
           
           {/* Gross Salary */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Gross Salary</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.grossSalary.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>15,200</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.grossSalary.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>1,82,400</Text>
             </View>
           </View>
           
           {/* Deductions Header */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Deductions</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
               <Text></Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
               <Text></Text>
             </View>
           </View>
           
           {/* Professional Tax */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>Professional Tax (est.)</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.professionalTax.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>200</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.professionalTax.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>2,400</Text>
             </View>
           </View>
           
           {/* Total Deductions */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Total Deductions</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.totalDeductions.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>200</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.totalDeductions.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>2,400</Text>
             </View>
           </View>
           
           {/* Net In-Hand Salary */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Net In-Hand Salary</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.netInHand.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>15,000</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.netInHand.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>1,80,000</Text>
             </View>
           </View>
           
           {/* Additional Benefits Header */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Additional Benefits</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
               <Text></Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
               <Text></Text>
             </View>
           </View>
           
           {/* Variable Incentive */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 4 }]}>
               <Text>Ann. Perfr. Incentive (Variable)</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.variableIncentive.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text></Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', flex: 3 }}>
-              <Text>{data.salaryBreakdown.variableIncentive.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, { flex: 3 }]}>
+              <Text>2,20,000</Text>
             </View>
           </View>
           
           {/* Total CTC */}
-          <View style={{ flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#000000', borderTopStyle: 'solid', borderLeftWidth: 1, borderLeftColor: '#000000', borderLeftStyle: 'solid', borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', borderBottomWidth: 1, borderBottomColor: '#000000', borderBottomStyle: 'solid' }}>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 4 }}>
+          <View style={[tw.flexRow, tw.borderAll]}>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 4 }]}>
               <Text>Total CTC</Text>
             </View>
-            <View style={{ padding: 5, borderRightWidth: 1, borderRightColor: '#000000', borderRightStyle: 'solid', fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.totalCTC.monthly}</Text>
+            <View style={[{ padding: 5 }, tw.borderRight1, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>33,533</Text>
             </View>
-            <View style={{ padding: 5, fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', flex: 3 }}>
-              <Text>{data.salaryBreakdown.totalCTC.annual}</Text>
+            <View style={[{ padding: 5 }, tw.textSm, tw.fontHelvetica, tw.fontBold, { flex: 3 }]}>
+              <Text>4,00,000</Text>
             </View>
           </View>
         </View>
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 12 }}>
-          Note: There is currently <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>no deduction for Provident Fund (PF)</Text>.
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt3]}>
+          Note: There is currently <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>no deduction for Provident Fund (PF)</Text>.
         </Text>
       </Page>
 
       {/* Page 5 - Acknowledgement & Acceptance */}
-      <Page size="A4" style={{ paddingTop: 72, paddingLeft: 72, paddingRight: 54, paddingBottom: 72, fontFamily: 'Helvetica', fontSize: 12, lineHeight: 1.0, color: '#000000' }}>
+      <Page size="A4" style={[tw.pt72, tw.pl72, tw.pr54, tw.pb72, tw.fontHelvetica, tw.textSm, tw.leadingNone, tw.textBlack]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={{ fontSize: 14, fontWeight: 'bold', textDecoration: 'underline', paddingTop: 14, paddingBottom: 4, lineHeight: 1.0, fontFamily: 'Helvetica', color: '#000000' }}>Acknowledgement And Acceptance</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>
-          I, the undersigned, hereby acknowledge that I have read, understood, and agreed to the terms and conditions outlined in this appointment letter. I accept the offer of employment with {data.companyName} and confirm my commitment to fulfill all responsibilities entrusted to me with sincerity and integrity.
+        <Text style={[{ fontSize: 14 }, tw.fontBold, tw.underline, tw.pt14, { paddingBottom: 4 }, tw.leadingNone, tw.fontHelvetica, tw.textBlack]}>Acknowledgement And Acceptance</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>
+          I, the undersigned, hereby acknowledge that I have read, understood, and agreed to the terms and conditions outlined in this appointment letter. I accept the offer of employment with ADYSUN VENTURES PVT. LTD. and confirm my commitment to fulfill all responsibilities entrusted to me with sincerity and integrity.
         </Text>
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 12 }}>
-          Candidate Name: <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>{data.employeeName}</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt3]}>
+          Candidate Name: <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>Mr. Arnab Kumar Baishya</Text>
         </Text>
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 8 }}>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt2]}>
           Signature: _________________________
         </Text>
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 8 }}>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt2]}>
           Date: _________________________
         </Text>
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left', marginTop: 12 }}>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft, tw.mt3]}>
           Warm regards,
         </Text>
         
         {signatureLogo && (
-          <View style={{ marginTop: 8, marginBottom: 8 }}>
-            <Image src={signatureLogo} style={{ width: 120, height: 60 }} />
+          <View style={[tw.my2]}>
+            <Image src={signatureLogo} style={[tw.w120, tw.h60]} />
           </View>
         )}
         
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', fontWeight: 'bold', lineHeight: 1.0 }}>{data.hrName}</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>{data.hrDesignation}</Text>
-        <Text style={{ fontSize: 12, fontFamily: 'Helvetica', lineHeight: 1.0, paddingTop: 12, paddingBottom: 12, textAlign: 'left' }}>{data.hrEmail}</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.fontBold, tw.leadingNone]}>Prachi Jadhav</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>Head - HR Department</Text>
+        <Text style={[tw.textSm, tw.fontHelvetica, tw.leadingNone, tw.py3, tw.textLeft]}>hr@adysunventures.com</Text>
       </Page>
     </Document>
   );
