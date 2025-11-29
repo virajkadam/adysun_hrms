@@ -640,16 +640,16 @@ const OfferLetter = () => {
         
         <Text style={[tw['text-11'], tw['font-bold'], tw['font-helvetica-bold'], tw['mt-0'], tw['mb-0']]}>Date: 19-July-2024</Text>
         
-        <View style={[tw['mb-20']]}>
+        <View style={[tw['mb-10']]}>
           <Text style={[tw['text-11'], tw['font-helvetica-bold'], tw['font-bold'], tw['mb-2']]}>Mr. Arnab Kumar Baishya</Text>
           {['C/O: Apurba Kumar Baishya,', 'H.No.-5, Ananda Nagar,', 'Six Mile, Khanapara,', 'Kamrup Metro, Assam-781022'].map((line, index) => (
             <Text key={index} style={[tw['text-11'], tw['font-helvetica'], tw['leading-13'], tw['m-0']]}>{line}</Text>
           ))}
         </View>
         
-        <Text style={[tw['text-13'], tw['font-bold'], tw['underline'], tw['text-center'], tw['mt-25'], tw['mb-20'], tw['font-helvetica-bold'], tw['letter-spacing-1']]}>LETTER OF APPOINTMENT</Text>
+        <Text style={[tw['text-13'], tw['font-bold'], tw['underline'], tw['text-center'], tw['mt-0'], tw['mb-10'], tw['font-helvetica-bold'], tw['letter-spacing-1']]}>LETTER OF APPOINTMENT</Text>
         
-        <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['mb-15']]}>Dear Arnab,</Text>
+        <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['mb-15']]}>Dear <Text style={[tw['font-helvetica-bold'], tw['font-bold']]}>Arnab</Text>,</Text>
         
         <View>
           <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['mb-3'], tw['text-justify']]}>
