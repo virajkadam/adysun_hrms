@@ -330,13 +330,18 @@ export default function EditEmployeePage({ params }: PageParams) {
                   </label>
                   <input
                     type="text"
-                    {...register('employeeId')}
-                    className="w-full p-2 border rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
-                    readOnly
-                    disabled
-                    title="Employee ID cannot be changed"
+                    placeholder="Enter employee ID (e.g., EMP001)"
+                    {...register('employeeId' as any, {
+                      pattern: {
+                        value: /^[A-Z0-9-]{3,15}$/i,
+                        message: 'Please enter a valid employee ID (alphanumeric, 3-15 characters)'
+                      }
+                    })}
+                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
-                  <p className="mt-1 text-xs text-gray-500">Employee ID cannot be modified after creation</p>
+                  {(errors as any).employeeId && (
+                    <p className="mt-1 text-sm text-red-600">{(errors as any).employeeId.message}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
