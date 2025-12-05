@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SocialMediaLinks from "@/components/ui/SocialMediaLinks";
 import { FiArrowRight, FiExternalLink, FiUserPlus } from "react-icons/fi";
+import { COMPANY_LINKS } from "@/constants/companyLinks";
 
 interface EnquiryFormData {
   name: string;
@@ -74,13 +75,13 @@ const EnquiryFooter = () => {
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
                 <div>
-                  <p className="font-semibold text-sm">Pune Office (Head Office)</p>
+                  <p className="font-semibold text-sm">{COMPANY_LINKS.locations.pune.name}</p>
                   <p className="text-gray-300 text-sm">Adysun Ventures Pvt. Ltd.</p>
-                  <p className="text-gray-300 text-sm">Workplex, S no 47, Near Bhapkar Petrol Pump, Pune, Maharashtra - 411009</p>
+                  <p className="text-gray-300 text-sm">{COMPANY_LINKS.locations.pune.address}</p>
                 </div>
               </div>
               <div className="flex space-x-2 ml-6">
-                <Link href={"https://maps.app.goo.gl/ABiUMnGGjcG7sT6o6"} target="_blank">
+                <Link href={COMPANY_LINKS.locations.pune.maps} target="_blank">
                 <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -88,7 +89,7 @@ const EnquiryFooter = () => {
                   Google Maps
                 </button>
                 </Link>
-                <Link href={"https://g.co/kgs/C5Fe6uz"} target="_blank">
+                <Link href={COMPANY_LINKS.locations.pune.googleSearch} target="_blank">
                 <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -109,13 +110,13 @@ const EnquiryFooter = () => {
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
                 <div>
-                  <p className="font-semibold text-sm">Thane Office (Mumbai Division)</p>
+                  <p className="font-semibold text-sm">{COMPANY_LINKS.locations.thane.name}</p>
                   <p className="text-gray-300 text-sm">Adysun Ventures Pvt. Ltd.</p>
-                  <p className="text-gray-300 text-sm">A2, 704, Kanchanpushp Society Kavesar, Thane West, Thane, Maharashtra - 400607</p>
+                  <p className="text-gray-300 text-sm">{COMPANY_LINKS.locations.thane.address}</p>
                 </div>
               </div>
               <div className="flex space-x-2 ml-6">
-                <Link href={"https://maps.app.goo.gl/tziAu2cdmPzLm9ie9"} target="_blank">
+                <Link href={COMPANY_LINKS.locations.thane.maps} target="_blank">
                 <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -123,7 +124,7 @@ const EnquiryFooter = () => {
                   Google Maps
                 </button>
                 </Link>
-                <Link href={"https://g.co/kgs/C5Fe6uz"} target="_blank">
+                <Link href={COMPANY_LINKS.locations.thane.googleSearch} target="_blank">
                 <button className="border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white px-3 py-1 rounded text-xs flex items-center transition-colors">
                   <svg className="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -158,10 +159,10 @@ const EnquiryFooter = () => {
               </div>
               <div className="ml-6 space-y-2">
                 <p className="text-gray-300 text-sm">
-                  <span className="font-medium">General Inquiries:</span> info@adysunventures.com
+                  <span className="font-medium">General Inquiries:</span> {COMPANY_LINKS.contact.email.general}
                 </p>
                 <p className="text-gray-300 text-sm">
-                  <span className="font-medium">HR & Recruitment:</span> hr@adysunventures.com
+                  <span className="font-medium">HR & Recruitment:</span> {COMPANY_LINKS.contact.email.hr}
                 </p>
               </div>
             </div>
@@ -556,13 +557,13 @@ export default function EnquirySubmitPage() {
                   Follow us on social media to stay connected:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
-                  <div className="col-span-1 sm:col-span-2 flex justify-center">
-                    {/* Instagram Card */}
+                  {/* Instagram Card */}
+                  <div className="flex justify-center">
                     <a
-                      href="https://www.instagram.com/adysunventures/"
+                      href={COMPANY_LINKS.social.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-2/3 group relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-xl p-6 text-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 fade-in-up"
+                      className="w-full group relative overflow-hidden bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 rounded-xl p-6 text-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 fade-in-up"
                       style={{ animationDelay: '0.2s', opacity: 0 }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -578,6 +579,34 @@ export default function EnquirySubmitPage() {
                           <span className="cta-button inline-flex items-center justify-center gap-1.5 text-sm font-semibold px-6 py-2.5 rounded-full transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl min-w-[100px] relative z-10">
                             <FiUserPlus className="w-4 h-4 transition-transform duration-200 group-hover:scale-125 group-hover:rotate-12 relative z-10" />
                             <span className="relative z-10">Follow</span>
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  
+                  {/* LinkedIn Card */}
+                  <div className="flex justify-center">
+                    <a
+                      href={COMPANY_LINKS.social.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full group relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-xl p-6 text-white shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 fade-in-up"
+                      style={{ animationDelay: '0.4s', opacity: 0 }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-700/20 to-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center justify-center mb-3">
+                          <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-center mb-2">Connect with us on LinkedIn</h3>
+                        <p className="text-sm text-white/90 text-center">Join our professional network</p>
+                        <div className="mt-4 flex items-center justify-center">
+                          <span className="cta-button inline-flex items-center justify-center gap-1.5 text-sm font-semibold px-6 py-2.5 rounded-full transition-all duration-200 group-hover:scale-110 group-hover:shadow-xl min-w-[100px] relative z-10">
+                            <FiUserPlus className="w-4 h-4 transition-transform duration-200 group-hover:scale-125 group-hover:rotate-12 relative z-10" />
+                            <span className="relative z-10">Connect</span>
                           </span>
                         </div>
                       </div>
