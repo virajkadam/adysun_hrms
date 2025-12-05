@@ -171,7 +171,7 @@ export default function AddEmployeePage() {
         status: 'active' as const,
         is_resigned: false,
         employmentStatus: 'working' as const,
-        password: data.password || `${data.phone.slice(-5)}@#$$`,
+        password: data.password,
         createdAt: currentTimestamp,
         createdBy: adminId,
         updatedAt: currentTimestamp,
@@ -275,15 +275,14 @@ export default function AddEmployeePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Date of Birth
+                    Date of Birth
                   </label>
                   <input
                     type="date"
                     {...register('dateOfBirth', {
-                      required: 'Date of Birth is required',
                       validate: {
                         notFuture: (value) => {
-                          if (!value) return true; // Let required handle empty
+                          if (!value) return true; // Optional field
                           const selectedDate = new Date(value);
                           // The latest valid date is Dec 31, 2025
                           const maxValidDate = new Date("2025-12-31");
@@ -295,7 +294,7 @@ export default function AddEmployeePage() {
                           return true;
                         },
                         validDate: (value) => {
-                          if (!value) return true; // Let required handle empty
+                          if (!value) return true; // Optional field
                           const date = new Date(value);
                           return !isNaN(date.getTime()) || 'Please enter a valid date';
                         }
@@ -317,7 +316,7 @@ export default function AddEmployeePage() {
                   <input
                     type="text"
                     placeholder="(e.g., EMP001)"
-                    {...register('employeeId', {
+                    {...register('employeeId' as any, {
                       pattern: {
                         value: /^[A-Z0-9-]{3,15}$/i,
                         message: 'Please enter a valid employee ID (alphanumeric, 3-15 characters)'
@@ -325,8 +324,8 @@ export default function AddEmployeePage() {
                     })}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
-                  {errors.employeeId && (
-                    <p className="mt-1 text-sm text-red-600">{errors.employeeId.message}</p>
+                  {(errors as any).employeeId && (
+                    <p className="mt-1 text-sm text-red-600">{(errors as any).employeeId.message}</p>
                   )}
                 </div>
 
@@ -397,13 +396,12 @@ export default function AddEmployeePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Email ID
+                    Email ID
                   </label>
                   <input
                     type="email"
                     placeholder="Enter email address"
                     {...register('email', {
-                      required: 'Email is required',
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                         message: 'Invalid email address'
@@ -442,12 +440,12 @@ export default function AddEmployeePage() {
 
                 <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Current Address
+                    Current Address
                   </label>
                   <input
                     type="text"
                     placeholder="Enter current address"
-                    {...register('currentAddress', { required: 'Current address is required' })}
+                    {...register('currentAddress')}
                     className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
                   />
                   {errors.currentAddress && (
@@ -491,22 +489,19 @@ export default function AddEmployeePage() {
 
             {/* Password Section */}
             <div className="bg-white p-4 rounded-lg mb-4">
-              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials (Optional)</h3>
-              
-              <p className="mb-3 text-sm text-gray-600">
-                💡 If blank, password will be: <span className="font-mono font-semibold">Last 5 digits of phone + @#$$</span> (e.g., 43210@#$$)
-              </p>
+              <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Login Credentials</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Password (Optional)
+                    <span className="text-red-500 mr-1">*</span> Password
                   </label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter password or leave blank"
+                      placeholder="Enter password"
                       {...register('password', {
+                        required: 'Password is required',
                         minLength: {
                           value: 4,
                           message: 'Password must be at least 4 characters'
@@ -535,7 +530,7 @@ export default function AddEmployeePage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> Aadhar Card
+                    Aadhar Card
                   </label>
                   <input
                     type="text"
@@ -555,7 +550,7 @@ export default function AddEmployeePage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500 mr-1">*</span> PAN Card
+                    PAN Card
                   </label>
                   <input
                     type="text"

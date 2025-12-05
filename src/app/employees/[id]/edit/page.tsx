@@ -291,15 +291,14 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Date of Birth
+                    Date of Birth
                   </label>
                   <input
                     type="date"
                     {...register('dateOfBirth', {
-                      required: 'Date of Birth is required',
                       validate: {
                         notFuture: (value) => {
-                          if (!value) return true; // Let required handle empty
+                          if (!value) return true; // Optional field
                           const selectedDate = new Date(value);
                           // The latest valid date is Dec 31, 2025
                           const maxValidDate = new Date("2025-12-31");
@@ -311,7 +310,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                           return true;
                         },
                         validDate: (value) => {
-                          if (!value) return true; // Let required handle empty
+                          if (!value) return true; // Optional field
                           const date = new Date(value);
                           return !isNaN(date.getTime()) || 'Please enter a valid date';
                         }
@@ -389,13 +388,11 @@ export default function EditEmployeePage({ params }: PageParams) {
                     <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          <span className="text-red-500">*</span> Resigned Date
+                          Resigned Date
                         </label>
                         <input
                           type="date"
-                          {...register('resignedDate', {
-                            required: employmentStatus === 'resigned' ? 'Resigned date is required' : false
-                          })}
+                          {...register('resignedDate')}
                           className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                         {errors.resignedDate && (
@@ -404,13 +401,11 @@ export default function EditEmployeePage({ params }: PageParams) {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          <span className="text-red-500">*</span> Last Working Day
+                          Last Working Day
                         </label>
                         <input
                           type="date"
-                          {...register('lastWorkingDay', {
-                            required: employmentStatus === 'resigned' ? 'Last working day is required' : false
-                          })}
+                          {...register('lastWorkingDay')}
                           className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                         {errors.lastWorkingDay && (
@@ -436,9 +431,9 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Email ID
+                    Email ID
                   </label>
-                  <input type="email" placeholder="Enter email address" {...register('email', { required: 'Email is required', pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="email" placeholder="Enter email address" {...register('email', { pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.email && (<p className="mt-1 text-sm text-red-600">{errors.email.message}</p>)}
                 </div>
                 <div>
@@ -455,9 +450,9 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Current Address
+                    Current Address
                   </label>
-                  <input type="text" placeholder="Enter current address" {...register('currentAddress', { required: 'Current address is required' })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
+                  <input type="text" placeholder="Enter current address" {...register('currentAddress')} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.currentAddress && (<p className="mt-1 text-sm text-red-600">{errors.currentAddress.message}</p>)}
                 </div>
                 <div className="md:col-span-4">
@@ -562,7 +557,7 @@ export default function EditEmployeePage({ params }: PageParams) {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> Aadhar Card
+                    Aadhar Card
                   </label>
                   <input type="text" placeholder="Enter 12-digit Aadhar number" {...register('aadharCard', { pattern: { value: /^\d{12}$/, message: 'Please enter a valid 12-digit Aadhar number' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.aadharCard && (<p className="mt-1 text-sm text-red-600">{errors.aadharCard.message}</p>)}
@@ -573,7 +568,7 @@ export default function EditEmployeePage({ params }: PageParams) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <span className="text-red-500">*</span> PAN Card
+                    PAN Card
                   </label>
                   <input type="text" placeholder="Enter PAN number" {...register('panCard', { pattern: { value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, message: 'Please enter a valid PAN number (e.g., ABCDE1234F)' } })} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black" />
                   {errors.panCard && (<p className="mt-1 text-sm text-red-600">{errors.panCard.message}</p>)}
