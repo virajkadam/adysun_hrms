@@ -156,64 +156,106 @@ export default function EnquiryViewPage() {
           ) : enquiry ? (
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                {/* Name - Always show (required field) */}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <div className="text-lg font-semibold text-gray-900">{enquiry.name || 'Anonymous'}</div>
                   <div className="text-sm text-gray-500 mt-2">Name</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.mobile || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Mobile</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.pan || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">PAN Number</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.passoutYear || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Passout Year</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.interestedIn || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Interested In</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.technology || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Technology</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.role || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Role</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">{enquiry.totalWorkExperience || '-'}</div>
-                  <div className="text-sm text-gray-500 mt-2">Total Work Experience</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-900">
-                    {enquiry.createdAt
-                      ? formatDateToDayMonYear(
-                          typeof enquiry.createdAt === "string"
-                            ? enquiry.createdAt
-                            : new Date(enquiry.createdAt.seconds * 1000)
-                        )
-                      : "-"}
+                
+                {/* Mobile - Only show if exists */}
+                {enquiry.mobile && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.mobile}</div>
+                    <div className="text-sm text-gray-500 mt-2">Mobile</div>
                   </div>
-                  <div className="text-sm text-gray-500 mt-2">Submitted On</div>
-                </div>
+                )}
+                
+                {/* PAN - Only show if exists */}
+                {enquiry.pan && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.pan}</div>
+                    <div className="text-sm text-gray-500 mt-2">PAN Number</div>
+                  </div>
+                )}
+                
+                {/* Passout Year - Only show if exists */}
+                {enquiry.passoutYear && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.passoutYear}</div>
+                    <div className="text-sm text-gray-500 mt-2">Passout Year</div>
+                  </div>
+                )}
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="text-base text-gray-900 whitespace-pre-line">
-                  {enquiry.message}
-                </div>
-                        <div className="text-sm text-gray-500 mt-2">Message</div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Interested In - Only show if exists */}
+                {enquiry.interestedIn && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.interestedIn}</div>
+                    <div className="text-sm text-gray-500 mt-2">Interested In</div>
+                  </div>
+                )}
+                
+                {/* Technology - Only show if exists */}
+                {enquiry.technology && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.technology}</div>
+                    <div className="text-sm text-gray-500 mt-2">Technology</div>
+                  </div>
+                )}
+                
+                {/* Role - Only show if exists */}
+                {enquiry.role && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.role}</div>
+                    <div className="text-sm text-gray-500 mt-2">Role</div>
+                  </div>
+                )}
+                
+                {/* Total Work Experience - Only show if exists */}
+                {enquiry.totalWorkExperience && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.totalWorkExperience}</div>
+                    <div className="text-sm text-gray-500 mt-2">Total Work Experience</div>
+                  </div>
+                )}
               </div>
+
+              {/* Email - Only show if exists */}
+              {enquiry.email && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">{enquiry.email}</div>
+                    <div className="text-sm text-gray-500 mt-2">Email</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Submitted On - Only show if exists */}
+              {enquiry.createdAt && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="text-sm text-gray-900">
+                      {formatDateToDayMonYear(
+                        typeof enquiry.createdAt === "string"
+                          ? enquiry.createdAt
+                          : new Date(enquiry.createdAt.seconds * 1000)
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-2">Submitted On</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Message - Always show (required field) */}
+              {enquiry.message && (
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-base text-gray-900 whitespace-pre-line">
+                    {enquiry.message}
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2">Message</div>
+                </div>
+              )}
             </div>
           ) : null}
         </div>
