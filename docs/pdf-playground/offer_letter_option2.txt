@@ -557,6 +557,8 @@ const tw = StyleSheet.create({
   'font-helvetica': { fontFamily: 'Helvetica' },
   'font-helvetica-bold': { fontFamily: 'Helvetica-Bold' },
   'font-helvetica-oblique': { fontFamily: 'Helvetica-Oblique' },
+  'font-lato': { fontFamily: 'Lato' },
+  'font-lato-bold': { fontFamily: 'Lato-Bold' },
   'font-times': { fontFamily: 'Times-Roman' },
   'font-times-bold': { fontFamily: 'Times-Bold' },
   'font-courier': { fontFamily: 'Courier' },
@@ -622,15 +624,15 @@ const OfferLetter = () => {
   return (
     <Document>
       {/* Page 1 - Header, Date, Address, Title, Greeting, Opening */}
-      <Page size="A4" style={[tw['pt-50'], tw['pl-72'], tw['pr-72'], tw['pb-72'], tw['font-helvetica'], tw['text-11'], tw['leading-14'], tw['text-black']]}>
+      <Page size="A4" style={[tw['pt-50'], tw['pl-72'], tw['pr-72'], tw['pb-72'], tw['font-lato'], tw['text-sm'], tw['leading-14'], tw['text-black']]}>
         <Watermark logoSrc={companyLogo} />
         
         <View style={[tw['mb-5'], tw['pb-10'], tw['border-bottom-15']]}>
           <View style={[tw['flex-row'], tw['justify-between'], tw['items-start']]}>
             <View style={[tw['flex-1'], tw['pr-20']]}>
-              <Text style={[tw['text-2xl'], tw['font-bold'], tw['text-red-600'], tw['mb-2'], tw['font-helvetica-bold'], tw['letter-spacing-05']]}>ADYSUN VENTURES PVT. LTD.</Text>
-              <Text style={[tw['text-xs'], tw['mb-2'], tw['font-helvetica'], tw['text-black']]}>9579537523 | hr@adysunventures.com | AdysunVentures.com</Text>
-              <Text style={[tw['text-xs'], tw['font-helvetica'], tw['text-black'], tw['leading-13']]}>Adysun Ventures Pvt. Ltd., S no 47, Workplex, Pune-Satara Rd, Opp City Pride Theater, Near Bhapkar petrol pump, Pune, Maharashtra - 411009</Text>
+              <Text style={[tw['text-2xl'], tw['font-bold'], tw['text-red-600'], tw['mb-2'], tw['font-lato-bold'], tw['letter-spacing-05']]}>ADYSUN VENTURES PVT. LTD.</Text>
+              <Text style={[tw['text-xs'], tw['mb-2'], tw['font-lato'], tw['text-black']]}>9579537523 | hr@adysunventures.com | AdysunVentures.com</Text>
+              <Text style={[tw['text-xs'], tw['font-lato'], tw['text-black'], tw['leading-13']]}>Adysun Ventures Pvt. Ltd., S no 47, Workplex, Pune-Satara Rd, Opp City Pride Theater, Near Bhapkar petrol pump, Pune, Maharashtra - 411009</Text>
             </View>
             {companyLogo && (
               <Image src={companyLogo} style={[tw['w-70'], tw['h-70'], tw['-mt-5']]} />
@@ -638,343 +640,343 @@ const OfferLetter = () => {
           </View>
         </View>
         
-        <Text style={[tw['text-11'], tw['font-bold'], tw['font-helvetica-bold'], tw['mt-0'], tw['mb-0']]}>Date: 19-July-2024</Text>
+        <Text style={[tw['text-sm'], tw['font-bold'], tw['font-lato-bold'], tw['mt-0'], tw['mb-0']]}>Date: 19-July-2024</Text>
         
         <View style={[tw['mb-10']]}>
-          <Text style={[tw['text-11'], tw['font-helvetica-bold'], tw['font-bold'], tw['mb-2']]}>Mr. Arnab Kumar Baishya</Text>
+          <Text style={[tw['text-sm'], tw['font-lato-bold'], tw['font-bold'], tw['mb-2']]}>Mr. Arnab Kumar Baishya</Text>
           {['C/O: Apurba Kumar Baishya,', 'H.No.-5, Ananda Nagar,', 'Six Mile, Khanapara,', 'Kamrup Metro, Assam-781022'].map((line, index) => (
-            <Text key={index} style={[tw['text-11'], tw['font-helvetica'], tw['leading-13'], tw['m-0']]}>{line}</Text>
+            <Text key={index} style={[tw['text-sm'], tw['font-lato'], tw['leading-13'], tw['m-0']]}>{line}</Text>
           ))}
         </View>
         
-        <Text style={[tw['text-13'], tw['font-bold'], tw['underline'], tw['text-center'], tw['mt-0'], tw['mb-10'], tw['font-helvetica-bold'], tw['letter-spacing-1']]}>LETTER OF APPOINTMENT</Text>
+        <Text style={[tw['text-13'], tw['font-bold'], tw['underline'], tw['text-center'], tw['mt-0'], tw['mb-10'], tw['font-lato-bold'], tw['letter-spacing-1']]}>LETTER OF APPOINTMENT</Text>
         
-        <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['mb-15']]}>Dear <Text style={[tw['font-helvetica-bold'], tw['font-bold']]}>Arnab</Text>,</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-normal'], tw['mb-15']]}>Dear <Text style={[tw['text-sm'], tw['font-lato-bold'], tw['font-bold']]}>Arnab</Text>,</Text>
         
         <View>
-          <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['mb-3'], tw['text-justify']]}>
-            We are pleased to extend this formal appointment as a symbol of our mutual commitment to integrity, excellence, and professional growth. This letter marks the beginning of your journey with <Text style={[tw['font-helvetica-bold'], tw['font-bold']]}>Adysun Ventures Private Limited</Text>, where we strive to build a future founded on vision, discipline, and respect.
+          <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-normal'], tw['mb-3'], tw['text-justify']]}>
+            We are pleased to extend this formal appointment as a symbol of our mutual commitment to integrity, excellence, and professional growth. This letter marks the beginning of your journey with <Text style={[tw['text-sm'], tw['font-lato-bold'], tw['font-bold']]}>Adysun Ventures Private Limited</Text>, where we strive to build a future founded on vision, discipline, and respect.
           </Text>
           
-          <Text style={[tw['text-11'], tw['font-helvetica'], tw['leading-normal'], tw['text-justify']]}>
-            You are hereby appointed to the position of <Text style={[tw['font-helvetica-bold'], tw['font-bold']]}>Software Engineer</Text>, effective from <Text style={[tw['font-helvetica-bold'], tw['font-bold']]}>01 Aug 2024</Text>. Please note, this offer shall be considered null and void should you fail to commence employment on or before the aforementioned date.
+          <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-normal'], tw['text-justify']]}>
+            You are hereby appointed to the position of <Text style={[tw['text-sm'], tw['font-lato-bold'], tw['font-bold']]}>Software Engineer</Text>, effective from <Text style={[tw['text-sm'], tw['font-lato-bold'], tw['font-bold']]}>01 Aug 2024</Text>. Please note, this offer shall be considered null and void should you fail to commence employment on or before the aforementioned date.
           </Text>
         </View>
       </Page>
 
       {/* Page 2 - Pre-Employment, Responsibilities, Confidentiality, IP Rights */}
-      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-helvetica'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
+      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-lato'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Pre-Employment Formalities</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Pre-Employment Formalities</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
           The continuation of your employment is contingent upon submission of the following documents:
         </Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Relieving letter from your previous employer</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Last 3 months' pay slips (digital copy)</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Last 3 months' bank statements reflecting salary credits</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Scanned copy of Aadhaar card or Passport</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Valid residential proof (e.g., electricity bill, property tax receipt)</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Valid email ID and mobile contact number</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Four (4) recent passport-size photographs with a white background</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Relieving letter from your previous employer</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Last 3 months' pay slips (digital copy)</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Last 3 months' bank statements reflecting salary credits</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Scanned copy of Aadhaar card or Passport</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Valid residential proof (e.g., electricity bill, property tax receipt)</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Valid email ID and mobile contact number</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Four (4) recent passport-size photographs with a white background</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Responsibilities and Expectations</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Responsibilities and Expectations</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You are expected to execute duties as assigned, including any future assignments, promotions, or departmental transitions.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Working hours and shift timings may vary depending on business needs.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>In case of illness or emergency, the management must be informed promptly.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Any fraudulent activity or damage to company assets must be reported without delay.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You are expected to execute duties as assigned, including any future assignments, promotions, or departmental transitions.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Working hours and shift timings may vary depending on business needs.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>In case of illness or emergency, the management must be informed promptly.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Any fraudulent activity or damage to company assets must be reported without delay.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Confidentiality and Data Ethics</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Confidentiality and Data Ethics</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
           Throughout and post your tenure, you shall:
         </Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Maintain absolute confidentiality over proprietary, personal, strategic, technical, and financial information.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Refrain from sharing, misusing, duplicating, or disclosing such data without written authorization.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Not exploit any intellectual or operational asset of the company for personal or third-party benefit.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Acknowledge that all such information is and remains the exclusive property of ADYSUN VENTURES PVT. LTD..</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Maintain absolute confidentiality over proprietary, personal, strategic, technical, and financial information.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Refrain from sharing, misusing, duplicating, or disclosing such data without written authorization.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Not exploit any intellectual or operational asset of the company for personal or third-party benefit.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Acknowledge that all such information is and remains the exclusive property of ADYSUN VENTURES PVT. LTD..</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Intellectual Property Rights</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Intellectual Property Rights</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>
-            All intellectual contributions made by you during the course of employment—arising from company work or resources—shall be deemed the exclusive property of <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>ADYSUN VENTURES PVT. LTD.</Text>.
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>
+            All intellectual contributions made by you during the course of employment—arising from company work or resources—shall be deemed the exclusive property of <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>ADYSUN VENTURES PVT. LTD.</Text>.
           </Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You are obligated to report such innovations and assign all rights, titles, and interests to the company.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>No separate compensation shall be claimable for such assignment, as it is inherent in your remuneration</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You shall offer full cooperation in registering or protecting any such intellectual property, both during and after employment.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You are obligated to report such innovations and assign all rights, titles, and interests to the company.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>No separate compensation shall be claimable for such assignment, as it is inherent in your remuneration</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You shall offer full cooperation in registering or protecting any such intellectual property, both during and after employment.</Text>
         </View>
       </Page>
 
       {/* Page 3 - Conflict of Interest, General Terms, Jurisdiction, Probationary Terms */}
-      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-helvetica'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
+      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-lato'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Conflict of Interest & Ethical Compliance</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Conflict of Interest & Ethical Compliance</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You must refrain from engaging in any external business, employment, or consulting activities that conflict with the interests of ADYSUN VENTURES PVT. LTD..</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Any actual or potential conflict must be reported immediately for review and resolution.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Acceptance of gifts, favors, or commissions from individuals or entities conducting business with the company is strictly prohibited.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Use of company resources must reflect integrity and alignment with corporate objectives.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You must refrain from engaging in any external business, employment, or consulting activities that conflict with the interests of ADYSUN VENTURES PVT. LTD..</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Any actual or potential conflict must be reported immediately for review and resolution.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Acceptance of gifts, favors, or commissions from individuals or entities conducting business with the company is strictly prohibited.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Use of company resources must reflect integrity and alignment with corporate objectives.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>General Terms</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>General Terms</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>All official communications shall be in English and delivered via hand, email, courier, or registered post.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>If any provision of this letter is held unenforceable, the remaining provisions shall continue in full force and effect.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Disparagement or defamation of the company or its affiliates shall attract disciplinary or legal action.</Text>
-          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>This document, along with any annexures, constitutes the entire agreement and supersedes any prior discussions or arrangements.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>ADYSUN VENTURES PVT. LTD. reserves the right to seek injunctive relief in case of breach of obligations.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>All official communications shall be in English and delivered via hand, email, courier, or registered post.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>If any provision of this letter is held unenforceable, the remaining provisions shall continue in full force and effect.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Disparagement or defamation of the company or its affiliates shall attract disciplinary or legal action.</Text>
+          <Text style={[tw['ml-36'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>This document, along with any annexures, constitutes the entire agreement and supersedes any prior discussions or arrangements.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>ADYSUN VENTURES PVT. LTD. reserves the right to seek injunctive relief in case of breach of obligations.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Jurisdiction</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Jurisdiction</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>This letter shall be governed by the applicable laws of India. Any disputes shall fall under the exclusive jurisdiction of competent courts.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You are required to devote your full working time and attention solely to the business interests. Any concurrent employment or freelance engagements shall render this appointment liable for immediate termination and legal recourse.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>This letter shall be governed by the applicable laws of India. Any disputes shall fall under the exclusive jurisdiction of competent courts.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You are required to devote your full working time and attention solely to the business interests. Any concurrent employment or freelance engagements shall render this appointment liable for immediate termination and legal recourse.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Probationary Terms</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Probationary Terms</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Your appointment is subject to a probationary period of three (3) months. The duration may be extended or shortened at the sole discretion of the management, contingent upon performance and conduct.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Leave shall not be availed during the probation period. Any such absence, if unavoidable, shall be adjusted against paid leave, subject to management approval.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Your appointment is subject to a probationary period of three (3) months. The duration may be extended or shortened at the sole discretion of the management, contingent upon performance and conduct.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Leave shall not be availed during the probation period. Any such absence, if unavoidable, shall be adjusted against paid leave, subject to management approval.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Joining and Probation Period</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Joining and Probation Period</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>
-            The initial <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>probation period will be for 3 months</Text> from your joining date. Based on satisfactory performance, your employment will be confirmed thereafter.
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>
+            The initial <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>probation period will be for 3 months</Text> from your joining date. Based on satisfactory performance, your employment will be confirmed thereafter.
           </Text>
         </View>
       </Page>
 
       {/* Page 4 - Notice Period, Compensation Structure, CTC Breakdown */}
-      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-helvetica'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
+      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-lato'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Notice Period</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Notice Period</Text>
         <View style={[tw['ml-36']]}>
-          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>You are required to serve a notice period of 30 days in case of resignation.</Text>
-          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-11'], tw['font-helvetica']]}>Failure to serve the full notice period may result in salary deductions or forfeiture of dues and legal action.</Text>
+          <Text style={[tw['ml-36'], tw['pt-3'], tw['p-0'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>You are required to serve a notice period of 30 days in case of resignation.</Text>
+          <Text style={[tw['ml-36'], tw['pt-0'], tw['pl-0'], tw['pb-3'], tw['leading-tight'], tw['text-sm'], tw['font-lato']]}>Failure to serve the full notice period may result in salary deductions or forfeiture of dues and legal action.</Text>
         </View>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Compensation Structure</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
-          Your total <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>Annual Cost to Company (CTC)</Text> will be ₹4,00,000, broken down as follows:
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Compensation Structure</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
+          Your total <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>Annual Cost to Company (CTC)</Text> will be ₹4,00,000, broken down as follows:
         </Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
-          <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>A. Fixed Compensation:</Text> ₹3,00,000 per annum
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
+          <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>A. Fixed Compensation:</Text> ₹3,00,000 per annum
         </Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
-          <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>B. Performance-Based Variable Pay:</Text> ₹1,00,000 per annum
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
+          <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>B. Performance-Based Variable Pay:</Text> ₹1,00,000 per annum
         </Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['italic'], tw['text-gray-666'], tw['leading-tight'], tw['mt-1'], tw['mb-3']]}>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['italic'], tw['text-gray-666'], tw['leading-tight'], tw['mt-1'], tw['mb-3']]}>
           (Payable annually based on performance parameters set by the company)
         </Text>
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>CTC Breakdown – Annual and Monthly</Text>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>CTC Breakdown – Annual and Monthly</Text>
         
         <View style={[tw['mt-2']]}>
           {/* Table Header */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Component</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>Monthly (₹)</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>Annual (₹)</Text>
             </View>
           </View>
           
           {/* Basic Salary */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>Basic Salary</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>5,400</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>64,800</Text>
             </View>
           </View>
           
           {/* HRA */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>HRA</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>2,000</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>24,000</Text>
             </View>
           </View>
           
           {/* Conveyance Allowance */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>Conveyance Allowance</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>800</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>9,600</Text>
             </View>
           </View>
           
           {/* Other Allowances */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>Other Allowances</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>7,000</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>84,000</Text>
             </View>
           </View>
           
           {/* Gross Salary */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Gross Salary</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>15,200</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>1,82,400</Text>
             </View>
           </View>
           
           {/* Deductions Header */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Deductions</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text></Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text></Text>
             </View>
           </View>
           
           {/* Professional Tax */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>Professional Tax (est.)</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>200</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>2,400</Text>
             </View>
           </View>
           
           {/* Total Deductions */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Total Deductions</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>200</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>2,400</Text>
             </View>
           </View>
           
           {/* Net In-Hand Salary */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Net In-Hand Salary</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>15,000</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>1,80,000</Text>
             </View>
           </View>
           
           {/* Additional Benefits Header */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Additional Benefits</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text></Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text></Text>
             </View>
           </View>
           
           {/* Variable Incentive */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-4']]}>
               <Text>Ann. Perfr. Incentive (Variable)</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text></Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['flex-3']]}>
               <Text>2,20,000</Text>
             </View>
           </View>
           
           {/* Total CTC */}
           <View style={[tw['flex-row'], tw['border-all']]}>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-4']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-4']]}>
               <Text>Total CTC</Text>
             </View>
-            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['border-right-1'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>33,533</Text>
             </View>
-            <View style={[tw['p-5px'], tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['flex-3']]}>
+            <View style={[tw['p-5px'], tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['flex-3']]}>
               <Text>4,00,000</Text>
             </View>
           </View>
         </View>
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
-          Note: There is currently <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>no deduction for Provident Fund (PF)</Text>.
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
+          Note: There is currently <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>no deduction for Provident Fund (PF)</Text>.
         </Text>
       </Page>
 
       {/* Page 5 - Acknowledgement & Acceptance */}
-      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-helvetica'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
+      <Page size="A4" style={[tw['pt-72'], tw['pl-72'], tw['pr-54'], tw['pb-72'], tw['font-lato'], tw['text-sm'], tw['leading-tight'], tw['text-black']]}>
         <Watermark logoSrc={companyLogo} />
         
-        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-helvetica'], tw['text-black']]}>Acknowledgement And Acceptance</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
+        <Text style={[tw['text-14'], tw['font-bold'], tw['underline'], tw['pt-14'], tw['pb-1'], tw['leading-tight'], tw['font-lato'], tw['text-black']]}>Acknowledgement And Acceptance</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>
           I, the undersigned, hereby acknowledge that I have read, understood, and agreed to the terms and conditions outlined in this appointment letter. I accept the offer of employment with ADYSUN VENTURES PVT. LTD. and confirm my commitment to fulfill all responsibilities entrusted to me with sincerity and integrity.
         </Text>
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
-          Candidate Name: <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>Mr. Arnab Kumar Baishya</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
+          Candidate Name: <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>Mr. Arnab Kumar Baishya</Text>
         </Text>
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
           Signature: _________________________
         </Text>
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-2']]}>
           Date: _________________________
         </Text>
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left'], tw['mt-3']]}>
           Warm regards,
         </Text>
         
@@ -984,9 +986,9 @@ const OfferLetter = () => {
           </View>
         )}
         
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['font-bold'], tw['leading-tight']]}>Prachi Jadhav</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>Head - HR Department</Text>
-        <Text style={[tw['text-sm'], tw['font-helvetica'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>hr@adysunventures.com</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['font-bold'], tw['leading-tight']]}>Prachi Jadhav</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>Head - HR Department</Text>
+        <Text style={[tw['text-sm'], tw['font-lato'], tw['leading-tight'], tw['py-3'], tw['text-left']]}>hr@adysunventures.com</Text>
       </Page>
     </Document>
   );
