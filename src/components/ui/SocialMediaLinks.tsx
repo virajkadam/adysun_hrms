@@ -41,7 +41,7 @@ const SocialMediaLinks = ({ variant = 'footer', title = 'Follow Us' }: SocialMed
       )
     },
     {
-      href: 'https://www.linkedin.com/in/adysun-ventures/',
+      href: 'https://www.linkedin.com/company/adysun-ventures/',
       title: 'LinkedIn',
       icon: (
         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

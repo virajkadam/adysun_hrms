@@ -48,7 +48,7 @@ export default function CompanyContactBar({
       icon: <Instagram className="w-5 h-5" />
     },
     {
-      href: 'https://www.linkedin.com/in/adysun-ventures/',
+      href: 'https://www.linkedin.com/company/adysun-ventures/',
       title: 'LinkedIn',
       icon: <Linkedin className="w-5 h-5" />
     },
