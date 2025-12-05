@@ -352,13 +352,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             {showStats && (
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 {typeof total === 'number' && (
-                  <span className="bg-gray-100 px-3 py-1 rounded-full">Total: <span className="font-medium">{total}</span></span>
+                  <span className="pr-2 py-1 rounded-full">Total: <span className="font-medium">{total}</span></span>
                 )}
                 {typeof active === 'number' && (
-                  <span className="bg-green-100 px-3 py-1 rounded-full text-green-700">Active: <span className="font-medium">{active}</span></span>
+                  <span className="pr-2 py-1 rounded-full text-green-700">Active: <span className="font-medium">{active}</span></span>
                 )}
                 {typeof inactive === 'number' && (
-                  <span className="bg-red-100 px-3 py-1 rounded-full text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
+                  <span className="py-1 rounded-full text-red-700">Inactive: <span className="font-medium">{inactive}</span></span>
                 )}
                 {dropdown && <span>{dropdown}</span>}
               </div>
