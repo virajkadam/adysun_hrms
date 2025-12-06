@@ -59,23 +59,32 @@ export default function EditSalaryPage({ params }: PageParams) {
   // Watch input values for real-time calculation
   const ctc = watch('ctc') || 0;
   const fixedPay = watch('fixedPay') || 0;
-  const year = watch('year') || new Date().getFullYear();
-  const month = watch('month') || new Date().getMonth() + 1;
+  const year = Number(watch('year')) || new Date().getFullYear();
+  const month = Number(watch('month')) || new Date().getMonth() + 1;
   const leavesCount = watch('leavesCount') || 0;
   const ptDeduct = watch('ptDeduct') || 200;
 
   // Real-time calculation using useMemo - calculates on every render when inputs change
   const calculations: MonthlySalaryResult = useMemo(() => {
-    if (fixedPay > 0 && leavesCount >= 0 && month && year) {
+    // Convert all values to numbers and validate
+    const numCtc = Number(ctc) || 0;
+    const numFixedPay = Number(fixedPay) || 0;
+    const numYear = Number(year) || new Date().getFullYear();
+    const numMonth = Number(month) || new Date().getMonth() + 1;
+    const numLeavesCount = Number(leavesCount) || 0;
+    
+    // Validate month (1-12) and year (1900-2100), and ensure leavesCount is non-negative
+    if (numMonth >= 1 && numMonth <= 12 && numYear >= 1900 && numYear <= 2100 && numLeavesCount >= 0) {
       try {
         return calculateMonthlySalary({
-          ctc: ctc || 0,
-          fixedPay,
-          year,
-          month,
-          leavesCount
+          ctc: numCtc,
+          fixedPay: numFixedPay,
+          year: numYear,
+          month: numMonth,
+          leavesCount: numLeavesCount
         });
       } catch (error) {
+        console.error('Calculation error:', error);
         // Return default values on error
         return {
           variablePay: 0,
@@ -95,6 +104,7 @@ export default function EditSalaryPage({ params }: PageParams) {
         };
       }
     }
+    // Return default values if conditions not met
     return {
       variablePay: 0,
       monthDays: 0,
