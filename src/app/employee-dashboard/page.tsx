@@ -185,33 +185,33 @@ export default function EmployeeDashboardPage() {
             </div>
           ) : fullEmployeeData ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
-                <p className="text-sm text-gray-600">Name</p>
-              </div>
+              {fullEmployeeData.name && (
+                <div>
+                  <p className="font-medium text-gray-900">{fullEmployeeData.name}</p>
+                  <p className="text-sm text-gray-600">Name</p>
+                </div>
+              )}
 
-              <div>
-                <p className="font-medium text-gray-900 break-words">{fullEmployeeData.email}</p>
-                <p className="text-sm text-gray-600">Email</p>
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
-                <p className="text-sm text-gray-600">Phone</p>
-              </div>
-              {/* <div>
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                fullEmployeeData.status === 'active' 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {fullEmployeeData.status.toUpperCase()}
-              </span>
-              <p className="text-sm text-gray-600 mt-1">Status</p>
-            </div> */}
-              <div>
-                <p className="font-medium text-gray-900">{fullEmployeeData.currentAddress || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Current Address</p>
-              </div>
+              {fullEmployeeData.email && (
+                <div>
+                  <p className="font-medium text-gray-900 break-words">{fullEmployeeData.email}</p>
+                  <p className="text-sm text-gray-600">Email</p>
+                </div>
+              )}
+
+              {fullEmployeeData.phone && (
+                <div>
+                  <p className="font-medium text-gray-900">{fullEmployeeData.phone}</p>
+                  <p className="text-sm text-gray-600">Phone</p>
+                </div>
+              )}
+
+              {fullEmployeeData.currentAddress && (
+                <div>
+                  <p className="font-medium text-gray-900">{fullEmployeeData.currentAddress}</p>
+                  <p className="text-sm text-gray-600">Current Address</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-4">
@@ -229,30 +229,40 @@ export default function EmployeeDashboardPage() {
             </div>
           ) : currentEmployment ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="font-medium text-gray-900">{currentEmployment.employmentId || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Employment ID</p>
-              </div>
+              {currentEmployment.employmentId && (
+                <div>
+                  <p className="font-medium text-gray-900">{currentEmployment.employmentId}</p>
+                  <p className="text-sm text-gray-600">Employment ID</p>
+                </div>
+              )}
 
-              <div>
-                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.jobTitle || currentEmployment.designation) || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Job Title</p>
-              </div>
+              {(currentEmployment.jobTitle || currentEmployment.designation) && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.jobTitle || currentEmployment.designation)}</p>
+                  <p className="text-sm text-gray-600">Job Title</p>
+                </div>
+              )}
 
-              <div>
-                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.department) || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Department</p>
-              </div>
+              {currentEmployment.department && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.department)}</p>
+                  <p className="text-sm text-gray-600">Department</p>
+                </div>
+              )}
 
-              <div>
-                <p className="font-medium text-gray-900">{currentEmployment.joiningDate ? new Date(currentEmployment.joiningDate).toLocaleDateString() : 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Joining Date</p>
-              </div>
+              {currentEmployment.joiningDate && (
+                <div>
+                  <p className="font-medium text-gray-900">{new Date(currentEmployment.joiningDate).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600">Joining Date</p>
+                </div>
+              )}
 
-              <div>
-                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.location) || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Location</p>
-              </div>
+              {currentEmployment.location && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.location)}</p>
+                  <p className="text-sm text-gray-600">Location</p>
+                </div>
+              )}
 
               {currentEmployment.reportingManager && currentEmployment.reportingManager.trim() !== '' && (
                 <div>
@@ -268,10 +278,12 @@ export default function EmployeeDashboardPage() {
                 </div>
               )}
 
-              <div>
-                <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.employmentType) || 'Not Assigned'}</p>
-                <p className="text-sm text-gray-600">Employment Type</p>
-              </div>
+              {currentEmployment.employmentType && (
+                <div>
+                  <p className="font-medium text-gray-900">{toTitleCase(currentEmployment.employmentType)}</p>
+                  <p className="text-sm text-gray-600">Employment Type</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-4">
@@ -290,39 +302,52 @@ export default function EmployeeDashboardPage() {
           ) : (
             <div className="space-y-4">
               {/* Status Display */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {todayAttendance?.checkInTime || '--'}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">Check In</p>
+              {todayAttendance && (
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  {todayAttendance.checkInTime && (
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {todayAttendance.checkInTime}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Check In</p>
+                    </div>
+                  )}
+
+                  {todayAttendance.checkOutTime && (
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {todayAttendance.checkOutTime}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Check Out</p>
+                    </div>
+                  )}
+
+                  {(todayAttendance.checkInTime || todayAttendance.checkOutTime) && (
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {calculateTodayHours().toFixed(2)} hrs
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">Total Hours</p>
+                    </div>
+                  )}
+
+                  {todayAttendance.status && (
+                    <div>
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${todayAttendance.status === 'present'
+                        ? 'bg-green-100 text-green-800'
+                        : todayAttendance.status === 'late'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : todayAttendance.status === 'half-day'
+                            ? 'bg-orange-100 text-orange-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                        {todayAttendance.status.toUpperCase()}
+                      </span>
+                      <p className="text-sm text-gray-600 mb-1">Status</p>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {todayAttendance?.checkOutTime || '--'}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">Check Out</p>
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {calculateTodayHours().toFixed(2)} hrs
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">Total Hours</p>
-                </div>
-                <div>
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${todayAttendance?.status === 'present'
-                    ? 'bg-green-100 text-green-800'
-                    : todayAttendance?.status === 'late'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : todayAttendance?.status === 'half-day'
-                        ? 'bg-orange-100 text-orange-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                    {todayAttendance?.status?.toUpperCase() || 'Not checked in'}
-                  </span>
-                  <p className="text-sm text-gray-600 mb-1">Status</p>
-                </div>
-              </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
