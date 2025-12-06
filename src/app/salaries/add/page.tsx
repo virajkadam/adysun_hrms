@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { FiArrowLeft, FiSave } from 'react-icons/fi';
@@ -11,6 +11,7 @@ import { useCreateSalary } from '@/hooks/useSalaries';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getEmployeeNameById, getEmploymentsByEmployee, checkExistingSalary } from '@/utils/firebaseUtils';
+import { calculateMonthlySalary } from '@/utils/monthlySalaryCalculationUtils';
 
 // Simplify the Salary interface to only include essential fields
 export interface Salary {
@@ -40,7 +41,16 @@ type SalaryFormData = {
   employmentId: string;
   month: number;
   year: number;
+  ctc: number;
+  fixedPay: number;
+  workDays: number;
   leavesCount: number;
+  basic: number;
+  hra: number;
+  conveyanceAllowance: number;
+  otherAllowance: number;
+  ptDeduct: number;
+  leavesDeductAmt: number;
 };
 
 export default function AddSalaryPage() {
@@ -54,13 +64,86 @@ export default function AddSalaryPage() {
   const createSalaryMutation = useCreateSalary();
   const queryClient = useQueryClient();
   
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm<SalaryFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<SalaryFormData>({
+    mode: 'onChange', // Enable real-time validation and updates
     defaultValues: {
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear(),
-      employeeId: employeeId || ''
+      employeeId: employeeId || '',
+      ctc: 0,
+      fixedPay: 0,
+      workDays: 0,
+      leavesCount: 0,
+      ptDeduct: 200, // Default PT deduction
+      leavesDeductAmt: 0
     }
   });
+
+  // Watch input values for real-time calculation
+  const ctc = watch('ctc') || 0;
+  const fixedPay = watch('fixedPay') || 0;
+  const year = watch('year') || new Date().getFullYear();
+  const month = watch('month') || new Date().getMonth() + 1;
+  const leavesCount = watch('leavesCount') || 0;
+  const ptDeduct = watch('ptDeduct') || 200;
+
+  // Real-time calculation using useMemo - calculates on every render when inputs change
+  const calculations = useMemo(() => {
+    if (fixedPay > 0 && leavesCount >= 0 && month && year) {
+      try {
+        return calculateMonthlySalary({
+          ctc: ctc || 0,
+          fixedPay,
+          year,
+          month,
+          leavesCount
+        });
+      } catch (error) {
+        // Return default values on error
+        return {
+          variablePay: 0,
+          monthDays: 0,
+          perMonth: 0,
+          perDay: 0,
+          workDays: 0,
+          grossSalary: 0,
+          ptDeduct: 200,
+          leavesDeductAmt: 0,
+          totalDeduction: 0,
+          netSalary: 0,
+        };
+      }
+    }
+    return {
+      variablePay: 0,
+      monthDays: 0,
+      perMonth: 0,
+      perDay: 0,
+      workDays: 0,
+      grossSalary: 0,
+      ptDeduct: 200,
+      leavesDeductAmt: 0,
+      totalDeduction: 0,
+      netSalary: 0,
+    };
+  }, [ctc, fixedPay, year, month, leavesCount]);
+
+  // Use calculated values directly for display
+  const leavesDeductAmt = calculations.leavesDeductAmt;
+  const grossSalary = calculations.grossSalary;
+  const totalDeduction = (ptDeduct || 200) + leavesDeductAmt;
+  const netSalary = calculations.netSalary;
+
+  // Update form values in real-time when calculations change
+  useEffect(() => {
+    setValue('workDays', calculations.workDays, { shouldValidate: false, shouldDirty: false });
+    setValue('leavesDeductAmt', calculations.leavesDeductAmt, { shouldValidate: false, shouldDirty: false });
+    
+    // Set PT deduction to default if not already set
+    if (!ptDeduct || ptDeduct === 0) {
+      setValue('ptDeduct', calculations.ptDeduct, { shouldValidate: false, shouldDirty: false });
+    }
+  }, [calculations, setValue, ptDeduct]);
 
   // Fetch employee name and employment ID when employeeId is available
   useEffect(() => {
@@ -102,18 +185,49 @@ export default function AddSalaryPage() {
         return;
       }
 
+      // Validate required inputs
+      if (!data.ctc || !data.fixedPay) {
+        toast.error('Please enter CTC and Fixed Pay to calculate salary.');
+        return;
+      }
+
       setIsLoading(true);
       toast.loading('Creating salary...', { id: 'create-salary' });
       
-      // Create salary record with only essential fields
+      // Recalculate using utility function to ensure accuracy
+      const calculations = calculateMonthlySalary({
+        ctc: data.ctc,
+        fixedPay: data.fixedPay,
+        year: data.year,
+        month: data.month,
+        leavesCount: data.leavesCount || 0
+      });
+
+      // Use calculated values (form values may be stale)
+      const finalGrossSalary = calculations.grossSalary;
+      const finalTotalDeduction = calculations.totalDeduction;
+      const finalNetSalary = calculations.netSalary;
+
+      // Create salary record with all fields
       const salaryId = await createSalaryMutation.mutateAsync({
         ...data,
         employeeId: employeeId || data.employeeId,
         employmentId: employmentId || data.employmentId,
-        basicSalary: 0,
-        inhandSalary: 0,
-        totalSalary: 0,
-        leavesCount: data.leavesCount
+        basicSalary: calculations.grossSalary, // Using gross salary as basic salary
+        inhandSalary: finalNetSalary,
+        totalSalary: finalGrossSalary,
+        workDays: calculations.workDays,
+        leavesCount: data.leavesCount,
+        ctc: data.ctc,
+        fixedPay: data.fixedPay,
+        ptDeduct: data.ptDeduct || calculations.ptDeduct,
+        leavesDeductAmt: calculations.leavesDeductAmt,
+        grossSalary: finalGrossSalary,
+        totalDeduction: finalTotalDeduction,
+        variablePay: calculations.variablePay,
+        perMonth: calculations.perMonth,
+        perDay: calculations.perDay,
+        monthDays: calculations.monthDays
       } as any);
       
       toast.success('Salary created successfully!', { id: 'create-salary' });
@@ -181,7 +295,8 @@ export default function AddSalaryPage() {
         />
 
         <form onSubmit={handleSubmit(onSubmit)} className="px-6 pb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Period Information */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             {/* Month */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -234,10 +349,33 @@ export default function AddSalaryPage() {
               )}
             </div>
 
+            {/* Work Days - Auto-calculated */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Work Days <span className="text-xs text-gray-500">(Auto-calculated: {calculations.monthDays} days - {leavesCount} leaves)</span>
+              </label>
+              <input
+                type="number"
+                {...register('workDays', { 
+                  required: 'Work days is required',
+                  min: { value: 0, message: 'Work days cannot be negative' },
+                  valueAsNumber: true
+                })}
+                value={calculations.workDays}
+                disabled
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                placeholder="Auto-calculated"
+              />
+              {errors.workDays && (
+                <p className="mt-1 text-sm text-red-600">{errors.workDays.message}</p>
+              )}
+            </div>
+
             {/* Leaves Count */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <span className="text-red-500 mr-1">*</span>Leaves Count 
+                <span className="text-red-500 mr-1">*</span>Leave Count 
               </label>
               <input
                 type="number"
@@ -253,6 +391,169 @@ export default function AddSalaryPage() {
                 <p className="mt-1 text-sm text-red-600">{errors.leavesCount.message}</p>
               )}
             </div>
+          </div>
+
+          {/* Salary Input Fields */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Salary Inputs</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* CTC */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <span className="text-red-500 mr-1">*</span>CTC (Cost to Company)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('ctc', { 
+                    required: 'CTC is required',
+                    min: { value: 0, message: 'CTC cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
+                {errors.ctc && (
+                  <p className="mt-1 text-sm text-red-600">{errors.ctc.message}</p>
+                )}
+              </div>
+
+              {/* Fixed Pay */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <span className="text-red-500 mr-1">*</span>Fixed Pay
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('fixedPay', { 
+                    required: 'Fixed Pay is required',
+                    min: { value: 0, message: 'Fixed Pay cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
+                {errors.fixedPay && (
+                  <p className="mt-1 text-sm text-red-600">{errors.fixedPay.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Calculated Values Display */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Calculated Values</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="p-3 bg-gray-50 rounded-md">
+                <label className="block text-xs text-gray-500 mb-1">Month Days</label>
+                <span className="text-lg font-semibold text-gray-700">{calculations.monthDays}</span>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-md">
+                <label className="block text-xs text-gray-500 mb-1">Per Month</label>
+                <span className="text-lg font-semibold text-gray-700">₹{calculations.perMonth.toFixed(2)}</span>
+              </div>
+              <div className="p-3 bg-gray-50 rounded-md">
+                <label className="block text-xs text-gray-500 mb-1">Per Day</label>
+                <span className="text-lg font-semibold text-gray-700">₹{calculations.perDay.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Calculated Gross Salary */}
+          <div className="mb-6 p-4 bg-blue-50 rounded-md">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-semibold text-gray-700">
+                Gross Salary (A)
+              </label>
+              <span className="text-lg font-bold text-blue-700">
+                ₹{grossSalary.toFixed(2)}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Per Month (Fixed Pay / 12)
+            </p>
+          </div>
+
+          {/* Deductions Section */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Deductions</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* PT (DEDUCT) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <span className="text-red-500 mr-1">*</span>PT (DEDUCT) 
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('ptDeduct', { 
+                    required: 'PT deduction is required',
+                    min: { value: 0, message: 'PT deduction cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="0.00"
+                />
+                {errors.ptDeduct && (
+                  <p className="mt-1 text-sm text-red-600">{errors.ptDeduct.message}</p>
+                )}
+              </div>
+
+              {/* Leaves Deduct Amt - Auto-calculated */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Leaves Deduct Amt <span className="text-xs text-gray-500">(Auto-calculated)</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('leavesDeductAmt', { 
+                    required: 'Leaves deduction amount is required',
+                    min: { value: 0, message: 'Leaves deduction amount cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  value={calculations.leavesDeductAmt}
+                  disabled
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  placeholder="0.00"
+                />
+                {errors.leavesDeductAmt && (
+                  <p className="mt-1 text-sm text-red-600">{errors.leavesDeductAmt.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Calculated Total Deduction */}
+          <div className="mb-6 p-4 bg-red-50 rounded-md">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-semibold text-gray-700">
+                Total Deduction (B)
+              </label>
+              <span className="text-lg font-bold text-red-700">
+                ₹{totalDeduction.toFixed(2)}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              PT (DEDUCT) + Leaves Deduct Amt
+            </p>
+          </div>
+
+          {/* Calculated Net Salary */}
+          <div className="mb-6 p-4 bg-green-50 rounded-md">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-semibold text-gray-700">
+                Net Salary (InHand)
+              </label>
+              <span className="text-lg font-bold text-green-700">
+                ₹{netSalary.toFixed(2)}
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Gross Salary (A) - Total Deduction (B)
+            </p>
           </div>
 
 
