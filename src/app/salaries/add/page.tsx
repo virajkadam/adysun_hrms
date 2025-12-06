@@ -323,7 +323,7 @@ export default function AddSalaryPage() {
           showSearch={false}
           showFilter={false}
           headerClassName="px-6 py-6"
-          backButton={{ href: '/salaries' }}
+          backButton={{ href: employeeId ? `/employees/${employeeId}` : '/employees' }}
           actionButtons={[
             {
               label: 'Save',
