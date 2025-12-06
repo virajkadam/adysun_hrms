@@ -480,8 +480,12 @@ export const updateEmployment = async (id: string, employmentData: Partial<Emplo
     
     console.log('📋 Employment update data with audit:', updateDataWithAudit);
     
+    // Sanitize data before sending to Firestore (remove undefined values)
+    const sanitizedData = sanitizeForFirestore(updateDataWithAudit);
+    console.log('🧹 Sanitized employment update data (removed undefined values)');
+    
     const employmentRef = doc(db, 'employments', id);
-    await updateDoc(employmentRef, updateDataWithAudit);
+    await updateDoc(employmentRef, sanitizedData);
     
     console.log('✅ Employment updated successfully with audit trail');
     return { id, ...updateDataWithAudit };

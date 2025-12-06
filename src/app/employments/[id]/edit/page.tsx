@@ -148,7 +148,7 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
         : data.benefits;
 
       // Convert string numbers to actual numbers
-      const formattedData = {
+      const formattedData: any = {
         ...data,
         salary: Number(data.salary),
         joiningCtc: Number(data.joiningCtc),
@@ -167,20 +167,45 @@ export default function EditEmploymentPage({ params }: { params: Promise<{ id: s
         additionalAllowance: Number(data.additionalAllowance),
         specialAllowance: Number(data.specialAllowance),
         benefits: benefitsArray,
-        // Handle empty string fields
-        endDate: data.endDate || undefined,
-        employmentId: data.employmentId || undefined,
-        joiningDate: data.joiningDate || undefined,
-        incrementDate: data.incrementDate || undefined,
-        salaryCreditDate: data.salaryCreditDate || undefined,
-        paymentMode: data.paymentMode || undefined,
-        jobTitle: data.jobTitle || undefined,
-        department: data.department || undefined,
-        location: data.location || undefined,
-        reportingManager: data.reportingManager || undefined,
-        employmentType: data.employmentType || undefined,
-        workSchedule: data.workSchedule || undefined
       };
+
+      // Only include optional fields if they have values (not empty strings or undefined)
+      if (data.endDate && data.endDate.trim()) {
+        formattedData.endDate = data.endDate;
+      }
+      if (data.employmentId && data.employmentId.trim()) {
+        formattedData.employmentId = data.employmentId;
+      }
+      if (data.joiningDate && data.joiningDate.trim()) {
+        formattedData.joiningDate = data.joiningDate;
+      }
+      if (data.incrementDate && data.incrementDate.trim()) {
+        formattedData.incrementDate = data.incrementDate;
+      }
+      if (data.salaryCreditDate && data.salaryCreditDate.trim()) {
+        formattedData.salaryCreditDate = data.salaryCreditDate;
+      }
+      if (data.paymentMode && data.paymentMode.trim()) {
+        formattedData.paymentMode = data.paymentMode;
+      }
+      if (data.jobTitle && data.jobTitle.trim()) {
+        formattedData.jobTitle = data.jobTitle;
+      }
+      if (data.department && data.department.trim()) {
+        formattedData.department = data.department;
+      }
+      if (data.location && data.location.trim()) {
+        formattedData.location = data.location;
+      }
+      if (data.reportingManager && data.reportingManager.trim()) {
+        formattedData.reportingManager = data.reportingManager;
+      }
+      if (data.employmentType && data.employmentType.trim()) {
+        formattedData.employmentType = data.employmentType;
+      }
+      if (data.workSchedule && data.workSchedule.trim()) {
+        formattedData.workSchedule = data.workSchedule;
+      }
 
       await updateEmployment(id, formattedData);
       toast.success('Employment updated successfully!', { id: 'updateEmployment' });
