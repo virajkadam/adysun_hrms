@@ -20,9 +20,7 @@ type SalaryFormData = {
   employmentId: string;
   month: number;
   year: number;
-  basicSalary: number;
-  inhandSalary: number;
-  totalSalary: number;
+  leavesCount: number;
 };
 
 type PageParams = {
@@ -90,9 +88,7 @@ export default function EditSalaryPage({ params }: PageParams) {
         employmentId: salary.employmentId || '',
         month: salary.month || 1,
         year: salary.year || new Date().getFullYear(),
-        basicSalary: salary.basicSalary || 0,
-        inhandSalary: salary.inhandSalary || 0,
-        totalSalary: salary.totalSalary || 0
+        leavesCount: (salary as any).leavesCount ?? (salary as any).totalLeaves ?? 0
       });
     }
   }, [salary, reset, employeeId]);
@@ -119,8 +115,11 @@ export default function EditSalaryPage({ params }: PageParams) {
       await updateSalaryMutation.mutateAsync({
         id: id,
         data: {
-          ...data
-        }
+          ...data,
+          basicSalary: salary?.basicSalary || 0,
+          inhandSalary: salary?.inhandSalary || 0,
+          totalSalary: salary?.totalSalary || 0
+        } as any
       });
       
       toast.success('Salary updated successfully!', { id: 'update-salary' });
@@ -181,9 +180,15 @@ export default function EditSalaryPage({ params }: PageParams) {
   return (
     <DashboardLayout breadcrumbItems={[
       { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Salaries', href: '/salaries' },
-      ...(employeeId ? [{ label: employeeName || 'Loading...', href: `/salaries?employeeId=${employeeId}` }] : []),
-      { label: 'Edit Salary', isCurrent: true }
+      { label: 'Employee', href: '/employees' },
+      ...(employeeId ? [
+        { label: employeeName || 'Loading...', href: `/employees/${employeeId}` },
+        { label: 'Salaries', href: `/salaries?employeeId=${employeeId}` },
+        { label: 'Edit Salary', isCurrent: true }
+      ] : [
+        { label: 'Salaries', href: '/salaries' },
+        { label: 'Edit Salary', isCurrent: true }
+      ])
     ]}>
       <Toaster position="top-center" />
       
@@ -221,7 +226,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Month */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Month
+                <span className="text-red-500 mr-1">*</span>Month
               </label>
               <select
                 {...register('month', { required: 'Month is required' })}
@@ -249,7 +254,7 @@ export default function EditSalaryPage({ params }: PageParams) {
             {/* Year */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Year
+                <span className="text-red-500 mr-1">*</span> Year
               </label>
               <select
                 {...register('year', { required: 'Year is required' })}
@@ -270,60 +275,25 @@ export default function EditSalaryPage({ params }: PageParams) {
               )}
             </div>
 
-            
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-            {/* Basic Salary - No Change */}
+            {/* Leaves Count */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Basic Salary
+                <span className="text-red-500 mr-1">*</span>Leaves Count
               </label>
               <input
                 type="number"
-                {...register('basicSalary', { required: 'Basic salary is required' })}
+                {...register('leavesCount', { 
+                  required: 'Leaves count is required',
+                  min: { value: 0, message: 'Leaves count cannot be negative' },
+                  valueAsNumber: true
+                })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter basic salary"
+                placeholder="Enter leaves count"
               />
-              {errors.basicSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.basicSalary.message}</p>
+              {errors.leavesCount && (
+                <p className="mt-1 text-sm text-red-600">{errors.leavesCount.message}</p>
               )}
             </div>
-
-            {/* Inhand Salary (formerly Total Salary) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Inhand Salary
-              </label>
-              <input
-                type="number"
-                {...register('inhandSalary', { required: 'Inhand salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter inhand salary"
-              />
-              {errors.inhandSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.inhandSalary.message}</p>
-              )}
-            </div>
-
-            {/* Total Salary (formerly Net Salary) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Total Salary
-              </label>
-              <input
-                type="number"
-                {...register('totalSalary', { required: 'Total salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter total salary"
-              />
-              {errors.totalSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.totalSalary.message}</p>
-              )}
-            </div>
-
-            {/* Empty div to maintain 4-column layout */}
-            <div></div>
           </div>
 
           <div className="mt-8 flex justify-between py-3">
