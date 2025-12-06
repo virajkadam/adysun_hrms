@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiDollarSign } from 'react-icons/fi';
+import { FiEdit, FiTrash2, FiPlus, FiSearch, FiEye, FiDollarSign, FiDownload } from 'react-icons/fi';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Salary } from '@/types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -349,6 +349,12 @@ export default function SalariesPage() {
                       </div>
                     ) : (
                       <div className="flex items-center space-x-3">
+                        <ActionButton
+                          icon={<FiDownload className="w-5 h-5" />}
+                          title="Download Salary Details"
+                          colorClass="bg-green-100 text-green-600 hover:text-green-900"
+                          href={null as any}
+                        />
                         <ActionButton
                           icon={<FiEye className="w-5 h-5" />}
                           title="View Salary Details"
