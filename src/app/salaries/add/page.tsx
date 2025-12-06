@@ -40,9 +40,7 @@ type SalaryFormData = {
   employmentId: string;
   month: number;
   year: number;
-  basicSalary: number;
-  inhandSalary: number;
-  totalSalary: number;
+  leavesCount: number;
 };
 
 export default function AddSalaryPage() {
@@ -111,8 +109,12 @@ export default function AddSalaryPage() {
       const salaryId = await createSalaryMutation.mutateAsync({
         ...data,
         employeeId: employeeId || data.employeeId,
-        employmentId: employmentId || data.employmentId
-      });
+        employmentId: employmentId || data.employmentId,
+        basicSalary: 0,
+        inhandSalary: 0,
+        totalSalary: 0,
+        leavesCount: data.leavesCount
+      } as any);
       
       toast.success('Salary created successfully!', { id: 'create-salary' });
       
@@ -183,7 +185,7 @@ export default function AddSalaryPage() {
             {/* Month */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Month
+                <span className="text-red-500 mr-1">*</span>Month 
               </label>
               <select
                 {...register('month', { required: 'Month is required' })}
@@ -211,7 +213,7 @@ export default function AddSalaryPage() {
             {/* Year */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Year
+               <span className="text-red-500 mr-1">*</span> Year 
               </label>
               <select
                 {...register('year', { required: 'Year is required' })}
@@ -232,61 +234,27 @@ export default function AddSalaryPage() {
               )}
             </div>
 
-            
+            {/* Leaves Count */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="text-red-500 mr-1">*</span>Leaves Count 
+              </label>
+              <input
+                type="number"
+                {...register('leavesCount', { 
+                  required: 'Leaves count is required',
+                  min: { value: 0, message: 'Leaves count cannot be negative' },
+                  valueAsNumber: true
+                })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter leaves count"
+              />
+              {errors.leavesCount && (
+                <p className="mt-1 text-sm text-red-600">{errors.leavesCount.message}</p>
+              )}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-            {/* Basic Salary - No Change */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Basic Salary
-              </label>
-              <input
-                type="number"
-                {...register('basicSalary', { required: 'Basic salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter basic salary"
-              />
-              {errors.basicSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.basicSalary.message}</p>
-              )}
-            </div>
-
-            {/* Inhand Salary (formerly Total Salary) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Inhand Salary
-              </label>
-              <input
-                type="number"
-                {...register('inhandSalary', { required: 'Inhand salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter inhand salary"
-              />
-              {errors.inhandSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.inhandSalary.message}</p>
-              )}
-            </div>
-
-            {/* Total Salary (formerly Net Salary) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Total Salary
-              </label>
-              <input
-                type="number"
-                {...register('totalSalary', { required: 'Total salary is required' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter total salary"
-              />
-              {errors.totalSalary && (
-                <p className="mt-1 text-sm text-red-600">{errors.totalSalary.message}</p>
-              )}
-            </div>
-
-            {/* Empty div to maintain 4-column layout */}
-            <div></div>
-          </div>
 
           <div className="mt-8 flex justify-between py-3">
             <Link
