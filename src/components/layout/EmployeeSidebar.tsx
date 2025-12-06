@@ -1,13 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FiUser, FiCalendar, FiClock, FiMenu, FiX, FiHome, FiFileText } from 'react-icons/fi';
+import { useAuth } from '@/context/AuthContext';
+import { useEmployeeSelfEmployment } from '@/hooks/useEmployees';
 
 const EmployeeSidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { currentUserData } = useAuth();
+  
+  // Fetch employment data to check if employee has employment
+  const { data: employmentData = [], isLoading: employmentLoading } = useEmployeeSelfEmployment(
+    currentUserData?.id || ''
+  );
+  
+  // Check if employee has employment
+  const hasEmployment = !employmentLoading && employmentData.length > 0;
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -32,11 +43,12 @@ const EmployeeSidebar = () => {
       name: 'Dashboard',
       icon: <FiHome className="w-5 h-5" />
     },
-    {
+    // Only show Attendance if employee has employment
+    ...(hasEmployment ? [{
       path: '/employee/attendance',
       name: 'Attendance',
       icon: <FiClock className="w-5 h-5" />
-    },
+    }] : []),
     {
       path: '/employee/leaves',
       name: 'Leaves',

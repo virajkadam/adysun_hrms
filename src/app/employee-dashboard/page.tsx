@@ -106,14 +106,18 @@ export default function EmployeeDashboardPage() {
     }
   };
 
+  // Check if employee has employment
+  const hasEmployment = !employmentLoading && employmentData.length > 0;
+
   const cards = [
-    {
+    // Only show Attendance card if employee has employment
+    ...(hasEmployment ? [{
       title: 'Attendance',
       description: 'View your attendance records',
       icon: <FiCalendar className="w-8 h-8 text-purple-500" />,
       link: '/employee/attendance',
       color: 'bg-purple-50'
-    },
+    }] : []),
     {
       title: 'Leaves',
       description: 'Manage your leave requests',

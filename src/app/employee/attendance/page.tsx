@@ -8,6 +8,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { useAttendanceByEmployee, useTodayAttendance, useMarkAttendanceCheckIn, useMarkAttendanceCheckOut } from '@/hooks/useAttendance';
 import { useEmployeeLeaves } from '@/hooks/useLeaves';
+import { useEmployeeSelfEmployment } from '@/hooks/useEmployees';
 import { formatDateToDayMonYear } from '@/utils/documentUtils';
 import { formatDurationHours } from '@/lib/utils';
 import TableHeader from '@/components/ui/TableHeader';
@@ -35,6 +36,25 @@ export default function EmployeeAttendancePage() {
   
   const router = useRouter();
   const { currentUserData } = useAuth();
+
+  // Check if employee has employment
+  const { data: employmentData = [], isLoading: employmentLoading } = useEmployeeSelfEmployment(
+    currentUserData?.id || ''
+  );
+
+  // Redirect immediately if employee doesn't have employment
+  useEffect(() => {
+    if (!employmentLoading && currentUserData?.id) {
+      if (employmentData.length === 0) {
+        router.replace('/employee-dashboard');
+      }
+    }
+  }, [employmentLoading, employmentData, currentUserData, router]);
+  
+  // Don't render anything if no employment (redirecting)
+  if (!employmentLoading && currentUserData?.id && employmentData.length === 0) {
+    return null;
+  }
 
   // Use attendance hooks
   const {
@@ -522,7 +542,8 @@ export default function EmployeeAttendancePage() {
     setCurrentPage(1); // Reset to first page when changing page size
   };
 
-  const isLoading = attendanceLoading || todayLoading || leaveLoading;
+
+  const isLoading = attendanceLoading || todayLoading || leaveLoading || employmentLoading;
 
   if (isLoading) {
     return (
