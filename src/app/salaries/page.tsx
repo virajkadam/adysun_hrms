@@ -315,7 +315,7 @@ export default function SalariesPage() {
                     {getMonthName(salary.month)} {salary.year}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {(salary as any).workingDays ?? (salary as any).totalWorkingDays ?? '-'}
+                    {(salary as any).workDays ?? (salary as any).workingDays ?? (salary as any).totalWorkingDays ?? (salary as any).monthDays ?? '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {(salary as any).leavesCount ?? (salary as any).totalLeaves ?? '-'}
@@ -324,7 +324,7 @@ export default function SalariesPage() {
                     ₹{((salary as any).grossSalary ?? salary.totalSalary ?? 0).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{((salary as any).totalDeductions ?? 0).toLocaleString()}
+                    ₹{((salary as any).totalDeduction ?? (salary as any).totalDeductions ?? 0).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     ₹{((salary as any).netSalary ?? salary.inhandSalary ?? 0).toLocaleString()}
