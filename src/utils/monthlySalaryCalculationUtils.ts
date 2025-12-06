@@ -27,6 +27,12 @@ export interface MonthlySalaryResult {
   perDay: number;
   workDays: number;
   
+  // Salary components (for display/breakdown)
+  basic: number;
+  hra: number;
+  conveyanceAllowance: number;
+  otherAllowance: number;
+  
   // Earnings
   grossSalary: number;
   
@@ -123,7 +129,21 @@ export function calculateMonthlySalary(inputs: MonthlySalaryInputs): MonthlySala
   const perDay = roundToTwoDecimals(perMonth / 30); // Fixed 30-day logic
   const workDays = Math.max(0, monthDays - leavesCount); // Actual month days - leave count
 
+  // Calculate salary components (for display/breakdown)
+  // Based on Excel formulas:
+  // Basic = 0.4 × Per Month
+  // HRA = 0.4 × Basic
+  // Conveyance Allowance = 0.05 × Per Month
+  // Other Allowance = Per Month - (Basic + HRA + Conveyance Allowance)
+  const basic = roundToTwoDecimals(0.4 * perMonth);
+  const hra = roundToTwoDecimals(0.4 * basic);
+  const conveyanceAllowance = roundToTwoDecimals(0.05 * perMonth);
+  const otherAllowance = roundToTwoDecimals(
+    perMonth - (basic + hra + conveyanceAllowance)
+  );
+
   // Gross Salary = Per Month (directly, no breakdown)
+  // Note: Gross Salary = Basic + HRA + Conveyance Allowance + Other Allowance (should equal Per Month)
   const grossSalary = perMonth;
 
   // Deductions
@@ -140,6 +160,10 @@ export function calculateMonthlySalary(inputs: MonthlySalaryInputs): MonthlySala
     perMonth,
     perDay,
     workDays,
+    basic,
+    hra,
+    conveyanceAllowance,
+    otherAllowance,
     grossSalary,
     ptDeduct,
     leavesDeductAmt,
