@@ -417,16 +417,48 @@ export default function AddSalaryPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <span className="text-red-500 mr-1">*</span>Leave Count 
+                <span className="text-xs text-gray-500 ml-2">(Max: {calculations.monthDays} days)</span>
               </label>
               <input
                 type="number"
                 {...register('leavesCount', { 
                   required: 'Leaves count is required',
                   min: { value: 0, message: 'Leaves count cannot be negative' },
-                  valueAsNumber: true
+                  max: { 
+                    value: calculations.monthDays || 31, 
+                    message: `Leave count cannot exceed ${calculations.monthDays || 31} days (days in selected month)` 
+                  },
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    const maxDays = calculations.monthDays || 31;
+                    if (value > maxDays) {
+                      return `Leave count cannot exceed ${maxDays} days in this month`;
+                    }
+                    return true;
+                  }
                 })}
+                onInput={(e) => {
+                  const input = e.target as HTMLInputElement;
+                  const rawValue = input.value;
+                  
+                  // Allow empty input while typing
+                  if (rawValue === '' || rawValue === '-') {
+                    return;
+                  }
+                  
+                  const value = parseFloat(rawValue);
+                  const maxDays = calculations.monthDays || 31;
+                  
+                  // Clamp value in real-time as user types - prevents exceeding max
+                  if (!isNaN(value) && value > maxDays) {
+                    input.value = maxDays.toString();
+                    setValue('leavesCount', maxDays, { shouldValidate: true });
+                    toast.error(`Leave count cannot exceed ${maxDays} days in this month`, { duration: 2000 });
+                  }
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter leaves count"
+                max={calculations.monthDays || 31}
               />
               {errors.leavesCount && (
                 <p className="mt-1 text-sm text-red-600">{errors.leavesCount.message}</p>
