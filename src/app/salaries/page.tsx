@@ -286,19 +286,22 @@ export default function SalariesPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Employee
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Period
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Inhand Salary
+                  Working Days
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Basic Salary
+                  Leaves Count
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  CTC
+                  Gross Salary (A)
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Deductions (B)
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Net Salary
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -309,19 +312,22 @@ export default function SalariesPage() {
               {paginatedSalaries.map((salary) => (
                 <tr key={salary.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <EmployeeNameDisplay employeeId={salary.employeeId} />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {getMonthName(salary.month)} {salary.year}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{salary.inhandSalary?.toLocaleString() || '0'}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {(salary as any).workingDays ?? (salary as any).totalWorkingDays ?? '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {(salary as any).leavesCount ?? (salary as any).totalLeaves ?? '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{salary.basicSalary?.toLocaleString() || '0'}
+                    ₹{((salary as any).grossSalary ?? salary.totalSalary ?? 0).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    ₹{salary.totalSalary?.toLocaleString() || '0'}
+                    ₹{((salary as any).totalDeductions ?? 0).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    ₹{((salary as any).netSalary ?? salary.inhandSalary ?? 0).toLocaleString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     {deleteConfirm === salary.id ? (
