@@ -11,7 +11,7 @@ import { useCreateSalary } from '@/hooks/useSalaries';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { getEmployeeNameById, getEmploymentsByEmployee, checkExistingSalary } from '@/utils/firebaseUtils';
-import { calculateMonthlySalary } from '@/utils/monthlySalaryCalculationUtils';
+import { calculateMonthlySalary, type MonthlySalaryResult } from '@/utils/monthlySalaryCalculationUtils';
 
 // Simplify the Salary interface to only include essential fields
 export interface Salary {
@@ -74,6 +74,10 @@ export default function AddSalaryPage() {
       fixedPay: 0,
       workDays: 0,
       leavesCount: 0,
+      basic: 0,
+      hra: 0,
+      conveyanceAllowance: 0,
+      otherAllowance: 0,
       ptDeduct: 200, // Default PT deduction
       leavesDeductAmt: 0
     }
@@ -88,7 +92,7 @@ export default function AddSalaryPage() {
   const ptDeduct = watch('ptDeduct') || 200;
 
   // Real-time calculation using useMemo - calculates on every render when inputs change
-  const calculations = useMemo(() => {
+  const calculations: MonthlySalaryResult = useMemo(() => {
     if (fixedPay > 0 && leavesCount >= 0 && month && year) {
       try {
         return calculateMonthlySalary({
@@ -106,6 +110,10 @@ export default function AddSalaryPage() {
           perMonth: 0,
           perDay: 0,
           workDays: 0,
+          basic: 0,
+          hra: 0,
+          conveyanceAllowance: 0,
+          otherAllowance: 0,
           grossSalary: 0,
           ptDeduct: 200,
           leavesDeductAmt: 0,
@@ -120,6 +128,10 @@ export default function AddSalaryPage() {
       perMonth: 0,
       perDay: 0,
       workDays: 0,
+      basic: 0,
+      hra: 0,
+      conveyanceAllowance: 0,
+      otherAllowance: 0,
       grossSalary: 0,
       ptDeduct: 200,
       leavesDeductAmt: 0,
@@ -137,6 +149,10 @@ export default function AddSalaryPage() {
   // Update form values in real-time when calculations change
   useEffect(() => {
     setValue('workDays', calculations.workDays, { shouldValidate: false, shouldDirty: false });
+    setValue('basic', calculations.basic, { shouldValidate: false, shouldDirty: false });
+    setValue('hra', calculations.hra, { shouldValidate: false, shouldDirty: false });
+    setValue('conveyanceAllowance', calculations.conveyanceAllowance, { shouldValidate: false, shouldDirty: false });
+    setValue('otherAllowance', calculations.otherAllowance, { shouldValidate: false, shouldDirty: false });
     setValue('leavesDeductAmt', calculations.leavesDeductAmt, { shouldValidate: false, shouldDirty: false });
     
     // Set PT deduction to default if not already set
@@ -161,6 +177,27 @@ export default function AddSalaryPage() {
             const latestEmployment = employments[0];
             setEmploymentId(latestEmployment.id);
             setValue('employmentId', latestEmployment.id); // Pre-fill employment ID
+
+            // Determine CTC with priority: incrementedCtc > joiningCtc > salary
+            const ctcValue = latestEmployment.incrementedCtc 
+              || latestEmployment.joiningCtc 
+              || latestEmployment.salary 
+              || 0;
+
+            // Determine Fixed Pay from inHandCtc
+            const fixedPayValue = latestEmployment.inHandCtc || 0;
+
+            // Pre-fill CTC only if value exists and is greater than 0
+            if (ctcValue > 0) {
+              setValue('ctc', ctcValue, { shouldValidate: false, shouldDirty: false });
+              toast.success('CTC pre-filled from employment record', { duration: 3000 });
+            }
+
+            // Pre-fill Fixed Pay only if value exists and is greater than 0
+            if (fixedPayValue > 0) {
+              setValue('fixedPay', fixedPayValue, { shouldValidate: false, shouldDirty: false });
+              toast.success('Fixed Pay pre-filled from employment record', { duration: 3000 });
+            }
           } else {
             // If no employment found, show error
             toast.error('No employment record found for this employee. Please create an employment record first.');
@@ -213,13 +250,17 @@ export default function AddSalaryPage() {
         ...data,
         employeeId: employeeId || data.employeeId,
         employmentId: employmentId || data.employmentId,
-        basicSalary: calculations.grossSalary, // Using gross salary as basic salary
+        basicSalary: calculations.basic,
         inhandSalary: finalNetSalary,
         totalSalary: finalGrossSalary,
         workDays: calculations.workDays,
         leavesCount: data.leavesCount,
         ctc: data.ctc,
         fixedPay: data.fixedPay,
+        basic: calculations.basic,
+        hra: calculations.hra,
+        conveyanceAllowance: calculations.conveyanceAllowance,
+        otherAllowance: calculations.otherAllowance,
         ptDeduct: data.ptDeduct || calculations.ptDeduct,
         leavesDeductAmt: calculations.leavesDeductAmt,
         grossSalary: finalGrossSalary,
@@ -460,6 +501,108 @@ export default function AddSalaryPage() {
             </div>
           </div>
 
+          {/* Salary Components Section - Auto-calculated */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Salary Components (Auto-calculated)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Basic */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Basic <span className="text-xs text-gray-500">(Auto-calculated)</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('basic', { 
+                    required: 'Basic salary is required',
+                    min: { value: 0, message: 'Basic salary cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  value={calculations.basic}
+                  disabled
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  placeholder="0.00"
+                />
+                {errors.basic && (
+                  <p className="mt-1 text-sm text-red-600">{errors.basic.message}</p>
+                )}
+              </div>
+
+              {/* HRA */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  HRA <span className="text-xs text-gray-500">(Auto-calculated)</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('hra', { 
+                    required: 'HRA is required',
+                    min: { value: 0, message: 'HRA cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  value={calculations.hra}
+                  disabled
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  placeholder="0.00"
+                />
+                {errors.hra && (
+                  <p className="mt-1 text-sm text-red-600">{errors.hra.message}</p>
+                )}
+              </div>
+
+              {/* Conveyance Allowance */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Conveyance Allowance <span className="text-xs text-gray-500">(Auto-calculated)</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('conveyanceAllowance', { 
+                    required: 'Conveyance allowance is required',
+                    min: { value: 0, message: 'Conveyance allowance cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  value={calculations.conveyanceAllowance}
+                  disabled
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  placeholder="0.00"
+                />
+                {errors.conveyanceAllowance && (
+                  <p className="mt-1 text-sm text-red-600">{errors.conveyanceAllowance.message}</p>
+                )}
+              </div>
+
+              {/* Other Allowance */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Other Allowance <span className="text-xs text-gray-500">(Auto-calculated)</span>
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register('otherAllowance', { 
+                    required: 'Other allowance is required',
+                    min: { value: 0, message: 'Other allowance cannot be negative' },
+                    valueAsNumber: true
+                  })}
+                  value={calculations.otherAllowance}
+                  disabled
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                  placeholder="0.00"
+                />
+                {errors.otherAllowance && (
+                  <p className="mt-1 text-sm text-red-600">{errors.otherAllowance.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Calculated Gross Salary */}
           <div className="mb-6 p-4 bg-blue-50 rounded-md">
             <div className="flex items-center justify-between">
@@ -471,7 +614,7 @@ export default function AddSalaryPage() {
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              Per Month (Fixed Pay / 12)
+              Basic + HRA + Conveyance Allowance + Other Allowance = Per Month
             </p>
           </div>
 
