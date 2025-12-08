@@ -12,21 +12,22 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // For GitHub Pages, we need to use 'export' mode
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
-  // Disable image optimization for static export
+  // Only use static export if explicitly requested (e.g., for GitHub Pages)
+  // Netlify and self-deployed servers support SSR and should NOT use static export
+  // Static export causes build retries with Next.js 15.3.6 + React 19.2.1
+  output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
+  // Enable image optimization for SSR (Netlify and self-deployed servers support it)
   images: {
-    unoptimized: true,
+    unoptimized: process.env.STATIC_EXPORT === 'true',
   },
-  // Base path for GitHub Pages
-  basePath: process.env.NODE_ENV === 'production' ? '/Employee_Admin_Dashboard' : '',
-  // Required for GitHub Pages
-  trailingSlash: process.env.NODE_ENV === 'production',
+  // Base path only needed for static hosting (e.g., GitHub Pages)
+  basePath: process.env.STATIC_EXPORT === 'true' ? '/Employee_Admin_Dashboard' : '',
+  // Trailing slash only needed for static hosting
+  trailingSlash: process.env.STATIC_EXPORT === 'true',
   // Disable strict mode to enable more compatibility options
   reactStrictMode: false,
-  // Enable SPA experience for static export
+  // Experimental features
   experimental: {
-    // This allows client-side navigation to work better with static export
     appDocumentPreloading: false
   },
 };
