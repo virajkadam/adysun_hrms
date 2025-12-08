@@ -42,21 +42,7 @@ export default function EmployeeAttendancePage() {
     currentUserData?.id || ''
   );
 
-  // Redirect immediately if employee doesn't have employment
-  useEffect(() => {
-    if (!employmentLoading && currentUserData?.id) {
-      if (employmentData.length === 0) {
-        router.replace('/employee-dashboard');
-      }
-    }
-  }, [employmentLoading, employmentData, currentUserData, router]);
-  
-  // Don't render anything if no employment (redirecting)
-  if (!employmentLoading && currentUserData?.id && employmentData.length === 0) {
-    return null;
-  }
-
-  // Use attendance hooks
+  // Use attendance hooks - MUST be called before any conditional returns
   const {
     data: attendanceRecords = [],
     isLoading: attendanceLoading,
@@ -85,6 +71,15 @@ export default function EmployeeAttendancePage() {
   // Attendance mutations
   const checkInMutation = useMarkAttendanceCheckIn();
   const checkOutMutation = useMarkAttendanceCheckOut();
+
+  // Redirect immediately if employee doesn't have employment
+  useEffect(() => {
+    if (!employmentLoading && currentUserData?.id) {
+      if (employmentData.length === 0) {
+        router.replace('/employee-dashboard');
+      }
+    }
+  }, [employmentLoading, employmentData, currentUserData, router]);
 
   // Helper function to convert 24-hour time to 12-hour format
   const formatTimeTo12Hour = (timeString: string | undefined): string => {
@@ -544,6 +539,17 @@ export default function EmployeeAttendancePage() {
 
 
   const isLoading = attendanceLoading || todayLoading || leaveLoading || employmentLoading;
+
+  // Handle "no employment" case AFTER all hooks are called
+  if (!employmentLoading && currentUserData?.id && employmentData.length === 0) {
+    return (
+      <EmployeeLayout>
+        <div className="flex justify-center items-center h-64">
+          <p>No employment record found. Redirecting...</p>
+        </div>
+      </EmployeeLayout>
+    );
+  }
 
   if (isLoading) {
     return (

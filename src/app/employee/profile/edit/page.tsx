@@ -99,9 +99,9 @@ export default function EditEmployeeProfilePage() {
                 try {
                     // Fetch full employee data including password
                     const emp = await getEmployeeSelf(currentUserData.id);
-                    const currentAddr = emp.currentAddress || '';
-                    const permanentAddr = emp.permanentAddress || '';
-                    const addressesMatch = currentAddr && currentAddr === permanentAddr;
+            const currentAddr = emp.currentAddress || '';
+            const permanentAddr = emp.permanentAddress || '';
+            const addressesMatch = currentAddr && currentAddr === permanentAddr;
 
                     // Initialize education entries from employee data
                     if (emp.secondaryEducation && emp.secondaryEducation.length > 0) {
@@ -132,7 +132,7 @@ export default function EditEmployeeProfilePage() {
                             confirmPassword: emp.password || '', // Pre-fill confirm password with current password
                         });
                     }
-                    setSameAsCurrentAddress(addressesMatch);
+            setSameAsCurrentAddress(addressesMatch);
                 } catch (error) {
                     console.error('Error fetching employee data:', error);
                     toast.error('Failed to load employee data');
@@ -344,13 +344,13 @@ export default function EditEmployeeProfilePage() {
                         <h2 className="text-lg font-semibold text-gray-800 mb-2 border-l-4 border-blue-500 pl-2">Personal Details</h2>
                         <div className="bg-white p-4 rounded-lg mb-4">
                             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Basic Information</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                         <span className="text-red-500">*</span> Name
-                                    </label>
-                                    <input
-                                        type="text"
+                                </label>
+                                <input
+                                    type="text"
                                         placeholder="Enter full name"
                                         {...register('name', {
                                             required: 'Name is required',
@@ -358,16 +358,16 @@ export default function EditEmployeeProfilePage() {
                                             maxLength: { value: 50, message: 'Name cannot exceed 50 characters' }
                                         })}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
-                                    {errors.name && (
+                                />
+                                {errors.name && (
                                         <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                )}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Date of Birth
-                                    </label>
-                                    <input
+                                </label>
+                                <input
                                         type="date"
                                         {...register('dateOfBirth', {
                                             validate: {
@@ -405,63 +405,63 @@ export default function EditEmployeeProfilePage() {
                                             maxLength: { value: 50, message: 'Home town cannot exceed 50 characters' }
                                         })}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
+                                />
                                     {errors.homeTown && (
                                         <p className="mt-1 text-sm text-red-600">{errors.homeTown.message}</p>
-                                    )}
+                                )}
                                 </div>
                             </div>
-                        </div>
+                            </div>
 
                         {/* Contact Information */}
                         <div className="bg-white p-4 rounded-lg mb-4">
                             <h3 className="text-md font-medium text-gray-700 mb-3 border-l-2 border-green-500 pl-2">Contact Information</h3>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                         <span className="text-red-500">*</span> Mobile No.
-                                    </label>
-                                    <input
-                                        type="tel"
+                                </label>
+                                <input
+                                    type="tel"
                                         placeholder="Enter 10-digit mobile number"
                                         {...register('phone', {
                                             required: 'Phone number is required',
                                             pattern: { value: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number' }
                                         })}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
-                                    {errors.phone && (
+                                />
+                                {errors.phone && (
                                         <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                )}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Email ID
-                                    </label>
-                                    <input
+                                </label>
+                                <input
                                         type="email"
                                         placeholder="Enter email address"
                                         {...register('email', {
                                             pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' }
                                         })}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
+                                />
                                     {errors.email && (
                                         <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
                                     )}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Position
-                                    </label>
-                                    <input
-                                        type="text"
+                                </label>
+                                <input
+                                    type="text"
                                         placeholder="Enter position/designation"
                                         {...register('position')}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
-                                </div>
-                                <div>
+                                />
+                            </div>
+                            <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                         Department
                                     </label>
@@ -473,16 +473,16 @@ export default function EditEmployeeProfilePage() {
                                     />
                                 </div>
                                 <div className="md:col-span-4">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Current Address
-                                    </label>
-                                    <textarea
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Current Address
+                                </label>
+                                <textarea
                                         placeholder="Enter current address"
                                         {...register('currentAddress')}
-                                        rows={3}
+                                    rows={3}
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black"
-                                    />
-                                </div>
+                                />
+                            </div>
                                 <div className="md:col-span-4">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
                                     <div className="flex items-center mb-2">
@@ -504,7 +504,7 @@ export default function EditEmployeeProfilePage() {
                                         className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-black disabled:bg-gray-100 disabled:text-gray-500"
                                         readOnly={sameAsCurrentAddress}
                                         disabled={sameAsCurrentAddress}
-                                    />
+                                        />
                                 </div>
                             </div>
                         </div>
