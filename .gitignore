@@ -44,3 +44,5 @@ next-env.d.ts
 .netlify
 
 /.playwright-mcp
+
+adysun_hrms_build.zip
